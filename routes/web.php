@@ -17,4 +17,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/proyectos', 'ProjectController@index');
+
+Route::put('/proyectos/actualizar', 'ProjectController@update');
+
+Route::post('/proyectos/guardar', 'ProjectController@store');
+
+Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
+
+Route::get('/proyectos/buscar', 'ProjectController@show');

@@ -136,12 +136,16 @@
 
       <!-- Page Heading -->
       <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
+      <projects></projects>
 
     </div>
     <!-- /.container-fluid -->
 
   </div>
-
   @component('layouts.footer')
   @endcomponent
+
+  </div>
+</div>
+
 @endsection
