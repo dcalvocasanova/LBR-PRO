@@ -15,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-      $projects = Project::all();
+      $projects = Project::latest()->paginate(5);
       return $projects;
     }
 
@@ -45,21 +45,33 @@ class ProjectController extends Controller
 
       if(isset($request->logo_project)){
           $file_logo_project = time().'.' . explode('/', explode(':', substr($request->logo_project, 0, strpos($request->logo_project, ';')))[1])[1];
-          Image::make($request->logo_project)->save(public_path('img/profile-prj/').$file_logo_project);
+          $img = Image::make($request->logo_project)->save(public_path('img/profile-prj/').$file_logo_project);
+          $img->fit(75, 75, function ($constraint) {
+              $constraint->aspectRatio();
+              $constraint->upsize();
+          });
           $request->logo_project = $file_logo_project;
       }
       $project->logo_project = isset($request->logo_project)? $request->logo_project:"default.png";
 
       if(isset($request->logo_sponsor)){
           $file_logo_sponsor = time().'.' . explode('/', explode(':', substr($request->logo_sponsor, 0, strpos($request->logo_sponsor, ';')))[1])[1];
-          Image::make($request->logo_sponsor)->save(public_path('img/profile-prj/').$file_logo_sponsor);
+          $img = Image::make($request->logo_sponsor)->save(public_path('img/profile-prj/').$file_logo_sponsor);
+          $img->fit(75, 75, function ($constraint) {
+              $constraint->aspectRatio();
+              $constraint->upsize();
+          });
           $request->logo_sponsor = $file_logo_sponsor;
       }
       $project->logo_sponsor = isset($request->logo_sponsor)? $request->logo_sponsor:"default.png";
 
       if(isset($request->logo_auxiliar)){
           $file_logo_auxiliar = time().'.' . explode('/', explode(':', substr($request->logo_auxiliar, 0, strpos($request->logo_auxiliar, ';')))[1])[1];
-          Image::make($request->logo_auxiliar)->save(public_path('img/profile-prj/').$file_logo_auxiliar);
+          $img = Image::make($request->logo_auxiliar)->save(public_path('img/profile-prj/').$file_logo_auxiliar);
+          $img->fit(75, 75, function ($constraint) {
+              $constraint->aspectRatio();
+              $constraint->upsize();
+          });
           $request->logo_project = $file_logo_project;
       }
       $project->logo_auxiliar = isset($request->logo_auxiliar)? $request->logo_auxiliar:"default.png";
@@ -115,8 +127,11 @@ class ProjectController extends Controller
       if($request->logo_project != $current_logo_project)
       {
         $file_logo_project = time().'.' . explode('/', explode(':', substr($request->logo_project, 0, strpos($request->logo_project, ';')))[1])[1];
-        Image::make($request->logo_project)->save(public_path('img/profile-prj/').$file_logo_project);
-        $request->merge(['logo_project' => $file_logo_project]);
+        $img = $img = Image::make($request->logo_project)->save(public_path('img/profile-prj/').$file_logo_project);
+        $img->fit(75, 75, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $project->logo_project = $file_logo_project;
         $last_logo_project = public_path('img/profile-prj/').$current_logo_project;
         if(file_exists($last_logo_project) && $current_logo_project !='default.png' ){
@@ -127,7 +142,11 @@ class ProjectController extends Controller
       if($request->logo_sponsor != $current_logo_sponsor)
       {
         $file_logo_sponsor = time().'.' . explode('/', explode(':', substr($request->logo_sponsor, 0, strpos($request->logo_sponsor, ';')))[1])[1];
-        Image::make($request->logo_sponsor)->save(public_path('img/profile-prj/').$file_logo_sponsor);
+        $img = Image::make($request->logo_sponsor)->save(public_path('img/profile-prj/').$file_logo_sponsor);
+        $img->fit(75, 75, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $project->logo_sponsor = $file_logo_sponsor;
         $last_logo_sponsore = public_path('img/profile-prj/').$current_logo_sponsor;
         if(file_exists($last_logo_sponsore) && $current_logo_sponsor !='default.png' ){
@@ -138,7 +157,11 @@ class ProjectController extends Controller
       if($request->logo_auxiliar != $current_logo_auxiliar)
       {
         $file_logo_auxiliar = time().'.' . explode('/', explode(':', substr($request->logo_auxiliar, 0, strpos($request->logo_auxiliar, ';')))[1])[1];
-        Image::make($request->logo_auxiliar)->save(public_path('img/profile-prj/').$file_logo_auxiliar);
+        $img = Image::make($request->logo_auxiliar)->save(public_path('img/profile-prj/').$file_logo_auxiliar);
+        $img->fit(75, 75, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $project->logo_auxiliar = $file_logo_auxiliar;
         $last_logo_auxiliar = public_path('img/profile-prj/').$current_logo_auxiliar;
         if(file_exists($last_logo_auxiliar) && $current_logo_auxiliar !='default.png' ){
@@ -175,7 +198,7 @@ class ProjectController extends Controller
             $proyects = Project::where(function($query) use ($search){
                 $query->where('name','LIKE',"%$search%")
                         ->orWhere('description','LIKE',"%$search%");
-            })->paginate(20);
+            })->paginate(30);
         }else{
             $proyects = Project::latest()->paginate(5);
         }

@@ -1,0 +1,261 @@
+<template>
+    <div class="container container-project">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="card card-plain">
+            <div class="card-header card-header-primary">
+              <h4 class="card-title mt-0"> Lista de usuarios</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="">
+                    <tr>
+                      <th> Nombre </th>
+                      <th> Foto </th>
+                      <th> tipo </th>
+                      <th> Acciones </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr  v-for="user in Users.data" :key="user.id">
+                        <td v-text="user.name"></td>
+                        <td> <img class="img-profile-pic rounded-circle" :src="getAvatar(user)" alt="User avatar"/> </td>
+                        <td v-text="user.type"></td>
+                        <td>
+                          <button class="btn btn-info" @click="loadFieldsUpdate(user)"><i class="fas fa-edit"></i></button>
+                          <button class="btn btn-danger" @click="deleteUser(user)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+              <pagination :data="Users" @pagination-change-page="getResults"></pagination>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="card">
+            <div class="card-header card-header-primary">
+              <h4 class="card-title">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nombre</label>
+                    <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
+                    <has-error :form="form" field="nombre"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Identificación</label>
+                    <input v-model="form.identificacion" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('identificacion') }">
+                    <has-error :form="form" field="identificacion"></has-error>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Email</label>
+                    <input v-model="form.email" type="email" class="form-control":class="{ 'is-invalid': form.errors.has('email') }">
+                    <has-error :form="form" field="email"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Tipo</label>
+                    <select v-model="form.tipo" class=" form-control">
+                      <option>Administrador</option>
+                      <option>Usuario</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Género</label>
+                    <select v-model="form.genero" class=" form-control { 'is-invalid': form.errors.has('genero') }">
+                      <option>Hombre</option>
+                      <option>Mujer</option>
+                      <option>Otros</option>
+                    </select>
+                    <has-error :form="form" field="genero"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Sexo</label>
+                    <select v-model="form.sexo" class=" form-control { 'is-invalid': form.errors.has('sexo') }">
+                      <option>Masculino</option>
+                      <option>Femenino</option>
+                    </select>
+                    <has-error :form="form" field="sexo"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Étnia</label>
+                    <select v-model="form.etnia" class=" form-control { 'is-invalid': form.errors.has('etnia') }">
+                      <option>Aborigen</option>
+                      <option>Afrocostarricense</option>
+                      <option>Mestizo</option>
+                      <option>Mulato</option>
+                      <option>Otros</option>
+                    </select>
+                    <has-error :form="form" field="etnia"></has-error>
+                  </div>
+                </div>
+              </div>
+              <div class="container-buttons">
+                <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
+                <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
+                <button v-if="update != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data(){
+            return{
+                form: new Form ({
+                  id:"",//User ID
+                  nombre:"",
+                  email:"",
+                  genero:"",
+                  sexo:"",
+                  etnia:"",
+                  avatar:""
+                }),
+                title:"Agregar nuevo usuario", //title to show
+                update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+                loadLogoProject:"",
+                Users:{}, //BD content
+            }
+        },
+        methods:{
+            getResults(page = 1) {
+              axios.get('/usuarios?page=' + page)
+              .then(response => {
+                    this.Users = response.data; //get all projects from page
+              });
+            },
+            getAvatar(user){
+                let logo = (user.avatar.length > 200) ? user.avatar : "img/profile-usr/"+ user.avatar;
+                return logo;
+            },
+            getUsuarios(){
+                let me =this;
+                me.clearFields();
+                axios.get('/usuarios').then(function (response) {
+                    me.Users = response.data; //get all projects
+                    me.title= "Registrar nuevo usuario";
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            saveUser(){
+                let me =this;
+                this.form.post('/usuarios/guardar')
+                .then(function (response) {
+                    me.clearFields();
+                    me.getUsuarios();// show all users
+
+                    toast.fire({
+                      type: 'success',
+                      title: 'Usuario registrado con éxito'
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
+            updateUser(){
+                let me = this;
+                this.form.put('/usuarios/actualizar')
+                .then(function (response) {
+                   toast.fire({
+                    type: 'success',
+                    title: 'Usuario actualizado con éxito'
+                   });
+                   me.getUsuarios();
+                   me.clearFields();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            loadFieldsUpdate(user){
+                this.update = user.id
+                let me =this;
+                me.title="Actualizar información del usuario";
+                let url = '/usuarios/buscar?id='+this.update;
+                axios.get(url).then(function (response) {
+                  me.form.nombre = response.data.name;
+                  me.form.email = response.data.email;
+                  me.form.genero = response.data.gender;
+                  me.form.sexo = response.data.sex;
+                  me.form.etnia = response.data.ethnic;
+                  me.form.tipo = response.data.type;
+                  me.form.identificacion = response.data.identification;
+                  me.form.id = response.data.id;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+            },
+            deleteUser(user){
+              let me =this;
+              let user_id = user.id
+              swal.fire({
+                title: 'Eliminar un usuario',
+                text: "Esta acción no se puede revertir, Está a punto de eliminar un usuario",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#114e7e',
+                cancelButtonColor: '#20c9a6',
+                confirmButtonText: '¡Sí, eliminarlo!'
+              })
+              .then((result) => {
+                if (result.value) {
+                  axios.delete('/usuarios/borrar/'+user_id)
+                  .then(function (response) {
+                    swal.fire(
+                      'Eliminado',
+                      'Usuario fue eliminado',
+                      'success'
+                    )
+                    me.getUsuarios();
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  });
+                }
+              })
+            },
+            clearFields(){
+                let me =this;
+                me.loadLogoProject ='';
+                me.title= "Registrar nuevo usuario";
+                me.update = 0;
+                me.form.reset();
+            }
+        },
+        mounted() {
+           this.getUsuarios();
+        }
+    }
+</script>
