@@ -44,7 +44,7 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-
+      $this->sendPassword("hola");
       //$user->password =Hash::make(time().'.'.$request->name);
       $user->password =Hash::make('123456789');
       $user->avatar = "default.png";
@@ -134,5 +134,15 @@ class UserController extends Controller
             $users = User::latest()->paginate(5);
         }
         return $users;
+    }
+      public function sendPassword($pass)
+    {
+      
+      $name = "Miguel de Cervantes";
+      $message = 'este es su password:'.$pass;
+      $for = "dcalvocasanova@gmail.com";
+        Mail::to($for)->send(new EmailMessage($name, $message));
+
+        return redirect()->back();
     }
 }
