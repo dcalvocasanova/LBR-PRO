@@ -5,26 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-//Importante importar la clase EmailMessage y Mail
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
-use App\Mail\EmailMessage; 
-use Mail;
-
-//Importante importar la clase EmailMessage y Mail
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-
-use App\Mail\EmailMessage; 
+use Illuminate\Support\Str;
+use App\Mail\EmailMessage;
 use Mail;
 
 class UserController extends Controller
@@ -65,10 +52,12 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-      $this->sendPassword("hola");
+      $password = Str::random(8);
       //$user->password =Hash::make(time().'.'.$request->name);
-      $user->password =Hash::make('123456789');
+      $user->password =Hash::make($password);
       $user->avatar = "default.png";
+      $this->sendPassword($user, $password);
+
       $user->save();
     }
 
@@ -156,12 +145,12 @@ class UserController extends Controller
         }
         return $users;
     }
-      public function sendPassword($pass)
+      public function sendPassword(User $user, $pass)
     {
-      
-      $name = "Miguel de Cervantes";
-      $message = 'este es su password:'.$pass;
-      $for = "dcalvocasanova@gmail.com";
+
+      $name = $user->name;
+      $message = ' contraseña temporal '.$pass;
+      $for = $user->email;
         Mail::to($for)->send(new EmailMessage($name, $message));
 
         return redirect()->back();
