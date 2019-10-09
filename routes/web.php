@@ -24,12 +24,6 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 
-//Route::get('/', function () {
-  //  return view('welcome');
- // return view('LandingPage.landing');
-//});
-
-//Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
 
@@ -46,6 +40,30 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
     
     Route::get('/proyectos/buscar', 'ProjectController@show');
+    
+    Route::get('/usuarios', 'UserController@index');
+  
+    Route::put('/usuarios/actualizar', 'UserController@update');
+  
+    Route::post('/usuarios/guardar', 'UserController@store');
+  
+    Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
+  
+    Route::get('/usuarios/buscar', 'UserController@show');
+  
+    Route::get('/finduser', 'UserController@search');
+  
+    Route::get('/gestionar-proyectos', function () {
+    return view('admin.proyectos');
+    });
+
+    Route::get('/gestionar-usuarios', function () {
+        return view('admin.usuarios');
+    });
+
+  
 });
+
+
 
 

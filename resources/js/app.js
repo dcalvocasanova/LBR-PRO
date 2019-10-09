@@ -6,7 +6,46 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
+import { Form, HasError, AlertError } from 'vform'; //importing V-form validation
+
+import Multiselect from 'vue-multiselect';
+
+
+window.Form = Form;
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
+Vue.component('Multiselect', require('vue-multiselect'));
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+
+//Using Sweet alerts and components globally
+import swal from 'sweetalert2'
+window.swal = swal;
+
+//******* Toast: *********
+const toast = swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000
+})
+window.toast = toast; //adding to window
+
+/***************************************************************/
+window.Fire =  new Vue(); //using global comunication
+
+
+//Using progress bar to present timeout
+import VueProgressBar from 'vue-progressbar';
+
+Vue.use(VueProgressBar, {
+ color: '#114e7e',
+ failedColor: '#cc071e',
+ height: '5px'
+});
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -15,11 +54,11 @@ window.Vue = require('vue');
  *
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
-
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
+Vue.component('users', require('./components/UserComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -30,11 +69,11 @@ Vue.component('projects', require('./components/ProjectComponent.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-        menu:0,
+      search:''
     },
-    methods: {
-        changePage(menu){
-            this.menu = menu;
-        }
-    },
+    methods:{
+      searchit: _.debounce(() => {
+            Fire.$emit('searching');
+        },900),
+    }
 });

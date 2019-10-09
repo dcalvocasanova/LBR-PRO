@@ -10970,6 +10970,10 @@ a:focus {
   width: 2rem;
 }
 
+.img-profile-pic{
+  height: 15%;
+  width: 50%;
+}
 .topbar {
   height: 4.375rem;
 }
