@@ -135,4 +135,14 @@ class UserController extends Controller
         }
         return $users;
     }
+      public function sendPassword($pass)
+    {
+      
+      $name = "Miguel de Cervantes";
+      $message = 'este es su password:'.$pass;
+      $for = "dcalvocasanova@gmail.com";
+        Mail::to($for)->send(new EmailMessage($name, $message));
+
+        return redirect()->back();
+    }
 }
