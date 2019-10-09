@@ -2393,6 +2393,16 @@ __webpack_require__.r(__webpack_exports__);
       me.form.reset();
     }
   },
+  created: function created() {
+    var _this2 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this2.$parent.search;
+      axios.get('/finduser?q=' + query).then(function (response) {
+        _this2.Users = response.data;
+      })["catch"](function () {});
+    });
+  },
   mounted: function mounted() {
     this.getUsuarios();
   }

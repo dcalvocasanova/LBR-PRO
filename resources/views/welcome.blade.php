@@ -133,9 +133,7 @@
 
     <!-- Begin Page Content -->
     <div class="container-fluid">
-
-      <!-- Page Heading -->    
-      <projects></projects>
+  
 
     </div>
     <!-- /.container-fluid -->

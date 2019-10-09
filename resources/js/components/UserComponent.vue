@@ -254,6 +254,17 @@
                 me.form.reset();
             }
         },
+        created(){
+          Fire.$on('searching',() => {
+                let query = this.$parent.search;
+                axios.get('/finduser?q=' + query)
+                .then((response) => {
+                    this.Users = response.data
+                })
+                .catch(() => {
+                })
+            })
+        },
         mounted() {
            this.getUsuarios();
         }
