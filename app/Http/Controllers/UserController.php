@@ -16,6 +16,17 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Mail\EmailMessage; 
 use Mail;
 
+//Importante importar la clase EmailMessage y Mail
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+
+use App\Mail\EmailMessage; 
+use Mail;
+
 class UserController extends Controller
 {
     /**
