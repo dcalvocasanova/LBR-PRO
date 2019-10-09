@@ -5,6 +5,16 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+//Importante importar la clase EmailMessage y Mail
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+
+use App\Mail\EmailMessage; 
+use Mail;
 
 class UserController extends Controller
 {
