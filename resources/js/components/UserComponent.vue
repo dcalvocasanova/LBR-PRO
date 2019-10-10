@@ -62,7 +62,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="bmd-label-floating">Email</label>
-                    <input v-model="form.email" type="email" class="form-control":class="{ 'is-invalid': form.errors.has('email') }">
+                    <input type="email" v-model="form.email"  class="form-control":class="{ 'is-invalid': form.errors.has('email') }">
                     <has-error :form="form" field="email"></has-error>
                   </div>
                 </div>
@@ -167,17 +167,19 @@
             },
             saveUser(){
                 let me =this;
+                this.$Progress.start();
                 this.form.post('/usuarios/guardar')
                 .then(function (response) {
                     me.clearFields();
                     me.getUsuarios();// show all users
-
                     toast.fire({
                       type: 'success',
                       title: 'Usuario registrado con éxito'
                     });
+
                 })
                 .catch(function (error) {
+                    this.$Progress.fail();
                     console.log(error);
                 });
 
