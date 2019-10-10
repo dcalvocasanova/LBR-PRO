@@ -36,7 +36,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header"> Subtítulo:</h6> --}}
         <a class="collapse-item" href="/gestionar-proyectos">Gestionar</a>
-        <a class="collapse-item" href="#">Información</a>
+
       </div>
     </div>
   </li>
@@ -51,7 +51,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
         <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
-        <a class="collapse-item" href="#">Permisos</a>
+      
       </div>
     </div>
   </li>

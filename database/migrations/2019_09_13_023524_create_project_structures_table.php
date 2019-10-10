@@ -16,7 +16,8 @@ class CreateProjectStructuresTable extends Migration
         Schema::create('project_structures', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',20);
-            $table->string('level',5);
+            $table->unsignedBigInteger('project_id',20);
+            $table->string('level',50);
             $table->string('description',50);
             $table->timestamps();
         });

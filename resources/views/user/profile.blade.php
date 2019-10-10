@@ -1,17 +1,20 @@
 @extends('layouts.dashboard')
 @section('content')
   {{-- Adding menu --}}
-  @include('layouts.menu')
+  @component('layouts.menu')
+  @endcomponent
   <div id="content-wrapper" class="d-flex flex-column">
     <div id="content">
       {{-- Adding top bar navigator --}}
-      @include('layouts.topbar')
+      @component('layouts.topbar')
+      @endcomponent
       {{-- Adding page content --}}
       <div class="container-fluid">
-        <users></users>
+        <profile></profile>
       </div>
     </div>
     {{-- Adding footer --}}
-    @include('layouts.footer')    
+    @component('layouts.footer')
+    @endcomponent
   </div>
 @endsection

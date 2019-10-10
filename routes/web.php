@@ -23,6 +23,10 @@ Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
 });
 
+Route::get('/perfil-usuario', function () {
+    return view('user.profile');
+});
+
 Auth::routes();
 
 /*Authentication*//*
@@ -40,6 +44,13 @@ Route::post('/proyectos/guardar', 'ProjectController@store');
 Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
+
+/*Manage Project Levels Structure*/
+Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
+Route::put('/estructura/actualizar', 'ProjectStructureController@update');
+Route::post('/estructura/guardar', 'ProjectStructureController@store');
+Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
+Route::get('/estructura/buscar', 'ProjectStructureController@show');
 
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');

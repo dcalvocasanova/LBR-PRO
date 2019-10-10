@@ -1940,6 +1940,82 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1961,13 +2037,27 @@ __webpack_require__.r(__webpack_exports__);
         description: "" // description
 
       }),
+      level: new Form({
+        id: "",
+        //level projectID
+        nombre: "",
+        nivel: "",
+        descripcion: "",
+        proyecto: ""
+      }),
+      project_id: 0,
       title: "Agregar nuevo proyecto",
       //title to show
+      title_level: "Agregar nuevo nivel",
       update: 0,
+      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      updateLevelId: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       loadLogoProject: "",
       Projects: {},
-      //BD content
+      //All registered projects
+      Levels: {},
+      // All level from organization
       value: [{
         name: 'Gratuito',
         code: 'LI'
@@ -1987,9 +2077,6 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Usa funciones',
         code: 'FU'
-      }, {
-        name: 'Nueva Propiedad',
-        code: 'NU'
       }]
     };
   },
@@ -2001,14 +2088,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/proyectos?page=' + page).then(function (response) {
         _this.Projects = response.data; //get all projects from page
       });
-    },
-    addTag: function addTag(newTag) {
-      var tag = {
-        name: newTag,
-        code: newTag.substring(0, 2) + Math.floor(Math.random() * 10000000)
-      };
-      this.options.push(tag);
-      this.value.push(tag);
     },
     getLogo: function getLogo(project) {
       var logo = project.logo_project.length > 200 ? project.logo_project : "img/profile-prj/" + project.logo_project;
@@ -2077,8 +2156,8 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    loadFieldsUpdate: function loadFieldsUpdate(data) {
-      this.update = data.id;
+    loadFieldsUpdate: function loadFieldsUpdate(project) {
+      this.update = project.id;
       var me = this;
       me.title = "Actualizar proyecto";
       var url = '/proyectos/buscar?id=' + this.update;
@@ -2089,9 +2168,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    deleteProject: function deleteProject(data) {
+    deleteProject: function deleteProject(project) {
       var me = this;
-      var project_id = data.id;
+      var project_id = project.id;
       swal.fire({
         title: 'Eliminar un proyecto',
         text: "Esta acción no se puede revertir, Está a punto de eliminar un proyecto",
@@ -2111,21 +2190,118 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    getResultLevel: function getResultLevel() {
+      var _this3 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('/estructura?page=' + page).then(function (response) {
+        _this3.Levels = response.data; //get all projects from page
+      });
+    },
+    loadLevelUpdate: function loadLevelUpdate(level) {
+      this.updateLevelId = level.id;
+      var me = this;
+      me.title = "Actualizar nivel";
+      var url = '/estructura/buscar?id=' + this.updateLevelId;
+      axios.get(url).then(function (response) {
+        me.level.nombre = response.data.name;
+        me.level.id = response.data.id;
+        me.level.descripcion = response.data.description;
+        me.level.nivel = response.data.level;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    deleteLevel: function deleteLevel(level) {
+      var me = this;
+      var level_id = level.id;
+      swal.fire({
+        title: 'Eliminar un nivel',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un nivel",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/estructura/borrar/' + level_id).then(function (response) {
+            swal.fire('Eliminado', 'Nivel fue eliminado', 'success');
+            me.getLevels();
+            me.clearFieldsLevel();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    getLevels: function getLevels() {
+      var me = this;
+      me.clearFieldsLevel();
+      var url = '/estructura?id=' + me.project_id;
+      axios.get(url).then(function (response) {
+        me.Levels = response.data; //get all projects
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    saveLevel: function saveLevel() {
+      var me = this;
+      me.level.proyecto = me.project_id;
+      this.level.post('/estructura/guardar').then(function (response) {
+        me.level.reset();
+        me.getLevels(); // show all levels
+
+        me.clearFieldsLevel();
+        toast.fire({
+          type: 'success',
+          title: 'Nivel agregado con éxito'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    updateLevel: function updateLevel() {
+      var me = this;
+      this.level.put('/estructura/actualizar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Proyecto actualizado con éxito'
+        });
+        me.getLevels();
+        me.clearFieldsLevel();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     clearFields: function clearFields() {
       var me = this;
       me.loadLogoProject = '';
       me.title = "Agregar nuevo proyecto";
       me.update = 0;
       me.form.reset();
+      me.value = [];
+    },
+    clearFieldsLevel: function clearFieldsLevel() {
+      var me = this;
+      me.title_level = "Agregar nuevo nivel";
+      me.updateLevelId = 0;
+      me.level.reset();
+    },
+    loadLevelData: function loadLevelData(project) {
+      this.clearFieldsLevel();
+      this.project_id = project.id;
+      this.getLevels();
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     Fire.$on('searching', function () {
-      var query = _this3.$parent.search;
+      var query = _this4.$parent.search;
       axios.get('/findproject?q=' + query).then(function (response) {
-        _this3.Projects = response.data;
+        _this4.Projects = response.data;
       })["catch"](function () {});
     });
   },
@@ -2328,7 +2504,6 @@ __webpack_require__.r(__webpack_exports__);
           type: 'success',
           title: 'Usuario registrado con éxito'
         });
-        this.$Progress.finish();
       })["catch"](function (error) {
         this.$Progress.fail();
         console.log(error);
@@ -43001,6 +43176,276 @@ AlertSuccess_component.options.__file = "AlertSuccess.vue"
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "container bootstrap snippet" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-10" }, [_c("h1", [_vm._v("Perfil")])])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-3" }, [
+          _c("div", { staticClass: "text-center" }, [
+            _c("img", {
+              staticClass: "avatar img-circle img-thumbnail",
+              attrs: {
+                src: "http://ssl.gstatic.com/accounts/ui/avatar_2x.png",
+                alt: "avatar"
+              }
+            }),
+            _vm._v(" "),
+            _c("br"),
+            _c("br"),
+            _c("br"),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "col-sm-8 control-label file-uploader",
+                  attrs: { for: "logo_project" }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-cloud-upload-alt" }, [
+                    _vm._v(" Cambiar foto")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-sm-12" }, [
+                _c("input", {
+                  staticClass: "form-input",
+                  staticStyle: { display: "none" },
+                  attrs: {
+                    type: "file",
+                    name: "logo_project",
+                    id: "logo_project"
+                  }
+                })
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("br")
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-sm-9" }, [
+          _c("div", { staticClass: "tab-content" }, [
+            _c(
+              "div",
+              { staticClass: "tab-pane active", attrs: { id: "home" } },
+              [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "first_name" } }, [
+                      _c("h4", [_vm._v("First name")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "first_name",
+                        id: "first_name",
+                        placeholder: "first name",
+                        title: "enter your first name if any."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "last_name" } }, [
+                      _c("h4", [_vm._v("Last name")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "last_name",
+                        id: "last_name",
+                        placeholder: "last name",
+                        title: "enter your last name if any."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "phone" } }, [
+                      _c("h4", [_vm._v("Phone")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "phone",
+                        id: "phone",
+                        placeholder: "enter phone",
+                        title: "enter your phone number if any."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "mobile" } }, [
+                      _c("h4", [_vm._v("Mobile")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "mobile",
+                        id: "mobile",
+                        placeholder: "enter mobile number",
+                        title: "enter your mobile number if any."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "email" } }, [
+                      _c("h4", [_vm._v("Email")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "email",
+                        name: "email",
+                        id: "email",
+                        placeholder: "you@email.com",
+                        title: "enter your email."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "email" } }, [
+                      _c("h4", [_vm._v("Location")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "email",
+                        id: "location",
+                        placeholder: "somewhere",
+                        title: "enter a location"
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "password" } }, [
+                      _c("h4", [_vm._v("Password")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "password",
+                        name: "password",
+                        id: "password",
+                        placeholder: "password",
+                        title: "enter your password."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c("label", { attrs: { for: "password2" } }, [
+                      _c("h4", [_vm._v("Verify")])
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "password",
+                        name: "password2",
+                        id: "password2",
+                        placeholder: "password2",
+                        title: "enter your password2."
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("div", { staticClass: "col-xs-12" }, [
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-lg btn-success",
+                        attrs: { type: "submit" }
+                      },
+                      [
+                        _c("i", { staticClass: "glyphicon glyphicon-ok-sign" }),
+                        _vm._v(" Save")
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      { staticClass: "btn btn-lg", attrs: { type: "reset" } },
+                      [
+                        _c("i", { staticClass: "glyphicon glyphicon-repeat" }),
+                        _vm._v(" Reset")
+                      ]
+                    )
+                  ])
+                ])
+              ]
+            )
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ProjectComponent.vue?vue&type=template&id=7b945e4f&":
 /*!*******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ProjectComponent.vue?vue&type=template&id=7b945e4f& ***!
@@ -43019,126 +43464,101 @@ var render = function() {
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-8" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "table-responsive" }, [
-            _c(
-              "div",
-              {
-                staticClass: "dataTables_wrapper dt-bootstrap4",
-                attrs: { id: "dataTable_wrapper" }
-              },
-              [
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-sm-12" }, [
-                    _c(
-                      "table",
-                      {
-                        staticClass: "table table-bordered dataTable",
-                        staticStyle: { width: "100%" },
-                        attrs: {
-                          id: "dataTable",
-                          width: "100%",
-                          cellspacing: "0",
-                          role: "grid",
-                          "aria-describedby": "dataTable_info"
-                        }
-                      },
-                      [
-                        _vm._m(1),
-                        _vm._v(" "),
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.Projects.data, function(project) {
-                            return _c(
-                              "tr",
-                              {
-                                key: project.id,
-                                staticClass: "odd",
-                                attrs: { role: "row" }
-                              },
-                              [
-                                _c("td", {
-                                  domProps: {
-                                    textContent: _vm._s(project.name)
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _c("img", {
-                                    staticClass:
-                                      "img-profile-pic rounded-circle",
-                                    attrs: {
-                                      src: _vm.getLogo(project),
-                                      alt: "Project logo"
-                                    }
-                                  })
-                                ]),
-                                _vm._v(" "),
-                                _c("td", {
-                                  domProps: {
-                                    textContent: _vm._s(project.description)
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn btn-info",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.loadFieldsUpdate(project)
-                                        }
-                                      }
-                                    },
-                                    [_c("i", { staticClass: "fas fa-edit" })]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn btn-danger",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.deleteProject(project)
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("i", {
-                                        staticClass: "fas fa-trash-alt"
-                                      })
-                                    ]
-                                  )
-                                ])
-                              ]
-                            )
-                          }),
-                          0
-                        )
-                      ]
-                    )
-                  ])
-                ]),
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  { staticClass: "card-footer" },
-                  [
-                    _c("pagination", {
-                      attrs: { data: _vm.Projects },
-                      on: { "pagination-change-page": _vm.getResults }
-                    })
-                  ],
-                  1
+                  "tbody",
+                  _vm._l(_vm.Projects.data, function(project) {
+                    return _c("tr", { key: project.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(project.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("img", {
+                          staticClass: "img-profile-pic rounded-circle",
+                          attrs: {
+                            src: _vm.getLogo(project),
+                            alt: "Project logo"
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#addLevels"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.loadLevelData(project)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fas fa-swatchbook" }, [
+                              _vm._v(" Niveles de estructura")
+                            ])
+                          ]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.loadFieldsUpdate(project)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-edit" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteProject(project)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash-alt" })]
+                        )
+                      ])
+                    ])
+                  }),
+                  0
                 )
-              ]
-            )
-          ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.Projects },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ]),
       _vm._v(" "),
@@ -43247,20 +43667,19 @@ var render = function() {
               { staticClass: "form-group" },
               [
                 _c("label", { staticClass: "typo__label" }, [
-                  _vm._v("Detalles")
+                  _vm._v("Detalles adicionales")
                 ]),
                 _vm._v(" "),
                 _c("multiselect", {
                   attrs: {
-                    "tag-placeholder": "Agregar Opción",
                     placeholder: "Buscar opciones",
                     label: "name",
                     "track-by": "code",
                     options: _vm.options,
                     multiple: true,
-                    taggable: true
+                    taggable: false,
+                    "show-labels": false
                   },
-                  on: { tag: _vm.addTag },
                   model: {
                     value: _vm.value,
                     callback: function($$v) {
@@ -43322,7 +43741,335 @@ var render = function() {
           ])
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "addLevels",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-xl modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "card card-plain" }, [
+                      _vm._m(3),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "table-responsive" }, [
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.Levels.data, function(level) {
+                                return _c("tr", { key: level.id }, [
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(level.name)
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(level.description)
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-info",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.loadLevelUpdate(level)
+                                          }
+                                        }
+                                      },
+                                      [_c("i", { staticClass: "fas fa-edit" })]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.deleteLevel(level)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fas fa-trash-alt"
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "card-footer" },
+                        [
+                          _c("pagination", {
+                            attrs: { data: _vm.Levels },
+                            on: { "pagination-change-page": _vm.getResultLevel }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _c("h4", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(_vm.title_level))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Nombre")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.level.nombre,
+                                      expression: "level.nombre"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("nombre")
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.level.nombre },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.level,
+                                        "nombre",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.level, field: "nombre" }
+                                })
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Nivel")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.level.nivel,
+                                      expression: "level.nivel"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("nivel")
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.level.nivel },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.level,
+                                        "nivel",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.level, field: "nivel" }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Descripción")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.level.descripcion,
+                                      expression: "level.descripcion"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "descripcion"
+                                    )
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.level.descripcion },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.level,
+                                        "descripcion",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: {
+                                    form: _vm.level,
+                                    field: "descripcion"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "container-buttons" }, [
+                            _vm.updateLevelId == 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.saveLevel()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Añadir")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.updateLevelId != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.updateLevel()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Actualizar")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.updateLevelId != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-secondary",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.clearFieldsLevel()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Atrás")]
+                                )
+                              : _vm._e()
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -43330,9 +44077,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header py-3" }, [
-      _c("h6", { staticClass: "m-0 font-weight-bold text-primary" }, [
-        _vm._v("Lista de proyectos")
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title mt-0" }, [
+        _vm._v(" Lista de proyectos")
       ])
     ])
   },
@@ -43340,88 +44087,64 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", { attrs: { role: "row" } }, [
-        _c(
-          "th",
-          {
-            staticClass: "sorting_asc",
-            staticStyle: { width: "57px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "dataTable",
-              rowspan: "1",
-              colspan: "1",
-              "aria-sort": "ascending"
-            }
-          },
-          [_vm._v("Nombre")]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "62px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "dataTable",
-              rowspan: "1",
-              colspan: "1"
-            }
-          },
-          [_vm._v("Logo")]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "50px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "dataTable",
-              rowspan: "1",
-              colspan: "1"
-            }
-          },
-          [_vm._v("Detalles")]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "31px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "dataTable",
-              rowspan: "1",
-              colspan: "1"
-            }
-          },
-          [_vm._v("Acciones")]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tfoot", [
+    return _c("thead", {}, [
       _c("tr", [
-        _c("th", { attrs: { rowspan: "1", colspan: "1" } }, [_vm._v("Nombre")]),
+        _c("th", [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", { attrs: { rowspan: "1", colspan: "1" } }, [_vm._v("Logo")]),
+        _c("th", { staticStyle: { width: "72px" } }, [_vm._v(" Logo ")]),
         _vm._v(" "),
-        _c("th", { attrs: { rowspan: "1", colspan: "1" } }, [
-          _vm._v("Detalles")
-        ]),
+        _c("th", [_vm._v(" Niveles ")]),
         _vm._v(" "),
-        _c("th", { attrs: { rowspan: "1", colspan: "1" } }, [
-          _vm._v("Acciones")
-        ])
+        _c("th", [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Niveles de estructura")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title mt-0" }, [
+        _vm._v(" Lista de niveles")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Detalle ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Acciones ")])
       ])
     ])
   }
@@ -43965,7 +44688,7 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Foto ")]),
+        _c("th", { staticStyle: { width: "92px" } }, [_vm._v(" Foto ")]),
         _vm._v(" "),
         _c("th", [_vm._v(" tipo ")]),
         _vm._v(" "),
@@ -56207,6 +56930,7 @@ Vue.use(vue_progressbar__WEBPACK_IMPORTED_MODULE_3___default.a, {
 
 Vue.component('projects', __webpack_require__(/*! ./components/ProjectComponent.vue */ "./resources/js/components/ProjectComponent.vue")["default"]);
 Vue.component('users', __webpack_require__(/*! ./components/UserComponent.vue */ "./resources/js/components/UserComponent.vue")["default"]);
+Vue.component('profile', __webpack_require__(/*! ./components/ProfileComponent.vue */ "./resources/js/components/ProfileComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -56282,6 +57006,59 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/ProfileComponent.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/ProfileComponent.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ProfileComponent.vue?vue&type=template&id=a8276c82& */ "./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ProfileComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82& ***!
+  \*************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ProfileComponent.vue?vue&type=template&id=a8276c82& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ProfileComponent.vue?vue&type=template&id=a8276c82&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfileComponent_vue_vue_type_template_id_a8276c82___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

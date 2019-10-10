@@ -59,6 +59,7 @@ Vue.use(VueProgressBar, {
 
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
 Vue.component('users', require('./components/UserComponent.vue').default);
+Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
