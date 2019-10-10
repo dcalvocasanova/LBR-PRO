@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Str;
-use App\Mail\EmailMessage; 
+use App\Mail\EmailMessage;
 use Mail;
 
 class UserController extends Controller
@@ -60,7 +60,7 @@ class UserController extends Controller
       if($user->save()){
         $this->sendPassword($randomPass, $email,$nombre);
       }
-        
+
     }
     /**
      * Display the specified resource.
@@ -146,13 +146,11 @@ class UserController extends Controller
         }
         return $users;
     }
-      public function sendPassword(User $user, $pass)
+    public function sendPassword($randomPass, $email, $nombre)
     {
-
-      $name = $user->name;
-      $message = ' contraseña temporal '.$pass;
-      $for = $user->email;
-        Mail::to($for)->send(new EmailMessage($name, $message));
+      $message = ' contraseña temporal '.$randomPass;
+      $for = $email;
+        Mail::to($for)->send(new EmailMessage($nombre, $message));
 
         return redirect()->back();
     }

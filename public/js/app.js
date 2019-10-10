@@ -2495,7 +2495,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveUser: function saveUser() {
       var me = this;
-      this.$Progress.start();
       this.form.post('/usuarios/guardar').then(function (response) {
         me.clearFields();
         me.getUsuarios(); // show all users
@@ -2505,7 +2504,6 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Usuario registrado con éxito'
         });
       })["catch"](function (error) {
-        this.$Progress.fail();
         console.log(error);
       });
     },

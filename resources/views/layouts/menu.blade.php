@@ -1,7 +1,7 @@
 {{-- Sidebar--}}
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   {{-- Sidebar - Brand--}}
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fab fa-product-hunt"></i>
     </div>
@@ -13,7 +13,7 @@
 
   {{-- Nav Item - Dashboard--}}
   <li class="nav-item">
-    <a class="nav-link" href="/">
+    <a class="nav-link" href="/home">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
   </li>
@@ -51,7 +51,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
         <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
-      
+
       </div>
     </div>
   </li>

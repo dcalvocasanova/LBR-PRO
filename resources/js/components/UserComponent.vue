@@ -167,7 +167,6 @@
             },
             saveUser(){
                 let me =this;
-                this.$Progress.start();
                 this.form.post('/usuarios/guardar')
                 .then(function (response) {
                     me.clearFields();
@@ -176,10 +175,8 @@
                       type: 'success',
                       title: 'Usuario registrado con éxito'
                     });
-
                 })
                 .catch(function (error) {
-                    this.$Progress.fail();
                     console.log(error);
                 });
 
