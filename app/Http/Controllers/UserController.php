@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
+use Illuminate\Support\Str;
 use App\Mail\EmailMessage; 
 use Mail;
 
@@ -49,19 +49,23 @@ class UserController extends Controller
 
       $user = new User();
       $user->name = $request->nombre;
+      $nombre = $request->nombre;
       $user->identification = $request->identificacion;
+      $email = $request->email;
       $user->email = $request->email;
       $user->type = isset($request->tipo)? $request->tipo:"usuario";
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-      $this->sendPassword("hola");
-      //$user->password =Hash::make(time().'.'.$request->name);
-      $user->password =Hash::make('123456789');
+      $randomPass = Str::random(8);
+      $user->password =Hash::make($randomPass);
       $user->avatar = "default.png";
-      $user->save();
+      if($user->save()){
+        $this->sendPassword($randomPass, $email,$nombre);
+      }
+        
+      
     }
-
     /**
      * Display the specified resource.
      *
