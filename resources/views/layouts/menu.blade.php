@@ -23,19 +23,23 @@
 
   {{-- Heading--}}
   <div class="sidebar-heading">
-    GESTIÓN
+    Panel de gestión
   </div>
 
   {{-- Nav Item - Projects Collapse Menu--}}
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralData" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-folder-open"></i>
-      <span> Proyectos</span>
+      <span> Datos Generales</span>
     </a>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    <div id="collapseGeneralData" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <h6 class="collapse-header"> Subtítulo:</h6> --}}
-        <a class="collapse-item" href="/gestionar-proyectos">Gestionar</a>
+        <h6 class="collapse-header"> Proyecto o Actividad:</h6>
+        <a class="collapse-item" href="/gestionar-proyectos">Gestionar </a>
+        <h6 class="collapse-header"> Usarios</h6>
+        <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
+        <h6 class="collapse-header"> Configuración</h6>
+        <a class="collapse-item" href="/gestionar-catalogos">Gestionar Catálogos</a></a>
 
       </div>
     </div>
@@ -43,14 +47,43 @@
 
   {{-- Nav Item - Users Collapse Menu--}}
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseParameters" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
-      <span> Usuarios</span>
+      <span> Parametrización</span>
     </a>
-    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+    <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
-        <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
+        <a class="collapse-item" href="/gestionar-parametros">Gestionar</a>
+
+      </div>
+    </div>
+  </li>
+  {{-- Nav Item - Users Collapse Menu--}}
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfiguration" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span> Macroprocesos</span>
+    </a>
+    <div id="collapseConfiguration" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
+        <a class="collapse-item" href="/gestionar-catalogos">Catálogos</a>
+
+      </div>
+    </div>
+  </li>
+
+  {{-- Nav Item - Users Collapse Menu--}}
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span  style="color:red;"> Ejemplos de ¡AYUDA! </span>
+    </a>
+    <div id="collapseHelp" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
+        <a class="collapse-item" href="/ayuda">Ver</a>
 
       </div>
     </div>

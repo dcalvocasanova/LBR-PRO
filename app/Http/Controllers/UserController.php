@@ -41,6 +41,10 @@ class UserController extends Controller
           'identificacion' => 'required|string|unique:users,identification',
           'genero' => 'required|string',
           'sexo' => 'required|string',
+          'fecha_nacimiento' => 'required|date',
+          'salario'=> 'required|decimal',
+          'fecha_ingreso'=> 'required|string',
+          'puesto'=> 'required|string',
           'etnia' => 'required|string'
       ]);
 
@@ -54,6 +58,10 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
+      $user->position= $request->puesto;
+      $user->salary= $request->salario;
+      $user->birthday= $request->fecha_nacimiento;
+      $user->workingsince= $request->fecha_ingreso;
       $randomPass = Str::random(8);
       $user->password =Hash::make($randomPass);
       $user->avatar = "default.png";
@@ -94,6 +102,10 @@ class UserController extends Controller
       $user->identification = $request->identificacion;
       $user->email = $request->email;
       $user->type = $request->tipo;
+      $user->position= $request->puesto;
+      $user->salary= $request->salario;
+      $user->birthday= $request->fecha_nacimiento;
+      $user->workingsince= $request->fecha_ingreso;
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
@@ -139,6 +151,7 @@ class UserController extends Controller
                         ->orWhere('email','LIKE',"%$search%")
                         ->orWhere('gender','LIKE',"%$search%")
                         ->orWhere('sex','LIKE',"%$search%")
+                        ->orWhere('position','LIKE',"%$search%")
                         ->orWhere('ethnic','LIKE',"%$search%");
             })->paginate(30);
         }else{
@@ -146,6 +159,21 @@ class UserController extends Controller
         }
         return $users;
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadAvatar(Request $request)
+    {
+      $imageName = time().'.'.$request->file->getClientOriginalExtension();
+      $request->file->move(public_path('images'), $imageName);
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+
     public function sendPassword($randomPass, $email, $nombre)
     {
       $message = ' contraseña temporal '.$randomPass;

@@ -1,7 +1,7 @@
 <template>
     <div class="container container-project">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
           <div class="card card-plain">
             <div class="card-header card-header-primary">
               <h4 class="card-title mt-0"> Lista de proyectos</h4>
@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
           <div class="card shadow mb-4">
             <div class="card-header py-3">
           	  <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
@@ -54,7 +54,21 @@
                   <input v-model="form.description" type="text" class="form-control">
               </div>
               <div class="form-group">
-                <label for="logo_project" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo del proyecto <span v-html="loadLogoProject"></span></i> </label>
+                <label for="logo_organization" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo de la organización <span v-html="loadLogoProject"></span></i> </label>
+                <div class="col-sm-12">
+                    <input type="file" @change="loadLogoOrganization" name="logo_organization" id="logo_organization" class="form-input" style='display: none;'>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="logo_institution" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo de la institución <span v-html="loadLogoSponsor"></span></i> </label>
+                <div class="col-sm-12">
+                    <input type="file" @change="loadLogoInstitution" name="logo_institution" id="logo_institution" class="form-input" style='display: none;'>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="logo_project" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo del proyecto <span v-html="loadLogoAuxiliar"></span></i> </label>
                 <div class="col-sm-12">
                     <input type="file" @change="updateLogo" name="logo_project" id="logo_project" class="form-input" style='display: none;'>
                 </div>
@@ -174,8 +188,9 @@
     </div>
 </template>
 
+
 <script>
-  import Multiselect from 'vue-multiselect'
+
     export default {
         components: {
           Multiselect
@@ -203,15 +218,17 @@
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 updateLevelId:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 loadLogoProject:"",
+                loadLogoSponsor:"",
+                loadLogoAuxiliar:"",
                 Projects:{}, //All registered projects
                 Levels:{}, // All level from organization
                 value: [
-                  { name: 'Gratuito', code: 'LI' }
+                  { name: 'Gratuito', code: 'GR' }
                 ],
                 options: [
-                  { name: 'Premium', code: 'PU' },
+                  { name: 'Premium', code: 'PR' },
                   { name: 'Estudiante', code: 'ES' },
-                  { name: 'Gratito', code: 'LI' },
+                  { name: 'Gratito', code: 'GR' },
                   { name: 'Usa macroprocesos', code: 'MA' },
                   { name: 'Usa funciones', code: 'FU' }
                 ]
@@ -228,13 +245,35 @@
                 let logo = (project.logo_project.length > 200) ? project.logo_project : "img/profile-prj/"+ project.logo_project ;
                 return logo;
             },
+            loadLogoOrganization(f){
+                let file = f.target.files[0];
+                let reader = new FileReader();
+                if (this.validateFile(file)){
+                  this.loadLogoProject ='<i class="far fa-check-circle"></i> ';
+                  reader.onloadend = (file) => {
+                      this.form.logo_project = reader.result;
+                  }
+                  reader.readAsDataURL(file);
+                }
+            },
+            loadLogoInstitution(f){
+                let file = f.target.files[0];
+                let reader = new FileReader();
+                if (this.validateFile(file)){
+                  this.loadLogoSponsor ='<i class="far fa-check-circle"></i> ';
+                  reader.onloadend = (file) => {
+                      this.form.logo_sponsor = reader.result;
+                  }
+                  reader.readAsDataURL(file);
+                }
+            },
             updateLogo(e){
                 let file = e.target.files[0];
                 let reader = new FileReader();
                 if (this.validateFile(file)){
-                  this.loadLogoProject ='<i class="far fa-check-circle"> <h6> agregado</h6> </i> ';
+                  this.loadLogoAuxiliar ='<i class="far fa-check-circle"></i> ';
                   reader.onloadend = (file) => {
-                      this.form.logo_project = reader.result;
+                      this.form.logo_auxiliar = reader.result;
                   }
                   reader.readAsDataURL(file);
                 }

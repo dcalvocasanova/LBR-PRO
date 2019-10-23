@@ -9,16 +9,14 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import { Form, HasError, AlertError } from 'vform'; //importing V-form validation
-
-import Multiselect from 'vue-multiselect';
-
-
 window.Form = Form;
-Vue.component(HasError.name, HasError)
-Vue.component(AlertError.name, AlertError)
-Vue.component('Multiselect', require('vue-multiselect'));
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
 Vue.component('pagination', require('laravel-vue-pagination'));
 
+import Multiselect from 'vue-multiselect';
+Vue.component('Multiselect', require('vue-multiselect'));
+window.Multiselect = Multiselect;
 
 //Using Sweet alerts and components globally
 import swal from 'sweetalert2'
@@ -60,6 +58,9 @@ Vue.use(VueProgressBar, {
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
 Vue.component('users', require('./components/UserComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
+Vue.component('catalogs', require('./components/CatalogsComponent.vue').default);
+Vue.component('parameters', require('./components/ParametersComponent.vue').default);
+Vue.component('help', require('./components/HelpComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

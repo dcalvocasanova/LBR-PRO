@@ -23,6 +23,18 @@ Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
 });
 
+Route::get('/gestionar-catalogos', function () {
+    return view('admin.catalogos');
+});
+
+Route::get('/gestionar-parametros', function () {
+    return view('admin.parametros');
+});
+
+Route::get('/ayuda', function () {
+    return view('admin.ayuda');
+});
+
 Route::get('/perfil-usuario', function () {
     return view('user.profile');
 });
@@ -45,6 +57,14 @@ Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
 
+/*Manage Catalogs*/
+
+Route::get('/catalogo', 'CatalogController@getListCatalog');
+Route::post('/catalogo/guardar', 'CatalogController@storeItem');
+Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
+Route::delete('/catalogo/borrar/{id}', 'CatalogController@deleteItem');
+
+
 /*Manage Project Levels Structure*/
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
 Route::put('/estructura/actualizar', 'ProjectStructureController@update');
@@ -59,3 +79,4 @@ Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
 Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
+Route::post('/avatar', 'UserController@uploadAvatar');

@@ -4,16 +4,14 @@
         <div class="col-md-5">
           <div class="card card-plain">
             <div class="card-header card-header-primary">
-              <h4 class="card-title mt-0"> Lista de usuarios</h4>
+              <h4 class="card-title mt-0"> Lista de parámetros</h4>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead class="">
                     <tr>
-                      <th> Nombre </th>
-                      <th style="width: 92px;"> Foto </th>
-                      <th> tipo </th>
+                      <th style="width: 92px;"> Nombre  </th>
                       <th> Acciones </th>
                     </tr>
                   </thead>
@@ -77,38 +75,6 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Salario</label>
-                    <input type="number" v-model="form.salario"  class="form-control":class="{ 'is-invalid': form.errors.has('salario') }">
-                    <has-error :form="form" field="salario"></has-error>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Puesto de trabajo</label>
-                    <input type="text" v-model="form.puesto"  class="form-control":class="{ 'is-invalid': form.errors.has('puesto') }">
-                    <has-error :form="form" field="puesto"></has-error>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Fecha nacimiento</label>
-                    <input type="date" v-model="form.fecha_nacimiento"  class="form-control":class="{ 'is-invalid': form.errors.has('fecha_nacimiento') }">
-                    <has-error :form="form" field="fecha_nacimiento"></has-error>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Fecha ingreso al puesto</label>
-                    <input type="date" v-model="form.fecha_ingreso"  class="form-control":class="{ 'is-invalid': form.errors.has('fecha_ingreso') }">
-                    <has-error :form="form" field="fecha_ingreso"></has-error>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Género</label>
@@ -167,10 +133,6 @@
                   genero:"",
                   sexo:"",
                   etnia:"",
-                  fecha_nacimiento:"",
-                  fecha_ingreso:"",
-                  puesto:"",
-                  salario:"",
                   avatar:""
                 }),
                 title:"Agregar nuevo usuario", //title to show
@@ -246,10 +208,6 @@
                   me.form.tipo = response.data.type;
                   me.form.identificacion = response.data.identification;
                   me.form.id = response.data.id;
-                  me.form.fecha_nacimiento=response.data.birthday;
-                  me.form.fecha_ingreso=response.data.workingsince;
-                  me.form.puesto=response.data.position;
-                  me.form.salario=response.data.salary;
                 })
                 .catch(function (error) {
                     // handle error
