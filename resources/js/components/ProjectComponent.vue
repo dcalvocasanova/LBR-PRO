@@ -471,6 +471,8 @@
             clearFields(){
                 let me =this;
                 me.loadLogoProject ='';
+                me.loadLogoSponsor='';
+                me.loadLogoAuxiliar='';
                 me.title= "Agregar nuevo proyecto";
                 me.update = 0;
                 me.form.reset();

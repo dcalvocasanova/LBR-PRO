@@ -3028,6 +3028,8 @@ __webpack_require__.r(__webpack_exports__);
     clearFields: function clearFields() {
       var me = this;
       me.loadLogoProject = '';
+      me.loadLogoSponsor = '';
+      me.loadLogoAuxiliar = '';
       me.title = "Agregar nuevo proyecto";
       me.update = 0;
       me.form.reset();

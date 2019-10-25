@@ -42,7 +42,7 @@ class UserController extends Controller
           'genero' => 'required|string',
           'sexo' => 'required|string',
           'fecha_nacimiento' => 'required|date',
-          'salario'=> 'required|decimal',
+          'salario'=> 'required|numeric',
           'fecha_ingreso'=> 'required|string',
           'puesto'=> 'required|string',
           'etnia' => 'required|string'

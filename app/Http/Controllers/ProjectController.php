@@ -72,7 +72,7 @@ class ProjectController extends Controller
               $constraint->aspectRatio();
               $constraint->upsize();
           });
-          $request->logo_project = $file_logo_project;
+          $request->logo_auxiliar = $file_logo_auxiliar;
       }
       $project->logo_auxiliar = isset($request->logo_auxiliar)? $request->logo_auxiliar:"default.png";
 
