@@ -1,17 +1,28 @@
 <template>
   <div class="container container-project">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-5">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Lista de parámetros</h4>
+            <div class="row">
+              <div class="col-md-8">
+                  <h3 class="card-title mt-0"> Lista de categorías parámetros</h3>
+              </div>
+              <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva categoría">
+                <button class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#addSubParameter">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th style="width: 92px;"> Nombre </th>
+                    <th style="width: 160px;"> Nombre </th>
                     <th> Acciones </th>
                   </tr>
                 </thead>
@@ -19,14 +30,14 @@
                     <tr  v-for="subparameter in SubParameters.data" :key="subparameter.id">
                       <td v-text="subparameter.name"></td>
                       <td>
-                        <button class="btn btn-info"
+                        <button class="btn btn-info btn-sm"
                           @click="loadFieldsUpdate(subparameter)"
                           data-toggle="modal"
                           data-target="#addSubParameter">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" @click="deleteSubParameter(subparameter)"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-secondary" @click="showSubVariables(subparameter)"><i class="far fa-eye"></i></button>
+                        <button class="btn btn-danger btn-sm" @click="deleteSubParameter(subparameter)"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-secondary btn-sm" @click="showSubVariables(subparameter)"><i class="far fa-eye"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -34,18 +45,13 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#addSubParameter">
-              <i class="fa fa-plus-circle"></i>
-            </button>
             <pagination :data="SubParameters" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-          <variables v-if="this.showVariable != '0'" v-bind:key="componentVariableKey"/>
+      <div class="col-md-7">
+            <variables v-if="this.showVariable != '0'" v-bind:key="componentVariableKey"/>
+      </div>
     </div>
 
     <div class="modal fade" id="addSubParameter" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
@@ -125,7 +131,6 @@
               })
               .then(function (response) {
                 me.componentVariableKey += 1;
-                console.log(response);
               })
               .catch(function (error) {
                 console.log(error);

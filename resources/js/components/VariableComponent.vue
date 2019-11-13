@@ -4,7 +4,16 @@
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Lista de variables</h4>
+            <div class="col-md-8">
+                <h3 class="card-title mt-0"> Lista de variables</h3>
+            </div>
+            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
+              <button class="btn btn-primary"
+              data-toggle="modal"
+              data-target="#addVariable">
+                <i class="fa fa-plus-circle"></i>
+              </button>
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -33,11 +42,6 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#addVariable">
-              <i class="fa fa-plus-circle"></i>
-            </button>
             <pagination :data="Variables" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
@@ -79,6 +83,36 @@
                         </div>
                       </div>
                     </div>
+                    <div v-show="this.showDetails === true" class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Valor por defecto</label>
+                          <input v-model="form.valor" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('value') }">
+                          <has-error :form="form" field="valor"></has-error>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Medida</label>
+                          <select v-model="form.regla" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
+                            <option value="d">Días</option>
+                            <option value="h">Horas</option>
+                            <option value="m">Minutos</option>
+                          </select>
+                          <has-error :form="form" field="medida"></has-error>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Regla</label>
+                          <select v-model="form.regla" class="form-control" :class="{ 'is-invalid': form.errors.has('regla') }">
+                            <option value="divisible">No puede ser cero</option>
+                            <option value="positivo">Número positivo</option>
+                          </select>
+                          <has-error :form="form" field="regla"></has-error>
+                        </div>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="container-buttons">
                         <button v-if="update== 0" @click="saveVariable()" class="btn btn-success">Añadir</button>
@@ -109,6 +143,7 @@
                   medida:"",
                   rule:""
                 }),
+                showDetails: true,
                 componentVariableKey:0,
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update

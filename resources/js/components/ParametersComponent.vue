@@ -1,32 +1,49 @@
 <template>
   <div class="container container-project">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-3">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Lista de parámetros</h4>
+            <div class="row">
+              <div class="col-md-8">
+                  <h3 class="card-title mt-0"> Lista de parámetros</h3>
+              </div>
+              <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
+                <button class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#addParameter">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th style="width: 92px;"> Nombre </th>
-                    <th> Acciones </th>
+                    <th style="width:90%"> Nombre </th>
+                    <th style="width:10%"> Acciones </th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="parameter in Parameters.data" :key="parameter.id">
+                    <tr v-for="parameter in Parameters.data" :key="parameter.id">
                       <td v-text="parameter.name"></td>
                       <td>
-                        <button class="btn btn-info"
+                        <button class="btn btn-info btn-sm"
                           @click="loadFieldsUpdate(parameter)"
                           data-toggle="modal"
                           data-target="#addParameter">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" @click="deleteParameter(parameter)"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-secondary" @click="showSubparameters(parameter)"><i class="far fa-eye"></i></button>
+                        <button class="btn btn-danger btn-sm"
+                         @click="deleteParameter(parameter)">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm"
+                        @click="showSubparameters(parameter)">
+                          <i class="far fa-eye"></i>
+                        </button>
 
                       </td>
                     </tr>
@@ -35,19 +52,14 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#addParameter">
-              <i class="fa fa-plus-circle"></i>
-            </button>
             <pagination :data="Parameters" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-8">
           <subparameters v-if="this.showSubparameter != '0'" v-bind:key="componentSubParameterKey"/>
       </div>
-    </div>    
+    </div>
     <div class="modal fade" id="addParameter" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">

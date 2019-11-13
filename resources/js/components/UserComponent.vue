@@ -69,10 +69,11 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="bmd-label-floating">Tipo</label>
-                    <select v-model="form.tipo" class=" form-control">
+                    <select v-model="form.tipo" class=" form-control" :class="{ 'is-invalid': form.errors.has('tipo')}">
                       <option>Administrador</option>
                       <option>Usuario</option>
                     </select>
+                    <has-error :form="form" field="error"></has-error>
                   </div>
                 </div>
               </div>

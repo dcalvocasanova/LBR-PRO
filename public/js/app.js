@@ -2288,6 +2288,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3121,6 +3133,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3158,7 +3176,6 @@ __webpack_require__.r(__webpack_exports__);
         name: subparameter.name
       }).then(function (response) {
         me.componentVariableKey += 1;
-        console.log(response);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -3254,6 +3271,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -3667,6 +3685,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3679,6 +3731,7 @@ __webpack_require__.r(__webpack_exports__);
         medida: "",
         rule: ""
       }),
+      showDetails: true,
       componentVariableKey: 0,
       title: "Agregar nueva categoría de parámetro ",
       //title to show
@@ -44906,7 +44959,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { staticClass: "col-md-3" }, [
         _c("div", { staticClass: "card card-plain" }, [
           _vm._m(0),
           _vm._v(" "),
@@ -44927,7 +44980,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-info",
+                            staticClass: "btn btn-info btn-sm",
                             attrs: {
                               "data-toggle": "modal",
                               "data-target": "#addParameter"
@@ -44944,7 +44997,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-danger",
+                            staticClass: "btn btn-danger btn-sm",
                             on: {
                               click: function($event) {
                                 return _vm.deleteParameter(parameter)
@@ -44957,7 +45010,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-secondary",
+                            staticClass: "btn btn-secondary btn-sm",
                             on: {
                               click: function($event) {
                                 return _vm.showSubparameters(parameter)
@@ -44979,8 +45032,6 @@ var render = function() {
             "div",
             { staticClass: "card-footer" },
             [
-              _vm._m(2),
-              _vm._v(" "),
               _c("pagination", {
                 attrs: { data: _vm.Parameters },
                 on: { "pagination-change-page": _vm.getResults }
@@ -44993,7 +45044,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "col-md-6" },
+        { staticClass: "col-md-8" },
         [
           this.showSubparameter != "0"
             ? _c("subparameters", { key: _vm.componentSubParameterKey })
@@ -45024,7 +45075,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row" }, [
@@ -45157,8 +45208,37 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
-      _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Lista de parámetros")
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("h3", { staticClass: "card-title mt-0" }, [
+            _vm._v(" Lista de parámetros")
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "col-md-4",
+            attrs: {
+              "data-toggle": "tooltip",
+              "data-placement": "bottom",
+              title: "Agregar nuevo parámetro"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: {
+                  "data-toggle": "modal",
+                  "data-target": "#addParameter"
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus-circle" })]
+            )
+          ]
+        )
       ])
     ])
   },
@@ -45168,24 +45248,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", {}, [
       _c("tr", [
-        _c("th", { staticStyle: { width: "92px" } }, [_vm._v(" Nombre ")]),
+        _c("th", { staticStyle: { width: "90%" } }, [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Acciones ")])
+        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Acciones ")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-primary",
-        attrs: { "data-toggle": "modal", "data-target": "#addParameter" }
-      },
-      [_c("i", { staticClass: "fa fa-plus-circle" })]
-    )
   },
   function() {
     var _vm = this
@@ -46091,7 +46158,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
+      _c("div", { staticClass: "col-md-5" }, [
         _c("div", { staticClass: "card card-plain" }, [
           _vm._m(0),
           _vm._v(" "),
@@ -46112,7 +46179,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-info",
+                            staticClass: "btn btn-info btn-sm",
                             attrs: {
                               "data-toggle": "modal",
                               "data-target": "#addSubParameter"
@@ -46129,7 +46196,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-danger",
+                            staticClass: "btn btn-danger btn-sm",
                             on: {
                               click: function($event) {
                                 return _vm.deleteSubParameter(subparameter)
@@ -46142,7 +46209,7 @@ var render = function() {
                         _c(
                           "button",
                           {
-                            staticClass: "btn btn-secondary",
+                            staticClass: "btn btn-secondary btn-sm",
                             on: {
                               click: function($event) {
                                 return _vm.showSubVariables(subparameter)
@@ -46164,8 +46231,6 @@ var render = function() {
             "div",
             { staticClass: "card-footer" },
             [
-              _vm._m(2),
-              _vm._v(" "),
               _c("pagination", {
                 attrs: { data: _vm.SubParameters },
                 on: { "pagination-change-page": _vm.getResults }
@@ -46174,19 +46239,19 @@ var render = function() {
             1
           )
         ])
-      ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-md-7" },
+        [
+          this.showVariable != "0"
+            ? _c("variables", { key: _vm.componentVariableKey })
+            : _vm._e()
+        ],
+        1
+      )
     ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row" },
-      [
-        this.showVariable != "0"
-          ? _c("variables", { key: _vm.componentVariableKey })
-          : _vm._e()
-      ],
-      1
-    ),
     _vm._v(" "),
     _c(
       "div",
@@ -46209,7 +46274,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row" }, [
@@ -46342,8 +46407,37 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
-      _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Lista de parámetros")
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("h3", { staticClass: "card-title mt-0" }, [
+            _vm._v(" Lista de categorías parámetros")
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "col-md-4",
+            attrs: {
+              "data-toggle": "tooltip",
+              "data-placement": "bottom",
+              title: "Agregar nueva categoría"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: {
+                  "data-toggle": "modal",
+                  "data-target": "#addSubParameter"
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus-circle" })]
+            )
+          ]
+        )
       ])
     ])
   },
@@ -46353,24 +46447,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", {}, [
       _c("tr", [
-        _c("th", { staticStyle: { width: "92px" } }, [_vm._v(" Nombre ")]),
+        _c("th", { staticStyle: { width: "160px" } }, [_vm._v(" Nombre ")]),
         _vm._v(" "),
         _c("th", [_vm._v(" Acciones ")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-primary",
-        attrs: { "data-toggle": "modal", "data-target": "#addSubParameter" }
-      },
-      [_c("i", { staticClass: "fa fa-plus-circle" })]
-    )
   },
   function() {
     var _vm = this
@@ -46638,50 +46719,60 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-md-6" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { staticClass: "bmd-label-floating" }, [
-                    _vm._v("Tipo")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.tipo,
-                          expression: "form.tipo"
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Tipo")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.tipo,
+                            expression: "form.tipo"
+                          }
+                        ],
+                        staticClass: " form-control",
+                        class: { "is-invalid": _vm.form.errors.has("tipo") },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "tipo",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
                         }
-                      ],
-                      staticClass: " form-control",
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.$set(
-                            _vm.form,
-                            "tipo",
-                            $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          )
-                        }
-                      }
-                    },
-                    [
-                      _c("option", [_vm._v("Administrador")]),
-                      _vm._v(" "),
-                      _c("option", [_vm._v("Usuario")])
-                    ]
-                  )
-                ])
+                      },
+                      [
+                        _c("option", [_vm._v("Administrador")]),
+                        _vm._v(" "),
+                        _c("option", [_vm._v("Usuario")])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "error" }
+                    })
+                  ],
+                  1
+                )
               ])
             ]),
             _vm._v(" "),
@@ -47205,8 +47296,6 @@ var render = function() {
             "div",
             { staticClass: "card-footer" },
             [
-              _vm._m(2),
-              _vm._v(" "),
               _c("pagination", {
                 attrs: { data: _vm.Variables },
                 on: { "pagination-change-page": _vm.getResults }
@@ -47239,7 +47328,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row" }, [
@@ -47378,6 +47467,224 @@ var render = function() {
                           ])
                         ]),
                         _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: this.showDetails === true,
+                                expression: "this.showDetails === true"
+                              }
+                            ],
+                            staticClass: "row"
+                          },
+                          [
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Valor por defecto")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.valor,
+                                        expression: "form.valor"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has("value")
+                                    },
+                                    attrs: { type: "text" },
+                                    domProps: { value: _vm.form.valor },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "valor",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "valor" }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Medida")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.regla,
+                                          expression: "form.regla"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "medida"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.form,
+                                            "regla",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("option", { attrs: { value: "d" } }, [
+                                        _vm._v("Días")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "h" } }, [
+                                        _vm._v("Horas")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "m" } }, [
+                                        _vm._v("Minutos")
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "medida" }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Regla")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.regla,
+                                          expression: "form.regla"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "regla"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.form,
+                                            "regla",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "divisible" } },
+                                        [_vm._v("No puede ser cero")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "positivo" } },
+                                        [_vm._v("Número positivo")]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "regla" }
+                                  })
+                                ],
+                                1
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
                           _c("div", { staticClass: "container-buttons" }, [
                             _vm.update == 0
@@ -47444,9 +47751,33 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
-      _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Lista de variables")
-      ])
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h3", { staticClass: "card-title mt-0" }, [
+          _vm._v(" Lista de variables")
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "col-md-4",
+          attrs: {
+            "data-toggle": "tooltip",
+            "data-placement": "bottom",
+            title: "Agregar nueva variable"
+          }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { "data-toggle": "modal", "data-target": "#addVariable" }
+            },
+            [_c("i", { staticClass: "fa fa-plus-circle" })]
+          )
+        ]
+      )
     ])
   },
   function() {
@@ -47460,19 +47791,6 @@ var staticRenderFns = [
         _c("th", [_vm._v(" Acciones ")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-primary",
-        attrs: { "data-toggle": "modal", "data-target": "#addVariable" }
-      },
-      [_c("i", { staticClass: "fa fa-plus-circle" })]
-    )
   },
   function() {
     var _vm = this
