@@ -14,17 +14,8 @@ class ParameterController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+      $parameters = Parameter::latest()->paginate(5);
+      return $parameters;
     }
 
     /**
@@ -35,51 +26,64 @@ class ParameterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $this->validate($request,[
+            'nombre' => 'required|string|max:100'
+      ]);
+      $parameter = new Parameter();
+      $parameter->name = $request->nombre;
+      $parameter->save();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Parameter  $parameter
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Parameter $parameter)
+    public function show(Request  $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Parameter  $parameter
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Parameter $parameter)
-    {
-        //
+      $parameter = Parameter::findOrFail($request->id);
+      return $parameter;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Parameter  $parameter
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Parameter $parameter)
+    public function update(Request $request)
     {
-        //
+      $this->validate($request,[
+            'nombre' => 'required|string|max:100'
+      ]);
+
+      $parameter = Parameter::findOrFail($request->id);
+      $parameter->name = $request->nombre;
+      $parameter->save();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Parameter  $parameter
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Parameter $parameter)
+    public function destroy(Request  $request)
     {
-        //
+      $parameter = Parameter::destroy($request->id);
+      return $parameter;
+    }
+
+    /**
+     * Save session resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function session(Request  $request)
+    {
+      $request->session()->put('parameter_id', $request->id);
+      $request->session()->put('parameter_name', $request->name);
     }
 }

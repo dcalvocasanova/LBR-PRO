@@ -1,7 +1,7 @@
 <template>
   <div class="container container-project">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
             <h4 class="card-title mt-0"> Lista de parámetros</h4>
@@ -16,18 +16,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="parameter in Parameters.data" :key="parameter.id">
-                      <td v-text="parameter.name"></td>
+                    <tr  v-for="subparameter in SubParameters.data" :key="subparameter.id">
+                      <td v-text="subparameter.name"></td>
                       <td>
                         <button class="btn btn-info"
-                          @click="loadFieldsUpdate(parameter)"
+                          @click="loadFieldsUpdate(subparameter)"
                           data-toggle="modal"
-                          data-target="#addParameter">
+                          data-target="#addSubParameter">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" @click="deleteParameter(parameter)"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-secondary" @click="showSubparameters(parameter)"><i class="far fa-eye"></i></button>
-
+                        <button class="btn btn-danger" @click="deleteSubParameter(subparameter)"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-secondary" @click="showSubVariables(subparameter)"><i class="far fa-eye"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -37,22 +36,23 @@
           <div class="card-footer">
             <button class="btn btn-primary"
             data-toggle="modal"
-            data-target="#addParameter">
+            data-target="#addSubParameter">
               <i class="fa fa-plus-circle"></i>
             </button>
-            <pagination :data="Parameters" @pagination-change-page="getResults"></pagination>
+            <pagination :data="SubParameters" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-          <subparameters v-if="this.showSubparameter != '0'" v-bind:key="componentSubParameterKey"/>
-      </div>
-    </div>    
-    <div class="modal fade" id="addParameter" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
+    </div>
+    <div class="row">
+          <variables v-if="this.showVariable != '0'" v-bind:key="componentVariableKey"/>
+    </div>
+
+    <div class="modal fade" id="addSubParameter" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="ParameterModalLabel">Parámetros</h5>
+            <h5 class="modal-title" id="ParameterModalLabel">Subparámetros</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -76,8 +76,8 @@
                     </div>
                     <div class="row">
                       <div class="container-buttons">
-                        <button v-if="update== 0" @click="saveParameter()" class="btn btn-success">Añadir</button>
-                        <button v-if="update!= 0" @click="updateParameter()" class="btn btn-info">Actualizar</button>
+                        <button v-if="update== 0" @click="saveSubParameter()" class="btn btn-success">Añadir</button>
+                        <button v-if="update!= 0" @click="updateSubParameter()" class="btn btn-info">Actualizar</button>
                         <button v-if="update!= 0" @click="salir()" class="btn btn-secondary">Atrás</button>
                       </div>
                     </div>
@@ -100,54 +100,54 @@
                   id:"",//User ID
                   nombre:""
                 }),
-                componentSubParameterKey:0,
                 componentVariableKey:0,
-                title:"Agregar nuevo parámetro", //title to show
+                title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-                showSubparameter:0,
                 showVariable:0,
-                Parameters:{}, //BD content
-                Parameter:{}
+                SubParameters:{}, //BD content
+                SubParameter:{}
             }
         },
         methods:{
             getResults(page = 1) {
-              axios.get('/parametros?page=' + page)
+              axios.get('/subparametros?page=' + page)
               .then(response => {
-                    this.Parameters = response.data; //get all projects from page
+                    this.SubParameters = response.data; //get all projects from page
               });
             },
-            showSubparameters(parameter){
+            showSubVariables(subparameter){
               let me =this;
-              me.showSubparameter= parameter.id;
-              me.Parameter =parameter;
-              axios.post('/parametros/setsession',{
-                id: parameter.id,
-                name: parameter.name
+              me.showVariable= subparameter.id;
+              me.SubParameter =subparameter;
+              axios.post('/subparametros/setsession',{
+                id:subparameter.id,
+                name: subparameter.name
               })
               .then(function (response) {
-                me.componentSubParameterKey += 1;
+                me.componentVariableKey += 1;
+                console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
               });
             },
-            getParametros(){
+            getSubParametros(){
                 let me =this;
                 me.clearFields();
-                axios.get('/parametros').then(function (response) {
-                    me.Parameters = response.data; //get all parameters
+                axios.get('/subparametros')
+                .then(function (response) {
+                    me.SubParameters = response.data; //get all parameters
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            saveParameter(){
+            saveSubParameter(){
                 let me =this;
-                this.form.post('/parametros/guardar')
+                this.form.post('/subparametros/guardar')
                 .then(function (response) {
                     me.salir();
-                    me.getParametros();// show all users
+                    me.getSubParametros();// show all users
                     toast.fire({
                       type: 'success',
                       title: 'Parámetro registrado con éxito'
@@ -158,30 +158,30 @@
                 });
 
             },
-            updateParameter(){
+            updateSubParameter(){
                 let me = this;
-                this.form.put('/parametros/actualizar')
+                this.form.put('/subparametros/actualizar')
                 .then(function (response) {
                    toast.fire({
                     type: 'success',
                     title: 'Parámetro actualizado con éxito'
                    });
-                   $('#addParameter').modal('toggle');
-                   me.getParametros();
+                   $('#addSubParameter').modal('toggle');
+                   me.getSubParametros();
                    me.salir();
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            loadFieldsUpdate(parameter){
+            loadFieldsUpdate(subparameter){
               let me =this;
-              me.update = parameter.id
+              me.update = subparameter.id
               me.title="Actualizar información del parámetro";
-              me.form.nombre = parameter.name;
-              me.form.id = parameter.id;
+              me.form.nombre = subparameter.name;
+              me.form.id = subparameter.id;
             },
-            deleteParameter(parameter){
+            deleteSubParameter(subparameter){
               let me =this;
               swal.fire({
                 title: 'Eliminar un lista de parámetro',
@@ -194,14 +194,14 @@
               })
               .then((result) => {
                 if (result.value) {
-                  axios.delete('/parametros/borrar/'+parameter.id)
+                  axios.delete('/subparametros/borrar/'+subparameter.id)
                   .then(function (response) {
                     swal.fire(
                       'Eliminado',
                       'Parametro fue eliminado',
                       'success'
                     )
-                    me.getParametros();
+                    me.getSubParametros();
                   })
                   .catch(function (error) {
                       console.log(error);
@@ -217,12 +217,12 @@
             },
             salir(){
               this.clearFields();
-              $('#addParameter').modal('toggle');
+              $('#addSubParameter').modal('toggle');
             }
 
         },
         mounted() {
-           this.getParametros();
+           this.getSubParametros();
         }
     }
 </script>

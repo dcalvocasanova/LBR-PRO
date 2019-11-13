@@ -80,3 +80,27 @@ Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
 Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/avatar', 'UserController@uploadAvatar');
+
+/*Manage Parameters*/
+Route::get('/parametros', 'ParameterController@index');
+Route::put('/parametros/actualizar', 'ParameterController@update');
+Route::post('/parametros/guardar', 'ParameterController@store');
+Route::delete('/parametros/borrar/{id}', 'ParameterController@destroy');
+Route::get('/parametros/buscar', 'ParameterController@show');
+Route::post('/parametros/setsession', 'ParameterController@session');
+
+
+/*Manage SubParameters*/
+Route::get('/subparametros', 'SubparameterController@index');
+Route::put('/subparametros/actualizar', 'SubparameterController@update');
+Route::post('/subparametros/guardar', 'SubparameterController@store');
+Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
+Route::get('/subparametros/buscar', 'SubparameterController@show');
+Route::post('/subparametros/setsession', 'SubParameterController@session');
+
+/*Manage Variables*/
+Route::get('/variables', 'VariableController@index');
+Route::put('/variables/actualizar', 'VariableController@update');
+Route::post('/variables/guardar', 'VariableController@store');
+Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
+Route::get('/variables/buscar', 'VariableController@show');

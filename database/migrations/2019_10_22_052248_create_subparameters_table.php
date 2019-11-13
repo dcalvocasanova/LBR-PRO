@@ -16,7 +16,6 @@ class CreateSubparametersTable extends Migration
         Schema::create('subparameters', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('type');
             $table->bigInteger('parameter_id');
             $table->timestamps();
         });
