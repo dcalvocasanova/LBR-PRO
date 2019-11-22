@@ -2303,7 +2303,7 @@ __webpack_require__.r(__webpack_exports__);
         nombre: ""
       }),
       componentVariableKey: 0,
-      title: "Agregar nuevo objetivo ",
+      title: "Agregar nuevo objetivo",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
