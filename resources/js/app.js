@@ -62,6 +62,7 @@ Vue.component('catalogs', require('./components/CatalogsComponent.vue').default)
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
+Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 
 /**

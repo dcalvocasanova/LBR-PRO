@@ -31,6 +31,10 @@ Route::get('/gestionar-parametros', function () {
     return view('admin.parametros');
 });
 
+Route::get('/gestionar-macroprocesos', function () {
+    return view('admin.macroprocesos');
+});
+
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 });
