@@ -45,6 +45,9 @@ class UserController extends Controller
           'salario'=> 'required|numeric',
           'fecha_ingreso'=> 'required|string',
           'puesto'=> 'required|string',
+          'cargo'=> 'required|string',
+          'jornada'=> 'required|string',
+          'educacion'=> 'required|string',
           'etnia' => 'required|string'
       ]);
 
@@ -58,7 +61,10 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-      $user->position= $request->puesto;
+      $user->job= $request->puesto;
+      $user->position= $request->cargo;
+      $user->workday= $request->jornada;
+      $user->education= $request->educacion;
       $user->salary= $request->salario;
       $user->birthday= $request->fecha_nacimiento;
       $user->workingsince= $request->fecha_ingreso;
@@ -102,7 +108,10 @@ class UserController extends Controller
       $user->identification = $request->identificacion;
       $user->email = $request->email;
       $user->type = $request->tipo;
-      $user->position= $request->puesto;
+      $user->job= $request->puesto;
+      $user->position= $request->cargo;
+      $user->workday= $request->jornada;
+      $user->education= $request->educacion;
       $user->salary= $request->salario;
       $user->birthday= $request->fecha_nacimiento;
       $user->workingsince= $request->fecha_ingreso;

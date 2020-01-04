@@ -3662,6 +3662,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3676,7 +3699,10 @@ __webpack_require__.r(__webpack_exports__);
         fecha_nacimiento: "",
         fecha_ingreso: "",
         puesto: "",
+        cargo: "",
         salario: "",
+        jornada: "",
+        educacion: "",
         avatar: ""
       }),
       title: "Agregar nuevo usuario",
@@ -3755,7 +3781,10 @@ __webpack_require__.r(__webpack_exports__);
         me.form.id = response.data.id;
         me.form.fecha_nacimiento = response.data.birthday;
         me.form.fecha_ingreso = response.data.workingsince;
-        me.form.puesto = response.data.position;
+        me.form.puesto = response.data.job;
+        me.form.cargo = response.data.position;
+        me.form.educacion = response.data.education;
+        me.form.jornada = response.data.workday;
         me.form.salario = response.data.salary;
       })["catch"](function (error) {
         // handle error
@@ -3961,9 +3990,9 @@ __webpack_require__.r(__webpack_exports__);
         tipo: "",
         valor: "",
         medida: "",
-        rule: ""
+        regla: ""
       }),
-      showDetails: true,
+      showDetails: false,
       componentVariableKey: 0,
       title: "Agregar nueva categoría de parámetro ",
       //title to show
@@ -3996,6 +4025,13 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    showExtraValidations: function showExtraValidations() {
+      if (this.form.tipo == "number") {
+        this.showDetails = true;
+      } else {
+        this.showDetails = false;
+      }
     },
     getVaraibles: function getVaraibles() {
       var me = this;
@@ -4040,7 +4076,14 @@ __webpack_require__.r(__webpack_exports__);
       me.title = "Actualizar información de la variable";
       me.form.nombre = variable.name;
       me.form.tipo = variable.type;
+      me.form.valor = variable.value;
+      me.form.medida = variable.measure;
+      me.form.regla = variable.rule;
       me.form.id = variable.id;
+
+      if (me.form.tipo == "number") {
+        this.showDetails = true;
+      }
     },
     deleteVariable: function deleteVariable(variable) {
       var me = this;
@@ -47166,46 +47209,6 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-5" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Nombre")
-                    ]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.nombre,
-                          expression: "form.nombre"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("nombre") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.nombre },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "nombre", $event.target.value)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "nombre" }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
               _c("div", { staticClass: "col-md-7" }, [
                 _c(
                   "div",
@@ -47250,11 +47253,97 @@ var render = function() {
                   ],
                   1
                 )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Nombre")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.nombre,
+                          expression: "form.nombre"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "is-invalid": _vm.form.errors.has("nombre") },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.form.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "nombre", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "nombre" }
+                    })
+                  ],
+                  1
+                )
               ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Fecha nacimiento")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.fecha_nacimiento,
+                          expression: "form.fecha_nacimiento"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: {
+                        "is-invalid": _vm.form.errors.has("fecha_nacimiento")
+                      },
+                      attrs: { type: "date" },
+                      domProps: { value: _vm.form.fecha_nacimiento },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form,
+                            "fecha_nacimiento",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "fecha_nacimiento" }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -47294,7 +47383,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -47353,7 +47442,7 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -47393,7 +47482,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -47431,17 +47520,15 @@ var render = function() {
                   ],
                   1
                 )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-6" }, [
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Fecha nacimiento")
+                      _vm._v("Cargo")
                     ]),
                     _vm._v(" "),
                     _c("input", {
@@ -47449,39 +47536,115 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.form.fecha_nacimiento,
-                          expression: "form.fecha_nacimiento"
+                          value: _vm.form.cargo,
+                          expression: "form.cargo"
                         }
                       ],
                       staticClass: "form-control",
-                      class: {
-                        "is-invalid": _vm.form.errors.has("fecha_nacimiento")
-                      },
-                      attrs: { type: "date" },
-                      domProps: { value: _vm.form.fecha_nacimiento },
+                      class: { "is-invalid": _vm.form.errors.has("cargo") },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.form.cargo },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(
-                            _vm.form,
-                            "fecha_nacimiento",
-                            $event.target.value
-                          )
+                          _vm.$set(_vm.form, "cargo", $event.target.value)
                         }
                       }
                     }),
                     _vm._v(" "),
                     _c("has-error", {
-                      attrs: { form: _vm.form, field: "fecha_nacimiento" }
+                      attrs: { form: _vm.form, field: "cargo" }
+                    })
+                  ],
+                  1
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Educación formal")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.educacion,
+                          expression: "form.educacion"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "is-invalid": _vm.form.errors.has("educacion") },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.form.educacion },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "educacion", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "cargo" }
                     })
                   ],
                   1
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Jornada")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.jornada,
+                          expression: "form.jornada"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "is-invalid": _vm.form.errors.has("jornada") },
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.form.jornada },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "jornada", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "jornada" }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -47997,26 +48160,34 @@ var render = function() {
                                       "is-invalid": _vm.form.errors.has("tipo")
                                     },
                                     on: {
-                                      change: function($event) {
-                                        var $$selectedVal = Array.prototype.filter
-                                          .call($event.target.options, function(
-                                            o
-                                          ) {
-                                            return o.selected
-                                          })
-                                          .map(function(o) {
-                                            var val =
-                                              "_value" in o ? o._value : o.value
-                                            return val
-                                          })
-                                        _vm.$set(
-                                          _vm.form,
-                                          "tipo",
-                                          $event.target.multiple
-                                            ? $$selectedVal
-                                            : $$selectedVal[0]
-                                        )
-                                      }
+                                      change: [
+                                        function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.form,
+                                            "tipo",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        },
+                                        function($event) {
+                                          return _vm.showExtraValidations()
+                                        }
+                                      ]
                                     }
                                   },
                                   [
@@ -48123,8 +48294,8 @@ var render = function() {
                                         {
                                           name: "model",
                                           rawName: "v-model",
-                                          value: _vm.form.regla,
-                                          expression: "form.regla"
+                                          value: _vm.form.medida,
+                                          expression: "form.medida"
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -48151,7 +48322,7 @@ var render = function() {
                                             })
                                           _vm.$set(
                                             _vm.form,
-                                            "regla",
+                                            "medida",
                                             $event.target.multiple
                                               ? $$selectedVal
                                               : $$selectedVal[0]

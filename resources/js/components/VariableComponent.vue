@@ -75,7 +75,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label class="bmd-label-floating">Tipo</label>
-                          <select v-model="form.tipo" class="form-control" :class="{ 'is-invalid': form.errors.has('tipo') }">
+                          <select @change="showExtraValidations()" v-model="form.tipo" class="form-control" :class="{ 'is-invalid': form.errors.has('tipo') }">
                             <option value="number">Númerico</option>
                             <option value="string">Texto</option>
                           </select>
@@ -94,7 +94,7 @@
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Medida</label>
-                          <select v-model="form.regla" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
+                          <select v-model="form.medida" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
                             <option value="d">Días</option>
                             <option value="h">Horas</option>
                             <option value="m">Minutos</option>
@@ -141,9 +141,9 @@
                   tipo:"",
                   valor:"",
                   medida:"",
-                  rule:""
+                  regla:""
                 }),
-                showDetails: true,
+                showDetails: false,
                 componentVariableKey:0,
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -173,6 +173,13 @@
               .catch(function (error) {
                 console.log(error);
               });
+            },
+            showExtraValidations(){
+              if(this.form.tipo =="number") {
+                  this.showDetails= true;
+              }else{
+                  this.showDetails= false;
+              }
             },
             getVaraibles(){
                 let me =this;
@@ -223,7 +230,11 @@
               me.title="Actualizar información de la variable";
               me.form.nombre = variable.name;
               me.form.tipo = variable.type;
+              me.form.valor=variable.value;
+              me.form.medida=variable.measure;
+              me.form.regla=variable.rule;
               me.form.id = variable.id;
+              if (me.form.tipo =="number"){this.showDetails= true;}
             },
             deleteVariable(variable){
               let me =this;

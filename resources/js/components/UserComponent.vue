@@ -43,13 +43,6 @@
             </div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-5">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Nombre</label>
-                    <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
-                    <has-error :form="form" field="nombre"></has-error>
-                  </div>
-                </div>
                 <div class="col-md-7">
                   <div class="form-group">
                     <label class="bmd-label-floating">Identificación</label>
@@ -57,16 +50,31 @@
                     <has-error :form="form" field="identificacion"></has-error>
                   </div>
                 </div>
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nombre</label>
+                    <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
+                    <has-error :form="form" field="nombre"></has-error>
+                  </div>
+                </div>
               </div>
+
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Fecha nacimiento</label>
+                    <input type="date" v-model="form.fecha_nacimiento"  class="form-control":class="{ 'is-invalid': form.errors.has('fecha_nacimiento') }">
+                    <has-error :form="form" field="fecha_nacimiento"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Email</label>
                     <input type="email" v-model="form.email"  class="form-control":class="{ 'is-invalid': form.errors.has('email') }">
                     <has-error :form="form" field="email"></has-error>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Tipo</label>
                     <select v-model="form.tipo" class=" form-control" :class="{ 'is-invalid': form.errors.has('tipo')}">
@@ -77,31 +85,46 @@
                   </div>
                 </div>
               </div>
+
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Salario</label>
                     <input type="number" v-model="form.salario"  class="form-control":class="{ 'is-invalid': form.errors.has('salario') }">
                     <has-error :form="form" field="salario"></has-error>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Puesto de trabajo</label>
                     <input type="text" v-model="form.puesto"  class="form-control":class="{ 'is-invalid': form.errors.has('puesto') }">
                     <has-error :form="form" field="puesto"></has-error>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Fecha nacimiento</label>
-                    <input type="date" v-model="form.fecha_nacimiento"  class="form-control":class="{ 'is-invalid': form.errors.has('fecha_nacimiento') }">
-                    <has-error :form="form" field="fecha_nacimiento"></has-error>
+                    <label class="bmd-label-floating">Cargo</label>
+                    <input type="text" v-model="form.cargo"  class="form-control":class="{ 'is-invalid': form.errors.has('cargo') }">
+                    <has-error :form="form" field="cargo"></has-error>
                   </div>
                 </div>
-                <div class="col-md-6">
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Educación formal</label>
+                    <input type="text" v-model="form.educacion"  class="form-control":class="{ 'is-invalid': form.errors.has('educacion') }">
+                    <has-error :form="form" field="cargo"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Jornada</label>
+                    <input type="text" v-model="form.jornada"  class="form-control":class="{ 'is-invalid': form.errors.has('jornada') }">
+                    <has-error :form="form" field="jornada"></has-error>
+                  </div>
+                </div>
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Fecha ingreso al puesto</label>
                     <input type="date" v-model="form.fecha_ingreso"  class="form-control":class="{ 'is-invalid': form.errors.has('fecha_ingreso') }">
@@ -171,7 +194,10 @@
                   fecha_nacimiento:"",
                   fecha_ingreso:"",
                   puesto:"",
+                  cargo:"",
                   salario:"",
+                  jornada:"",
+                  educacion:"",
                   avatar:""
                 }),
                 title:"Agregar nuevo usuario", //title to show
@@ -249,7 +275,10 @@
                   me.form.id = response.data.id;
                   me.form.fecha_nacimiento=response.data.birthday;
                   me.form.fecha_ingreso=response.data.workingsince;
-                  me.form.puesto=response.data.position;
+                  me.form.puesto=response.data.job;
+                  me.form.cargo=response.data.position;
+                  me.form.educacion=response.data.education;
+                  me.form.jornada=response.data.workday;
                   me.form.salario=response.data.salary;
                 })
                 .catch(function (error) {
