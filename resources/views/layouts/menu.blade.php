@@ -76,6 +76,22 @@
 
   {{-- Nav Item - Users Collapse Menu--}}
   <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTemplates" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span> Plantillas</span>
+    </a>
+    <div id="collapseTemplates" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header"> Parámetros:</h6>
+        <a class="collapse-item" href="/gestionar-plantillas-parametros">Gestionar</a>
+        <h6 class="collapse-header"> Macroprocesos</h6>
+        <a class="collapse-item" href="#">Gestionar</a>
+      </div>
+    </div>
+  </li>
+
+  {{-- Nav Item - Users Collapse Menu--}}
+  <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
       <span  style="color:red;"> Ejemplos de ¡AYUDA! </span>

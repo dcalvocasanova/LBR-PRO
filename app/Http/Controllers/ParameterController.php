@@ -90,4 +90,27 @@ class ParameterController extends Controller
       $request->session()->put('parameter_id', $request->id);
       $request->session()->put('parameter_name', $request->name);
     }
+
+    /**
+     * Get workload category
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getWorkLoadCategory()
+    {
+        $parameters = Parameter::where('type','workload')->paginate(10);
+        return $parameters;
+    }
+    /**
+     * Get psychosocial category
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getPsychosocialCategory()
+    {
+      $parameters = Parameter::where('type','psychosocial')->paginate(10);
+      return $parameters;
+    }
 }

@@ -35,6 +35,10 @@ Route::get('/gestionar-macroprocesos', function () {
     return view('admin.macroprocesos');
 });
 
+Route::get('/gestionar-plantillas-parametros', function () {
+    return view('admin.parametrosplantilla');
+});
+
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 });
@@ -92,6 +96,8 @@ Route::post('/parametros/guardar', 'ParameterController@store');
 Route::delete('/parametros/borrar/{id}', 'ParameterController@destroy');
 Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
+Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
+Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
 
 
 /*Manage SubParameters*/
