@@ -2532,13 +2532,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({
         id: "",
         //User ID
-        nombre: ""
+        nombre: "",
+        tipo: ""
       }),
       componentSubParameterKey: 0,
       componentVariableKey: 0,
@@ -2617,6 +2628,7 @@ __webpack_require__.r(__webpack_exports__);
       me.update = parameter.id;
       me.title = "Actualizar información del parámetro";
       me.form.nombre = parameter.name;
+      me.form.tipo = parameter.type;
       me.form.id = parameter.id;
     },
     deleteParameter: function deleteParameter(parameter) {
@@ -45712,7 +45724,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "card-body" }, [
                         _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-10" }, [
+                          _c("div", { staticClass: "col-md-8" }, [
                             _c(
                               "div",
                               { staticClass: "form-group" },
@@ -45754,6 +45766,78 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("has-error", {
                                   attrs: { form: _vm.form, field: "nombre" }
+                                })
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Tipo")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.tipo,
+                                        expression: "form.tipo"
+                                      }
+                                    ],
+                                    staticClass: " form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has("tipo")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.form,
+                                          "tipo",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "workload" } },
+                                      [_vm._v("Cargas de trabajo")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "psychosocial" } },
+                                      [_vm._v("Análisis Psicosocial")]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "tipo" }
                                 })
                               ],
                               1
@@ -47712,8 +47796,8 @@ var render = function() {
                             expression: "form.genero"
                           }
                         ],
-                        staticClass:
-                          " form-control { 'is-invalid': form.errors.has('genero') }",
+                        staticClass: " form-control",
+                        class: { "is-invalid": _vm.form.errors.has("genero") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -47771,8 +47855,8 @@ var render = function() {
                             expression: "form.sexo"
                           }
                         ],
-                        staticClass:
-                          " form-control { 'is-invalid': form.errors.has('sexo') }",
+                        staticClass: " form-control",
+                        class: { "is-invalid": _vm.form.errors.has("sexo") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -47828,8 +47912,8 @@ var render = function() {
                             expression: "form.etnia"
                           }
                         ],
-                        staticClass:
-                          " form-control { 'is-invalid': form.errors.has('etnia') }",
+                        staticClass: " form-control",
+                        class: { "is-invalid": _vm.form.errors.has("etnia") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter

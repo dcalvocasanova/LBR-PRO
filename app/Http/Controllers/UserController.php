@@ -68,11 +68,11 @@ class UserController extends Controller
       $user->salary= $request->salario;
       $user->birthday= $request->fecha_nacimiento;
       $user->workingsince= $request->fecha_ingreso;
-      $randomPass = Str::random(8);
+      $randomPass = '123456';//Str::random(8);
       $user->password =Hash::make($randomPass);
       $user->avatar = "default.png";
       if($user->save()){
-        $this->sendPassword($randomPass, $email,$nombre);
+      //  $this->sendPassword($randomPass, $email,$nombre);
       }
 
     }
@@ -118,21 +118,6 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-/*
-      if($request->avatar != $current_avatar)
-      {
-        $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
-        $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
-        $img->fit(75, 75, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $user->avatar = $file_avatar;
-        $last_avatar = public_path('img/profile-usr/').$current_avatar;
-        if(file_exists($last_avatar) && $last_avatar !='default.png' ){
-                @unlink($last_avatar);
-        }
-      }*/
       $user->save();
     }
 
@@ -180,6 +165,39 @@ class UserController extends Controller
       $imageName = time().'.'.$request->file->getClientOriginalExtension();
       $request->file->move(public_path('images'), $imageName);
     	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    /**
+     * Update user profile
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProfile (Request $request)
+    {
+      $this->validate($request,[
+          'contrasena' => 'required'
+      ]);
+      $user = User::findOrFail($request->id);
+      $current_avatar = $user->avatar;
+      $user->password =Hash::make($randomPass);
+
+      if($request->avatar != $current_avatar)
+      {
+        $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
+        $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
+        $img->fit(75, 75, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $user->avatar = $file_avatar;
+        $last_avatar = public_path('img/profile-usr/').$current_avatar;
+        if(file_exists($last_avatar) && $last_avatar !='default.png' ){
+            @unlink($last_avatar);
+        }
+      }
+      $user->save();
+    	return response()->json(['msg'=>'Datos actualizados']);
     }
 
 

@@ -136,7 +136,7 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Género</label>
-                    <select v-model="form.genero" class=" form-control { 'is-invalid': form.errors.has('genero') }">
+                    <select v-model="form.genero" class=" form-control":class="{ 'is-invalid': form.errors.has('genero') }">
                       <option>Hombre</option>
                       <option>Mujer</option>
                       <option>Otros</option>
@@ -147,7 +147,7 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Sexo</label>
-                    <select v-model="form.sexo" class=" form-control { 'is-invalid': form.errors.has('sexo') }">
+                    <select v-model="form.sexo" class=" form-control":class=" { 'is-invalid': form.errors.has('sexo') }">
                       <option>Masculino</option>
                       <option>Femenino</option>
                     </select>
@@ -157,7 +157,7 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Étnia</label>
-                    <select v-model="form.etnia" class=" form-control { 'is-invalid': form.errors.has('etnia') }">
+                    <select v-model="form.etnia" class=" form-control":class=" { 'is-invalid': form.errors.has('etnia') }">
                       <option>Aborigen</option>
                       <option>Afrocostarricense</option>
                       <option>Mestizo</option>

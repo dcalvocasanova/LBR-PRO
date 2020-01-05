@@ -27,10 +27,13 @@ class ParameterController extends Controller
     public function store(Request $request)
     {
       $this->validate($request,[
-            'nombre' => 'required|string|max:100'
+            'nombre' => 'required|string|max:100',
+            'tipo' => 'required|string|max:100'
+
       ]);
       $parameter = new Parameter();
       $parameter->name = $request->nombre;
+      $parameter->type = $request->tipo;
       $parameter->save();
     }
 
@@ -60,6 +63,7 @@ class ParameterController extends Controller
 
       $parameter = Parameter::findOrFail($request->id);
       $parameter->name = $request->nombre;
+      $parameter->type = $request->tipo;
       $parameter->save();
     }
 
