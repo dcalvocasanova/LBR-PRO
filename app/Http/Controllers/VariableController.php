@@ -18,7 +18,6 @@ class VariableController extends Controller
         $variables = Variable::where('subparameter_id',$request->session()->get('subparameter_id'))->paginate(5);
         return $variables;
       }
-      return "";
     }
 
     /**
@@ -30,11 +29,13 @@ class VariableController extends Controller
     public function store(Request $request)
     {
       $this->validate($request,[
-            'nombre' => 'required|string|max:100',
-            'tipo' => 'required|string|max:100'
+            'nombre' => 'required|string|max:500',
+            'identificador' => 'required|string|max:50',
+            'tipo' => 'required|string|max:500'
       ]);
       $variable = new Variable();
       $variable->name = $request->nombre;
+      $variable->identificator = $request->identificador;
       $variable->type = $request->tipo;
       $variable->subparameter_id = $request->session()->get('subparameter_id');
       $variable->value = isset($request->valor)? $request->valor:"0";
@@ -64,12 +65,14 @@ class VariableController extends Controller
     public function update(Request $request)
     {
       $this->validate($request,[
-            'nombre' => 'required|string|max:100',
-            'tipo' => 'required|string|max:100'
+            'nombre' => 'required|string|max:500',
+            'identificador' => 'required|string|max:50',
+            'tipo' => 'required|string|max:500'
       ]);
 
       $variable = Variable::findOrFail($request->id);
       $variable->name = $request->nombre;
+      $variable->identificator = $request->identificador;
       $variable->type = $request->tipo;
       $variable->subparameter_id = $request->session()->get('subparameter_id');
       $variable->value = isset($request->valor)? $request->valor:"0";
@@ -87,6 +90,18 @@ class VariableController extends Controller
     public function destroy(Request  $request)
     {
       $variable = Variable::destroy($request->id);
+      return $variable;
+    }
+
+    /**
+     * Get all variables according to a sub-parameter Id
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getVariablesBySubParameterId(Request $request)
+    {
+      $variable = Variable::where('subparameter_id',$request->id)->paginate(5);
       return $variable;
     }
 }

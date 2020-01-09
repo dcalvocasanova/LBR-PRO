@@ -17,10 +17,11 @@ class CreateVariablesTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('subparameter_id');
             $table->string('name');
+            $table->string('identificator');
             $table->string('type');
             $table->string('value');
             $table->string('measure');
-            $table->string('rule');            
+            $table->string('rule');
             $table->timestamps();
         });
     }

@@ -106,6 +106,7 @@ Route::put('/subparametros/actualizar', 'SubparameterController@update');
 Route::post('/subparametros/guardar', 'SubparameterController@store');
 Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
 Route::get('/subparametros/buscar', 'SubparameterController@show');
+Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParametersByParameterId');
 Route::post('/subparametros/setsession', 'SubParameterController@session');
 
 /*Manage Variables*/
@@ -113,4 +114,13 @@ Route::get('/variables', 'VariableController@index');
 Route::put('/variables/actualizar', 'VariableController@update');
 Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
+Route::get('/variable/buscarxid/{id}','VariableController@getVariablesBySubParameterId');
 Route::get('/variables/buscar', 'VariableController@show');
+
+
+/*Manage Template*/
+Route::get('/plantillas', 'TemplateController@index');
+Route::put('/plantillas/actualizar', 'TemplateController@update');
+Route::post('/plantillas/guardar', 'TemplateController@store');
+Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
+Route::get('/plantillas/buscar', 'TemplateController@show');

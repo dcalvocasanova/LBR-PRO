@@ -1,6 +1,6 @@
 <template>
   <div class="container container-project">
-    <div class="row">
+    <div class="row" v-if="this.startUpCategorySelection === true">
       <div class="col-md-6">
         <div class="text-center" @click="loadCategory(0)">
           <img src="/img/site/workload.png" style="height:30%;width:50%;"class="avatar img-circle img-thumbnail" alt="avatar">
@@ -15,18 +15,48 @@
           <label class="bmd-label-floating">Generar análisis psicosocial</label>
         </div>
       </div>
-      <!-- <div class="col-md-3">
-        <div class="card card-plain">
+    </div>
+    <div class="row" v-if="this.startUpCategorySelection === false">
+      <div class="col-md-7 options-parameters">
+        <div class="card card-plain" v-if="this.showParameters === true">
+          <div class="card-header card-header-primary">
+            <div class="col-md-12">
+                <h3 class="card-title mt-0"> Lista de parámetros</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th style="width:98%"> Nombre </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="parameter in Parameters.data" :key="parameter.id">
+                      <td v-text="parameter.name" @click="loadSubParameter(parameter)"></td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer">
+            <pagination :data="Parameters" @pagination-change-page="getMainParameters"></pagination>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-7 options-sub-parameters">
+        <div class="card card-plain" v-if="this.showSubParameters === true">
           <div class="card-header card-header-primary">
             <div class="row">
-              <div class="col-md-8">
-                  <h3 class="card-title mt-0"> Lista de parámetros</h3>
+              <div class="col-10 ">
+                  <h3 class="card-title mt-0"> Lista de categorías de Parámetros</h3>
               </div>
-              <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
+              <div class="col-2">
                 <button class="btn btn-primary"
-                data-toggle="modal"
-                data-target="#addParameter">
-                  <i class="fa fa-plus-circle"></i>
+                @click="goBackParameters()"
+                data-toggle="tooltip" data-placement="bottom" title="Regresar a la lista de parámetros">
+                  <i class="fas fa-angle-double-left"></i>
                 </button>
               </div>
             </div>
@@ -36,29 +66,83 @@
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th style="width:90%"> Nombre </th>
-                    <th style="width:10%"> Acciones </th>
+                    <th style="width:98%"> Nombre </th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="parameter in Parameters.data" :key="parameter.id">
-                      <td v-text="parameter.name"></td>
+                    <tr v-for="subparameter in SubParameters.data" :key="subparameter.id">
+                      <td v-text="subparameter.name" @click="loadItems(subparameter)"></td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer">
+            <pagination :data="SubParameters" @pagination-change-page="getSubParameters"></pagination>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-7 options-categories">
+        <div class="card card-plain" v-if="this.showItems === true">
+          <div class="card-header card-header-primary">
+            <div class="col-10">
+                <h3 class="card-title mt-0"> Lista de características a evaluar</h3>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-primary"
+              @click="goBackCategories()"
+              data-toggle="tooltip" data-placement="bottom" title="Regresar a las categorías de parámetros">
+                <i class="fas fa-angle-double-left"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th style="width:98%"> Nombre </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in Items.data" :key="item.id">
+                      <td v-text="item.name" @click="addStencil(item)"></td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer">
+            <pagination :data="Items" @pagination-change-page="getItems"></pagination>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 options-selected">
+        <div class="card card-plain" v-if="this.showStencil === true" v-bind:key="updateList">
+          <div class="card-header card-header-primary">
+            <div class="col-12">
+                <h3 class="card-title mt-0"> Instrumento de evaluación</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="title">
+                  <tr>
+                    <th style="width:20%"> Tipo </th>
+                    <th style="width:70%"> Nombre </th>
+                    <th style="width:10%"> Acción </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="stencil in Stencils" :key="stencil.id">
+                      <td v-text="stencil.identificator"></td>
+                      <td v-text="stencil.name.substr(0,35)+'...'"></td>
                       <td>
-                        <button class="btn btn-info btn-sm"
-                          @click="loadFieldsUpdate(parameter)"
-                          data-toggle="modal"
-                          data-target="#addParameter">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm"
-                         @click="deleteParameter(parameter)">
+                        <button class="btn-icon btn btn-danger"
+                         @click="deleteStencil(stencil)">
                           <i class="fas fa-trash-alt"></i>
                         </button>
-                        <button class="btn btn-secondary btn-sm"
-                        @click="showSubparameters(parameter)">
-                          <i class="far fa-eye"></i>
-                        </button>
-
                       </td>
                     </tr>
                   </tbody>
@@ -66,62 +150,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <pagination :data="Parameters" @pagination-change-page="getResults"></pagination>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-8">
-          <subparameters v-if="this.showSubparameter != '0'" v-bind:key="componentSubParameterKey"/>
-      </div>
-    -->
-    </div>
-    <div class="modal fade" id="addParameter" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="ParameterModalLabel">Parámetros</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header card-header-primary">
-                    <h4 class="card-title">{{ title }}</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-8">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Nombre</label>
-                          <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
-                          <has-error :form="form" field="nombre"></has-error>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Tipo</label>
-                          <select v-model="form.tipo" class=" form-control" :class="{ 'is-invalid': form.errors.has('tipo')}">
-                            <option value="workload">Cargas de trabajo</option>
-                            <option value="psychosocial">Análisis Psicosocial</option>
-                          </select>
-                          <has-error :form="form" field="tipo"></has-error>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="container-buttons">
-                        <button v-if="update== 0" @click="saveParameter()" class="btn btn-success">Añadir</button>
-                        <button v-if="update!= 0" @click="updateParameter()" class="btn btn-info">Actualizar</button>
-                        <button v-if="update!= 0" @click="salir()" class="btn btn-secondary">Atrás</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -133,143 +162,107 @@
     export default {
         data(){
             return{
-                form: new Form ({
-                  id:"",//User ID
-                  nombre:"",
-                  tipo:""
-                }),
-                componentSubParameterKey:0,
-                componentVariableKey:0,
-                title:"Agregar nuevo parámetro", //title to show
-                update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-                showSubparameter:0,
-                showVariable:0,
-                Parameters:{}, //BD content
-                Parameter:{}
+                startUpCategorySelection:true,
+                showTemplates:false,
+                showParameters:false,
+                showSubParameters:false,
+                showItems:false,
+                showStencil:false,
+                parameter:{},
+                category:{},
+                typeOfStudy:0,
+                updateList:0,
+                item:{},
+                Templates:{}, //BD content
+                Parameters:{},
+                SubParameters:{},
+                Items:{},
+                Stencils:{}
             }
         },
         methods:{
             loadCategory(param){
-              if (param === 0){
-                  alert ('Cargas de trabajo');
-              }else{
-                  alert ('Analisis psicosocial');
-              }
-
-            },
-            getResults(page = 1) {
-              axios.get('/parametros?page=' + page)
-              .then(response => {
-                    this.Parameters = response.data; //get all projects from page
-              });
-            },
-            showSubparameters(parameter){
               let me =this;
-              me.showSubparameter= parameter.id;
-              me.Parameter =parameter;
-              axios.post('/parametros/setsession',{
-                id: parameter.id,
-                name: parameter.name
-              })
-              .then(function (response) {
-                me.componentSubParameterKey += 1;
+              if (param === 0){me.typeOfStudy=0;}
+              else{me.typeOfStudy=1;}
+              me.startUpCategorySelection = false;
+              me.getMainParameters();
+            },
+            getMainParameters(page = 1) {
+              let me =this;
+              var url = '/parametros/cargatrabajo';
+              if(me.typeOfStudy ==1){
+                url='/parametros/psicosocial';
+              }
+              axios.get(url + '?page=' + page)
+              .then(response => {
+                  me.Parameters = response.data; //get all parameters in DB
+                  me.showParameters = true; //Show parameters
               })
               .catch(function (error) {
                 console.log(error);
               });
             },
-            getParametros(){
-                let me =this;
-                me.clearFields();
-                axios.get('/parametros').then(function (response) {
-                    me.Parameters = response.data; //get all parameters
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            loadSubParameter(parameter){
+              let me =this;
+              me.parameter = parameter; //Get id of the chosen paramater
+              this.showSubParameters = true  // show list of subparameters
+              this.showParameters = false; //stop showing parameters
+              this.getSubParameters();
             },
-            saveParameter(){
-                let me =this;
-                this.form.post('/parametros/guardar')
-                .then(function (response) {
-                    me.salir();
-                    me.getParametros();// show all users
-                    toast.fire({
-                      type: 'success',
-                      title: 'Parámetro registrado con éxito'
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            getSubParameters(page = 1){
+              let me =this;
+              axios.get('/subparametros/buscarxid/'+me.parameter.id+'?page='+ page)
+              .then(function (response) {
+                me.SubParameters = response.data; //get all subparamaters
+              })
+              .catch(function (error) {
+                alert('error');
+                console.log(error);
+              });
 
             },
-            updateParameter(){
-                let me = this;
-                this.form.put('/parametros/actualizar')
-                .then(function (response) {
-                   toast.fire({
-                    type: 'success',
-                    title: 'Parámetro actualizado con éxito'
-                   });
-                   $('#addParameter').modal('toggle');
-                   me.getParametros();
-                   me.salir();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            loadFieldsUpdate(parameter){
+            loadItems(subparameter){
               let me =this;
-              me.update = parameter.id
-              me.title="Actualizar información del parámetro";
-              me.form.nombre = parameter.name;
-              me.form.tipo = parameter.type;
-              me.form.id = parameter.id;
+              me.showItems = true; //Show items
+              me.category =subparameter; //Get id of the chosen subparamater
+              me.showSubParameters =false; //stop showing lis of SubParameters
+              me.getItems();
             },
-            deleteParameter(parameter){
+            getItems(page = 1){
               let me =this;
-              swal.fire({
-                title: 'Eliminar un lista de parámetro',
-                text: "Esta acción no se puede revertir, Está a punto de eliminar un parámetro",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#114e7e',
-                cancelButtonColor: '#20c9a6',
-                confirmButtonText: '¡Sí, eliminarlo!'
+              axios.get('/variable/buscarxid/'+me.category.id+'?page='+ page)
+              .then(function (response) {
+                me.Items = response.data; //get all variables
               })
-              .then((result) => {
-                if (result.value) {
-                  axios.delete('/parametros/borrar/'+parameter.id)
-                  .then(function (response) {
-                    swal.fire(
-                      'Eliminado',
-                      'Parametro fue eliminado',
-                      'success'
-                    )
-                    me.getParametros();
-                  })
-                  .catch(function (error) {
-                      console.log(error);
-                  });
-                }
-              })
+              .catch(function (error) {
+                alert('error');
+                console.log(error);
+              });
             },
-            clearFields(){
-                let me =this;
-                me.title="Agregar nuevo parámetro",
-                me.update = 0;
-                me.form.reset();
+            addStencil(item){
+              let me =this;
+              me.showStencil = true; //show items
+              alert ("*NUEVO*"+item.id+":"+item.name);
+              me.item = item;
+              me.Stencils[item.id] = item; // add current item
+              me.updateList += 1;
             },
-            salir(){
-              this.clearFields();
-              $('#addParameter').modal('toggle');
+            deleteStencil(item){
+              let me =this;
+              delete me.Stencils[item.id];
+              me.updateList += 1;
+            },
+            goBackCategories(){
+              let me =this;
+              me.showItems=false;
+              me.showSubParameters=true;
+            },
+            goBackParameters(){
+              let me =this;
+              me.showSubParameters=false;
+              me.showParameters=true;
             }
-
-        },
-        mounted() {
-           this.getParametros();
         }
     }
 </script>

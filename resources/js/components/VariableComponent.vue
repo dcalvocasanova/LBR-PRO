@@ -15,26 +15,26 @@
               </button>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body card-body-fitted ">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th style="width: 92px;"> Nombre </th>
-                    <th> Acciones </th>
+                    <th style="width: 160px;"> Nombre </th>
+                    <th style="width: 40px;"> Acciones </th>
                   </tr>
                 </thead>
                 <tbody>
                     <tr  v-for="variable in Variables.data" :key="variable.id">
                       <td v-text="variable.name"></td>
                       <td>
-                        <button class="btn btn-info"
+                        <button class="btn-icon btn btn-info"
                           @click="loadFieldsUpdate(variable)"
                           data-toggle="modal"
                           data-target="#addVariable">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn-icon btn btn-danger"  @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -64,6 +64,15 @@
                     <h4 class="card-title">{{ title }}</h4>
                   </div>
                   <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Identificador</label>
+                          <input v-model="form.identificador" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('identificador') }">
+                          <has-error :form="form" field="identificador"></has-error>
+                        </div>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="col-md-9">
                         <div class="form-group">
@@ -138,13 +147,13 @@
                 form: new Form ({
                   id:"",//User ID
                   nombre:"",
+                  identificador:"",
                   tipo:"",
                   valor:"",
                   medida:"",
                   regla:""
                 }),
                 showDetails: false,
-                componentVariableKey:0,
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 showVariable:0,
@@ -156,7 +165,7 @@
             getResults(page = 1) {
               axios.get('/variables?page=' + page)
               .then(response => {
-                    this.Variable = response.data; //get all projects from page
+                    this.Variables = response.data; //get all projects from page.
               });
             },
             showSubVariables(variable){
@@ -168,7 +177,7 @@
                 name: parameter.name
               })
               .then(function (response) {
-                me.componentVariableKey += 1;
+
               })
               .catch(function (error) {
                 console.log(error);
@@ -229,6 +238,7 @@
               me.update = variable.id
               me.title="Actualizar información de la variable";
               me.form.nombre = variable.name;
+              me.form.identificador = variable.identificator;
               me.form.tipo = variable.type;
               me.form.valor=variable.value;
               me.form.medida=variable.measure;
@@ -269,6 +279,7 @@
                 me.title="Agregar nueva variable",
                 me.update = 0;
                 me.form.reset();
+                me.showDetails= false;
             },
             salir(){
               this.clearFields();

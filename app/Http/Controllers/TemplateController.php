@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Template;
+use App\Http\Resquests\TemplateRequest;
 use Illuminate\Http\Request;
 
 class TemplateController extends Controller
@@ -14,72 +15,53 @@ class TemplateController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+      $templates = Template::latest()->paginate(5);
+      return $templates;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  TemplateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TemplateRequest $request)
     {
-        //
+      $template = Template::create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Template  $template
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Template $template)
+    public function show (Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Template  $template
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Template $template)
-    {
-        //
+      $template = Template::findOrFail($request->id);
+      return $template;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Template  $template
+     * @param  TemplateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Template $template)
+    public function update(TemplateRequest $request)
     {
-        //
+      $template = Template::findOrFail($request->id);
+      $template->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Template  $template
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Template $template)
+    public function destroy(Request  $request)
     {
-        //
+      $template = Template::destroy($request->id);
     }
 }

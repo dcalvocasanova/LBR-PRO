@@ -17,7 +17,7 @@
               </div>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body card-body-fitted ">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
@@ -30,14 +30,14 @@
                     <tr  v-for="subparameter in SubParameters.data" :key="subparameter.id">
                       <td v-text="subparameter.name"></td>
                       <td>
-                        <button class="btn btn-info btn-sm"
+                        <button class="btn-icon btn btn-info"
                           @click="loadFieldsUpdate(subparameter)"
                           data-toggle="modal"
                           data-target="#addSubParameter">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm" @click="deleteSubParameter(subparameter)"><i class="fas fa-trash-alt"></i></button>
-                        <button class="btn btn-secondary btn-sm" @click="showSubVariables(subparameter)"><i class="far fa-eye"></i></button>
+                        <button class="btn-icon btn btn-danger" @click="deleteSubParameter(subparameter)"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn-icon btn btn-secondary" @click="showSubVariables(subparameter)"><i class="far fa-eye"></i></button>
                       </td>
                     </tr>
                   </tbody>

@@ -99,7 +99,7 @@ class ParameterController extends Controller
      */
     public function getWorkLoadCategory()
     {
-        $parameters = Parameter::where('type','workload')->paginate(10);
+        $parameters = Parameter::where('type','workload')->paginate(5);
         return $parameters;
     }
     /**
@@ -110,7 +110,7 @@ class ParameterController extends Controller
      */
     public function getPsychosocialCategory()
     {
-      $parameters = Parameter::where('type','psychosocial')->paginate(10);
+      $parameters = Parameter::where('type','psychosocial')->paginate(5);
       return $parameters;
     }
 }

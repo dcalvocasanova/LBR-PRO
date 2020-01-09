@@ -18,7 +18,6 @@ class SubparameterController extends Controller
       $subparameters = Subparameter::where('parameter_id',$request->session()->get('parameter_id'))->paginate(5);
       return $subparameters;
     }
-    return "";
   }
 
   /**
@@ -90,5 +89,17 @@ class SubparameterController extends Controller
     $request->session()->put('subparameter_id', $request->id);
     $request->session()->put('subparameter_name', $request->name);
     return $request->session()->all();
+  }
+
+  /**
+   * Get all sub-parameters according to an parameter Id
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function getSubParametersByParameterId(Request $request)
+  {
+    $subparameters = Subparameter::where('parameter_id',$request->id)->paginate(5);
+    return $subparameters;
   }
 }
