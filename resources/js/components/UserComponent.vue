@@ -168,6 +168,11 @@
                   </div>
                 </div>
               </div>
+
+              <div class="col-12">
+                 <strong>Cargar ARCHIVO:</strong>
+                <input type="file" class="form-control" v-on:change="CargaArchivo">
+              </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
@@ -203,10 +208,35 @@
                 title:"Agregar nuevo usuario", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 loadLogoProject:"",
+                fileUser:"",
                 Users:{}, //BD content
             }
         },
         methods:{
+            CargaArchivo(f){
+                let me =this;
+                console.log(f.target.files[0]);
+                me.fileUser = f.target.files[0];
+                var data = new FormData();
+                data.append('archivo', me.fileUser);
+                axios.post('/uploadfile', data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                      }
+                )
+                .then(response => {
+                  toast.fire({
+                    type: 'success',
+                    title: 'Se cargó el archivo'
+                  });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert("no funca");
+                });
+
+            },
             getResults(page = 1) {
               axios.get('/usuarios?page=' + page)
               .then(response => {

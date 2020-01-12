@@ -13,7 +13,7 @@ class TemplateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
     /**
      * Get the validation rules that apply to the request.
@@ -26,8 +26,7 @@ class TemplateRequest extends FormRequest
           'name' => 'required|string|max:100',
           'type' => 'required|string|max:100',
           'description' => 'required|string',
-          'stencil' => 'required|json'
-
+          'stencil' => 'required|json',
         ];
     }
     /**
@@ -41,7 +40,7 @@ class TemplateRequest extends FormRequest
             'name' => 'nombre',
             'type' => 'tipo',
             'description' => 'descripción',
-            'stencil' => 'instrumento'
+            'stencil' => 'instrumento',
         ];
     }
 }

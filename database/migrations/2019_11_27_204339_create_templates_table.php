@@ -18,7 +18,7 @@ class CreateTemplatesTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('type');
-            $table->string('stencil');
+            $table->json('stencil');
             $table->timestamps();
         });
     }

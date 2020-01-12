@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Template;
-use App\Http\Resquests\TemplateRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+use App\Http\Requests\TemplateRequest;
 
 class TemplateController extends Controller
 {
@@ -63,5 +65,17 @@ class TemplateController extends Controller
     public function destroy(Request  $request)
     {
       $template = Template::destroy($request->id);
+    }
+
+    /**
+     * Get all variables according to a type
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getTeplatesByType(Request $request)
+    {
+      $template = Template::where('type',$request->type)->latest()->paginate(5);
+      return $template;
     }
 }

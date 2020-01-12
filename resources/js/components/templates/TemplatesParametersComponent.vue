@@ -17,143 +17,241 @@
       </div>
     </div>
     <div class="row" v-if="this.startUpCategorySelection === false">
-      <div class="col-md-7 options-parameters">
-        <div class="card card-plain" v-if="this.showParameters === true">
-          <div class="card-header card-header-primary">
-            <div class="col-md-12">
-                <h3 class="card-title mt-0"> Lista de parámetros</h3>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th style="width:98%"> Nombre </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="parameter in Parameters.data" :key="parameter.id">
-                      <td v-text="parameter.name" @click="loadSubParameter(parameter)"></td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
-            <pagination :data="Parameters" @pagination-change-page="getMainParameters"></pagination>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-7 options-sub-parameters">
-        <div class="card card-plain" v-if="this.showSubParameters === true">
-          <div class="card-header card-header-primary">
-            <div class="row">
-              <div class="col-10 ">
-                  <h3 class="card-title mt-0"> Lista de categorías de Parámetros</h3>
+      <div class="col-12">
+        <div class="row col-12">
+          <div class="col-md-6">
+            <div class="col-12 show-templates">
+              <div class="card card-plain">
+                <div class="card-header card-header-primary">
+                  <div class="row col-12">
+                    <div class="col-10">
+                      <h3 class="card-title mt-0"> Plantillas registradas </h3>
+                    </div>
+                    <div class="col-2" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva plantilla">
+                      <button class="btn btn-primary" @click="CreateTemplate()">
+                        <i class="fa fa-plus-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="table">
+                        <tr>
+                          <th style="width:90px;"> Nombre </th>
+                          <th style="width:20px;"> Acciones </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr  v-for="template in Templates.data" :key="template.id">
+                            <td v-text="template.name"></td>
+                            <td>
+                              <button class="btn-icon btn btn-info"
+                                @click="updateTemplate(template)">
+                                  <i class="fas fa-edit"></i>
+                              </button>
+                              <button class="btn-icon btn btn-primary"
+                              @click="duplicateTemplate(template)">
+                                <i class="fa fa-clone"></i>
+                              </button>
+                              <button class="btn-icon btn btn-secondary"
+                              @click="showTemplate(template)">
+                                <i class="far fa-eye"></i>
+                              </button>
+                              <button class="btn-icon btn btn-danger"
+                              @click="deleteTemplate(template)">
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <pagination :data="Templates" @pagination-change-page="getTemplates"></pagination>
+                </div>
               </div>
-              <div class="col-2">
-                <button class="btn btn-primary"
-                @click="goBackParameters()"
-                data-toggle="tooltip" data-placement="bottom" title="Regresar a la lista de parámetros">
-                  <i class="fas fa-angle-double-left"></i>
-                </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card addNewTemplates"  v-if="this.showCreateOrUpdate === true">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">{{title}}</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Nombre</label>
+                        <input v-model="form.name" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('name') }">
+                        <has-error :form="form" field="name"></has-error>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Descripción</label>
+                        <input v-model="form.description" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('description') }">
+                        <has-error :form="form" field="description"></has-error>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="container-buttons col-9">
+                      <button @click="saveTemplate()" class="btn btn-success">Añadir</button>
+                      <button @click="cancelar()" class="btn btn-warning">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row col-12">
+          <div class="col-md-6">
+            <div class="col-12 options-parameters"  v-if="this.showCreateOrUpdate === true">
+              <div class="card card-plain" v-if="this.showParameters === true">
+                <div class="card-header card-header-primary">
+                  <div class="col-md-12">
+                      <h3 class="card-title mt-0"> Lista de parámetros</h3>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="">
+                        <tr>
+                          <th style="width:98%"> Nombre </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="parameter in Parameters.data" :key="parameter.id">
+                            <td v-text="parameter.name" @click="loadSubParameter(parameter)"></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <pagination :data="Parameters" @pagination-change-page="getMainParameters"></pagination>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 options-sub-parameters">
+              <div class="card card-plain" v-if="this.showSubParameters === true">
+                <div class="card-header card-header-primary">
+                  <div class="row">
+                    <div class="col-10 ">
+                        <h3 class="card-title mt-0"> Lista de categorías de Parámetros</h3>
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-primary"
+                      @click="goBackParameters()"
+                      data-toggle="tooltip" data-placement="bottom" title="Regresar a la lista de parámetros">
+                        <i class="fas fa-angle-double-left"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="">
+                        <tr>
+                          <th style="width:98%"> Nombre </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="subparameter in SubParameters.data" :key="subparameter.id">
+                            <td v-text="subparameter.name" @click="loadItems(subparameter)"></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <pagination :data="SubParameters" @pagination-change-page="getSubParameters"></pagination>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 options-categories">
+              <div class="card card-plain" v-if="this.showItems === true">
+                <div class="card-header card-header-primary">
+                  <div class="col-10">
+                      <h3 class="card-title mt-0"> Lista de características a evaluar</h3>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-primary"
+                    @click="goBackCategories()"
+                    data-toggle="tooltip" data-placement="bottom" title="Regresar a las categorías de parámetros">
+                      <i class="fas fa-angle-double-left"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="">
+                        <tr>
+                          <th style="width:98%"> Nombre </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="item in Items.data" :key="item.id">
+                            <td v-text="item.name" @click="addStencil(item)"></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <pagination :data="Items" @pagination-change-page="getItems"></pagination>
+                </div>
               </div>
             </div>
           </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th style="width:98%"> Nombre </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="subparameter in SubParameters.data" :key="subparameter.id">
-                      <td v-text="subparameter.name" @click="loadItems(subparameter)"></td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
-            <pagination :data="SubParameters" @pagination-change-page="getSubParameters"></pagination>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-7 options-categories">
-        <div class="card card-plain" v-if="this.showItems === true">
-          <div class="card-header card-header-primary">
-            <div class="col-10">
-                <h3 class="card-title mt-0"> Lista de características a evaluar</h3>
-            </div>
-            <div class="col-2">
-              <button class="btn btn-primary"
-              @click="goBackCategories()"
-              data-toggle="tooltip" data-placement="bottom" title="Regresar a las categorías de parámetros">
-                <i class="fas fa-angle-double-left"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th style="width:98%"> Nombre </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in Items.data" :key="item.id">
-                      <td v-text="item.name" @click="addStencil(item)"></td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
-            <pagination :data="Items" @pagination-change-page="getItems"></pagination>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-5 options-selected">
-        <div class="card card-plain" v-if="this.showStencil === true" v-bind:key="updateList">
-          <div class="card-header card-header-primary">
-            <div class="col-12">
-                <h3 class="card-title mt-0"> Instrumento de evaluación</h3>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="title">
-                  <tr>
-                    <th style="width:20%"> Tipo </th>
-                    <th style="width:70%"> Nombre </th>
-                    <th style="width:10%"> Acción </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="stencil in Stencils" :key="stencil.id">
-                      <td v-text="stencil.identificator"></td>
-                      <td v-text="stencil.name.substr(0,35)+'...'"></td>
-                      <td>
-                        <button class="btn-icon btn btn-danger"
-                         @click="deleteStencil(stencil)">
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
+          <div class="col-md-6">
+            <div class="options-selected">
+              <div class="card card-plain" v-if="this.showStencil === true" v-bind:key="updateList">
+                <div class="card-header card-header-primary">
+                  <div class="col-12">
+                      <h3 class="card-title mt-0"> Instrumento de evaluación</h3>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="title">
+                        <tr>
+                          <th style="width:20%"> Tipo </th>
+                          <th style="width:70%"> Nombre </th>
+                          <th style="width:10%" v-if="this.showCreateOrUpdate === true"> Acción </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="stencil in Stencils":key="stencil.id">
+                            <td v-text="stencil.identificator"></td>
+                            <td v-text="stencil.name.substr(0,35)+'...'"></td>
+                            <td v-if="this.showCreateOrUpdate === true">
+                              <button class="btn-icon btn btn-danger"
+                               @click="deleteStencil(stencil)">
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer">
 
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -162,23 +260,32 @@
     export default {
         data(){
             return{
-                startUpCategorySelection:true,
-                showTemplates:false,
-                showParameters:false,
-                showSubParameters:false,
-                showItems:false,
-                showStencil:false,
-                parameter:{},
-                category:{},
-                typeOfStudy:0,
-                updateList:0,
-                item:{},
-                Templates:{}, //BD content
-                Parameters:{},
-                SubParameters:{},
-                Items:{},
-                Stencils:{}
-            }
+              form: new Form ({
+                id:"",//template ID
+                name:"",
+                type:"",
+                description:"",
+                stencil:"",
+              }),
+              startUpCategorySelection:true,
+              showTemplates:false,
+              showParameters:false,
+              showSubParameters:false,
+              showItems:false,
+              showStencil:false,
+              showCreateOrUpdate:false,
+              parameter:{},
+              category:{},
+              typeOfStudy:0,
+              updateList:0,
+              title:"",
+              item:{},
+              Templates:{}, //BD content
+              Parameters:{},
+              SubParameters:{},
+              Items:{},
+              Stencils:{}
+          }
         },
         methods:{
             loadCategory(param){
@@ -186,7 +293,104 @@
               if (param === 0){me.typeOfStudy=0;}
               else{me.typeOfStudy=1;}
               me.startUpCategorySelection = false;
+              me.getTemplates();
               me.getMainParameters();
+            },
+            getTemplates(page = 1){
+              let me =this;
+              var url = '/plantillas/buscarxtipo/workload';
+              if(me.typeOfStudy ==1){
+                url+='/plantillas/buscarxtipo/psychosocial';
+              }
+              axios.get(url + '?page=' + page)
+              .then(response => {
+                  me.Templates = response.data; //get all parameters in DB
+                  //me.showParameters = true; //Show parameters
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+            },
+            CreateTemplate(){
+              let me =this;
+              me.title="Agregar nueva plantilla";
+              me.showCreateOrUpdate = true;
+            },
+            updateTemplate(template){
+
+            },
+            deleteTemplate(template){
+              let me =this;
+              swal.fire({
+                title: 'Eliminar una plantilla',
+                text: "Esta acción no se puede revertir, Está a punto de eliminar una plantilla",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#114e7e',
+                cancelButtonColor: '#20c9a6',
+                confirmButtonText: '¡Sí, eliminarla!'
+              })
+              .then((result) => {
+                if (result.value) {
+                  axios.delete('/plantillas/borrar/'+template.id)
+                  .then(function (response) {
+                    swal.fire(
+                      'Eliminado',
+                      'La plantilla fue eliminada',
+                      'success'
+                    )
+                    me.getTemplates();
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  });
+                }
+              })
+            },
+            duplicateTemplate(template){
+              let me =this;
+              me.form.fill(template);
+              me.form.name+="*Copia";
+              me.form.post('plantillas/guardar')
+              .then(function (response) {
+                  toast.fire({
+                    type: 'success',
+                    title: 'Plantilla duplicada con éxito'
+                  });
+                  me.getTemplates();
+                  me.showCreateOrUpdate = false;
+                  me.showStencil=false;
+                  me.showItems=false;
+                  me.form.reset();
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
+            },
+            saveTemplate(){
+              let me =this;
+              me.form.type= me.parameter.type;
+              if (Object.keys(me.Stencils).length !== 0) {
+                me.form.stencil = JSON.stringify(me.Stencils);
+                me.form.post('plantillas/guardar')
+                .then(function (response) {
+                    toast.fire({
+                      type: 'success',
+                      title: 'Plantilla registrado con éxito'
+                    });
+                    me.getTemplates();
+                    me.showCreateOrUpdate = false;
+                    me.showStencil=false;
+                    me.showItems=false;
+                    me.form.reset();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              }else{
+                alert('está vacio');
+              }
+
             },
             getMainParameters(page = 1) {
               let me =this;
@@ -243,9 +447,9 @@
             addStencil(item){
               let me =this;
               me.showStencil = true; //show items
-              alert ("*NUEVO*"+item.id+":"+item.name);
               me.item = item;
               me.Stencils[item.id] = item; // add current item
+              me.Stencils[item.id].category = me.category.name;
               me.updateList += 1;
             },
             deleteStencil(item){

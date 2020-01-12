@@ -209,4 +209,21 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+
+    /**
+     * Load files.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loadFiles(Request $request)
+    {
+        $file =  $request->file('archivo');
+        if(!empty($file)){
+          $fileName = rand().'.'.$file->getClientOriginalExtension();
+          $request->file('archivo')->move(public_path('upload'), $fileName);
+
+          return response()->json(['success'=>'You have successfully upload file.']);
+        }
+        return response()->json(['fail'=>'Mamo, no envió nada.']);
+    }
 }
