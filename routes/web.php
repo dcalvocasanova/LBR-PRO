@@ -78,6 +78,7 @@ Route::get('/estructura/buscar', 'ProjectStructureController@show');
 
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::post('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
@@ -108,3 +109,28 @@ Route::put('/variables/actualizar', 'VariableController@update');
 Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
 Route::get('/variables/buscar', 'VariableController@show');
+
+
+/*Manage Macroprocess*/
+Route::get('/macroprocesos', 'MacroprocessController@index');
+Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');
+Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
+Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
+Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
+Route::post('/macroprocesos/setsession', 'MacroprocessController@session');
+
+
+/*Manage Levels*/
+Route::get('/niveles', 'LevelController@index');
+Route::put('/niveles/actualizar', 'LevelController@update');
+Route::post('/niveles/guardar', 'LevelController@store');
+Route::delete('/niveles/borrar/{id}', 'LevelController@destroy');
+Route::get('/niveles/buscar', 'LevelController@show');
+Route::post('/niveles/setsession', 'LevelController@session');
+
+/*Manage Objectives*/
+Route::get('/objetivos', 'ObjectiveController@index');
+Route::put('/objetivos/actualizar', 'ObjectiveController@update');
+Route::post('/objetivos/guardar', 'ObjectiveController@store');
+Route::delete('/objetivos/borrar/{id}', 'ObjectiveController@destroy');
+Route::get('/objetivos/buscar', 'ObjectiveController@show');
