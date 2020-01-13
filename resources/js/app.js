@@ -64,6 +64,8 @@ Vue.component('subparameters', require('./components/SubParametersComponent.vue'
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+Vue.component('levels', require('./components/LevelsComponent.vue').default);
+Vue.component('objectives', require('./components/ObjectivesComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 
 /**

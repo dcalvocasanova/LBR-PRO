@@ -168,11 +168,9 @@
                   </div>
                 </div>
               </div>
-
-              <div class="col-12">
-                 <strong>Cargar ARCHIVO:</strong>
-                <input type="file" class="form-control" v-on:change="CargaArchivo">
-              </div>
+			  <div>				
+				<input  type="file" id ="procesar_archivo" @change="EventSubir">
+			  </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
@@ -208,18 +206,28 @@
                 title:"Agregar nuevo usuario", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 loadLogoProject:"",
-                fileUser:"",
+				userFile:"",
                 Users:{}, //BD content
             }
         },
         methods:{
-            CargaArchivo(f){
+			loadfile(event){
+				var files = event.target.files || event.dataTransfer.files;
+				this.userFile = event.target.files[0];
+				alert(files[0]);
+				axios.post('/usuarios/loadusers',{users:this.userFile})
+					.then(function(response){console.log(response)})
+					.catch(function(response){console.log(response)})
+				;
+			},
+			
+			EventSubir(f){
                 let me =this;
                 console.log(f.target.files[0]);
-                me.fileUser = f.target.files[0];
+                me.userFile = f.target.files[0];
                 var data = new FormData();
-                data.append('archivo', me.fileUser);
-                axios.post('/uploadfile', data, {
+                data.append('archivo', me.userFile);
+                axios.post('/usuarios/loadusers', data, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -235,8 +243,13 @@
                     console.log(error);
                     alert("no funca");
                 });
-
             },
+			
+			
+        handleFileUpload(){
+            this.file = this.$refs.file.files[0];
+        },
+
             getResults(page = 1) {
               axios.get('/usuarios?page=' + page)
               .then(response => {
@@ -247,6 +260,7 @@
                 let logo = (user.avatar.length > 200) ? user.avatar : "img/profile-usr/"+ user.avatar;
                 return logo;
             },
+			
             getUsuarios(){
                 let me =this;
                 me.clearFields();
