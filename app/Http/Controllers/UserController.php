@@ -13,8 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Str;
 use App\Mail\EmailMessage;
 use Mail;
-use App\Imports\UsersImport;
-use Maatwebsite\Excel\Facades\Excel;
+
 class UserController extends Controller
 {
     /**
@@ -186,34 +185,6 @@ class UserController extends Controller
 	
 	public function loadUsers(Request $request){
 		
-		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
-		
-		//$file = $request->file('file');
-		//$file= $fileName;
-		
-		Excel::import(new UsersImport, $request->file('archivo'));
-		//dd($request);
-		//dd($request->users);
-		//$file = $request->file('users');
-		
-
-//$file->getRealPath();
-//$file->getClientOriginalName();
-/*$file->getClientOriginalExtension();
-$file->getSize();
-$file->getMimeType();*/
-		//return response()->json(['success'=>'You have successfully upload file'. $file]);
-		
-		
-		
-		
-		
-		$file =  $request->file('archivo');
-        if(!empty($file)){
-          $fileName = rand().'.'.$file->getClientOriginalExtension();
-          $request->file('archivo')->move(public_path('upload'), $fileName);
-          return response()->json(['success'=>'You have successfully upload file.']);
-        }
-        return response()->json(['fail'=>'Mamo, no envió nada.']);
+		return response()->json(['success'=>'You have successfully upload file.']);
 	}
 }

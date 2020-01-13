@@ -147,7 +147,7 @@
               </div>
 				<div>
 					
-            		<input  type="file" id ="procesar_archivo" @change="EventSubir">
+            		<input type="file" id ="procesar_archivo" @change="loadfile">
 				</div>
 					
 	
@@ -183,52 +183,18 @@
                 title:"Agregar nuevo usuario", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 loadLogoProject:"",
-				userFile:"",
                 Users:{}, //BD content
             }
         },
         methods:{
 			
-			loadfile(event){
-				var files = event.target.files || event.dataTransfer.files;
-				this.userFile = event.target.files[0];
-				alert(files[0]);
-				axios.post('/usuarios/loadusers',{users:this.userFile})
+			loadfile(file){
+				alert(file.target.files[0]);
+				axios.post('/usuarios/loadusers',{users:file})
 					.then(function(response){console.log(response)})
 					.catch(function(response){console.log(response)})
 				;
 			},
-			
-			EventSubir(f){
-                let me =this;
-                console.log(f.target.files[0]);
-                me.userFile = f.target.files[0];
-                var data = new FormData();
-                data.append('archivo', me.userFile);
-                axios.post('/usuarios/loadusers', data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                      }
-                )
-                .then(response => {
-                  toast.fire({
-                    type: 'success',
-                    title: 'Se cargó el archivo'
-                  });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert("no funca");
-                });
-            },
-			
-			
-        handleFileUpload(){
-            this.file = this.$refs.file.files[0];
-        },
-			
-			
             getResults(page = 1) {
               axios.get('/usuarios?page=' + page)
               .then(response => {
@@ -239,7 +205,6 @@
                 let logo = (user.avatar.length > 200) ? user.avatar : "img/profile-usr/"+ user.avatar;
                 return logo;
             },
-			
             getUsuarios(){
                 let me =this;
                 me.clearFields();

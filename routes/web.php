@@ -78,7 +78,7 @@ Route::get('/estructura/buscar', 'ProjectStructureController@show');
 
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
-Route::any('/usuarios/loadusers', 'UserController@loadUsers');
+Route::post('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
