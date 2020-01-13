@@ -182,9 +182,4 @@ class UserController extends Controller
 
         return redirect()->back();
     }
-	
-	public function loadUsers(Request $request){
-		
-		return response()->json(['success'=>'You have successfully upload file.']);
-	}
 }

@@ -5,12 +5,12 @@
         <div class="card card-plain">
           <div class="card-header card-header-primary">
             <div class="col-md-8">
-                <h3 class="card-title mt-0"> Lista de Objectivos</h3>
+                <h3 class="card-title mt-0"> Lista de variables</h3>
             </div>
-            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva Objectivo">
+            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
               <button class="btn btn-primary"
               data-toggle="modal"
-              data-target="#addObjective">
+              data-target="#addVariable">
                 <i class="fa fa-plus-circle"></i>
               </button>
             </div>
@@ -25,16 +25,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr  v-for="Objective in Objectives.data" :key="Objective.id">
-                      <td v-text="Objective.name"></td>
+                    <tr  v-for="variable in Variables.data" :key="variable.id">
+                      <td v-text="variable.name"></td>
                       <td>
                         <button class="btn btn-info"
-                          @click="loadFieldsUpdate(Objective)"
+                          @click="loadFieldsUpdate(variable)"
                           data-toggle="modal"
-                          data-target="#addObjective">
+                          data-target="#addVariable">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" @click="deleteObjective(Objective)"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-danger" @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -42,16 +42,16 @@
             </div>
           </div>
           <div class="card-footer">
-            <pagination :data="Objectives" @pagination-change-page="getResults"></pagination>
+            <pagination :data="Variables" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal fade" id="addObjective" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
+    <div class="modal fade" id="addVariable" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="ParameterModalLabel">Objectivos</h5>
+            <h5 class="modal-title" id="ParameterModalLabel">Variables</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -115,8 +115,8 @@
                     </div>
                     <div class="row">
                       <div class="container-buttons">
-                        <button v-if="update== 0" @click="saveObjective()" class="btn btn-success">Añadir</button>
-                        <button v-if="update!= 0" @click="updateObjective()" class="btn btn-info">Actualizar</button>
+                        <button v-if="update== 0" @click="saveVariable()" class="btn btn-success">Añadir</button>
+                        <button v-if="update!= 0" @click="updateVariable()" class="btn btn-info">Actualizar</button>
                         <button v-if="update!= 0" @click="salir()" class="btn btn-secondary">Atrás</button>
                       </div>
                     </div>
@@ -144,31 +144,31 @@
                   rule:""
                 }),
                 showDetails: true,
-                componentObjectiveKey:0,
+                componentVariableKey:0,
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-                showObjective:0,
-                Objectives:{}, //BD content
-                Objective:{}
+                showVariable:0,
+                Variables:{}, //BD content
+                Variable:{}
             }
         },
         methods:{
             getResults(page = 1) {
-              axios.get('/Objectives?page=' + page)
+              axios.get('/variables?page=' + page)
               .then(response => {
-                    this.Objective = response.data; //get all projects from page
+                    this.Variable = response.data; //get all projects from page
               });
             },
-            showSubObjectives(Objective){
+            showSubVariables(variable){
               let me =this;
-              me.showObjective= Objective.id;
-              me.Objective =Objective;
-              axios.post('/Objectives/setsession',{
+              me.showVariable= variable.id;
+              me.Variable =variable;
+              axios.post('/variables/setsession',{
                 id: parameter.id,
                 name: parameter.name
               })
               .then(function (response) {
-                me.componentObjectiveKey += 1;
+                me.componentVariableKey += 1;
               })
               .catch(function (error) {
                 console.log(error);
@@ -177,17 +177,17 @@
             getVaraibles(){
                 let me =this;
                 me.clearFields();
-                axios.get('/Objectives')
+                axios.get('/variables')
                 .then(function (response) {
-                    me.Objectives = response.data; //get all parameters
+                    me.Variables = response.data; //get all parameters
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            saveObjective(){
+            saveVariable(){
                 let me =this;
-                this.form.post('/Objectives/guardar')
+                this.form.post('/variables/guardar')
                 .then(function (response) {
                     me.salir();
                     me.getVaraibles();// show all users
@@ -201,15 +201,15 @@
                 });
 
             },
-            updateObjective(){
+            updateVariable(){
                 let me = this;
-                this.form.put('/Objectives/actualizar')
+                this.form.put('/variables/actualizar')
                 .then(function (response) {
                    toast.fire({
                     type: 'success',
-                    title: 'Objective actualizada con éxito'
+                    title: 'Variable actualizada con éxito'
                    });
-                   $('#addObjective').modal('toggle');
+                   $('#addVariable').modal('toggle');
                    me.getVaraibles();
                    me.salir();
                 })
@@ -217,19 +217,19 @@
                     console.log(error);
                 });
             },
-            loadFieldsUpdate(Objective){
+            loadFieldsUpdate(variable){
               let me =this;
-              me.update = Objective.id
-              me.title="Actualizar información de la Objective";
-              me.form.nombre = Objective.name;
-              me.form.tipo = Objective.type;
-              me.form.id = Objective.id;
+              me.update = variable.id
+              me.title="Actualizar información de la variable";
+              me.form.nombre = variable.name;
+              me.form.tipo = variable.type;
+              me.form.id = variable.id;
             },
-            deleteObjective(Objective){
+            deleteVariable(variable){
               let me =this;
               swal.fire({
-                title: 'Eliminar un Objectivo',
-                text: "Esta acción no se puede revertir, Está a punto de eliminar una Objectivo",
+                title: 'Eliminar una variable',
+                text: "Esta acción no se puede revertir, Está a punto de eliminar una variable",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#114e7e',
@@ -238,11 +238,11 @@
               })
               .then((result) => {
                 if (result.value) {
-                  axios.delete('/Objectives/borrar/'+Objective.id)
+                  axios.delete('/variables/borrar/'+variable.id)
                   .then(function (response) {
                     swal.fire(
                       'Eliminado',
-                      'Objectivo fue eliminado',
+                      'Variable fue eliminada',
                       'success'
                     )
                     me.getVaraibles();
@@ -255,13 +255,13 @@
             },
             clearFields(){
                 let me =this;
-                me.title="Agregar nueva Objective",
+                me.title="Agregar nueva variable",
                 me.update = 0;
                 me.form.reset();
             },
             salir(){
               this.clearFields();
-              $('#addObjective').modal('toggle');
+              $('#addVariable').modal('toggle');
             }
 
         },

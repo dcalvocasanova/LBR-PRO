@@ -145,12 +145,6 @@
                   </div>
                 </div>
               </div>
-				<div>
-					
-            		<input type="file" id ="procesar_archivo" @change="loadfile">
-				</div>
-					
-	
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
@@ -187,14 +181,6 @@
             }
         },
         methods:{
-			
-			loadfile(file){
-				alert(file.target.files[0]);
-				axios.post('/usuarios/loadusers',{users:file})
-					.then(function(response){console.log(response)})
-					.catch(function(response){console.log(response)})
-				;
-			},
             getResults(page = 1) {
               axios.get('/usuarios?page=' + page)
               .then(response => {
