@@ -3692,6 +3692,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3717,11 +3722,32 @@ __webpack_require__.r(__webpack_exports__);
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       loadLogoProject: "",
+      fileUser: "",
       Users: {} //BD content
 
     };
   },
   methods: {
+    CargaArchivo: function CargaArchivo(f) {
+      var me = this;
+      console.log(f.target.files[0]);
+      me.fileUser = f.target.files[0];
+      var data = new FormData();
+      data.append('archivo', me.fileUser);
+      axios.post('/uploadfile', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Se cargó el archivo'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+        alert("no funca");
+      });
+    },
     getResults: function getResults() {
       var _this = this;
 
@@ -4308,20 +4334,145 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      form: new Form({
+        id: "",
+        //template ID
+        name: "",
+        type: "",
+        description: "",
+        stencil: ""
+      }),
       startUpCategorySelection: true,
       showTemplates: false,
       showParameters: false,
       showSubParameters: false,
       showItems: false,
       showStencil: false,
+      showCreateOrUpdate: false,
       parameter: {},
       category: {},
       typeOfStudy: 0,
       updateList: 0,
-      item: {},
+      title: "",
       Templates: {},
       //BD content
       Parameters: {},
@@ -4341,7 +4492,122 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       me.startUpCategorySelection = false;
+      me.getTemplates();
       me.getMainParameters();
+    },
+    getTemplates: function getTemplates() {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var me = this;
+      var url = '/plantillas/buscarxtipo/workload';
+
+      if (me.typeOfStudy == 1) {
+        url += '/plantillas/buscarxtipo/psychosocial';
+      }
+
+      axios.get(url + '?page=' + page).then(function (response) {
+        me.Templates = response.data; //get all parameters in DB
+        //me.showParameters = true; //Show parameters
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    CreateTemplate: function CreateTemplate() {
+      var me = this;
+      me.title = "Agregar nueva plantilla";
+      me.showCreateOrUpdate = true;
+    },
+    updateTemplate: function updateTemplate(template) {
+      var me = this;
+      me.showCreateOrUpdate = true;
+      me.showParameters = true;
+      me.Stencils = JSON.parse(template.stencil);
+      me.showStencil = true; //show items
+
+      me.updateList += 1;
+    },
+    deleteTemplate: function deleteTemplate(template) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar una plantilla',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una plantilla",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarla!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/plantillas/borrar/' + template.id).then(function (response) {
+            swal.fire('Eliminado', 'La plantilla fue eliminada', 'success');
+            me.getTemplates();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    duplicateTemplate: function duplicateTemplate(template) {
+      var me = this;
+      me.form.fill(template);
+      me.form.name += "*Copia";
+      me.form.post('plantillas/guardar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Plantilla duplicada con éxito'
+        });
+        me.getTemplates();
+        me.showCreateOrUpdate = false;
+        me.showStencil = false;
+        me.showItems = false;
+        me.form.reset();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    showTemplate: function showTemplate(template) {
+      var me = this;
+      me.showCreateOrUpdate = false;
+      me.Stencils = JSON.parse(template.stencil);
+      me.showStencil = true; //show items
+
+      me.updateList += 1;
+    },
+    saveTemplate: function saveTemplate() {
+      var me = this;
+      me.form.type = me.parameter.type;
+
+      if (Object.keys(me.Stencils).length !== 0) {
+        me.form.stencil = JSON.stringify(me.Stencils);
+        me.form.post('plantillas/guardar').then(function (response) {
+          toast.fire({
+            type: 'success',
+            title: 'Plantilla registrado con éxito'
+          });
+          me.getTemplates();
+          me.showCreateOrUpdate = false;
+          me.showStencil = false;
+          me.showItems = false;
+          me.form.reset();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        swal.fire({
+          title: 'Datos incompletos',
+          text: "Es necesario agregar las variables a evaluar en el intrumento",
+          type: 'warning',
+          confirmButtonColor: '#114e7e',
+          cancelButtonColor: '#20c9a6',
+          confirmButtonText: '¡Entendido!'
+        });
+      }
+    },
+    cancelar: function cancelar() {
+      var me = this;
+      me.showCreateOrUpdate = false;
+      me.showStencil = false;
+      me.showItems = false;
+      me.form.reset();
     },
     getMainParameters: function getMainParameters() {
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
@@ -4404,10 +4670,10 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       me.showStencil = true; //show items
 
-      alert("*NUEVO*" + item.id + ":" + item.name);
       me.item = item;
       me.Stencils[item.id] = item; // add current item
 
+      me.Stencils[item.id].category = me.category.name;
       me.updateList += 1;
     },
     deleteStencil: function deleteStencil(item) {
@@ -48251,6 +48517,16 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
+            _c("div", { staticClass: "col-12" }, [
+              _c("strong", [_vm._v("Cargar ARCHIVO:")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "form-control",
+                attrs: { type: "file" },
+                on: { change: _vm.CargaArchivo }
+              })
+            ]),
+            _vm._v(" "),
             _c("div", { staticClass: "container-buttons" }, [
               _vm.update == 0
                 ? _c(
@@ -49081,233 +49357,59 @@ var render = function() {
     _vm._v(" "),
     this.startUpCategorySelection === false
       ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-7 options-parameters" }, [
-            this.showParameters === true
-              ? _c("div", { staticClass: "card card-plain" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "table-responsive" }, [
-                      _c("table", { staticClass: "table table-hover" }, [
-                        _vm._m(1),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.Parameters.data, function(parameter) {
-                            return _c("tr", { key: parameter.id }, [
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(parameter.name)
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.loadSubParameter(parameter)
-                                  }
-                                }
-                              })
-                            ])
-                          }),
-                          0
-                        )
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "card-footer" },
-                    [
-                      _c("pagination", {
-                        attrs: { data: _vm.Parameters },
-                        on: { "pagination-change-page": _vm.getMainParameters }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-7 options-sub-parameters" }, [
-            this.showSubParameters === true
-              ? _c("div", { staticClass: "card card-plain" }, [
-                  _c(
-                    "div",
-                    { staticClass: "card-header card-header-primary" },
-                    [
-                      _c("div", { staticClass: "row" }, [
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-2" }, [
+          _c("div", { staticClass: "col-12" }, [
+            _c("div", { staticClass: "row col-12" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "col-12 show-templates" }, [
+                  _c("div", { staticClass: "card card-plain" }, [
+                    _c(
+                      "div",
+                      { staticClass: "card-header card-header-primary" },
+                      [
+                        _c("div", { staticClass: "row col-12" }, [
+                          _vm._m(0),
+                          _vm._v(" "),
                           _c(
-                            "button",
+                            "div",
                             {
-                              staticClass: "btn btn-primary",
+                              staticClass: "col-2",
                               attrs: {
                                 "data-toggle": "tooltip",
                                 "data-placement": "bottom",
-                                title: "Regresar a la lista de parámetros"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.goBackParameters()
-                                }
+                                title: "Agregar nueva plantilla"
                               }
                             },
                             [
-                              _c("i", {
-                                staticClass: "fas fa-angle-double-left"
-                              })
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.CreateTemplate()
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "fa fa-plus-circle" })]
+                              )
                             ]
                           )
                         ])
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "table-responsive" }, [
-                      _c("table", { staticClass: "table table-hover" }, [
-                        _vm._m(3),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.SubParameters.data, function(
-                            subparameter
-                          ) {
-                            return _c("tr", { key: subparameter.id }, [
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(subparameter.name)
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.loadItems(subparameter)
-                                  }
-                                }
-                              })
-                            ])
-                          }),
-                          0
-                        )
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "card-footer" },
-                    [
-                      _c("pagination", {
-                        attrs: { data: _vm.SubParameters },
-                        on: { "pagination-change-page": _vm.getSubParameters }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-7 options-categories" }, [
-            this.showItems === true
-              ? _c("div", { staticClass: "card card-plain" }, [
-                  _c(
-                    "div",
-                    { staticClass: "card-header card-header-primary" },
-                    [
-                      _vm._m(4),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-2" }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: {
-                              "data-toggle": "tooltip",
-                              "data-placement": "bottom",
-                              title: "Regresar a las categorías de parámetros"
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.goBackCategories()
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "fas fa-angle-double-left" })]
-                        )
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "table-responsive" }, [
-                      _c("table", { staticClass: "table table-hover" }, [
-                        _vm._m(5),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.Items.data, function(item) {
-                            return _c("tr", { key: item.id }, [
-                              _c("td", {
-                                domProps: { textContent: _vm._s(item.name) },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.addStencil(item)
-                                  }
-                                }
-                              })
-                            ])
-                          }),
-                          0
-                        )
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "card-footer" },
-                    [
-                      _c("pagination", {
-                        attrs: { data: _vm.Items },
-                        on: { "pagination-change-page": _vm.getItems }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-md-5 options-selected" }, [
-            this.showStencil === true
-              ? _c(
-                  "div",
-                  { key: _vm.updateList, staticClass: "card card-plain" },
-                  [
-                    _vm._m(6),
+                      ]
+                    ),
                     _vm._v(" "),
                     _c("div", { staticClass: "card-body" }, [
                       _c("div", { staticClass: "table-responsive" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(7),
+                          _vm._m(1),
                           _vm._v(" "),
                           _c(
                             "tbody",
-                            _vm._l(_vm.Stencils, function(stencil) {
-                              return _c("tr", { key: stencil.id }, [
+                            _vm._l(_vm.Templates.data, function(template) {
+                              return _c("tr", { key: template.id }, [
                                 _c("td", {
                                   domProps: {
-                                    textContent: _vm._s(stencil.identificator)
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("td", {
-                                  domProps: {
-                                    textContent: _vm._s(
-                                      stencil.name.substr(0, 35) + "..."
-                                    )
+                                    textContent: _vm._s(template.name)
                                   }
                                 }),
                                 _vm._v(" "),
@@ -49315,10 +49417,49 @@ var render = function() {
                                   _c(
                                     "button",
                                     {
+                                      staticClass: "btn-icon btn btn-info",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.updateTemplate(template)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-edit" })]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn-icon btn btn-primary",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.duplicateTemplate(template)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fa fa-clone" })]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn-icon btn btn-secondary",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.showTemplate(template)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "far fa-eye" })]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
                                       staticClass: "btn-icon btn btn-danger",
                                       on: {
                                         click: function($event) {
-                                          return _vm.deleteStencil(stencil)
+                                          return _vm.deleteTemplate(template)
                                         }
                                       }
                                     },
@@ -49337,16 +49478,536 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "card-footer" })
-                  ]
-                )
-              : _vm._e()
+                    _c(
+                      "div",
+                      { staticClass: "card-footer" },
+                      [
+                        _c("pagination", {
+                          attrs: { data: _vm.Templates },
+                          on: { "pagination-change-page": _vm.getTemplates }
+                        })
+                      ],
+                      1
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-6" }, [
+                this.showCreateOrUpdate === true
+                  ? _c("div", { staticClass: "card addNewTemplates" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _c("h4", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(_vm.title))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-12" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Nombre")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.name,
+                                      expression: "form.name"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("name")
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.name },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "name",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "name" }
+                                })
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-12" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Descripción")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.description,
+                                      expression: "form.description"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "description"
+                                    )
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.description },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "description",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: {
+                                    form: _vm.form,
+                                    field: "description"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c(
+                            "div",
+                            { staticClass: "container-buttons col-9" },
+                            [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.saveTemplate()
+                                    }
+                                  }
+                                },
+                                [_vm._v("Añadir")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-warning",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.cancelar()
+                                    }
+                                  }
+                                },
+                                [_vm._v("Cancelar")]
+                              )
+                            ]
+                          )
+                        ])
+                      ])
+                    ])
+                  : _vm._e()
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c("div", { staticClass: "row col-12" }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              this.showCreateOrUpdate === true
+                ? _c("div", { staticClass: "col-12 options-parameters" }, [
+                    this.showParameters === true
+                      ? _c("div", { staticClass: "card card-plain" }, [
+                          _vm._m(2),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "card-body" }, [
+                            _c("div", { staticClass: "table-responsive" }, [
+                              _c(
+                                "table",
+                                { staticClass: "table table-hover" },
+                                [
+                                  _vm._m(3),
+                                  _vm._v(" "),
+                                  _c(
+                                    "tbody",
+                                    _vm._l(_vm.Parameters.data, function(
+                                      parameter
+                                    ) {
+                                      return _c("tr", { key: parameter.id }, [
+                                        _c("td", {
+                                          domProps: {
+                                            textContent: _vm._s(parameter.name)
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.loadSubParameter(
+                                                parameter
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    }),
+                                    0
+                                  )
+                                ]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "card-footer" },
+                            [
+                              _c("pagination", {
+                                attrs: { data: _vm.Parameters },
+                                on: {
+                                  "pagination-change-page":
+                                    _vm.getMainParameters
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ])
+                      : _vm._e()
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-12 options-sub-parameters" }, [
+                this.showSubParameters === true
+                  ? _c("div", { staticClass: "card card-plain" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _c("div", { staticClass: "row" }, [
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-2" }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary",
+                                  attrs: {
+                                    "data-toggle": "tooltip",
+                                    "data-placement": "bottom",
+                                    title: "Regresar a la lista de parámetros"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.goBackParameters()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", {
+                                    staticClass: "fas fa-angle-double-left"
+                                  })
+                                ]
+                              )
+                            ])
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "table-responsive" }, [
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(5),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.SubParameters.data, function(
+                                subparameter
+                              ) {
+                                return _c("tr", { key: subparameter.id }, [
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(subparameter.name)
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.loadItems(subparameter)
+                                      }
+                                    }
+                                  })
+                                ])
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "card-footer" },
+                        [
+                          _c("pagination", {
+                            attrs: { data: _vm.SubParameters },
+                            on: {
+                              "pagination-change-page": _vm.getSubParameters
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-12 options-categories" }, [
+                this.showItems === true
+                  ? _c("div", { staticClass: "card card-plain" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _vm._m(6),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-2" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: {
+                                  "data-toggle": "tooltip",
+                                  "data-placement": "bottom",
+                                  title:
+                                    "Regresar a las categorías de parámetros"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.goBackCategories()
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", {
+                                  staticClass: "fas fa-angle-double-left"
+                                })
+                              ]
+                            )
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "table-responsive" }, [
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(7),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.Items.data, function(item) {
+                                return _c("tr", { key: item.id }, [
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(item.name)
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.addStencil(item)
+                                      }
+                                    }
+                                  })
+                                ])
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "card-footer" },
+                        [
+                          _c("pagination", {
+                            attrs: { data: _vm.Items },
+                            on: { "pagination-change-page": _vm.getItems }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  : _vm._e()
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "options-selected" }, [
+                this.showStencil === true
+                  ? _c(
+                      "div",
+                      { key: _vm.updateList, staticClass: "card card-plain" },
+                      [
+                        _vm._m(8),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("div", { staticClass: "table-responsive" }, [
+                            _c("table", { staticClass: "table table-hover" }, [
+                              _c("tbody", [
+                                this.showCreateOrUpdate === true
+                                  ? _c(
+                                      "div",
+                                      [
+                                        _vm._m(9),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.Stencils, function(stencil) {
+                                          return _c("tr", { key: stencil.id }, [
+                                            _c("td", {
+                                              domProps: {
+                                                textContent: _vm._s(
+                                                  stencil.identificator
+                                                )
+                                              }
+                                            }),
+                                            _vm._v(" "),
+                                            _c("td", {
+                                              domProps: {
+                                                textContent: _vm._s(
+                                                  stencil.name.substr(0, 35) +
+                                                    "..."
+                                                )
+                                              }
+                                            }),
+                                            _vm._v(" "),
+                                            _c("td", [
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "btn-icon btn btn-danger",
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.deleteStencil(
+                                                        stencil
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "fas fa-trash-alt"
+                                                  })
+                                                ]
+                                              )
+                                            ])
+                                          ])
+                                        })
+                                      ],
+                                      2
+                                    )
+                                  : _c(
+                                      "div",
+                                      [
+                                        _vm._m(10),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.Stencils, function(stencil) {
+                                          return _c("tr", { key: stencil.id }, [
+                                            _c("td", {
+                                              domProps: {
+                                                textContent: _vm._s(
+                                                  stencil.identificator
+                                                )
+                                              }
+                                            }),
+                                            _vm._v(" "),
+                                            _c("td", {
+                                              domProps: {
+                                                textContent: _vm._s(
+                                                  stencil.name.substr(0, 35) +
+                                                    "..."
+                                                )
+                                              }
+                                            })
+                                          ])
+                                        })
+                                      ],
+                                      2
+                                    )
+                              ])
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "card-footer" })
+                      ]
+                    )
+                  : _vm._e()
+              ])
+            ])
           ])
         ])
       : _vm._e()
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-10" }, [
+      _c("h3", { staticClass: "card-title mt-0" }, [
+        _vm._v(" Plantillas registradas ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "table" }, [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "90px" } }, [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "20px" } }, [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -49431,7 +50092,19 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { staticStyle: { width: "70%" } }, [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Acción ")])
+        _c("th", [_vm._v(" Acción ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "title" }, [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "30%" } }, [_vm._v(" Tipo ")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "70%" } }, [_vm._v(" Nombre ")])
       ])
     ])
   }

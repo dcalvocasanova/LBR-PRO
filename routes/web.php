@@ -88,6 +88,7 @@ Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
 Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/avatar', 'UserController@uploadAvatar');
+Route::post('/uploadfile', 'UserController@loadFiles');
 
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
@@ -123,4 +124,5 @@ Route::get('/plantillas', 'TemplateController@index');
 Route::put('/plantillas/actualizar', 'TemplateController@update');
 Route::post('/plantillas/guardar', 'TemplateController@store');
 Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
+Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByType');
 Route::get('/plantillas/buscar', 'TemplateController@show');

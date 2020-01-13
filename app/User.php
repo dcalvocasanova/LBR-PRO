@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'identification', 'type', 'email','salary', 'position', 'birthday','workingsince', 'gender','ethnic','sex','password'
+        'name', 'identification', 'type', 'email','salary', 'position', 'birthday','workingsince', 'avatar', 'gender','ethnic','sex','password'
     ];
 
     /**
@@ -36,4 +36,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($query) {
+            $query->avatar = $query->avatar ?? 'default.png';
+        });
+}
 }

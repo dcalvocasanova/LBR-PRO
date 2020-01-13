@@ -223,24 +223,42 @@
                 <div class="card-body">
                   <div class="table-responsive">
                     <table class="table table-hover">
-                      <thead class="title">
-                        <tr>
-                          <th style="width:20%"> Tipo </th>
-                          <th style="width:70%"> Nombre </th>
-                          <th style="width:10%" v-if="this.showCreateOrUpdate === true"> Acción </th>
-                        </tr>
-                      </thead>
+
                       <tbody>
+                        <div v-if="this.showCreateOrUpdate === true">
+                          <thead class="title">
+                            <tr>
+                              <th style="width:20%"> Tipo </th>
+                              <th style="width:70%"> Nombre </th>
+                              <th > Acción </th>
+                            </tr>
+                          </thead>
                           <tr v-for="stencil in Stencils":key="stencil.id">
                             <td v-text="stencil.identificator"></td>
                             <td v-text="stencil.name.substr(0,35)+'...'"></td>
-                            <td v-if="this.showCreateOrUpdate === true">
+                            <td>
                               <button class="btn-icon btn btn-danger"
                                @click="deleteStencil(stencil)">
                                 <i class="fas fa-trash-alt"></i>
                               </button>
                             </td>
                           </tr>
+                        </div>
+                        <div v-else>
+                          <thead class="title">
+                            <tr>
+                              <th style="width:30%"> Tipo </th>
+                              <th style="width:70%"> Nombre </th>
+
+                            </tr>
+                          </thead>
+                          <tr v-for="stencil in Stencils":key="stencil.id">
+                            <td v-text="stencil.identificator"></td>
+                            <td v-text="stencil.name.substr(0,35)+'...'"></td>
+                          </tr>
+                        </div>
+
+
                         </tbody>
                     </table>
                   </div>
@@ -279,7 +297,6 @@
               typeOfStudy:0,
               updateList:0,
               title:"",
-              item:{},
               Templates:{}, //BD content
               Parameters:{},
               SubParameters:{},
@@ -317,7 +334,12 @@
               me.showCreateOrUpdate = true;
             },
             updateTemplate(template){
-
+              let me =this;
+              me.showCreateOrUpdate=true;
+              me.showParameters=true;
+              me.Stencils = JSON.parse(template.stencil);
+              me.showStencil = true; //show items
+              me.updateList += 1;
             },
             deleteTemplate(template){
               let me =this;
@@ -367,6 +389,13 @@
                   console.log(error);
               });
             },
+            showTemplate(template){
+              let me =this;
+              me.showCreateOrUpdate=false;
+              me.Stencils = JSON.parse(template.stencil);
+              me.showStencil = true; //show items
+              me.updateList += 1;
+            },
             saveTemplate(){
               let me =this;
               me.form.type= me.parameter.type;
@@ -388,9 +417,22 @@
                     console.log(error);
                 });
               }else{
-                alert('está vacio');
+                swal.fire({
+                  title: 'Datos incompletos',
+                  text: "Es necesario agregar las variables a evaluar en el intrumento",
+                  type: 'warning',
+                  confirmButtonColor: '#114e7e',
+                  cancelButtonColor: '#20c9a6',
+                  confirmButtonText: '¡Entendido!'
+                });
               }
-
+            },
+            cancelar(){
+              let me =this;
+              me.showCreateOrUpdate = false;
+              me.showStencil=false;
+              me.showItems=false;
+              me.form.reset();
             },
             getMainParameters(page = 1) {
               let me =this;
