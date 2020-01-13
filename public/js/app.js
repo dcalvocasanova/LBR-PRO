@@ -2185,10 +2185,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MacroProcessComponent.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MacroProcessComponent.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2303,14 +2303,14 @@ __webpack_require__.r(__webpack_exports__);
         nombre: ""
       }),
       componentVariableKey: 0,
-      title: "Agregar nuevo objetivo",
+      title: "Agregar nuevo nivel de estructura ",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       showVariable: 0,
-      SubParameters: {},
+      Levels: {},
       //BD content
-      SubParameter: {}
+      Level: {}
     };
   },
   methods: {
@@ -2318,72 +2318,72 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/subparametros?page=' + page).then(function (response) {
-        _this.SubParameters = response.data; //get all projects from page
+      axios.get('/niveles?page=' + page).then(function (response) {
+        _this.Levels = response.data; //get all projects from page
       });
     },
-    showSubVariables: function showSubVariables(subparameter) {
+    showSubVariables: function showSubVariables(Level) {
       var me = this;
-      me.showVariable = subparameter.id;
-      me.SubParameter = subparameter;
-      axios.post('/subparametros/setsession', {
-        id: subparameter.id,
-        name: subparameter.name
+      me.showVariable = Level.id;
+      me.Level = Level;
+      axios.post('/niveles/setsession', {
+        id: Level.id,
+        name: Level.name
       }).then(function (response) {
         me.componentVariableKey += 1;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    getSubParametros: function getSubParametros() {
+    getLevels: function getLevels() {
       var me = this;
       me.clearFields();
-      axios.get('/subparametros').then(function (response) {
-        me.SubParameters = response.data; //get all parameters
+      axios.get('/niveles').then(function (response) {
+        me.Levels = response.data; //get all parameters
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    saveSubParameter: function saveSubParameter() {
+    saveLevel: function saveLevel() {
       var me = this;
-      this.form.post('/subparametros/guardar').then(function (response) {
+      this.form.post('/niveles/guardar').then(function (response) {
         me.salir();
-        me.getSubParametros(); // show all users
+        me.getLevels(); // show all users
 
         toast.fire({
           type: 'success',
-          title: 'Parámetro registrado con éxito'
+          title: 'Nivel registrado con éxito'
         });
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    updateSubParameter: function updateSubParameter() {
+    updateLevel: function updateLevel() {
       var me = this;
-      this.form.put('/subparametros/actualizar').then(function (response) {
+      this.form.put('/niveles/actualizar').then(function (response) {
         toast.fire({
           type: 'success',
-          title: 'Parámetro actualizado con éxito'
+          title: 'Nivel actualizado con éxito'
         });
-        $('#addSubParameter').modal('toggle');
-        me.getSubParametros();
+        $('#addLevel').modal('toggle');
+        me.getLevels();
         me.salir();
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    loadFieldsUpdate: function loadFieldsUpdate(subparameter) {
+    loadFieldsUpdate: function loadFieldsUpdate(Level) {
       var me = this;
-      me.update = subparameter.id;
-      me.title = "Actualizar información del parámetro";
-      me.form.nombre = subparameter.name;
-      me.form.id = subparameter.id;
+      me.update = Level.id;
+      me.title = "Actualizar información del nivel";
+      me.form.nombre = Level.name;
+      me.form.id = Level.id;
     },
-    deleteSubParameter: function deleteSubParameter(subparameter) {
+    deleteLevel: function deleteLevel(Level) {
       var me = this;
       swal.fire({
-        title: 'Eliminar un lista de parámetro',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar un parámetro",
+        title: 'Eliminar un nivel',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un nivel",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#114e7e',
@@ -2391,9 +2391,9 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: '¡Sí, eliminarlo!'
       }).then(function (result) {
         if (result.value) {
-          axios["delete"]('/subparametros/borrar/' + subparameter.id).then(function (response) {
+          axios["delete"]('/niveles/borrar/' + Level.id).then(function (response) {
             swal.fire('Eliminado', 'Parametro fue eliminado', 'success');
-            me.getSubParametros();
+            me.getLevels();
           })["catch"](function (error) {
             console.log(error);
           });
@@ -2402,16 +2402,527 @@ __webpack_require__.r(__webpack_exports__);
     },
     clearFields: function clearFields() {
       var me = this;
-      me.title = "Agregar nuevo objetivo ", me.update = 0;
+      me.title = "Agregar nuevo parámetro", me.update = 0;
       me.form.reset();
     },
     salir: function salir() {
       this.clearFields();
-      $('#addSubParameter').modal('toggle');
+      $('#addLevel').modal('toggle');
     }
   },
   mounted: function mounted() {
-    this.getSubParametros();
+    this.getLevels();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MacroProcessComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MacroProcessComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      form: new Form({
+        id: "",
+        //User ID
+        nombre: ""
+      }),
+      componentLevelKey: 0,
+      componentObjectiveKey: 0,
+      title: "Agregar nuevo macroprocesos",
+      //title to show
+      update: 0,
+      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      showLevel: 0,
+      showObjective: 0,
+      Macroprocesss: {},
+      //BD content
+      Macroprocess: {}
+    };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('/macroprocesos?page=' + page).then(function (response) {
+        _this.Macroprocesss = response.data; //get all projects from page
+      });
+    },
+    showLevels: function showLevels(macroprocess) {
+      var me = this;
+      me.showLevel = macroprocess.id;
+      me.Macroprocess = macroprocess;
+      axios.post('/macroprocesos/setsession', {
+        id: macroprocess.id,
+        name: macroprocess.name
+      }).then(function (response) {
+        me.componentLevelKey += 1;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getMacroprocesos: function getMacroprocesos() {
+      var me = this;
+      me.clearFields();
+      axios.get('/macroprocesos').then(function (response) {
+        me.Macroprocesss = response.data; //get all macroprocesss
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    saveMacroprocess: function saveMacroprocess() {
+      var me = this;
+      this.form.post('/macroprocesos/guardar').then(function (response) {
+        me.salir();
+        me.getMacroprocesos(); // show all users
+
+        toast.fire({
+          type: 'success',
+          title: 'Macroproceso registrado con éxito'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    updateMacroprocess: function updateMacroprocess() {
+      var me = this;
+      this.form.put('/macroprocesos/actualizar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Parámetro actualizado con éxito'
+        });
+        $('#addMacroprocess').modal('toggle');
+        me.getMacroprocesos();
+        me.salir();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    loadFieldsUpdate: function loadFieldsUpdate(macroprocess) {
+      var me = this;
+      me.update = macroprocess.id;
+      me.title = "Actualizar información del macroprocesos";
+      me.form.nombre = macroprocess.name;
+      me.form.id = macroprocess.id;
+    },
+    deleteMacroprocess: function deleteMacroprocess(macroprocess) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar un lista de macroprocesos',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un macroprocesos",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/macroprocesos/borrar/' + macroprocess.id).then(function (response) {
+            swal.fire('Eliminado', 'Parametro fue eliminado', 'success');
+            me.getMacroprocesos();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    clearFields: function clearFields() {
+      var me = this;
+      me.title = "Agregar nuevo macroprocesos", me.update = 0;
+      me.form.reset();
+    },
+    salir: function salir() {
+      this.clearFields();
+      $('#addMacroprocess').modal('toggle');
+    }
+  },
+  mounted: function mounted() {
+    this.getMacroprocesos();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      form: new Form({
+        id: "",
+        //User ID
+        nombre: "",
+        tipo: "",
+        valor: "",
+        medida: "",
+        rule: ""
+      }),
+      showDetails: true,
+      componentObjectiveKey: 0,
+      title: "Agregar nueva categoría de parámetro ",
+      //title to show
+      update: 0,
+      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      showObjective: 0,
+      Objectives: {},
+      //BD content
+      Objective: {}
+    };
+  },
+  methods: {
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('/objetivos?page=' + page).then(function (response) {
+        _this.Objective = response.data; //get all projects from page
+      });
+    },
+    showObjectives: function showObjectives(Objective) {
+      var me = this;
+      me.showObjective = Objective.id;
+      me.Objective = Objective;
+      axios.post('/objetivos/setsession', {
+        id: parameter.id,
+        name: parameter.name
+      }).then(function (response) {
+        me.componentObjectiveKey += 1;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getVaraibles: function getVaraibles() {
+      var me = this;
+      me.clearFields();
+      axios.get('/objetivos').then(function (response) {
+        me.Objectives = response.data; //get all parameters
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    saveObjective: function saveObjective() {
+      var me = this;
+      this.form.post('/objetivos/guardar').then(function (response) {
+        me.salir();
+        me.getVaraibles(); // show all users
+
+        toast.fire({
+          type: 'success',
+          title: 'Objetivo registrada con éxito'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    updateObjective: function updateObjective() {
+      var me = this;
+      this.form.put('/objetivos/actualizar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Objetivo actualizada con éxito'
+        });
+        $('#addObjective').modal('toggle');
+        me.getVaraibles();
+        me.salir();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    loadFieldsUpdate: function loadFieldsUpdate(Objective) {
+      var me = this;
+      me.update = Objective.id;
+      me.title = "Actualizar información de la Objetivo";
+      me.form.nombre = Objective.name;
+      me.form.tipo = Objective.type;
+      me.form.id = Objective.id;
+    },
+    deleteObjective: function deleteObjective(Objective) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar un Objetivo',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una Objetivo",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarla!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/objetivos/borrar/' + Objective.id).then(function (response) {
+            swal.fire('Eliminado', 'Objectivo fue eliminado', 'success');
+            me.getVaraibles();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    clearFields: function clearFields() {
+      var me = this;
+      me.title = "Agregar nueva Objective", me.update = 0;
+      me.form.reset();
+    },
+    salir: function salir() {
+      this.clearFields();
+      $('#addObjective').modal('toggle');
+    }
+  },
+  mounted: function mounted() {
+    this.getVaraibles();
   }
 });
 
@@ -3695,8 +4206,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3722,19 +4231,31 @@ __webpack_require__.r(__webpack_exports__);
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       loadLogoProject: "",
-      fileUser: "",
+      userFile: "",
       Users: {} //BD content
 
     };
   },
   methods: {
-    CargaArchivo: function CargaArchivo(f) {
+    loadfile: function loadfile(event) {
+      var files = event.target.files || event.dataTransfer.files;
+      this.userFile = event.target.files[0];
+      alert(files[0]);
+      axios.post('/usuarios/loadusers', {
+        users: this.userFile
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (response) {
+        console.log(response);
+      });
+    },
+    EventSubir: function EventSubir(f) {
       var me = this;
       console.log(f.target.files[0]);
-      me.fileUser = f.target.files[0];
+      me.userFile = f.target.files[0];
       var data = new FormData();
-      data.append('archivo', me.fileUser);
-      axios.post('/uploadfile', data, {
+      data.append('archivo', me.userFile);
+      axios.post('/usuarios/loadusers', data, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -3747,6 +4268,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
         alert("no funca");
       });
+    },
+    handleFileUpload: function handleFileUpload() {
+      this.file = this.$refs.file.files[0];
     },
     getResults: function getResults() {
       var _this = this;
@@ -45790,10 +46314,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MacroProcessComponent.vue?vue&type=template&id=405944df&":
-/*!************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MacroProcessComponent.vue?vue&type=template&id=405944df& ***!
-  \************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3& ***!
+  \******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -45807,7 +46331,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-9" }, [
+      _c("div", { staticClass: "col-md-5" }, [
         _c("div", { staticClass: "card card-plain" }, [
           _vm._m(0),
           _vm._v(" "),
@@ -45818,10 +46342,10 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.SubParameters.data, function(subparameter) {
-                    return _c("tr", { key: subparameter.id }, [
+                  _vm._l(_vm.Levels.data, function(Level) {
+                    return _c("tr", { key: Level.id }, [
                       _c("td", {
-                        domProps: { textContent: _vm._s(subparameter.name) }
+                        domProps: { textContent: _vm._s(Level.name) }
                       }),
                       _vm._v(" "),
                       _c("td", [
@@ -45831,11 +46355,11 @@ var render = function() {
                             staticClass: "btn btn-info btn-sm",
                             attrs: {
                               "data-toggle": "modal",
-                              "data-target": "#addSubParameter"
+                              "data-target": "#addLevel"
                             },
                             on: {
                               click: function($event) {
-                                return _vm.loadFieldsUpdate(subparameter)
+                                return _vm.loadFieldsUpdate(Level)
                               }
                             }
                           },
@@ -45848,7 +46372,7 @@ var render = function() {
                             staticClass: "btn btn-danger btn-sm",
                             on: {
                               click: function($event) {
-                                return _vm.deleteSubParameter(subparameter)
+                                return _vm.deleteLevel(Level)
                               }
                             }
                           },
@@ -45861,7 +46385,7 @@ var render = function() {
                             staticClass: "btn btn-secondary btn-sm",
                             on: {
                               click: function($event) {
-                                return _vm.showSubVariables(subparameter)
+                                return _vm.showSubVariables(Level)
                               }
                             }
                           },
@@ -45881,7 +46405,7 @@ var render = function() {
             { staticClass: "card-footer" },
             [
               _c("pagination", {
-                attrs: { data: _vm.SubParameters },
+                attrs: { data: _vm.Levels },
                 on: { "pagination-change-page": _vm.getResults }
               })
             ],
@@ -45907,7 +46431,7 @@ var render = function() {
       {
         staticClass: "modal fade",
         attrs: {
-          id: "addSubParameter",
+          id: "addLevel",
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ParamatersModalLabel-lg",
@@ -45999,7 +46523,7 @@ var render = function() {
                                     staticClass: "btn btn-success",
                                     on: {
                                       click: function($event) {
-                                        return _vm.saveSubParameter()
+                                        return _vm.saveLevel()
                                       }
                                     }
                                   },
@@ -46014,7 +46538,7 @@ var render = function() {
                                     staticClass: "btn btn-info",
                                     on: {
                                       click: function($event) {
-                                        return _vm.updateSubParameter()
+                                        return _vm.updateLevel()
                                       }
                                     }
                                   },
@@ -46059,7 +46583,7 @@ var staticRenderFns = [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-md-8" }, [
           _c("h3", { staticClass: "card-title mt-0" }, [
-            _vm._v(" Lista de Macroprocesos")
+            _vm._v("Lista de Niveles")
           ])
         ]),
         _vm._v(" "),
@@ -46078,10 +46602,7 @@ var staticRenderFns = [
               "button",
               {
                 staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addSubParameter"
-                }
+                attrs: { "data-toggle": "modal", "data-target": "#addLevel" }
               },
               [_c("i", { staticClass: "fa fa-plus-circle" })]
             )
@@ -46110,7 +46631,956 @@ var staticRenderFns = [
       _c(
         "h5",
         { staticClass: "modal-title", attrs: { id: "ParameterModalLabel" } },
-        [_vm._v("Objetivos de macroprocesos")]
+        [_vm._v("Subparámetros")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MacroProcessComponent.vue?vue&type=template&id=405944df&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MacroProcessComponent.vue?vue&type=template&id=405944df& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container container-project" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.Macroprocesss.data, function(macroprocess) {
+                    return _c("tr", { key: macroprocess.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(macroprocess.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info btn-sm",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#addMacroprocess"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.loadFieldsUpdate(macroprocess)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-edit" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger btn-sm",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteMacroprocess(macroprocess)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash-alt" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary btn-sm",
+                            on: {
+                              click: function($event) {
+                                return _vm.showLevels(macroprocess)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "far fa-eye" })]
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.Macroprocesss },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-md-8" },
+        [
+          this.showLevel != "0"
+            ? _c("levels", { key: _vm.componentLevelKey })
+            : _vm._e()
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "addMacroprocess",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "MacroprocessModalLabel-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _c("h4", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(_vm.title))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-10" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Nombre")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.nombre,
+                                      expression: "form.nombre"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("nombre")
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.nombre },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "nombre",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "nombre" }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "container-buttons" }, [
+                            _vm.update == 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.saveMacroprocess()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Añadir")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.update != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.updateMacroprocess()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Actualizar")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.update != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-secondary",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.salir()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Atrás")]
+                                )
+                              : _vm._e()
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("h3", { staticClass: "card-title mt-0" }, [
+            _vm._v("MACROPROCESOS")
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "col-md-4",
+            attrs: {
+              "data-toggle": "tooltip",
+              "data-placement": "bottom",
+              title: "Agregar nuevo macroprocesos"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: {
+                  "data-toggle": "modal",
+                  "data-target": "#addMacroprocess"
+                }
+              },
+              [_c("i", { staticClass: "fa fa-plus-circle" })]
+            )
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "90%" } }, [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "MacroprocessModalLabel" } },
+        [_vm._v("Niveles")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container container-project" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.Objectives.data, function(Objective) {
+                    return _c("tr", { key: Objective.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(Objective.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#addObjective"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.loadFieldsUpdate(Objective)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-edit" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteObjective(Objective)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash-alt" })]
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.Objectives },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "addObjective",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "ParamatersModalLabel-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c(
+                        "div",
+                        { staticClass: "card-header card-header-primary" },
+                        [
+                          _c("h4", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(_vm.title))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-9" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Nombre")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.nombre,
+                                      expression: "form.nombre"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("nombre")
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.nombre },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "nombre",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "nombre" }
+                                })
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-3" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Tipo")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.tipo,
+                                        expression: "form.tipo"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has("tipo")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.form,
+                                          "tipo",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "number" } },
+                                      [_vm._v("Númerico")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "string" } },
+                                      [_vm._v("Texto")]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "tipo" }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: this.showDetails === true,
+                                expression: "this.showDetails === true"
+                              }
+                            ],
+                            staticClass: "row"
+                          },
+                          [
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Valor por defecto")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.valor,
+                                        expression: "form.valor"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has("value")
+                                    },
+                                    attrs: { type: "text" },
+                                    domProps: { value: _vm.form.valor },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "valor",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "valor" }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Medida")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.regla,
+                                          expression: "form.regla"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "medida"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.form,
+                                            "regla",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("option", { attrs: { value: "d" } }, [
+                                        _vm._v("Días")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "h" } }, [
+                                        _vm._v("Horas")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "m" } }, [
+                                        _vm._v("Minutos")
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "medida" }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Regla")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.regla,
+                                          expression: "form.regla"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "regla"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.$set(
+                                            _vm.form,
+                                            "regla",
+                                            $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "divisible" } },
+                                        [_vm._v("No puede ser cero")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "positivo" } },
+                                        [_vm._v("Número positivo")]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "regla" }
+                                  })
+                                ],
+                                1
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "container-buttons" }, [
+                            _vm.update == 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.saveObjective()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Añadir")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.update != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.updateObjective()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Actualizar")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.update != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-secondary",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.salir()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Atrás")]
+                                )
+                              : _vm._e()
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h3", { staticClass: "card-title mt-0" }, [
+          _vm._v(" Lista de Objetivos")
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "col-md-4",
+          attrs: {
+            "data-toggle": "tooltip",
+            "data-placement": "bottom",
+            title: "Agregar nueva Objectivo"
+          }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { "data-toggle": "modal", "data-target": "#addObjective" }
+            },
+            [_c("i", { staticClass: "fa fa-plus-circle" })]
+          )
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "92px" } }, [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "ParameterModalLabel" } },
+        [_vm._v("Objectivos")]
       ),
       _vm._v(" "),
       _c(
@@ -48517,13 +49987,10 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-12" }, [
-              _c("strong", [_vm._v("Cargar ARCHIVO:")]),
-              _vm._v(" "),
+            _c("div", [
               _c("input", {
-                staticClass: "form-control",
-                attrs: { type: "file" },
-                on: { change: _vm.CargaArchivo }
+                attrs: { type: "file", id: "procesar_archivo" },
+                on: { change: _vm.EventSubir }
               })
             ]),
             _vm._v(" "),
@@ -62350,6 +63817,8 @@ Vue.component('subparameters', __webpack_require__(/*! ./components/SubParameter
 Vue.component('variables', __webpack_require__(/*! ./components/VariableComponent.vue */ "./resources/js/components/VariableComponent.vue")["default"]);
 Vue.component('macroprocesos', __webpack_require__(/*! ./components/MacroProcessComponent.vue */ "./resources/js/components/MacroProcessComponent.vue")["default"]);
 Vue.component('parameterstemplates', __webpack_require__(/*! ./components/templates/TemplatesParametersComponent.vue */ "./resources/js/components/templates/TemplatesParametersComponent.vue")["default"]);
+Vue.component('levels', __webpack_require__(/*! ./components/LevelsComponent.vue */ "./resources/js/components/LevelsComponent.vue")["default"]);
+Vue.component('objectives', __webpack_require__(/*! ./components/ObjectivesComponent.vue */ "./resources/js/components/ObjectivesComponent.vue")["default"]);
 Vue.component('help', __webpack_require__(/*! ./components/HelpComponent.vue */ "./resources/js/components/HelpComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -62567,6 +64036,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/LevelsComponent.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/LevelsComponent.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LevelsComponent.vue?vue&type=template&id=224449b3& */ "./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3&");
+/* harmony import */ var _LevelsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LevelsComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _LevelsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/LevelsComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LevelsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./LevelsComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/LevelsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LevelsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./LevelsComponent.vue?vue&type=template&id=224449b3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/LevelsComponent.vue?vue&type=template&id=224449b3&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LevelsComponent_vue_vue_type_template_id_224449b3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/MacroProcessComponent.vue":
 /*!***********************************************************!*\
   !*** ./resources/js/components/MacroProcessComponent.vue ***!
@@ -62631,6 +64169,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MacroProcessComponent_vue_vue_type_template_id_405944df___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MacroProcessComponent_vue_vue_type_template_id_405944df___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ObjectivesComponent.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/ObjectivesComponent.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ObjectivesComponent.vue?vue&type=template&id=768dcfb0& */ "./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0&");
+/* harmony import */ var _ObjectivesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ObjectivesComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ObjectivesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ObjectivesComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ObjectivesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ObjectivesComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ObjectivesComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ObjectivesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ObjectivesComponent.vue?vue&type=template&id=768dcfb0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ObjectivesComponent.vue?vue&type=template&id=768dcfb0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ObjectivesComponent_vue_vue_type_template_id_768dcfb0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
