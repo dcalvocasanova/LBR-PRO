@@ -39,6 +39,14 @@ Route::get('/gestionar-plantillas-parametros', function () {
     return view('admin.parametrosplantilla');
 });
 
+Route::get('/gestionar-calendario', function () {
+    return view('admin.calendarios');
+});
+
+Route::get('/gestionar-tree', function () {
+    return view('admin.tree');
+});
+
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 });
@@ -149,4 +157,3 @@ Route::put('/objetivos/actualizar', 'ObjectiveController@update');
 Route::post('/objetivos/guardar', 'ObjectiveController@store');
 Route::delete('/objetivos/borrar/{id}', 'ObjectiveController@destroy');
 Route::get('/objetivos/buscar', 'ObjectiveController@show');
-

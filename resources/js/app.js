@@ -3,10 +3,7 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
 require('./bootstrap');
-
-
 window.Vue = require('vue');
 import { Form, HasError, AlertError } from 'vform'; //importing V-form validation
 window.Form = Form;
@@ -34,9 +31,10 @@ window.toast = toast; //adding to window
 /***************************************************************/
 window.Fire =  new Vue(); //using global comunication
 
-
 //Using progress bar to present timeout
 import VueProgressBar from 'vue-progressbar';
+
+
 
 Vue.use(VueProgressBar, {
  color: '#114e7e',
@@ -64,9 +62,14 @@ Vue.component('subparameters', require('./components/SubParametersComponent.vue'
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
+Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
+Vue.component('TreeStructure', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
 Vue.component('levels', require('./components/LevelsComponent.vue').default);
 Vue.component('objectives', require('./components/ObjectivesComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

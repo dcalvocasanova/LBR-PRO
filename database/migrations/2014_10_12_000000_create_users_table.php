@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('identification');
             $table->string('name',100);
-            $table->decimal('salary',10,2);
+            $table->string('salary',15);
             $table->date('birthday');
             $table->string('gender');
             $table->date('workingsince');
@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('position');
             $table->string('education');
-            $table->string('workday');            
+            $table->string('workday');
             $table->string('sex',20);
             $table->string('ethnic',20);
             $table->string('password');

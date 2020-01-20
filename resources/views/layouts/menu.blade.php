@@ -1,5 +1,5 @@
 {{-- Sidebar--}}
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
   {{-- Sidebar - Brand--}}
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
     <div class="sidebar-brand-icon rotate-n-15">
@@ -86,6 +86,9 @@
         <a class="collapse-item" href="/gestionar-plantillas-parametros">Gestionar</a>
         <h6 class="collapse-header"> Macroprocesos</h6>
         <a class="collapse-item" href="#">Gestionar</a>
+        <h6 class="collapse-header"> Calendario</h6>
+        <a class="collapse-item" href="/gestionar-calendario">Gestionar</a>
+        <a class="collapse-item" href="/gestionar-tree">tree</a>
       </div>
     </div>
   </li>

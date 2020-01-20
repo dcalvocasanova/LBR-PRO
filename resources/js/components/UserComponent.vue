@@ -35,6 +35,15 @@
               <pagination :data="Users" @pagination-change-page="getResults"></pagination>
             </div>
           </div>
+
+          <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
+            <button class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#loadUsers">
+              Cargar usuario usando un archivo
+              <i class="fa fa-plus-circle"></i>
+            </button>
+          </div>
         </div>
         <div class="col-md-7">
           <div class="card">
@@ -168,14 +177,47 @@
                   </div>
                 </div>
               </div>
-			  <div>				
-				<input  type="file" id ="procesar_archivo" @change="EventSubir">
-			  </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
                 <button v-if="update != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
             </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="loadUsers" tabindex="-1" role="dialog" aria-labelledby="loadUsersModalLabel-lg" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+              <h5 class="modal-title" id="ParameterModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header card-header-primary">
+                      <h4 class="card-title">Cargar usuarios usando un archivo excel</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-8">
+                          <div class="form-group">
+                            <label class="bmd-label-floating">Cargar archivo</label>
+                            <input  type="file" id ="procesar_archivo" @change="EventSubir">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <button  @click="getResults()" data-dismiss="modal" class="btn btn-success">Regresar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -206,7 +248,7 @@
                 title:"Agregar nuevo usuario", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 loadLogoProject:"",
-				userFile:"",
+				        userFile:"",
                 Users:{}, //BD content
             }
         },
@@ -220,32 +262,32 @@
 					.catch(function(response){console.log(response)})
 				;
 			},
-			
+
 			EventSubir(f){
-                let me =this;
-                console.log(f.target.files[0]);
-                me.userFile = f.target.files[0];
-                var data = new FormData();
-                data.append('archivo', me.userFile);
-                axios.post('/usuarios/loadusers', data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                      }
-                )
-                .then(response => {
-                  toast.fire({
-                    type: 'success',
-                    title: 'Se cargó el archivo'
-                  });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert("no funca");
-                });
-            },
-			
-			
+            let me =this;
+            me.userFile = f.target.files[0];
+            console.log(me.userFile);
+            var data = new FormData();
+            data.append('archivo', me.userFile);
+            axios.post('/usuarios/loadusers', data, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              }
+            )
+            .then(response => {
+              toast.fire({
+                type: 'success',
+                title: 'Se cargó el archivo'
+              });
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("no funca");
+            });
+        },
+
+
         handleFileUpload(){
             this.file = this.$refs.file.files[0];
         },
@@ -260,7 +302,7 @@
                 let logo = (user.avatar.length > 200) ? user.avatar : "img/profile-usr/"+ user.avatar;
                 return logo;
             },
-			
+
             getUsuarios(){
                 let me =this;
                 me.clearFields();

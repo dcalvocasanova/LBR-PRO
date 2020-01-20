@@ -48,7 +48,7 @@
                             <td v-text="template.name"></td>
                             <td>
                               <button class="btn-icon btn btn-info"
-                                @click="updateTemplate(template)">
+                                @click="showUpdateTemplate(template)">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button class="btn-icon btn btn-primary"
@@ -99,8 +99,9 @@
                   </div>
                   <div class="row">
                     <div class="container-buttons col-9">
-                      <button @click="saveTemplate()" class="btn btn-success">Añadir</button>
-                      <button @click="cancelar()" class="btn btn-warning">Cancelar</button>
+                      <button v-if="updateTemplateValidator== 0" @click="saveTemplate()" class="btn btn-success">Añadir</button>
+                      <button v-if="updateTemplateValidator!= 0" @click="updateTemplate()" class="btn btn-info">Actualizar</button>
+                      <button v-if="updateTemplateValidator!= 0" @click="cancelar()" class="btn btn-secondary">Cancelar</button>
                     </div>
                   </div>
                 </div>
@@ -235,7 +236,7 @@
                           </thead>
                           <tr v-for="stencil in Stencils":key="stencil.id">
                             <td v-text="stencil.identificator"></td>
-                            <td v-text="stencil.name.substr(0,35)+'...'"></td>
+                            <td v-text="stencil.name.substr(0,35)+'...'"  @click="showStencilDetails(stencil.name)"></td>
                             <td>
                               <button class="btn-icon btn btn-danger"
                                @click="deleteStencil(stencil)">
@@ -254,7 +255,7 @@
                           </thead>
                           <tr v-for="stencil in Stencils":key="stencil.id">
                             <td v-text="stencil.identificator"></td>
-                            <td v-text="stencil.name.substr(0,35)+'...'"></td>
+                            <td v-text="stencil.name.substr(0,35)+'...'" @click="showStencilDetails(stencil.name)"></td>
                           </tr>
                         </div>
 
@@ -296,6 +297,7 @@
               category:{},
               typeOfStudy:0,
               updateList:0,
+              updateTemplateValidator:0,
               title:"",
               Templates:{}, //BD content
               Parameters:{},
@@ -316,8 +318,8 @@
             getTemplates(page = 1){
               let me =this;
               var url = '/plantillas/buscarxtipo/workload';
-              if(me.typeOfStudy ==1){
-                url+='/plantillas/buscarxtipo/psychosocial';
+              if(me.typeOfStudy === 1){
+                url ='/plantillas/buscarxtipo/psychosocial';
               }
               axios.get(url + '?page=' + page)
               .then(response => {
@@ -330,16 +332,47 @@
             },
             CreateTemplate(){
               let me =this;
+              me.updateTemplateValidator=0;
               me.title="Agregar nueva plantilla";
               me.showCreateOrUpdate = true;
             },
-            updateTemplate(template){
+            showUpdateTemplate(template){
               let me =this;
+              me.title = "Actualizar instrumento"
               me.showCreateOrUpdate=true;
               me.showParameters=true;
+              me.updateTemplateValidator=1;
               me.Stencils = JSON.parse(template.stencil);
+              me.form.fill(template);
               me.showStencil = true; //show items
               me.updateList += 1;
+            },
+            updateTemplate(){
+              let me =this;
+              if (Object.keys(me.Stencils).length !== 0) {
+                me.form.stencil = JSON.stringify(me.Stencils);
+                this.form.put('/plantillas/actualizar')
+                .then(function (response) {
+                    me.cancelar();
+                    me.getTemplates();
+                    toast.fire({
+                      type: 'success',
+                      title: 'Instrumento actualizado con éxito'
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              }else{
+                swal.fire({
+                  title: 'Datos incompletos',
+                  text: "Es necesario agregar las variables a evaluar en el intrumento",
+                  type: 'warning',
+                  confirmButtonColor: '#114e7e',
+                  cancelButtonColor: '#20c9a6',
+                  confirmButtonText: '¡Entendido!'
+                });
+              }
             },
             deleteTemplate(template){
               let me =this;
@@ -394,6 +427,7 @@
               me.showCreateOrUpdate=false;
               me.Stencils = JSON.parse(template.stencil);
               me.showStencil = true; //show items
+              me.showItems=false;
               me.updateList += 1;
             },
             saveTemplate(){
@@ -437,7 +471,7 @@
             getMainParameters(page = 1) {
               let me =this;
               var url = '/parametros/cargatrabajo';
-              if(me.typeOfStudy ==1){
+              if(me.typeOfStudy === 1){
                 url='/parametros/psicosocial';
               }
               axios.get(url + '?page=' + page)
@@ -489,10 +523,13 @@
             addStencil(item){
               let me =this;
               me.showStencil = true; //show items
-              me.item = item;
+            //  me.item = item;
               me.Stencils[item.id] = item; // add current item
               me.Stencils[item.id].category = me.category.name;
               me.updateList += 1;
+            },
+            showStencilDetails(item){
+              swal.fire(item);
             },
             deleteStencil(item){
               let me =this;

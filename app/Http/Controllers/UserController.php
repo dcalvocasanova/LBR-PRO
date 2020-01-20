@@ -37,14 +37,14 @@ class UserController extends Controller
     public function store(Request $request)
     {
       $this->validate($request,[
-          'nombre' => 'required',
+          'nombre' => 'required|string',
           'email' => 'required|email|unique:users',
           'identificacion' => 'required|string|unique:users,identification',
           'genero' => 'required|string',
           'sexo' => 'required|string',
           'fecha_nacimiento' => 'required|date',
           'salario'=> 'required|numeric',
-          'fecha_ingreso'=> 'required|string',
+          'fecha_ingreso'=> 'required|date',
           'puesto'=> 'required|string',
           'cargo'=> 'required|string',
           'jornada'=> 'required|string',
@@ -212,17 +212,21 @@ class UserController extends Controller
     }
 
 	public function loadUsers(Request $request){
-		
+
 		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
-		
+
 		//$file = $request->file('file');
 		//$file= $fileName;
-		
-		Excel::import(new UsersImport, $request->file('archivo'));
+  //  return $request->file('archivo')->getClientOriginalName();
+    $datos = Excel::import(new UsersImport, $request->file('archivo'));
+
+  //  return $datos->failures();
+
+		//Excel::import(new UsersImport, $request->file('archivo'));
 		//dd($request);
 		//dd($request->users);
 		//$file = $request->file('users');
-		
+
 
 //$file->getRealPath();
 //$file->getClientOriginalName();
@@ -230,11 +234,8 @@ class UserController extends Controller
 $file->getSize();
 $file->getMimeType();*/
 		//return response()->json(['success'=>'You have successfully upload file'. $file]);
-		
-		
-		
-		
-		
+
+
 		$file =  $request->file('archivo');
         if(!empty($file)){
           $fileName = rand().'.'.$file->getClientOriginalExtension();
