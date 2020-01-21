@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVariablesTable extends Migration
+class CreateTemplatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreateVariablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('variables', function (Blueprint $table) {
+        Schema::create('templates', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('subparameter_id');
             $table->string('name');
-            $table->string('identificator');
+            $table->string('description');
             $table->string('type');
-            $table->string('value');
-            $table->string('measure');
-            $table->string('rule');
+            $table->json('stencil');
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreateVariablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('variables');
+        Schema::dropIfExists('templates');
     }
 }

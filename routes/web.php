@@ -35,6 +35,18 @@ Route::get('/gestionar-macroprocesos', function () {
     return view('admin.macroprocesos');
 });
 
+Route::get('/gestionar-plantillas-parametros', function () {
+    return view('admin.parametrosplantilla');
+});
+
+Route::get('/gestionar-calendario', function () {
+    return view('admin.calendarios');
+});
+
+Route::get('/gestionar-tree', function () {
+    return view('admin.tree');
+});
+
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 });
@@ -85,6 +97,7 @@ Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
 Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/avatar', 'UserController@uploadAvatar');
+Route::post('/uploadfile', 'UserController@loadFiles');
 
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
@@ -93,6 +106,8 @@ Route::post('/parametros/guardar', 'ParameterController@store');
 Route::delete('/parametros/borrar/{id}', 'ParameterController@destroy');
 Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
+Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
+Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
 
 
 /*Manage SubParameters*/
@@ -101,6 +116,7 @@ Route::put('/subparametros/actualizar', 'SubparameterController@update');
 Route::post('/subparametros/guardar', 'SubparameterController@store');
 Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
 Route::get('/subparametros/buscar', 'SubparameterController@show');
+Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParametersByParameterId');
 Route::post('/subparametros/setsession', 'SubParameterController@session');
 
 /*Manage Variables*/
@@ -108,8 +124,16 @@ Route::get('/variables', 'VariableController@index');
 Route::put('/variables/actualizar', 'VariableController@update');
 Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
+Route::get('/variable/buscarxid/{id}','VariableController@getVariablesBySubParameterId');
 Route::get('/variables/buscar', 'VariableController@show');
 
+/*Manage Template*/
+Route::get('/plantillas', 'TemplateController@index');
+Route::put('/plantillas/actualizar', 'TemplateController@update');
+Route::post('/plantillas/guardar', 'TemplateController@store');
+Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
+Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByType');
+Route::get('/plantillas/buscar', 'TemplateController@show');
 
 /*Manage Macroprocess*/
 Route::get('/macroprocesos', 'MacroprocessController@index');
@@ -118,7 +142,6 @@ Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
 Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
 Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
 Route::post('/macroprocesos/setsession', 'MacroprocessController@session');
-
 
 /*Manage Levels*/
 Route::get('/niveles', 'LevelController@index');

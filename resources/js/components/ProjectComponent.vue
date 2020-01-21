@@ -228,7 +228,7 @@
                 options: [
                   { name: 'Premium', code: 'PR' },
                   { name: 'Estudiante', code: 'ES' },
-                  { name: 'Gratito', code: 'GR' },
+                  { name: 'Gratuito', code: 'GR' },
                   { name: 'Usa macroprocesos', code: 'MA' },
                   { name: 'Usa funciones', code: 'FU' }
                 ]
@@ -242,7 +242,7 @@
               });
             },
             getLogo(project){
-                let logo = (project.logo_project.length > 200) ? project.logo_project : "/code/public/img/profile-prj/"+ project.logo_project ;
+                let logo = (project.logo_project.length > 200) ? project.logo_project : "/img/profile-prj/"+ project.logo_project ;
                 return logo;
             },
             loadLogoOrganization(f){

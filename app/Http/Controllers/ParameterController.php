@@ -27,10 +27,13 @@ class ParameterController extends Controller
     public function store(Request $request)
     {
       $this->validate($request,[
-            'nombre' => 'required|string|max:100'
+            'nombre' => 'required|string|max:100',
+            'tipo' => 'required|string|max:100'
+
       ]);
       $parameter = new Parameter();
       $parameter->name = $request->nombre;
+      $parameter->type = $request->tipo;
       $parameter->save();
     }
 
@@ -60,6 +63,7 @@ class ParameterController extends Controller
 
       $parameter = Parameter::findOrFail($request->id);
       $parameter->name = $request->nombre;
+      $parameter->type = $request->tipo;
       $parameter->save();
     }
 
@@ -85,5 +89,28 @@ class ParameterController extends Controller
     {
       $request->session()->put('parameter_id', $request->id);
       $request->session()->put('parameter_name', $request->name);
+    }
+
+    /**
+     * Get workload category
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getWorkLoadCategory()
+    {
+        $parameters = Parameter::where('type','workload')->paginate(5);
+        return $parameters;
+    }
+    /**
+     * Get psychosocial category
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getPsychosocialCategory()
+    {
+      $parameters = Parameter::where('type','psychosocial')->paginate(5);
+      return $parameters;
     }
 }

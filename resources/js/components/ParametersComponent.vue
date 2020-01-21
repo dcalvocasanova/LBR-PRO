@@ -5,10 +5,10 @@
         <div class="card card-plain">
           <div class="card-header card-header-primary">
             <div class="row">
-              <div class="col-md-8">
+              <div class="col-9">
                   <h3 class="card-title mt-0"> Lista de parámetros</h3>
               </div>
-              <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
+              <div class="col-3" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
                 <button class="btn btn-primary"
                 data-toggle="modal"
                 data-target="#addParameter">
@@ -17,7 +17,7 @@
               </div>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body card-body-fitted ">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
@@ -30,17 +30,17 @@
                     <tr v-for="parameter in Parameters.data" :key="parameter.id">
                       <td v-text="parameter.name"></td>
                       <td>
-                        <button class="btn btn-info btn-sm"
+                        <button class="btn-icon btn btn-info"
                           @click="loadFieldsUpdate(parameter)"
                           data-toggle="modal"
                           data-target="#addParameter">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm"
+                        <button class="btn-icon btn btn-danger"
                          @click="deleteParameter(parameter)">
                           <i class="fas fa-trash-alt"></i>
                         </button>
-                        <button class="btn btn-secondary btn-sm"
+                        <button class="btn-icon btn btn-secondary"
                         @click="showSubparameters(parameter)">
                           <i class="far fa-eye"></i>
                         </button>
@@ -78,11 +78,21 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <div class="col-md-10">
+                      <div class="col-md-8">
                         <div class="form-group">
                           <label class="bmd-label-floating">Nombre</label>
                           <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
                           <has-error :form="form" field="nombre"></has-error>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Tipo</label>
+                          <select v-model="form.tipo" class=" form-control" :class="{ 'is-invalid': form.errors.has('tipo')}">
+                            <option value="workload">Cargas de trabajo</option>
+                            <option value="psychosocial">Análisis Psicosocial</option>
+                          </select>
+                          <has-error :form="form" field="tipo"></has-error>
                         </div>
                       </div>
                     </div>
@@ -110,7 +120,8 @@
             return{
                 form: new Form ({
                   id:"",//User ID
-                  nombre:""
+                  nombre:"",
+                  tipo:""
                 }),
                 componentSubParameterKey:0,
                 componentVariableKey:0,
@@ -191,6 +202,7 @@
               me.update = parameter.id
               me.title="Actualizar información del parámetro";
               me.form.nombre = parameter.name;
+              me.form.tipo = parameter.type;
               me.form.id = parameter.id;
             },
             deleteParameter(parameter){

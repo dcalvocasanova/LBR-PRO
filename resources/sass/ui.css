@@ -12206,3 +12206,14 @@ body.sidebar-toggled footer.sticky-footer {
 .page-header:before {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.btn-icon, .btn-group-icon > .btn {
+    padding: 0.1rem 0.1rem!important;
+    font-size: 0.7875rem!important;
+    line-height: 1.6!important;
+    border-radius: 0.5rem!important;
+}
+
+.card-body-fitted {
+    padding: .1rem!important;
+}
