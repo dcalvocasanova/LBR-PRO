@@ -1,17 +1,17 @@
 <template>
   <div class="tree-menu">
-    <ul id="demo">
+    <div class="tree-viewer">
       <tree-menu
         class="item"
         :item="treeData"
+        :parent="treeData"
         @make-parent="makeParent"
         @edit-node="editNode"
         @delete-node="deleteNode"
         @add-item="addChild"
       >
       </tree-menu>
-    </ul>
-
+    </div>
     <div class="modal fade" id="getData" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -94,8 +94,7 @@
         let me = this;
         me.currentNode.children.push({
           name: me.newName,
-          level:me.currentNode.level + 1,
-          x:"ff"
+          level:me.currentNode.level + 1
         })
         me.salir()
       },
@@ -104,11 +103,14 @@
         me.currentNode.name = me.newName
         me.salir()
       },
-      deleteNode(item){
+      deleteNode(node){
         let me = this;
-        me.currentNode = item
-        alert ("se quiere borrar"+me.currentNode.name)
-
+        if (node.parent !==node.item){
+          node.parent.children.splice(node.item.length-1,1)
+        }
+        else{
+          delete node.parent.children
+        }
       },
       salir(){
         $('#getData').modal('toggle');

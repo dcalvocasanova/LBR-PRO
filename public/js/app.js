@@ -5454,8 +5454,7 @@ var treeData = {
       var me = this;
       me.currentNode.children.push({
         name: me.newName,
-        level: me.currentNode.level + 1,
-        x: "ff"
+        level: me.currentNode.level + 1
       });
       me.salir();
     },
@@ -5464,10 +5463,14 @@ var treeData = {
       me.currentNode.name = me.newName;
       me.salir();
     },
-    deleteNode: function deleteNode(item) {
+    deleteNode: function deleteNode(node) {
       var me = this;
-      me.currentNode = item;
-      alert("se quiere borrar" + me.currentNode.name);
+
+      if (node.parent !== node.item) {
+        node.parent.children.splice(node.item.length - 1, 1);
+      } else {
+        delete node.parent.children;
+      }
     },
     salir: function salir() {
       $('#getData').modal('toggle');
@@ -5523,10 +5526,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
-    item: Object
+    item: Object,
+    parent: Object
   },
   data: function data() {
     return {
@@ -10049,7 +10059,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.node[data-v-38264846] {\r\n  text-align: left;\r\n  font-size: 18px;\n}\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n  list-style-type: none;\n}\nli[data-v-38264846] {\r\n list-style-type: none;\r\n padding: 5px 0;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n  list-style-type: none;\n}\nli[data-v-38264846] {\r\n list-style-type: none;\r\n padding: 5px 0;\n}\n.controls[data-v-38264846]{\r\n\tdisplay: none;\r\n\tposition: absolute;\r\n\ttop: 0;\r\n\tright: -56px;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .controls[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -52829,12 +52839,12 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "tree-menu" }, [
     _c(
-      "ul",
-      { attrs: { id: "demo" } },
+      "div",
+      { staticClass: "tree-viewer" },
       [
         _c("tree-menu", {
           staticClass: "item",
-          attrs: { item: _vm.treeData },
+          attrs: { item: _vm.treeData, parent: _vm.treeData },
           on: {
             "make-parent": _vm.makeParent,
             "edit-node": _vm.editNode,
@@ -53024,47 +53034,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "hierarchy" }, [
     _c("li", [
-      _c("div", { class: { bold: _vm.isParent }, on: { click: _vm.toggle } }, [
-        _vm.isParent
-          ? _c("span", [_vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")])
-          : _vm._e(),
-        _vm._v("\n    " + _vm._s(_vm.item.name) + "\n    "),
-        _c("button", { staticClass: "btn btn-success" }, [
-          _vm._v(_vm._s(_vm.item.name))
-        ]),
-        _vm._v(" "),
-        !_vm.isParent
-          ? _c("span", { on: { click: _vm.makeParent } }, [
-              _c("i", { staticClass: "fa fa-plus-circle" })
+      _c(
+        "div",
+        {
+          staticClass: "main",
+          class: { bold: _vm.isParent },
+          on: { click: _vm.toggle }
+        },
+        [
+          _c("h4", [
+            _vm.isParent
+              ? _c("span", [_vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")])
+              : _vm._e(),
+            _vm._v("\n      " + _vm._s(_vm.item.name) + "\n      "),
+            !_vm.isParent
+              ? _c("span", { on: { click: _vm.makeParent } }, [
+                  _c("i", { staticClass: "fa fa-plus-circle" })
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("span", { staticClass: "controlls" }, [
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("edit-node", _vm.item)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-edit" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("delete-node", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-trash-alt" })]
+              )
             ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "span",
-          {
-            on: {
-              click: function($event) {
-                return _vm.$emit("edit-node", _vm.item)
-              }
-            }
-          },
-          [_c("i", { staticClass: "fas fa-edit" })]
-        ),
-        _vm._v(" "),
-        _c(
-          "span",
-          {
-            on: {
-              click: function($event) {
-                return _vm.$emit("delete-node", _vm.item)
-              }
-            }
-          },
-          [_c("i", { staticClass: "fas fa-trash-alt" })]
-        )
-      ]),
+          ])
+        ]
+      ),
       _vm._v(" "),
       _vm.isParent
         ? _c(
@@ -53084,7 +53105,7 @@ var render = function() {
                 return _c("tree-menu", {
                   key: index,
                   staticClass: "item",
-                  attrs: { item: child },
+                  attrs: { parent: _vm.item, item: child },
                   on: {
                     "make-parent": function($event) {
                       return _vm.$emit("make-parent", $event)
@@ -53106,6 +53127,7 @@ var render = function() {
                 "li",
                 {
                   staticClass: "add",
+                  staticStyle: { color: "blue" },
                   on: {
                     click: function($event) {
                       return _vm.$emit("add-item", _vm.item)
