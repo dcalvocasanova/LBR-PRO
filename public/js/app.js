@@ -5467,10 +5467,15 @@ var treeData = {
       var me = this;
 
       if (node.parent !== node.item) {
-        node.parent.children.splice(node.item.length - 1, 1);
+        node.parent.children = me.deleteIndex(node.parent.children, node.item);
       } else {
-        delete node.parent.children;
+        node.parent.children = [];
       }
+    },
+    deleteIndex: function deleteIndex(arr, index) {
+      return arr.filter(function (i) {
+        return i != index;
+      });
     },
     salir: function salir() {
       $('#getData').modal('toggle');
