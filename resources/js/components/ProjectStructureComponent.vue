@@ -53,10 +53,13 @@
                     <div class="tree-viewer">
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
+                        :showTreeEditor="true" :showGoalEditor="true"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
                         @add-item="addChild"
+                        @clicked-node="nodoSeleccionado"
+                        @assign-goal="asignarObjetivoANodo"
                       >
                       </tree-menu>
                     </div>
@@ -127,6 +130,12 @@
       }
     },
     methods:{
+      nodoSeleccionado(item){
+        alert ("Se hizo click sobre"+item.name)
+      },
+      asignarObjetivoANodo(item){
+        alert ("Se quiere ingresar objetivo al nodo "+item.name)
+      },
       getProjectsPaginator(page = 1) {
         axios.get('/proyectos?page=' + page)
         .then(response => {

@@ -4,32 +4,33 @@
       <div class="main":class="{bold:isParent}" @click="toggle">
       <h4>
         <span v-if="isParent">[{{ isOpen ? '-' : '+' }}]</span>
-        {{ item.name }}
-        <span v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
-        <span class="controls">
+        <span @click="$emit('clicked-node', item)">{{ item.name }}</span>
+        <span class="controls-tree-edit" v-show="showTreeEditor">
+          <span v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
           <span @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
         </span>
-
-
+        <span class="controls-gol-edit" v-show="showGoalEditor">
+          <span @click="$emit('assign-goal', item)"><i class="fas fa-columns"></i> </span>
+        </span>
       </h4>
       </div>
       <ul class="nested-list" v-show="isOpen" v-if="isParent">
       <tree-menu
         class="item"
-        :parent="item"
+        :parent="item" :showTreeEditor="showTreeEditor" :showGoalEditor="showGoalEditor"
           v-for="(child, index) in item.children"
             :key="index"
             :item="child"
             @make-parent="$emit('make-parent', $event)"
+            @clicked-node="$emit('clicked-node', $event)"
             @edit-node="$emit('edit-node', $event)"
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
+            @assign-goal="$emit('assign-goal', $event)"
       >
       </tree-menu>
-
       <li class="add" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
-
     </ul>
     </li>
   </ul>
@@ -40,7 +41,10 @@ export default {
   name: 'tree-menu',
   props: {
     item: Object,
-    parent: Object
+    parent: Object,
+    showTreeEditor: Boolean,
+    showGoalEditor: Boolean
+
   },
   data() {
     return {

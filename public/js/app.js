@@ -3716,6 +3716,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3740,6 +3743,12 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    nodoSeleccionado: function nodoSeleccionado(item) {
+      alert("Se hizo click sobre" + item.name);
+    },
+    asignarObjetivoANodo: function asignarObjetivoANodo(item) {
+      alert("Se quiere ingresar objetivo al nodo " + item.name);
+    },
     getProjectsPaginator: function getProjectsPaginator() {
       var _this = this;
 
@@ -5628,11 +5637,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
     item: Object,
-    parent: Object
+    parent: Object,
+    showTreeEditor: Boolean,
+    showGoalEditor: Boolean
   },
   data: function data() {
     return {
@@ -49785,12 +49797,19 @@ var render = function() {
                           [
                             _c("tree-menu", {
                               staticClass: "item",
-                              attrs: { item: _vm.Levels, parent: _vm.Levels },
+                              attrs: {
+                                item: _vm.Levels,
+                                parent: _vm.Levels,
+                                showTreeEditor: true,
+                                showGoalEditor: true
+                              },
                               on: {
                                 "make-parent": _vm.makeParent,
                                 "edit-node": _vm.editNode,
                                 "delete-node": _vm.deleteNode,
-                                "add-item": _vm.addChild
+                                "add-item": _vm.addChild,
+                                "clicked-node": _vm.nodoSeleccionado,
+                                "assign-goal": _vm.asignarObjetivoANodo
                               }
                             })
                           ],
@@ -53212,41 +53231,95 @@ var render = function() {
             _vm.isParent
               ? _c("span", [_vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")])
               : _vm._e(),
-            _vm._v("\n      " + _vm._s(_vm.item.name) + "\n      "),
-            !_vm.isParent
-              ? _c("span", { on: { click: _vm.makeParent } }, [
-                  _c("i", { staticClass: "fas fa-project-diagram" })
-                ])
-              : _vm._e(),
             _vm._v(" "),
-            _c("span", { staticClass: "controls" }, [
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("edit-node", _vm.item)
-                    }
+            _c(
+              "span",
+              {
+                on: {
+                  click: function($event) {
+                    return _vm.$emit("clicked-node", _vm.item)
                   }
-                },
-                [_c("i", { staticClass: "fas fa-edit" })]
-              ),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("delete-node", {
-                        item: _vm.item,
-                        parent: _vm.parent
-                      })
-                    }
+                }
+              },
+              [_vm._v(_vm._s(_vm.item.name))]
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showTreeEditor,
+                    expression: "showTreeEditor"
                   }
-                },
-                [_c("i", { staticClass: "fas fa-trash-alt" })]
-              )
-            ])
+                ],
+                staticClass: "controls-tree-edit"
+              },
+              [
+                !_vm.isParent
+                  ? _c("span", { on: { click: _vm.makeParent } }, [
+                      _c("i", { staticClass: "fas fa-project-diagram" })
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("edit-node", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-edit" })]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("delete-node", {
+                          item: _vm.item,
+                          parent: _vm.parent
+                        })
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-trash-alt" })]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showGoalEditor,
+                    expression: "showGoalEditor"
+                  }
+                ],
+                staticClass: "controls-gol-edit"
+              },
+              [
+                _c(
+                  "span",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("assign-goal", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-columns" })]
+                )
+              ]
+            )
           ])
         ]
       ),
@@ -53270,10 +53343,18 @@ var render = function() {
                 return _c("tree-menu", {
                   key: index,
                   staticClass: "item",
-                  attrs: { parent: _vm.item, item: child },
+                  attrs: {
+                    parent: _vm.item,
+                    showTreeEditor: _vm.showTreeEditor,
+                    showGoalEditor: _vm.showGoalEditor,
+                    item: child
+                  },
                   on: {
                     "make-parent": function($event) {
                       return _vm.$emit("make-parent", $event)
+                    },
+                    "clicked-node": function($event) {
+                      return _vm.$emit("clicked-node", $event)
                     },
                     "edit-node": function($event) {
                       return _vm.$emit("edit-node", $event)
@@ -53283,6 +53364,9 @@ var render = function() {
                     },
                     "add-item": function($event) {
                       return _vm.$emit("add-item", $event)
+                    },
+                    "assign-goal": function($event) {
+                      return _vm.$emit("assign-goal", $event)
                     }
                   }
                 })
