@@ -49800,7 +49800,7 @@ var render = function() {
                               attrs: {
                                 item: _vm.Levels,
                                 parent: _vm.Levels,
-                                showTreeEditor: true,
+                                showTreeEditor: false,
                                 showGoalEditor: true
                               },
                               on: {
@@ -53375,6 +53375,14 @@ var render = function() {
               _c(
                 "li",
                 {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showTreeEditor,
+                      expression: "showTreeEditor"
+                    }
+                  ],
                   staticClass: "add",
                   staticStyle: { color: "blue" },
                   on: {

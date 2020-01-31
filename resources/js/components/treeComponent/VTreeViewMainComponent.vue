@@ -30,7 +30,7 @@
             @assign-goal="$emit('assign-goal', $event)"
       >
       </tree-menu>
-      <li class="add" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
+      <li class="add" v-show="showTreeEditor" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
     </ul>
     </li>
   </ul>
