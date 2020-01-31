@@ -38,6 +38,8 @@
         <a class="collapse-item" href="/gestionar-proyectos">Gestionar </a>
         <h6 class="collapse-header"> Usarios</h6>
         <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
+        <h6 class="collapse-header"> Estructura de niveles</h6>
+        <a class="collapse-item" href="/gestionar-estructura-proyecto">Gestionar niveles</a></a>
         <h6 class="collapse-header"> Configuración</h6>
         <a class="collapse-item" href="/gestionar-catalogos">Gestionar Catálogos</a></a>
 

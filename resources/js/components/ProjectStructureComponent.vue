@@ -44,11 +44,60 @@
             </button>
           </div>
           <div class="modal-body">
-            <button @click="saveLevel()" class="btn btn-success">Guardar estructura</button>
+            <button @click="saveLevel()" class="btn btn-success" data-dismiss="modal" aria-label="Close">Guardar estructura</button>
+            <br><br>
             <div class="card">
               <div class="card-body">
                 <div class="row">
-
+                  <div class="tree-menu">
+                    <div class="tree-viewer">
+                      <tree-menu
+                        class="item" :item="Levels":parent="Levels"
+                        @make-parent="makeParent"
+                        @edit-node="editNode"
+                        @delete-node="deleteNode"
+                        @add-item="addChild"
+                      >
+                      </tree-menu>
+                    </div>
+                    <div class="modal fade" id="LevelManager" tabindex="-1" role="dialog" aria-labelledby="LevelManager-lg" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="LevelManager"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="card">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-8">
+                                        <div class="form-group">
+                                          <label class="bmd-label-floating">Nombre</label>
+                                          <input  v-model="newName" type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="container-buttons">
+                                        <button v-if="updateNodeControl== 0" @click="addNode()" class="btn btn-success">Añadir</button>
+                                        <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
+                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -63,15 +112,18 @@
   export default {
     data(){
       return{
+        project_id:0,
+        update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+        Projects:{}, //All registered projects
+        Levels:{}, // All levels from organization
+        currentNode: {}, //Current node to update or add
+        updateNodeControl:0, //
+        newName:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
           project_id:""
-        }),
-        project_id:0,
-        update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-        Projects:{}, //All registered projects
-        Levels:{} // All level from organization
+        })
       }
     },
     methods:{
@@ -94,21 +146,6 @@
             console.log(error);
         });
       },
-      updateProjects(){
-          let me = this;
-          this.form.put('/proyectos/actualizar')
-          .then(function (response) {
-             toast.fire({
-              type: 'success',
-              title: 'Proyecto actualizado con éxito'
-             });
-             me.getProjects();
-             me.form.reset();
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
-      },
       getResultLevel(page = 1){
         axios.get('/estructura?page=' + page)
         .then(response => {
@@ -117,33 +154,20 @@
       },
       getLevels(){
           let me =this;
-          me.clearFieldsLevel();
           let url = '/estructura?id='+me.project_id;
           axios.get(url).then(function (response) {
-              me.Levels = response.data; //get all projects
-
+              me.Levels = JSON.parse(response.data.levels); //get all structure
+              me.level.id= response.data.id;
+              me.level.project_id=response.data.project_id;
           })
           .catch(function (error) {
               console.log(error);
           });
       },
       saveLevel(){
-          let me =this;
-          me.level.proyecto =me.project_id;
-          this.level.post('/estructura/guardar')
-          .then(function (response) {
-              me.level.reset();
-              me.getLevels();// show all levels
-              me.clearFieldsLevel();
-              toast.fire({
-                type: 'success',
-                title: 'Nivel agregado con éxito'
-              });
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
-
+        let me =this
+        me.level.levels =JSON.stringify(me.Levels)
+        me.updateLevel()
       },
       updateLevel(){
           let me = this;
@@ -151,27 +175,72 @@
           .then(function (response) {
              toast.fire({
               type: 'success',
-              title: 'Proyecto actualizado con éxito'
+              title: 'Niveles de estructura registrado con éxito'
              });
-             me.getLevels();
-             me.clearFieldsLevel();
+             me.level.reset()
           })
           .catch(function (error) {
               console.log(error);
           });
       },
-      clearFieldsLevel(){
-          let me =this;
-          me.title_level= "Agregar nuevo nivel";
-          me.updateLevelId = 0;
-          me.level.reset();
-      },
       loadLevelData(project){
-          this.clearFieldsLevel();
-          this.projet_name= project.nombre;
           this.project_id = project.id;
           this.getLevels();
+      },
+      makeParent(item) {
+        let me = this;
+        me.currentNode = item
+        me.updateNodeControl = 0
+        Vue.set(item, 'children', [])
+        this.getNodeName()
+      },
+      addChild(item) {
+        let me = this;
+        me.currentNode = item
+        me.updateNodeControl = 0
+        this.getNodeName()
+      },
+      editNode(item){
+        let me = this;
+        me.currentNode = item
+        me.newName = me.currentNode.name
+        me.updateNodeControl = 1
+        this.getNodeName()
+      },
+      addNode() {
+        let me = this;
+        me.currentNode.children.push({
+          name: me.newName,
+          level:me.currentNode.level + 1
+        })
+        me.salir()
+      },
+      updateNode() {
+        let me = this
+        me.currentNode.name = me.newName
+        me.salir()
+      },
+      deleteNode(node){
+        let me = this;
+        if (node.parent !==node.item){
+          node.parent.children= me.deleteIndex(node.parent.children,node.item)
         }
+        else{
+          node.parent.children = []
+        }
+      },
+      deleteIndex(arr, index){
+        return arr.filter(function(i){
+          return i!= index
+        });
+      },
+      salir(){
+        $('#LevelManager').modal('toggle');
+        this.newName = ""
+      },
+      getNodeName(){
+        $('#LevelManager').modal('show')
+      }
     },
     created(){
       Fire.$on('searching',() => {
@@ -189,3 +258,10 @@
     }
   }
 </script>
+
+<style>
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+</style>

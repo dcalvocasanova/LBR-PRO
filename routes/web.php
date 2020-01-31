@@ -47,6 +47,10 @@ Route::get('/gestionar-tree', function () {
     return view('admin.tree');
 });
 
+Route::get('/gestionar-estructura-proyecto', function () {
+    return view('admin.estructuraproyecto');
+});
+
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 });
