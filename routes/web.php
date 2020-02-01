@@ -14,50 +14,68 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/gestionar-proyectos', function () {
-    return view('admin.proyectos');
-});
-
+/*
+* Grant access only for users with CRUD_users permission
+*/
 Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
-});
-
+})->middleware('permission:CRUD_users|CR_users');
+/*
+* Grant access only for users with CRUD_projects permission
+*/
+Route::get('/gestionar-proyectos', function () {
+    return view('admin.proyectos');
+})->middleware('permission:CRUD_projects|CR_projects');
+/*
+* Grant access only for users with CRUD_catalogs permission
+*/
 Route::get('/gestionar-catalogos', function () {
     return view('admin.catalogos');
+})->middleware('permission:CRUD_catalogs');
+
+
+Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
+  Route::get('/gestionar-parametros', function () {
+      return view('admin.parametros');
+  });
+  Route::get('/gestionar-plantillas-parametros', function () {
+      return view('admin.parametrosplantilla');
+  });
+  Route::get('/gestionar-estructura-proyecto', function () {
+      return view('admin.estructuraproyecto');
+  });
+  Route::get('/gestionar-calendario', function () {
+      return view('admin.calendarios');
+  });
+  Route::get('/gestionar-tree', function () {
+      return view('admin.tree');
+  });
 });
 
-Route::get('/gestionar-parametros', function () {
-    return view('admin.parametros');
+Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
+  Route::get('/gestionar-macroprocesos', function () {
+      return view('admin.macroprocesos');
+  });
+
 });
 
-Route::get('/gestionar-macroprocesos', function () {
-    return view('admin.macroprocesos');
+Route::group(['middleware' => ['permission:CRUD_tasks']], function () {
+
 });
 
-Route::get('/gestionar-plantillas-parametros', function () {
-    return view('admin.parametrosplantilla');
+Route::group(['middleware' => ['permission:R_reports']], function () {
+
 });
 
-Route::get('/gestionar-calendario', function () {
-    return view('admin.calendarios');
-});
-
-Route::get('/gestionar-tree', function () {
-    return view('admin.tree');
-});
-
-Route::get('/gestionar-estructura-proyecto', function () {
-    return view('admin.estructuraproyecto');
-});
 
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
-});
+})->middleware('auth');
 
 Route::get('/perfil-usuario', function () {
     return view('user.profile');
-});
+})->middleware('auth');
+
 
 Auth::routes();
 

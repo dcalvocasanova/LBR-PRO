@@ -75,6 +75,7 @@
   </li>
 
   {{-- Nav Item - Users Collapse Menu--}}
+  @if(@Auth::user()->hasPermissionTo('simple_user'))
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
@@ -88,6 +89,7 @@
       </div>
     </div>
   </li>
+  @endif
 
   {{-- Divider--}}
   <hr class="sidebar-divider">
