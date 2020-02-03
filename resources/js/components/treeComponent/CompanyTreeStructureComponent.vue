@@ -39,8 +39,8 @@
                     </div>
                     <div class="row">
                       <div class="container-buttons">
-                        <button v-if="update== 0" @click="addNode()" class="btn btn-success">Añadir</button>
-                        <button v-if="update!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
+                        <button v-if="updateNodeControl== 0" @click="addNode()" class="btn btn-success">Añadir</button>
+                        <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
                         <button @click="salir()" class="btn btn-secondary">Atrás</button>
                       </div>
                     </div>
@@ -65,7 +65,7 @@
       return{
           treeData: treeData,
           currentNode: {},
-          update:0,
+          updateNodeControl:0,
           newName:""
       }
     },
@@ -73,21 +73,21 @@
       makeParent(item) {
         let me = this;
         me.currentNode = item
-        me.update = 0
+        me.updateNodeControl = 0
         Vue.set(item, 'children', [])
         this.getNodeName()
       },
       addChild(item) {
         let me = this;
         me.currentNode = item
-        me.update = 0
+        me.updateNodeControl = 0
         this.getNodeName()
       },
       editNode(item){
         let me = this;
         me.currentNode = item
         me.newName = me.currentNode.name
-        me.update = 1
+        me.updateNodeControl = 1
         this.getNodeName()
       },
       addNode() {

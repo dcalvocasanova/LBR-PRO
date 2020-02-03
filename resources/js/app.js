@@ -64,7 +64,8 @@ Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue')
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
-Vue.component('TreeStructure', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
+Vue.component('TreeStructureCompany', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
+Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('levels', require('./components/LevelsComponent.vue').default);
 Vue.component('objectives', require('./components/ObjectivesComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);

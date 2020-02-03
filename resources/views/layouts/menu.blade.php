@@ -30,16 +30,16 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralData" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-folder-open"></i>
-      <span> Datos Generales</span>
+      <span>Datos generales del sistema</span>
     </a>
     <div id="collapseGeneralData" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header"> Proyecto o Actividad:</h6>
         <a class="collapse-item" href="/gestionar-proyectos">Gestionar </a>
-        <h6 class="collapse-header"> Usarios</h6>
+        <h6 class="collapse-header"> Usarios del sistema</h6>
         <a class="collapse-item" href="/gestionar-usuarios">Gestionar</a>
-        <h6 class="collapse-header"> Configuración</h6>
-        <a class="collapse-item" href="/gestionar-catalogos">Gestionar Catálogos</a></a>
+        <h6 class="collapse-header"> Catálogos</h6>
+        <a class="collapse-item" href="/gestionar-catalogos">Gestionar</a></a>
 
       </div>
     </div>
@@ -53,47 +53,29 @@
     </a>
     <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
-        <a class="collapse-item" href="/gestionar-parametros">Gestionar</a>
-
-      </div>
-    </div>
-  </li>
-  {{-- Nav Item - Users Collapse Menu--}}
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfiguration" aria-expanded="true" aria-controls="collapseUtilities">
-      <i class="fas fa-fw fa-wrench"></i>
-      <span> Macroprocesos</span>
-    </a>
-    <div id="collapseConfiguration" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
-        <a class="collapse-item" href="/gestionar-macroprocesos">Gestionar</a>
-
-      </div>
-    </div>
-  </li>
-
-  {{-- Nav Item - Users Collapse Menu--}}
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTemplates" aria-expanded="true" aria-controls="collapseUtilities">
-      <i class="fas fa-fw fa-wrench"></i>
-      <span> Plantillas</span>
-    </a>
-    <div id="collapseTemplates" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header"> Parámetros:</h6>
-        <a class="collapse-item" href="/gestionar-plantillas-parametros">Gestionar</a>
-        <h6 class="collapse-header"> Macroprocesos</h6>
-        <a class="collapse-item" href="#">Gestionar</a>
-        <h6 class="collapse-header"> Calendario</h6>
-        <a class="collapse-item" href="/gestionar-calendario">Gestionar</a>
+        <h6 class="collapse-header">Configuración del proyecto</h6>
+        <a class="collapse-item" href="/gestionar-usuarios">Usuarios</a>
+        <a class="collapse-item" href="/gestionar-estructura-proyecto">Gestionar niveles</a>
+        <a class="collapse-item" href="#">funciones y validaciones</a>
+        <h6 class="collapse-header">Parametrización </h6>
+        <a class="collapse-item" href="/gestionar-parametros">Parámetros</a>
+        <a class="collapse-item" href="#">Tiempos de ajuste</a>
+        <a class="collapse-item" href="/gestionar-plantillas-parametros">Plantillas</a>
+        <a class="collapse-item" href="/gestionar-calendario">Calendario</a>
+        <h6 class="collapse-header">Macroprocesos</h6>
+        <a class="collapse-item" href="#">Catálogo acciones</a>
+        <a class="collapse-item" href="#">Objetivos</a>
+        <a class="collapse-item" href="/gestionar-macroprocesos">Macroprocesos</a>
+        <a class="collapse-item" href="#">Procesos</a>
+        <a class="collapse-item" href="#">Subprocesos</a>
+        <a class="collapse-item" href="#">Tareas</a>
         <a class="collapse-item" href="/gestionar-tree">tree</a>
       </div>
     </div>
   </li>
 
   {{-- Nav Item - Users Collapse Menu--}}
+  @if(@Auth::user()->hasPermissionTo('simple_user'))
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
@@ -107,6 +89,7 @@
       </div>
     </div>
   </li>
+  @endif
 
   {{-- Divider--}}
   <hr class="sidebar-divider">
