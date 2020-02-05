@@ -101,6 +101,12 @@ Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
 Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
 Route::delete('/catalogo/borrar/{id}', 'CatalogController@deleteItem');
+Route::get('/catalogo/roles', 'CatalogController@getRoles');
+Route::post('/catalogo/guardar-rol', 'CatalogController@storeRole');
+Route::put('/catalogo/actualizar-rol', 'CatalogController@updateRole');
+Route::delete('/catalogo/borrar-rol/{id}', 'CatalogController@deleteRole');
+Route::get('/catalogo/permisos-del-rol/{id}', 'CatalogController@getAllPermisssionsFromRole');
+Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisssionsFromRole');
 
 
 /*Manage Project Levels Structure*/

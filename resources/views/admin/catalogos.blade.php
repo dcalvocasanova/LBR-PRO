@@ -9,6 +9,7 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <catalogs></catalogs>
+        <user-roles></user-roles>
       </div>
     </div>
     {{-- Adding footer --}}

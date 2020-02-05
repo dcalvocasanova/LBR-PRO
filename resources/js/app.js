@@ -56,7 +56,8 @@ Vue.use(VueProgressBar, {
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
 Vue.component('users', require('./components/UserComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
-Vue.component('catalogs', require('./components/CatalogsComponent.vue').default);
+Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
+Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);

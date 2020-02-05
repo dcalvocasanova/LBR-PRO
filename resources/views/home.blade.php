@@ -7,7 +7,8 @@
       {{-- Adding top bar navigator --}}
       @include('layouts.topbar')
       {{-- Adding page content --}}
-      <div class="container-fluid">        
+      <div class="container-fluid">
+       HOME PAGE, HERE YOU WILL FIND SOME BEAUTIFULL CHARTS AND MORE STATICS  
       </div>
     </div>
     {{-- Adding footer --}}
