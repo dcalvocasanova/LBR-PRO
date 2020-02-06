@@ -11,7 +11,8 @@
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
         </span>
         <span class="controls-gol-edit" v-show="showGoalEditor">
-          <span @click="$emit('assign-goal', item)"><i class="fas fa-columns"></i> </span>
+          <span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
+		<span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
         </span>
       </h4>
       </div>
@@ -28,6 +29,7 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
+			@assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
       >
       </tree-menu>
       <li class="add" v-show="showTreeEditor" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>

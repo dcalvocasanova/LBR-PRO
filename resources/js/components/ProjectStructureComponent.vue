@@ -53,13 +53,14 @@
                     <div class="tree-viewer">
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
-                        :showTreeEditor="true" :showGoalEditor="false"
+                        :showTreeEditor="true" :showGoalEditor="true"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
+					    @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
                     </div>
@@ -100,6 +101,93 @@
                         </div>
                       </div>
                     </div>
+					<div class="modal fade" id="GoalManager" tabindex="-1" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="GoalManager"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="card">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-8">
+                                        <div class="form-group">
+                                          <label class="bmd-label-floating">Objetivo</label>
+                                          <input  v-model="newName" type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="container-buttons">
+                                        <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
+                                        <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+					<div class="modal fade" id="InheritedManager" tabindex="-1" role="dialog" aria-labelledby="InheritedManager-lg" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header border-bottom-0">
+                            <h5 class="modal-title" id="InheritageManager"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="card">
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-8">
+                                        <div class="form-group">
+                                           <table class="table table-hover">
+											  <thead class="">
+												<tr>
+												  <th> Nombre </th>
+												  <th> pos </th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr v-for="goal in parentNode.goals" :key="goal.pos" >
+													<td v-text="goal.name"></td>
+													<td v-text="goal.pos"></td>
+												</tr>
+											  </tbody>
+											</table>
+											
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="container-buttons">
+                                        <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
+                                        <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>  
                   </div>
                 </div>
               </div>
@@ -120,12 +208,14 @@
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
+		parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
         newName:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
           project_id:""
+		  
         })
       }
     },
@@ -134,7 +224,26 @@
         alert ("Se hizo click sobre"+item.name)
       },
       asignarObjetivoANodo(item){
-        alert ("Se quiere ingresar objetivo al nodo "+item.name)
+        let me = this;
+        me.currentNode = item
+        me.updateNodeControl = 0
+        this.getGoalName()
+      },
+	  asignarObjetivoHeredado(nodo){
+        let me = this;
+        me.currentNode = nodo.item
+		me.parentNode = nodo.parent
+        me.updateNodeControl = 0
+        this.getGoalsInherited()
+      },
+	  addObjetivoHeredado(node){
+        let me = this;
+        if(node.parent !==node.item){
+          
+        }
+        else{
+          node.parent.children = []
+        }
       },
       getProjectsPaginator(page = 1) {
         axios.get('/proyectos?page=' + page)
@@ -173,6 +282,7 @@
               console.log(error);
           });
       },
+	
       saveLevel(){
         let me =this
         me.level.levels =JSON.stringify(me.Levels)
@@ -218,11 +328,24 @@
       },
       addNode() {
         let me = this;
+		
         me.currentNode.children.push({
           name: me.newName,
-          level:me.currentNode.level + 1
+          level:me.currentNode.level + 1,
+		  numGoals:0,
+		  goals:[],
+		  inheritedGoals:[]
         })
         me.salir()
+      },
+	  addGoal() {
+        let me = this;
+		me.currentNode.numGoals += 1;
+        me.currentNode.goals.push({
+          name: me.newName,
+          pos:me.currentNode.numGoals // definir contador para objetivos
+        })
+        me.salirGoal()
       },
       updateNode() {
         let me = this
@@ -247,8 +370,18 @@
         $('#LevelManager').modal('toggle');
         this.newName = ""
       },
+	salirGoal(){
+        $('#GoalManager').modal('toggle');
+        this.newName = ""
+      },
       getNodeName(){
         $('#LevelManager').modal('show')
+      },
+	  getGoalsInherited(){
+        $('#InheritedManager').modal('show')
+      },
+	  getGoalName(){
+        $('#GoalManager').modal('show')
       }
     },
     created(){
