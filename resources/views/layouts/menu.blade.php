@@ -66,7 +66,7 @@
         @if(@Auth::user()->can('CRUD_macroprocess'))
           <h6 class="collapse-header">Macroprocesos</h6>
           <a class="collapse-item" href="#">Catálogo acciones</a>
-          <a class="collapse-item" href="#">Objetivos</a>
+          <a class="collapse-item" href="/gestionar-objetivos">Objetivos</a>
           <a class="collapse-item" href="/gestionar-macroprocesos">Macroprocesos</a>
           <a class="collapse-item" href="#">Procesos</a>
           <a class="collapse-item" href="#">Subprocesos</a>

@@ -70,6 +70,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-macroprocesos', function () {
       return view('admin.macroprocesos');
   });
+  Route::get('/gestionar-objetivos', function () {
+      return view('admin.objetivos_estructura_proyecto');
+  });
 });
 Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
 Route::group(['middleware' => ['permission:R_reports']], function () {});
