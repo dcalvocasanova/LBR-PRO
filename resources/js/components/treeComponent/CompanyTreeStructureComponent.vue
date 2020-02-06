@@ -1,17 +1,17 @@
 <template>
   <div class="tree-menu">
-    <ul id="demo">
+    <div class="tree-viewer">
       <tree-menu
         class="item"
         :item="treeData"
+        :parent="treeData"
         @make-parent="makeParent"
         @edit-node="editNode"
         @delete-node="deleteNode"
         @add-item="addChild"
       >
       </tree-menu>
-    </ul>
-
+    </div>
     <div class="modal fade" id="getData" tabindex="-1" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -39,8 +39,8 @@
                     </div>
                     <div class="row">
                       <div class="container-buttons">
-                        <button v-if="update== 0" @click="addNode()" class="btn btn-success">Añadir</button>
-                        <button v-if="update!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
+                        <button v-if="updateNodeControl== 0" @click="addNode()" class="btn btn-success">Añadir</button>
+                        <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
                         <button @click="salir()" class="btn btn-secondary">Atrás</button>
                       </div>
                     </div>
@@ -65,7 +65,7 @@
       return{
           treeData: treeData,
           currentNode: {},
-          update:0,
+          updateNodeControl:0,
           newName:""
       }
     },
@@ -73,29 +73,28 @@
       makeParent(item) {
         let me = this;
         me.currentNode = item
-        me.update = 0
+        me.updateNodeControl = 0
         Vue.set(item, 'children', [])
         this.getNodeName()
       },
       addChild(item) {
         let me = this;
         me.currentNode = item
-        me.update = 0
+        me.updateNodeControl = 0
         this.getNodeName()
       },
       editNode(item){
         let me = this;
         me.currentNode = item
         me.newName = me.currentNode.name
-        me.update = 1
+        me.updateNodeControl = 1
         this.getNodeName()
       },
       addNode() {
         let me = this;
         me.currentNode.children.push({
           name: me.newName,
-          level:me.currentNode.level + 1,
-          x:"ff"
+          level:me.currentNode.level + 1
         })
         me.salir()
       },
@@ -104,11 +103,19 @@
         me.currentNode.name = me.newName
         me.salir()
       },
-      deleteNode(item){
+      deleteNode(node){
         let me = this;
-        me.currentNode = item
-        alert ("se quiere borrar"+me.currentNode.name)
-
+        if (node.parent !==node.item){
+          node.parent.children= me.deleteIndex(node.parent.children,node.item)
+        }
+        else{
+          node.parent.children = []
+        }
+      },
+      deleteIndex(arr, index){
+        return arr.filter(function(i){
+          return i!= index
+        });
       },
       salir(){
         $('#getData').modal('toggle');
