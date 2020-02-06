@@ -36,15 +36,18 @@ class UserController extends Controller
     public function store(Request $request)
     {
       $this->validate($request,[
-          'nombre' => 'required',
+          'nombre' => 'required|string',
           'email' => 'required|email|unique:users',
           'identificacion' => 'required|string|unique:users,identification',
           'genero' => 'required|string',
           'sexo' => 'required|string',
           'fecha_nacimiento' => 'required|date',
           'salario'=> 'required|numeric',
-          'fecha_ingreso'=> 'required|string',
+          'fecha_ingreso'=> 'required|date',
           'puesto'=> 'required|string',
+          'cargo'=> 'required|string',
+          'jornada'=> 'required|string',
+          'educacion'=> 'required|string',
           'etnia' => 'required|string'
       ]);
 
@@ -58,15 +61,18 @@ class UserController extends Controller
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-      $user->position= $request->puesto;
+      $user->job= $request->puesto;
+      $user->position= $request->cargo;
+      $user->workday= $request->jornada;
+      $user->education= $request->educacion;
       $user->salary= $request->salario;
       $user->birthday= $request->fecha_nacimiento;
       $user->workingsince= $request->fecha_ingreso;
-      $randomPass = Str::random(8);
+      $randomPass = '123456';//Str::random(8);
       $user->password =Hash::make($randomPass);
       $user->avatar = "default.png";
       if($user->save()){
-        $this->sendPassword($randomPass, $email,$nombre);
+      //  $this->sendPassword($randomPass, $email,$nombre);
       }
 
     }
@@ -102,28 +108,16 @@ class UserController extends Controller
       $user->identification = $request->identificacion;
       $user->email = $request->email;
       $user->type = $request->tipo;
-      $user->position= $request->puesto;
+      $user->job= $request->puesto;
+      $user->position= $request->cargo;
+      $user->workday= $request->jornada;
+      $user->education= $request->educacion;
       $user->salary= $request->salario;
       $user->birthday= $request->fecha_nacimiento;
       $user->workingsince= $request->fecha_ingreso;
       $user->gender = $request->genero;
       $user->sex = $request->sexo;
       $user->ethnic = $request->etnia;
-/*
-      if($request->avatar != $current_avatar)
-      {
-        $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
-        $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
-        $img->fit(75, 75, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $user->avatar = $file_avatar;
-        $last_avatar = public_path('img/profile-usr/').$current_avatar;
-        if(file_exists($last_avatar) && $last_avatar !='default.png' ){
-                @unlink($last_avatar);
-        }
-      }*/
       $user->save();
     }
 
@@ -173,6 +167,39 @@ class UserController extends Controller
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
 
+    /**
+     * Update user profile
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProfile (Request $request)
+    {
+      $this->validate($request,[
+          'contrasena' => 'required'
+      ]);
+      $user = User::findOrFail($request->id);
+      $current_avatar = $user->avatar;
+      $user->password =Hash::make($randomPass);
+
+      if($request->avatar != $current_avatar)
+      {
+        $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
+        $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
+        $img->fit(75, 75, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $user->avatar = $file_avatar;
+        $last_avatar = public_path('img/profile-usr/').$current_avatar;
+        if(file_exists($last_avatar) && $last_avatar !='default.png' ){
+            @unlink($last_avatar);
+        }
+      }
+      $user->save();
+    	return response()->json(['msg'=>'Datos actualizados']);
+    }
+
 
     public function sendPassword($randomPass, $email, $nombre)
     {
@@ -182,4 +209,41 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+<<<<<<< HEAD
+=======
+
+	public function loadUsers(Request $request){
+
+		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
+
+		//$file = $request->file('file');
+		//$file= $fileName;
+  //  return $request->file('archivo')->getClientOriginalName();
+    $datos = Excel::import(new UsersImport, $request->file('archivo'));
+
+  //  return $datos->failures();
+
+		//Excel::import(new UsersImport, $request->file('archivo'));
+		//dd($request);
+		//dd($request->users);
+		//$file = $request->file('users');
+
+
+//$file->getRealPath();
+//$file->getClientOriginalName();
+/*$file->getClientOriginalExtension();
+$file->getSize();
+$file->getMimeType();*/
+		//return response()->json(['success'=>'You have successfully upload file'. $file]);
+
+
+		$file =  $request->file('archivo');
+        if(!empty($file)){
+          $fileName = rand().'.'.$file->getClientOriginalExtension();
+          $request->file('archivo')->move(public_path('upload'), $fileName);
+          return response()->json(['success'=>'You have successfully upload file.']);
+        }
+        return response()->json(['fail'=>'Mamo, no envió nada.']);
+	}
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
 }

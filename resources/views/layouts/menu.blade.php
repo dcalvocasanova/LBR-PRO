@@ -1,5 +1,5 @@
 {{-- Sidebar--}}
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
   {{-- Sidebar - Brand--}}
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
     <div class="sidebar-brand-icon rotate-n-15">
@@ -70,6 +70,25 @@
         {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
         <a class="collapse-item" href="/gestionar-macroprocesos">Gestionar</a>
 
+      </div>
+    </div>
+  </li>
+
+  {{-- Nav Item - Users Collapse Menu--}}
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTemplates" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span> Plantillas</span>
+    </a>
+    <div id="collapseTemplates" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header"> Parámetros:</h6>
+        <a class="collapse-item" href="/gestionar-plantillas-parametros">Gestionar</a>
+        <h6 class="collapse-header"> Macroprocesos</h6>
+        <a class="collapse-item" href="#">Gestionar</a>
+        <h6 class="collapse-header"> Calendario</h6>
+        <a class="collapse-item" href="/gestionar-calendario">Gestionar</a>
+        <a class="collapse-item" href="/gestionar-tree">tree</a>
       </div>
     </div>
   </li>

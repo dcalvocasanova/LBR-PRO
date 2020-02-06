@@ -15,26 +15,34 @@
               </button>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body card-body-fitted ">
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th style="width: 92px;"> Nombre </th>
-                    <th> Acciones </th>
+                    <th style="width: 160px;"> Nombre </th>
+                    <th style="width: 40px;"> Acciones </th>
                   </tr>
                 </thead>
                 <tbody>
                     <tr  v-for="variable in Variables.data" :key="variable.id">
                       <td v-text="variable.name"></td>
                       <td>
+<<<<<<< HEAD
                         <button class="btn btn-info"
+=======
+                        <button class="btn-icon btn btn-info"
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                           @click="loadFieldsUpdate(variable)"
                           data-toggle="modal"
                           data-target="#addVariable">
                             <i class="fas fa-edit"></i>
                         </button>
+<<<<<<< HEAD
                         <button class="btn btn-danger" @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
+=======
+                        <button class="btn-icon btn btn-danger"  @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                       </td>
                     </tr>
                   </tbody>
@@ -65,6 +73,15 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Identificador</label>
+                          <input v-model="form.identificador" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('identificador') }">
+                          <has-error :form="form" field="identificador"></has-error>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
                       <div class="col-md-9">
                         <div class="form-group">
                           <label class="bmd-label-floating">Nombre</label>
@@ -75,7 +92,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label class="bmd-label-floating">Tipo</label>
-                          <select v-model="form.tipo" class="form-control" :class="{ 'is-invalid': form.errors.has('tipo') }">
+                          <select @change="showExtraValidations()" v-model="form.tipo" class="form-control" :class="{ 'is-invalid': form.errors.has('tipo') }">
                             <option value="number">Númerico</option>
                             <option value="string">Texto</option>
                           </select>
@@ -94,7 +111,7 @@
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Medida</label>
-                          <select v-model="form.regla" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
+                          <select v-model="form.medida" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
                             <option value="d">Días</option>
                             <option value="h">Horas</option>
                             <option value="m">Minutos</option>
@@ -138,13 +155,18 @@
                 form: new Form ({
                   id:"",//User ID
                   nombre:"",
+                  identificador:"",
                   tipo:"",
                   valor:"",
                   medida:"",
-                  rule:""
+                  regla:""
                 }),
+<<<<<<< HEAD
                 showDetails: true,
                 componentVariableKey:0,
+=======
+                showDetails: false,
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 showVariable:0,
@@ -156,7 +178,11 @@
             getResults(page = 1) {
               axios.get('/variables?page=' + page)
               .then(response => {
+<<<<<<< HEAD
                     this.Variable = response.data; //get all projects from page
+=======
+                    this.Variables = response.data; //get all projects from page.
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
               });
             },
             showSubVariables(variable){
@@ -168,11 +194,22 @@
                 name: parameter.name
               })
               .then(function (response) {
+<<<<<<< HEAD
                 me.componentVariableKey += 1;
+=======
+
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
               })
               .catch(function (error) {
                 console.log(error);
               });
+            },
+            showExtraValidations(){
+              if(this.form.tipo =="number") {
+                  this.showDetails= true;
+              }else{
+                  this.showDetails= false;
+              }
             },
             getVaraibles(){
                 let me =this;
@@ -222,8 +259,18 @@
               me.update = variable.id
               me.title="Actualizar información de la variable";
               me.form.nombre = variable.name;
+<<<<<<< HEAD
               me.form.tipo = variable.type;
               me.form.id = variable.id;
+=======
+              me.form.identificador = variable.identificator;
+              me.form.tipo = variable.type;
+              me.form.valor=variable.value;
+              me.form.medida=variable.measure;
+              me.form.regla=variable.rule;
+              me.form.id = variable.id;
+              if (me.form.tipo =="number"){this.showDetails= true;}
+>>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
             },
             deleteVariable(variable){
               let me =this;
@@ -258,6 +305,7 @@
                 me.title="Agregar nueva variable",
                 me.update = 0;
                 me.form.reset();
+                me.showDetails= false;
             },
             salir(){
               this.clearFields();

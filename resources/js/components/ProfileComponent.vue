@@ -19,12 +19,7 @@
           </hr><br>
         </div><!--/col-3-->
       	<div class="col-sm-9">
-
-
-
-
-
-          </div><!--/col-9-->
+        </div><!--/col-9-->
       </div><!--/row-->
     </div><!--/row-->
 </template>
@@ -37,7 +32,7 @@
 export default {
 
 components: {
-  
+
 },
 data() {
   return {
