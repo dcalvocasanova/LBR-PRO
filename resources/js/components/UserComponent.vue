@@ -181,6 +181,7 @@
             </div>
             <div class="modal-body">
               <div class="row">
+                <button @click="getTemplate" class="btn btn-success">Generar archivo</button>
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header card-header-primary">
@@ -285,6 +286,17 @@ export default {
       axios.get('/usuarios?page=' + page)
       .then(response => {
             me.Users = response.data; //get all projects from page
+      });
+    },
+    getTemplate() {
+      let me =this;
+      axios.get('/usuarios-plantilla')
+      .then(response => {
+        let blob = new Blob([response.data],{ type:'application/csv'});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "plantilla.csv";
+        link.click();
       });
     },
     getAvatar(user){

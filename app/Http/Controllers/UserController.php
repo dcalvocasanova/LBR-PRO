@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\UserRequest;
+use App\Exports\UsersTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Queue\SerializesModels;
@@ -186,7 +187,7 @@ class UserController extends Controller
     /**
      * Send Password
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  $request
      * @return \Illuminate\Http\Response
      */
     public function sendPassword($randomPass, $email, $nombre)
@@ -195,6 +196,21 @@ class UserController extends Controller
       $for = $email;
         Mail::to($for)->send(new EmailMessage($nombre, $message));
         return redirect()->back();
+    }
+    /**
+     * Get Excel
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getExcel()
+    {
+      return Excel::download(
+        new UsersTemplateExport,
+        'invoices.csv',
+        \Maatwebsite\Excel\Excel::CSV, [
+          'Content-Type' => 'text/csv',
+        ]);
     }
 
 	  public function loadUsers(Request $request){

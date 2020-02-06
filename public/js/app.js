@@ -3061,19 +3061,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -3737,6 +3724,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showDeleteAndUpdateButton: Number
@@ -3816,6 +3804,18 @@ __webpack_require__.r(__webpack_exports__);
       me.clearFields();
       axios.get('/usuarios?page=' + page).then(function (response) {
         me.Users = response.data; //get all projects from page
+      });
+    },
+    getTemplate: function getTemplate() {
+      var me = this;
+      axios.get('/usuarios-plantilla').then(function (response) {
+        var blob = new Blob([response.data], {
+          type: 'application/csv'
+        });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "plantilla.csv";
+        link.click();
       });
     },
     getAvatar: function getAvatar(user) {
@@ -48649,23 +48649,25 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(2),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
                 _c(
-                  "button",
+                  "h5",
                   {
-                    staticClass: "btn btn-success",
-                    attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+                    staticClass: "modal-title",
+                    attrs: { id: "LevelModalOptions" },
                     on: {
                       click: function($event) {
                         return _vm.saveLevel()
                       }
                     }
                   },
-                  [_vm._v("Guardar estructura")]
+                  [_vm._v("Niveles de estructura")]
                 ),
                 _vm._v(" "),
+                _vm._m(2)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
                 _c("br"),
                 _c("br"),
                 _vm._v(" "),
@@ -48698,604 +48700,381 @@ var render = function() {
                             })
                           ],
                           1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "modal fade",
-                            attrs: {
-                              id: "LevelManager",
-                              tabindex: "-1",
-                              role: "dialog",
-                              "aria-labelledby": "LevelManager-lg",
-                              "aria-hidden": "true"
-                            }
-                          },
-                          [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "modal-dialog modal-lg modal-dialog-centered",
-                                attrs: { role: "document" }
-                              },
-                              [
-                                _c("div", { staticClass: "modal-content" }, [
-                                  _vm._m(3),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "modal-body" }, [
-                                    _c("div", { staticClass: "row" }, [
-                                      _c("div", { staticClass: "col-md-12" }, [
-                                        _c("div", { staticClass: "card" }, [
-                                          _c(
-                                            "div",
-                                            { staticClass: "card-body" },
-                                            [
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    { staticClass: "col-md-8" },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        {
-                                                          staticClass:
-                                                            "form-group"
-                                                        },
-                                                        [
-                                                          _c(
-                                                            "label",
-                                                            {
-                                                              staticClass:
-                                                                "bmd-label-floating"
-                                                            },
-                                                            [_vm._v("Nombre")]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c("input", {
-                                                            directives: [
-                                                              {
-                                                                name: "model",
-                                                                rawName:
-                                                                  "v-model",
-                                                                value:
-                                                                  _vm.newName,
-                                                                expression:
-                                                                  "newName"
-                                                              }
-                                                            ],
-                                                            staticClass:
-                                                              "form-control",
-                                                            attrs: {
-                                                              type: "text"
-                                                            },
-                                                            domProps: {
-                                                              value: _vm.newName
-                                                            },
-                                                            on: {
-                                                              input: function(
-                                                                $event
-                                                              ) {
-                                                                if (
-                                                                  $event.target
-                                                                    .composing
-                                                                ) {
-                                                                  return
-                                                                }
-                                                                _vm.newName =
-                                                                  $event.target.value
-                                                              }
-                                                            }
-                                                          })
-                                                        ]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "container-buttons"
-                                                    },
-                                                    [
-                                                      _vm.updateNodeControl == 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-success",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.addNode()
-                                                                }
-                                                              }
-                                                            },
-                                                            [_vm._v("Añadir")]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _vm.updateNodeControl != 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-info",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.updateNode()
-                                                                }
-                                                              }
-                                                            },
-                                                            [
-                                                              _vm._v(
-                                                                "Actualizar"
-                                                              )
-                                                            ]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-secondary",
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.salir()
-                                                            }
-                                                          }
-                                                        },
-                                                        [_vm._v("Atrás")]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ])
-                                      ])
-                                    ])
-                                  ])
-                                ])
-                              ]
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "modal fade",
-                            attrs: {
-                              id: "GoalManager",
-                              tabindex: "-1",
-                              role: "dialog",
-                              "aria-labelledby": "GoalManager-lg",
-                              "aria-hidden": "true"
-                            }
-                          },
-                          [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "modal-dialog modal-lg modal-dialog-centered",
-                                attrs: { role: "document" }
-                              },
-                              [
-                                _c("div", { staticClass: "modal-content" }, [
-                                  _vm._m(4),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "modal-body" }, [
-                                    _c("div", { staticClass: "row" }, [
-                                      _c("div", { staticClass: "col-md-12" }, [
-                                        _c("div", { staticClass: "card" }, [
-                                          _c(
-                                            "div",
-                                            { staticClass: "card-body" },
-                                            [
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    { staticClass: "col-md-8" },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        {
-                                                          staticClass:
-                                                            "form-group"
-                                                        },
-                                                        [
-                                                          _c(
-                                                            "label",
-                                                            {
-                                                              staticClass:
-                                                                "bmd-label-floating"
-                                                            },
-                                                            [_vm._v("Objetivo")]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c("input", {
-                                                            directives: [
-                                                              {
-                                                                name: "model",
-                                                                rawName:
-                                                                  "v-model",
-                                                                value:
-                                                                  _vm.newName,
-                                                                expression:
-                                                                  "newName"
-                                                              }
-                                                            ],
-                                                            staticClass:
-                                                              "form-control",
-                                                            attrs: {
-                                                              type: "text"
-                                                            },
-                                                            domProps: {
-                                                              value: _vm.newName
-                                                            },
-                                                            on: {
-                                                              input: function(
-                                                                $event
-                                                              ) {
-                                                                if (
-                                                                  $event.target
-                                                                    .composing
-                                                                ) {
-                                                                  return
-                                                                }
-                                                                _vm.newName =
-                                                                  $event.target.value
-                                                              }
-                                                            }
-                                                          }),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "label",
-                                                            {
-                                                              staticClass:
-                                                                "bmd-label-floating"
-                                                            },
-                                                            [_vm._v("Código")]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c("input", {
-                                                            directives: [
-                                                              {
-                                                                name: "model",
-                                                                rawName:
-                                                                  "v-model",
-                                                                value:
-                                                                  _vm.newCode,
-                                                                expression:
-                                                                  "newCode"
-                                                              }
-                                                            ],
-                                                            staticClass:
-                                                              "form-control",
-                                                            attrs: {
-                                                              type: "text"
-                                                            },
-                                                            domProps: {
-                                                              value: _vm.newCode
-                                                            },
-                                                            on: {
-                                                              input: function(
-                                                                $event
-                                                              ) {
-                                                                if (
-                                                                  $event.target
-                                                                    .composing
-                                                                ) {
-                                                                  return
-                                                                }
-                                                                _vm.newCode =
-                                                                  $event.target.value
-                                                              }
-                                                            }
-                                                          })
-                                                        ]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "container-buttons"
-                                                    },
-                                                    [
-                                                      _vm.updateNodeControl == 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-success",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.addGoal()
-                                                                }
-                                                              }
-                                                            },
-                                                            [_vm._v("Añadir")]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _vm.updateNodeControl != 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-info",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.updateGoal()
-                                                                }
-                                                              }
-                                                            },
-                                                            [
-                                                              _vm._v(
-                                                                "Actualizar"
-                                                              )
-                                                            ]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-secondary",
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.salir()
-                                                            }
-                                                          }
-                                                        },
-                                                        [_vm._v("Atrás")]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ])
-                                      ])
-                                    ])
-                                  ])
-                                ])
-                              ]
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "modal fade",
-                            attrs: {
-                              id: "InheritedManager",
-                              tabindex: "-1",
-                              role: "dialog",
-                              "aria-labelledby": "InheritedManager-lg",
-                              "aria-hidden": "true"
-                            }
-                          },
-                          [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "modal-dialog modal-lg modal-dialog-centered",
-                                attrs: { role: "document" }
-                              },
-                              [
-                                _c("div", { staticClass: "modal-content" }, [
-                                  _vm._m(5),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "modal-body" }, [
-                                    _c("div", { staticClass: "row" }, [
-                                      _c("div", { staticClass: "col-md-12" }, [
-                                        _c("div", { staticClass: "card" }, [
-                                          _c(
-                                            "div",
-                                            { staticClass: "card-body" },
-                                            [
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    { staticClass: "col-md-8" },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        {
-                                                          staticClass:
-                                                            "form-group"
-                                                        },
-                                                        [
-                                                          _c(
-                                                            "table",
-                                                            {
-                                                              staticClass:
-                                                                "table table-hover"
-                                                            },
-                                                            [
-                                                              _vm._m(6),
-                                                              _vm._v(" "),
-                                                              _c(
-                                                                "tbody",
-                                                                _vm._l(
-                                                                  _vm.parentNode
-                                                                    .goals,
-                                                                  function(
-                                                                    goal
-                                                                  ) {
-                                                                    return _c(
-                                                                      "tr",
-                                                                      {
-                                                                        key:
-                                                                          goal.pos
-                                                                      },
-                                                                      [
-                                                                        _c(
-                                                                          "td",
-                                                                          {
-                                                                            domProps: {
-                                                                              textContent: _vm._s(
-                                                                                goal.name
-                                                                              )
-                                                                            }
-                                                                          }
-                                                                        ),
-                                                                        _vm._v(
-                                                                          " "
-                                                                        ),
-                                                                        _c(
-                                                                          "td",
-                                                                          {
-                                                                            domProps: {
-                                                                              textContent: _vm._s(
-                                                                                goal.pos
-                                                                              )
-                                                                            }
-                                                                          }
-                                                                        )
-                                                                      ]
-                                                                    )
-                                                                  }
-                                                                ),
-                                                                0
-                                                              )
-                                                            ]
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                { staticClass: "row" },
-                                                [
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass:
-                                                        "container-buttons"
-                                                    },
-                                                    [
-                                                      _vm.updateNodeControl == 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-success",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.addGoal()
-                                                                }
-                                                              }
-                                                            },
-                                                            [_vm._v("Añadir")]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _vm.updateNodeControl != 0
-                                                        ? _c(
-                                                            "button",
-                                                            {
-                                                              staticClass:
-                                                                "btn btn-info",
-                                                              on: {
-                                                                click: function(
-                                                                  $event
-                                                                ) {
-                                                                  return _vm.updateGoal()
-                                                                }
-                                                              }
-                                                            },
-                                                            [
-                                                              _vm._v(
-                                                                "Actualizar"
-                                                              )
-                                                            ]
-                                                          )
-                                                        : _vm._e(),
-                                                      _vm._v(" "),
-                                                      _c(
-                                                        "button",
-                                                        {
-                                                          staticClass:
-                                                            "btn btn-secondary",
-                                                          on: {
-                                                            click: function(
-                                                              $event
-                                                            ) {
-                                                              return _vm.salir()
-                                                            }
-                                                          }
-                                                        },
-                                                        [_vm._v("Atrás")]
-                                                      )
-                                                    ]
-                                                  )
-                                                ]
-                                              )
-                                            ]
-                                          )
-                                        ])
-                                      ])
-                                    ])
-                                  ])
-                                ])
-                              ]
-                            )
-                          ]
                         )
                       ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+                      on: {
+                        click: function($event) {
+                          return _vm.saveLevel()
+                        }
+                      }
+                    },
+                    [_vm._v("Guardar estructura")]
+                  )
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "LevelManager",
+          tabindex: "-2",
+          role: "dialog",
+          "aria-labelledby": "LevelManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Nombre")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newName,
+                                expression: "newName"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newName },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newName = $event.target.value
+                              }
+                            }
+                          })
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer" }, [
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _vm.updateNodeControl == 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.addNode()
+                                  }
+                                }
+                              },
+                              [_vm._v("Añadir")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.updateNodeControl != 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateNode()
+                                  }
+                                }
+                              },
+                              [_vm._v("Actualizar")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.salir()
+                              }
+                            }
+                          },
+                          [_vm._v("Atrás")]
+                        )
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "GoalManager",
+          tabindex: "-3",
+          role: "dialog",
+          "aria-labelledby": "GoalManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "col-md-10" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Código")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newCode,
+                                expression: "newCode"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newCode },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newCode = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Objetivo")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newName,
+                                expression: "newName"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newName },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newName = $event.target.value
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-footer" }, [
+                        _c("div", { staticClass: "container-buttons" }, [
+                          _vm.updateNodeControl == 0
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.addGoal()
+                                    }
+                                  }
+                                },
+                                [_vm._v("Añadir")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.updateNodeControl != 0
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-info",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.updateGoal()
+                                    }
+                                  }
+                                },
+                                [_vm._v("Actualizar")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-secondary",
+                              on: {
+                                click: function($event) {
+                                  return _vm.salir()
+                                }
+                              }
+                            },
+                            [_vm._v("Atrás")]
+                          )
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "InheritedManager",
+          tabindex: "-4",
+          role: "dialog",
+          "aria-labelledby": "InheritedManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(5),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "card" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("div", { staticClass: "col-md-8" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(6),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.parentNode.goals, function(goal) {
+                              return _c("tr", { key: goal.pos }, [
+                                _c("td", {
+                                  domProps: { textContent: _vm._s(goal.name) }
+                                }),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: { textContent: _vm._s(goal.pos) }
+                                })
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c("div", { staticClass: "container-buttons" }, [
+                      _vm.updateNodeControl == 0
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success",
+                              on: {
+                                click: function($event) {
+                                  return _vm.addGoal()
+                                }
+                              }
+                            },
+                            [_vm._v("Añadir")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.updateNodeControl != 0
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              on: {
+                                click: function($event) {
+                                  return _vm.updateGoal()
+                                }
+                              }
+                            },
+                            [_vm._v("Actualizar")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.salir()
+                            }
+                          }
+                        },
+                        [_vm._v("Atrás")]
+                      )
                     ])
                   ])
                 ])
@@ -49336,26 +49115,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c(
-        "h5",
-        { staticClass: "modal-title", attrs: { id: "LevelModalOptions" } },
-        [_vm._v("Niveles de estructura")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   },
   function() {
     var _vm = this
@@ -49431,7 +49202,7 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" pos ")])
+        _c("th", [_vm._v(" posición ")])
       ])
     ])
   }
@@ -50592,6 +50363,15 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      on: { click: _vm.getTemplate }
+                    },
+                    [_vm._v("Generar archivo")]
+                  ),
+                  _vm._v(" "),
                   _c("div", { staticClass: "col-md-12" }, [
                     _c("div", { staticClass: "card" }, [
                       _vm._m(3),

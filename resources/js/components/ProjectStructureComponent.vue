@@ -1,50 +1,49 @@
 <template>
   <div class="container container-project">
     <div class="row">
-        <div class="col-md-12">
-          <div class="card card-plain">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title mt-0"> Lista de proyectos</h4>
+      <div class="col-md-12">
+        <div class="card card-plain">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title mt-0"> Lista de proyectos</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Nombre </th>
+                    <th> Logo </th>
+                    <th> Niveles de estructura </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="project in Projects.data" :key="project.id" >
+                    <td v-text="project.name"></td>
+                    <td style="width: 80px;"> <img  class="img-profile-pic rounded-circle" :src="getLogo(project)" alt="Project logo"/> </td>
+                    <td>
+                      <button class="btn btn-primary" @click="loadLevelData(project)" data-toggle="modal" data-target="#addLevels"><i class="fas fa-swatchbook"> Niveles de estructura</i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class="">
-                    <tr>
-                      <th> Nombre </th>
-                      <th> Logo </th>
-                      <th> Niveles de estructura </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="project in Projects.data" :key="project.id" >
-                        <td v-text="project.name"></td>
-                        <td style="width: 80px;"> <img  class="img-profile-pic rounded-circle" :src="getLogo(project)" alt="Project logo"/> </td>
-                        <td>
-                            <button class="btn btn-primary" @click="loadLevelData(project)" data-toggle="modal" data-target="#addLevels"><i class="fas fa-swatchbook"> Niveles de estructura</i></button>
-                        </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="card-footer">
-              <pagination :data="Projects" @pagination-change-page="getProjectsPaginator"></pagination>
-            </div>
+          </div>
+          <div class="card-footer">
+            <pagination :data="Projects" @pagination-change-page="getProjectsPaginator"></pagination>
           </div>
         </div>
       </div>
+    </div>
     <div class="modal fade" id="addLevels" tabindex="-1" role="dialog" aria-labelledby="LevelModalOptions-lg" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="LevelModalOptions">Niveles de estructura</h5>
+            <h5 class="modal-title" @click="saveLevel()" id="LevelModalOptions">Niveles de estructura</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <button @click="saveLevel()" class="btn btn-success" data-dismiss="modal" aria-label="Close">Guardar estructura</button>
             <br><br>
             <div class="card">
               <div class="card-body">
@@ -60,137 +59,125 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-					    @assign-inhetited-goal="asignarObjetivoHeredado"
+                        @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
                     </div>
-                    <div class="modal fade" id="LevelManager" tabindex="-1" role="dialog" aria-labelledby="LevelManager-lg" aria-hidden="true">
-                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="LevelManager"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="card">
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-8">
-                                        <div class="form-group">
-                                          <label class="bmd-label-floating">Nombre</label>
-                                          <input  v-model="newName" type="text" class="form-control">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="container-buttons">
-                                        <button v-if="updateNodeControl== 0" @click="addNode()" class="btn btn-success">Añadir</button>
-                                        <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
-                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-					<div class="modal fade" id="GoalManager" tabindex="-1" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
-                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="GoalManager"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="card">
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-8">
-                                        <div class="form-group">
-                                          <label class="bmd-label-floating">Objetivo</label>
-                                          <input  v-model="newName" type="text" class="form-control">
-										  <label class="bmd-label-floating">Código</label>
-                                          <input  v-model="newCode" type="text" class="form-control">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="container-buttons">
-                                        <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
-                                        <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-					<div class="modal fade" id="InheritedManager" tabindex="-1" role="dialog" aria-labelledby="InheritedManager-lg" aria-hidden="true">
-                      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="InheritageManager"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="card">
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-8">
-                                        <div class="form-group">
-                                           <table class="table table-hover">
-											  <thead class="">
-												<tr>
-												  <th> Nombre </th>
-												  <th> pos </th>
-												</tr>
-											  </thead>
-											  <tbody>
-												<tr v-for="goal in parentNode.goals" :key="goal.pos" >
-													<td v-text="goal.name"></td>
-													<td v-text="goal.pos"></td>
-												</tr>
-											  </tbody>
-											</table>
-
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="container-buttons">
-                                        <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
-                                        <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                                        <button @click="salir()" class="btn btn-secondary">Atrás</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button @click="saveLevel()" class="btn btn-success" data-dismiss="modal" aria-label="Close">Guardar estructura</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="LevelManager" tabindex="-2" role="dialog" aria-labelledby="LevelManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="LevelManager"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Nombre</label>
+                      <input  v-model="newName" type="text" class="form-control">
                     </div>
                   </div>
+                </div>
+                <div class="card-footer">
+                  <div class="container-buttons">
+                    <button v-if="updateNodeControl== 0" @click="addNode()" class="btn btn-success">Añadir</button>
+                    <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
+                    <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="GoalManager" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="GoalManager"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="col-md-10">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Código</label>
+                      <input  v-model="newCode" type="text" class="form-control">
+                      <label class="bmd-label-floating">Objetivo</label>
+                      <input  v-model="newName" type="text" class="form-control">
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <div class="container-buttons">
+                      <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
+                      <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+                      <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="InheritedManager" tabindex="-4" role="dialog" aria-labelledby="InheritedManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="InheritageManager"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card">
+              <div class="card-body">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <table class="table table-hover">
+                       <thead class="">
+      										<tr>
+      										  <th> Nombre </th>
+      										  <th> posición </th>
+      										</tr>
+                      </thead>
+    								  <tbody>
+      										<tr v-for="goal in parentNode.goals" :key="goal.pos" >
+      											<td v-text="goal.name"></td>
+      											<td v-text="goal.pos"></td>
+      										</tr>
+    								  </tbody>
+  					        </table>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="container-buttons">
+                  <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
+                  <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+                  <button @click="salir()" class="btn btn-secondary">Atrás</button>
                 </div>
               </div>
             </div>

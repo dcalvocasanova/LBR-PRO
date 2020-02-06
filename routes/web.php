@@ -120,6 +120,7 @@ Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
 Route::get('/usuarios/rol/{id}', 'UserController@getRole');
 Route::any('/usuarios/loadusers', 'UserController@loadUsers');
