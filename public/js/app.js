@@ -49995,8 +49995,8 @@ var render = function() {
                               attrs: {
                                 item: _vm.Levels,
                                 parent: _vm.Levels,
-                                showTreeEditor: false,
-                                showGoalEditor: true
+                                showTreeEditor: true,
+                                showGoalEditor: false
                               },
                               on: {
                                 "make-parent": _vm.makeParent,

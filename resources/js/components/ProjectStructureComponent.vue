@@ -53,7 +53,7 @@
                     <div class="tree-viewer">
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
-                        :showTreeEditor="false" :showGoalEditor="true"
+                        :showTreeEditor="true" :showGoalEditor="false"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
