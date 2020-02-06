@@ -283,7 +283,7 @@
       saveLevel(project){
         let me =this;
         me.level.project_id = project.id;
-        me.level.levels = JSON.stringify({name:'Estructura de niveles', level:0});
+        me.level.levels = JSON.stringify({name:'Estructura de niveles', level:0,numGoals:0,goals:[]});
         this.level.post('/estructura/guardar')
         .then(function (response) {
             me.level.reset();
