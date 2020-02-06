@@ -53,14 +53,14 @@
                     <div class="tree-viewer">
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
-                        :showTreeEditor="true" :showGoalEditor="true"
+                        :showTreeEditor="showAsStructureEditor" :showGoalEditor="showAsGoalEditor"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-					    @assign-inhetited-goal="asignarObjetivoHeredado"
+	                     @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
                     </div>
@@ -169,7 +169,7 @@
 												</tr>
 											  </tbody>
 											</table>
-											
+
                                         </div>
                                       </div>
                                     </div>
@@ -187,7 +187,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>  
+                    </div>
                   </div>
                 </div>
               </div>
@@ -201,6 +201,10 @@
 
 <script>
   export default {
+    props:{
+      showAsStructureEditor: Boolean,
+      showAsGoalEditor: Boolean
+    },
     data(){
       return{
         project_id:0,
@@ -208,14 +212,14 @@
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
-		parentNode: {}, //Parent node to update or add
+		    parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
         newName:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
           project_id:""
-		  
+
         })
       }
     },
@@ -239,7 +243,7 @@
 	  addObjetivoHeredado(node){
         let me = this;
         if(node.parent !==node.item){
-          
+
         }
         else{
           node.parent.children = []
@@ -282,7 +286,7 @@
               console.log(error);
           });
       },
-	
+
       saveLevel(){
         let me =this
         me.level.levels =JSON.stringify(me.Levels)
@@ -328,13 +332,13 @@
       },
       addNode() {
         let me = this;
-		
+
         me.currentNode.children.push({
           name: me.newName,
           level:me.currentNode.level + 1,
-		  numGoals:0,
-		  goals:[],
-		  inheritedGoals:[]
+    		  numGoals:0,
+    		  goals:[],
+    		  inheritedGoals:[]
         })
         me.salir()
       },

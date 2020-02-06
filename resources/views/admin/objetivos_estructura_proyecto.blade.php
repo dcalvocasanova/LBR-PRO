@@ -9,8 +9,8 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <project-structure
-        :show-as-structure-editor=true
-        :show-as-goal-editor=false>
+        :show-as-structure-editor=false
+        :show-as-goal-editor=true>
       </project-structure>
       </div>
     </div>

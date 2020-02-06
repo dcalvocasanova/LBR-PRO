@@ -10,15 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\UserRequest;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
-
-use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -185,23 +183,27 @@ class UserController extends Controller
       $user->save();
     }
 
-
+    /**
+     * Send Password
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function sendPassword($randomPass, $email, $nombre)
     {
       $message = ' contraseña temporal '.$randomPass;
       $for = $email;
         Mail::to($for)->send(new EmailMessage($nombre, $message));
-
         return redirect()->back();
     }
 
-	public function loadUsers(Request $request){
+	  public function loadUsers(Request $request){
 
 		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
 
 		//$file = $request->file('file');
 		//$file= $fileName;
-  //  return $request->file('archivo')->getClientOriginalName();
+    //  return $request->file('archivo')->getClientOriginalName();
     $datos = Excel::import(new UsersImport, $request->file('archivo'));
 
   //  return $datos->failures();
@@ -212,11 +214,11 @@ class UserController extends Controller
 		//$file = $request->file('users');
 
 
-//$file->getRealPath();
-//$file->getClientOriginalName();
-/*$file->getClientOriginalExtension();
-$file->getSize();
-$file->getMimeType();*/
+    //$file->getRealPath();
+    //$file->getClientOriginalName();
+    /*$file->getClientOriginalExtension();
+    $file->getSize();
+    $file->getMimeType();*/
 		//return response()->json(['success'=>'You have successfully upload file'. $file]);
 
 
