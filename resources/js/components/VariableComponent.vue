@@ -28,21 +28,13 @@
                     <tr  v-for="variable in Variables.data" :key="variable.id">
                       <td v-text="variable.name"></td>
                       <td>
-<<<<<<< HEAD
-                        <button class="btn btn-info"
-=======
                         <button class="btn-icon btn btn-info"
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                           @click="loadFieldsUpdate(variable)"
                           data-toggle="modal"
                           data-target="#addVariable">
                             <i class="fas fa-edit"></i>
                         </button>
-<<<<<<< HEAD
-                        <button class="btn btn-danger" @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
-=======
                         <button class="btn-icon btn btn-danger"  @click="deleteVariable(variable)"><i class="fas fa-trash-alt"></i></button>
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                       </td>
                     </tr>
                   </tbody>
@@ -161,12 +153,7 @@
                   medida:"",
                   regla:""
                 }),
-<<<<<<< HEAD
-                showDetails: true,
-                componentVariableKey:0,
-=======
                 showDetails: false,
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
                 title:"Agregar nueva categoría de parámetro ", //title to show
                 update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
                 showVariable:0,
@@ -178,11 +165,7 @@
             getResults(page = 1) {
               axios.get('/variables?page=' + page)
               .then(response => {
-<<<<<<< HEAD
-                    this.Variable = response.data; //get all projects from page
-=======
-                    this.Variables = response.data; //get all projects from page.
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
+                  this.Variables = response.data; //get all projects from page.
               });
             },
             showSubVariables(variable){
@@ -194,11 +177,7 @@
                 name: parameter.name
               })
               .then(function (response) {
-<<<<<<< HEAD
-                me.componentVariableKey += 1;
-=======
-
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
+                  me.componentVariableKey += 1;
               })
               .catch(function (error) {
                 console.log(error);
@@ -259,10 +238,6 @@
               me.update = variable.id
               me.title="Actualizar información de la variable";
               me.form.nombre = variable.name;
-<<<<<<< HEAD
-              me.form.tipo = variable.type;
-              me.form.id = variable.id;
-=======
               me.form.identificador = variable.identificator;
               me.form.tipo = variable.type;
               me.form.valor=variable.value;
@@ -270,7 +245,6 @@
               me.form.regla=variable.rule;
               me.form.id = variable.id;
               if (me.form.tipo =="number"){this.showDetails= true;}
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
             },
             deleteVariable(variable){
               let me =this;

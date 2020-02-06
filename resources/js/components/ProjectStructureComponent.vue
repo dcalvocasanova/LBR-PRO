@@ -60,7 +60,7 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-	                     @assign-inhetited-goal="asignarObjetivoHeredado"
+					    @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
                     </div>
@@ -120,6 +120,8 @@
                                         <div class="form-group">
                                           <label class="bmd-label-floating">Objetivo</label>
                                           <input  v-model="newName" type="text" class="form-control">
+										  <label class="bmd-label-floating">Código</label>
+                                          <input  v-model="newCode" type="text" class="form-control">
                                         </div>
                                       </div>
                                     </div>
@@ -201,7 +203,7 @@
 
 <script>
   export default {
-    props:{
+	props:{
       showAsStructureEditor: Boolean,
       showAsGoalEditor: Boolean
     },
@@ -212,9 +214,10 @@
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
-		    parentNode: {}, //Parent node to update or add
+		parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
         newName:"",
+		newCode:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
@@ -336,9 +339,9 @@
         me.currentNode.children.push({
           name: me.newName,
           level:me.currentNode.level + 1,
-    		  numGoals:0,
-    		  goals:[],
-    		  inheritedGoals:[]
+		  numGoals:0,
+		  goals:[],
+		  inheritedGoals:[]
         })
         me.salir()
       },
@@ -346,6 +349,7 @@
         let me = this;
 		me.currentNode.numGoals += 1;
         me.currentNode.goals.push({
+		  code: me.newCode,
           name: me.newName,
           pos:me.currentNode.numGoals // definir contador para objetivos
         })

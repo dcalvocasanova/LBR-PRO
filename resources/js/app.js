@@ -63,16 +63,11 @@ Vue.component('parameters', require('./components/ParametersComponent.vue').defa
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
-<<<<<<< HEAD
-=======
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
 Vue.component('TreeStructureCompany', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
 Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
-Vue.component('levels', require('./components/LevelsComponent.vue').default);
-Vue.component('objectives', require('./components/ObjectivesComponent.vue').default);
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
 Vue.component('help', require('./components/HelpComponent.vue').default);
 
 
