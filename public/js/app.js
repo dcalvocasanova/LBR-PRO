@@ -86,6 +86,8 @@
 /************************************************************************/
 /******/ ({
 
+<<<<<<< HEAD
+=======
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
@@ -73111,10 +73113,13 @@ module.exports = function(module) {
 
 /***/ }),
 
+>>>>>>> 2df7ccbd11a62cdd304d0c05e7e959f5f6f125f4
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
+<<<<<<< HEAD
+=======
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -74522,33 +74527,11 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************************************************************************************************!*\
   !*** ./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=style&index=0&id=38264846&scoped=true&lang=css& ***!
   \***********************************************************************************************************************************/
+>>>>>>> 2df7ccbd11a62cdd304d0c05e7e959f5f6f125f4
 /*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./VTreeViewMainComponent.vue?vue&type=style&index=0&id=38264846&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=style&index=0&id=38264846&scoped=true&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_style_index_0_id_38264846_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=template&id=38264846&scoped=true&":
-/*!*********************************************************************************************************************!*\
-  !*** ./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=template&id=38264846&scoped=true& ***!
-  \*********************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_template_id_38264846_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./VTreeViewMainComponent.vue?vue&type=template&id=38264846&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=template&id=38264846&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_template_id_38264846_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VTreeViewMainComponent_vue_vue_type_template_id_38264846_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /workspace/LBR-PRO/resources/js/app.js: Unexpected token (64:0)\n\n\u001b[0m \u001b[90m 62 | \u001b[39m\u001b[33mVue\u001b[39m\u001b[33m.\u001b[39mcomponent(\u001b[32m'variables'\u001b[39m\u001b[33m,\u001b[39m require(\u001b[32m'./components/VariableComponent.vue'\u001b[39m)\u001b[33m.\u001b[39m\u001b[36mdefault\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 63 | \u001b[39m\u001b[33mVue\u001b[39m\u001b[33m.\u001b[39mcomponent(\u001b[32m'macroprocesos'\u001b[39m\u001b[33m,\u001b[39m require(\u001b[32m'./components/MacroProcessComponent.vue'\u001b[39m)\u001b[33m.\u001b[39m\u001b[36mdefault\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 64 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m    | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 65 | \u001b[39m\u001b[33m===\u001b[39m\u001b[33m===\u001b[39m\u001b[33m=\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 66 | \u001b[39m\u001b[33mVue\u001b[39m\u001b[33m.\u001b[39mcomponent(\u001b[32m'parameterstemplates'\u001b[39m\u001b[33m,\u001b[39m require(\u001b[32m'./components/templates/TemplatesParametersComponent.vue'\u001b[39m)\u001b[33m.\u001b[39m\u001b[36mdefault\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 67 | \u001b[39m\u001b[33mVue\u001b[39m\u001b[33m.\u001b[39mcomponent(\u001b[32m'calendar'\u001b[39m\u001b[33m,\u001b[39m require(\u001b[32m'./components/calendar/CalendarComponent.vue'\u001b[39m)\u001b[33m.\u001b[39m\u001b[36mdefault\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n    at Parser.raise (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:6975:17)\n    at Parser.unexpected (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:8368:16)\n    at Parser.parseExprAtom (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:9627:20)\n    at Parser.parseExprSubscripts (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:9210:23)\n    at Parser.parseMaybeUnary (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:9190:21)\n    at Parser.parseExprOps (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:9056:23)\n    at Parser.parseMaybeConditional (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:9029:23)\n    at Parser.parseMaybeAssign (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:8975:21)\n    at Parser.parseExpression (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:8925:23)\n    at Parser.parseStatementContent (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:10785:23)\n    at Parser.parseStatement (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:10656:17)\n    at Parser.parseBlockOrModuleBlockBody (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:11232:25)\n    at Parser.parseBlockBody (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:11219:10)\n    at Parser.parseTopLevel (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:10587:10)\n    at Parser.parse (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:12097:10)\n    at parse (/workspace/LBR-PRO/node_modules/@babel/parser/lib/index.js:12148:38)\n    at parser (/workspace/LBR-PRO/node_modules/@babel/core/lib/transformation/normalize-file.js:168:34)\n    at normalizeFile (/workspace/LBR-PRO/node_modules/@babel/core/lib/transformation/normalize-file.js:102:11)\n    at runSync (/workspace/LBR-PRO/node_modules/@babel/core/lib/transformation/index.js:44:43)\n    at runAsync (/workspace/LBR-PRO/node_modules/@babel/core/lib/transformation/index.js:35:14)\n    at process.nextTick (/workspace/LBR-PRO/node_modules/@babel/core/lib/transform.js:34:34)\n    at _combinedTickCallback (internal/process/next_tick.js:131:7)\n    at process._tickCallback (internal/process/next_tick.js:180:9)");
 
 /***/ }),
 
@@ -74570,8 +74553,13 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
+__webpack_require__(/*! /workspace/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /workspace/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
+=======
 __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
+>>>>>>> 2df7ccbd11a62cdd304d0c05e7e959f5f6f125f4
 
 
 /***/ })
