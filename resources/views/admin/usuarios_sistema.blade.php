@@ -8,11 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-        @if(auth()->user()->can('CRUD_users') )
-          <users :show-delete-and-update-button=1></users>
-        @else
-          <users :show-delete-and-update-button=0></users>
-        @endif
+        <users-system></users-system>
       </div>
     </div>
     {{-- Adding footer --}}

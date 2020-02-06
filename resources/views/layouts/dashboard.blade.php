@@ -20,8 +20,7 @@
   <div id="app">
     <main class="labor-pro">
       <div id="wrapper">
-          <vue-progress-bar></vue-progress-bar>
-          @yield('content')
+        @yield('content')
       </div>
     </main>
   </div>

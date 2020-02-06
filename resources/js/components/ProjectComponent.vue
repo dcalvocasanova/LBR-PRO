@@ -12,15 +12,15 @@
                   <thead class="">
                     <tr>
                       <th> Nombre </th>
-                      <th style="width: 72px;"> Logo </th>
-                      <th> Acciones </th>
+                      <th style="width: 172px;"> Logo </th>
+                      <th v-show="showDeleteAndUpdateButton"> Acciones </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="project in Projects.data" :key="project.id" >
                         <td v-text="project.name"></td>
                         <td> <img class="img-profile-pic rounded-circle" :src="getLogo(project)" alt="Project logo"/> </td>
-                        <td>
+                        <td v-show="showDeleteAndUpdateButton">
                             <button class="btn btn-info" @click="loadFieldsUpdate(project)"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-danger" @click="deleteProject(project)"><i class="fas fa-trash-alt"></i></button>
                         </td>
@@ -97,6 +97,9 @@
   export default {
     components: {
       Multiselect
+    },
+    props: {
+       showDeleteAndUpdateButton: Number,
     },
     data(){
       return{

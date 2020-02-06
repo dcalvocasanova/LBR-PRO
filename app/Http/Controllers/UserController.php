@@ -1,20 +1,25 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use DB;
+use Mail;
 use App\User;
+use App\Mail\EmailMessage;
+use Illuminate\Support\Str;
+use App\Imports\UsersImport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Bus\Queueable;
+use Spatie\Permission\Models\Role;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Str;
-use App\Mail\EmailMessage;
-use Mail;
-use App\Imports\UsersImport;
+
+
 use Maatwebsite\Excel\Facades\Excel;
+
 class UserController extends Controller
 {
     /**
@@ -24,56 +29,39 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->paginate(5);
+        $users = User::with('roles')->where('type','web')->latest()->paginate(5);
         return $users;
     }
 
-      /**
-     * Store a newly created resource in storage.
+    /**
+     * Get all users according to a type (system or web)
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function getUserSystem()
     {
-      $this->validate($request,[
-          'nombre' => 'required|string',
-          'email' => 'required|email|unique:users',
-          'identificacion' => 'required|string|unique:users,identification',
-          'genero' => 'required|string',
-          'sexo' => 'required|string',
-          'fecha_nacimiento' => 'required|date',
-          'salario'=> 'required|numeric',
-          'fecha_ingreso'=> 'required|date',
-          'puesto'=> 'required|string',
-          'cargo'=> 'required|string',
-          'jornada'=> 'required|string',
-          'educacion'=> 'required|string',
-          'etnia' => 'required|string'
-      ]);
+      $users = User::with('roles')->where('type','sys')->latest()->paginate(5);
+      return $users;
+    }
 
-      $user = new User();
-      $user->name = $request->nombre;
-      $nombre = $request->nombre;
-      $user->identification = $request->identificacion;
-      $email = $request->email;
-      $user->email = $request->email;
-      $user->type = isset($request->tipo)? $request->tipo:"usuario";
-      $user->gender = $request->genero;
-      $user->sex = $request->sexo;
-      $user->ethnic = $request->etnia;
-      $user->job= $request->puesto;
-      $user->position= $request->cargo;
-      $user->workday= $request->jornada;
-      $user->education= $request->educacion;
-      $user->salary= $request->salario;
-      $user->birthday= $request->fecha_nacimiento;
-      $user->workingsince= $request->fecha_ingreso;
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  UserRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(UserRequest $request)
+    {
+      $user = User::create($request->all());
       $randomPass = '123456';//Str::random(8);
       $user->password =Hash::make($randomPass);
-      $user->avatar = "default.png";
-      if($user->save()){
-      //  $this->sendPassword($randomPass, $email,$nombre);
+      if($user->save()){//  $this->sendPassword($randomPass, $email,$nombre);
+      }
+      if(isset($request->role)){
+          $user->assignRole($request->role);
+      }else{
+          $user->givePermissionTo('simple_user');
       }
 
     }
@@ -90,6 +78,19 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getRole(Request $request)
+    {
+      $user = User::findOrFail($request->id);
+      $role = $user->getRoleNames();
+      return $role[0];
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -98,28 +99,11 @@ class UserController extends Controller
     public function update(Request $request)
     {
       $user = User::findOrFail($request->id);
-      if($user->identification !=  $request->identificacion){
-        $this->validate($request,['identificacion' => 'string|max:50|unique:users,identification']);
+      $user->update($request->all());
+      $user->roles()->detach();
+      if(isset($request->role)){
+          $user->assignRole($request->role);
       }
-      if( $user->email !=  $request->email ){
-          $this->validate($request,['email' => 'string|email|max:50|unique:users']);
-      }
-      $current_avatar = $user->avatar;
-      $user->name = $request->nombre;
-      $user->identification = $request->identificacion;
-      $user->email = $request->email;
-      $user->type = $request->tipo;
-      $user->job= $request->puesto;
-      $user->position= $request->cargo;
-      $user->workday= $request->jornada;
-      $user->education= $request->educacion;
-      $user->salary= $request->salario;
-      $user->birthday= $request->fecha_nacimiento;
-      $user->workingsince= $request->fecha_ingreso;
-      $user->gender = $request->genero;
-      $user->sex = $request->sexo;
-      $user->ethnic = $request->etnia;
-      $user->save();
     }
 
     /**
@@ -130,7 +114,10 @@ class UserController extends Controller
      */
     public function destroy(Request $request)
     {
-      $user = User::destroy($request->id);
+      $user = User::findOrFail($request->id);
+      $user->roles()->detach();
+      $user->permissions()->detach();
+      $user->delete();
     }
 
     /**
@@ -140,15 +127,16 @@ class UserController extends Controller
      */
     public function search(){
         if ($search = \Request::get('q')) {
-            $users = User::where(function($query) use ($search){
-                $query->where('name','LIKE',"%$search%")
-                        ->orWhere('identification','LIKE',"%$search%")
-                        ->orWhere('email','LIKE',"%$search%")
-                        ->orWhere('gender','LIKE',"%$search%")
-                        ->orWhere('sex','LIKE',"%$search%")
-                        ->orWhere('position','LIKE',"%$search%")
-                        ->orWhere('ethnic','LIKE',"%$search%");
-            })->paginate(30);
+          $users = User::where(function($query) use ($search){
+            $query
+              ->where('name','LIKE',"%$search%")
+              ->orWhere('identification','LIKE',"%$search%")
+              ->orWhere('email','LIKE',"%$search%")
+              ->orWhere('gender','LIKE',"%$search%")
+              ->orWhere('sex','LIKE',"%$search%")
+              ->orWhere('position','LIKE',"%$search%")
+              ->orWhere('ethnic','LIKE',"%$search%");
+            })->paginate(10);
         }else{
             $users = User::latest()->paginate(5);
         }
@@ -176,13 +164,10 @@ class UserController extends Controller
      */
     public function updateProfile (Request $request)
     {
-      $this->validate($request,[
-          'contrasena' => 'required'
-      ]);
+      $this->validate($request,['password' => 'required']);
       $user = User::findOrFail($request->id);
       $current_avatar = $user->avatar;
       $user->password =Hash::make($randomPass);
-
       if($request->avatar != $current_avatar)
       {
         $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
@@ -198,7 +183,6 @@ class UserController extends Controller
         }
       }
       $user->save();
-    	return response()->json(['msg'=>'Datos actualizados']);
     }
 
 

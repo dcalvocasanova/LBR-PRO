@@ -14,12 +14,27 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+/*
+* Grant access only for users with CRUD_users permission
+*/
+Route::get('/gestionar-actividades', function () {
+    return view('containers.activities');
+})->middleware('permission:CRUD_users|CR_users|CRUD_projects|CR_projects|CRUD_catalogs');
+
 /*
 * Grant access only for users with CRUD_users permission
 */
 Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
 })->middleware('permission:CRUD_users|CR_users');
+
+/*
+* Grant access only for users with CRUD_users permission
+*/
+Route::get('/gestionar-usuarios-del-sistema', function () {
+    return view('admin.usuarios_sistema');
+})->middleware('permission:CRUD_catalogs');
 /*
 * Grant access only for users with CRUD_projects permission
 */
@@ -51,22 +66,13 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
       return view('admin.tree');
   });
 });
-
 Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-macroprocesos', function () {
       return view('admin.macroprocesos');
   });
-
 });
-
-Route::group(['middleware' => ['permission:CRUD_tasks']], function () {
-
-});
-
-Route::group(['middleware' => ['permission:R_reports']], function () {
-
-});
-
+Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
+Route::group(['middleware' => ['permission:R_reports']], function () {});
 
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
@@ -75,7 +81,6 @@ Route::get('/ayuda', function () {
 Route::get('/perfil-usuario', function () {
     return view('user.profile');
 })->middleware('auth');
-
 
 Auth::routes();
 
@@ -86,7 +91,6 @@ Route::post('/password/reset','ResetPasswordController@reset');
 
 /*Home page*/
 Route::get('/home', 'HomeController@index')->name('home');
-
 /*Manage Projects*/
 Route::get('/proyectos', 'ProjectController@index');
 Route::put('/proyectos/actualizar', 'ProjectController@update');
@@ -94,9 +98,7 @@ Route::post('/proyectos/guardar', 'ProjectController@store');
 Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
-
 /*Manage Catalogs*/
-
 Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
 Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
@@ -107,17 +109,16 @@ Route::put('/catalogo/actualizar-rol', 'CatalogController@updateRole');
 Route::delete('/catalogo/borrar-rol/{id}', 'CatalogController@deleteRole');
 Route::get('/catalogo/permisos-del-rol/{id}', 'CatalogController@getAllPermisssionsFromRole');
 Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisssionsFromRole');
-
-
 /*Manage Project Levels Structure*/
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
 Route::put('/estructura/actualizar', 'ProjectStructureController@update');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
-
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
+Route::get('/usuarios/rol/{id}', 'UserController@getRole');
 Route::any('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
@@ -126,7 +127,6 @@ Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/avatar', 'UserController@uploadAvatar');
 Route::post('/uploadfile', 'UserController@loadFiles');
-
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
 Route::put('/parametros/actualizar', 'ParameterController@update');
@@ -136,8 +136,6 @@ Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
 Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
 Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
-
-
 /*Manage SubParameters*/
 Route::get('/subparametros', 'SubparameterController@index');
 Route::put('/subparametros/actualizar', 'SubparameterController@update');
@@ -146,7 +144,6 @@ Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
 Route::get('/subparametros/buscar', 'SubparameterController@show');
 Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParametersByParameterId');
 Route::post('/subparametros/setsession', 'SubParameterController@session');
-
 /*Manage Variables*/
 Route::get('/variables', 'VariableController@index');
 Route::put('/variables/actualizar', 'VariableController@update');
@@ -154,7 +151,6 @@ Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
 Route::get('/variable/buscarxid/{id}','VariableController@getVariablesBySubParameterId');
 Route::get('/variables/buscar', 'VariableController@show');
-
 /*Manage Template*/
 Route::get('/plantillas', 'TemplateController@index');
 Route::put('/plantillas/actualizar', 'TemplateController@update');
@@ -162,7 +158,6 @@ Route::post('/plantillas/guardar', 'TemplateController@store');
 Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
 Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByType');
 Route::get('/plantillas/buscar', 'TemplateController@show');
-
 /*Manage Macroprocess*/
 Route::get('/macroprocesos', 'MacroprocessController@index');
 Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');
@@ -170,7 +165,6 @@ Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
 Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
 Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
 Route::post('/macroprocesos/setsession', 'MacroprocessController@session');
-
 /*Manage Levels*/
 Route::get('/niveles', 'LevelController@index');
 Route::put('/niveles/actualizar', 'LevelController@update');
@@ -178,7 +172,6 @@ Route::post('/niveles/guardar', 'LevelController@store');
 Route::delete('/niveles/borrar/{id}', 'LevelController@destroy');
 Route::get('/niveles/buscar', 'LevelController@show');
 Route::post('/niveles/setsession', 'LevelController@session');
-
 /*Manage Objectives*/
 Route::get('/objetivos', 'ObjectiveController@index');
 Route::put('/objetivos/actualizar', 'ObjectiveController@update');
