@@ -132,7 +132,7 @@
                     <div class="container-buttons">
                       <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
                       <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                      <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                      <button @click="salirObjetivos()" class="btn btn-secondary">Atrás</button>
                     </div>
                   </div>
                 </div>
@@ -177,7 +177,7 @@
                 <div class="container-buttons">
                   <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
                   <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                  <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                  <button @click="salirRelacionarObjetivos()" class="btn btn-secondary">Atrás</button>
                 </div>
               </div>
             </div>
@@ -201,10 +201,10 @@
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
-		parentNode: {}, //Parent node to update or add
+		    parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
         newName:"",
-		newCode:"",
+		    newCode:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
@@ -215,22 +215,22 @@
     },
     methods:{
       nodoSeleccionado(item){
-        alert ("Se hizo click sobre"+item.name)
-      },
+          alert ("Se hizo click sobre"+item.name)
+        },
       asignarObjetivoANodo(item){
-        let me = this;
-        me.currentNode = item
-        me.updateNodeControl = 0
-        this.getGoalName()
-      },
-	  asignarObjetivoHeredado(nodo){
+          let me = this;
+          me.currentNode = item
+          me.updateNodeControl = 0
+          this.getGoalName()
+        },
+  	  asignarObjetivoHeredado(nodo){
         let me = this;
         me.currentNode = nodo.item
-		me.parentNode = nodo.parent
+	      me.parentNode = nodo.parent
         me.updateNodeControl = 0
         this.getGoalsInherited()
-      },
-	  addObjetivoHeredado(node){
+    },
+      addObjetivoHeredado(node){
         let me = this;
         if(node.parent !==node.item){
 
@@ -276,7 +276,6 @@
               console.log(error);
           });
       },
-
       saveLevel(){
         let me =this
         me.level.levels =JSON.stringify(me.Levels)
@@ -322,21 +321,20 @@
       },
       addNode() {
         let me = this;
-
         me.currentNode.children.push({
           name: me.newName,
           level:me.currentNode.level + 1,
-		  numGoals:0,
-		  goals:[],
-		  inheritedGoals:[]
+    		  numGoals:0,
+    		  goals:[],
+    		  inheritedGoals:[]
         })
         me.salir()
       },
-	  addGoal() {
+      addGoal() {
         let me = this;
-		me.currentNode.numGoals += 1;
+	      me.currentNode.numGoals += 1;
         me.currentNode.goals.push({
-		  code: me.newCode,
+	        code: me.newCode,
           name: me.newName,
           pos:me.currentNode.numGoals // definir contador para objetivos
         })
@@ -365,17 +363,23 @@
         $('#LevelManager').modal('toggle');
         this.newName = ""
       },
-	salirGoal(){
+      salirObjetivos(){
         $('#GoalManager').modal('toggle');
+        this.newName = ""
+      },
+      salirRelacionarObjetivos(){
+        $('#InheritedManager').modal('toggle');
         this.newName = ""
       },
       getNodeName(){
         $('#LevelManager').modal('show')
+        this.newName = ""
+        this.newCode = ""
       },
-	  getGoalsInherited(){
+      getGoalsInherited(){
         $('#InheritedManager').modal('show')
       },
-	  getGoalName(){
+	    getGoalName(){
         $('#GoalManager').modal('show')
       }
     },
