@@ -86,6 +86,9 @@ Route::get('/perfil-usuario', function () {
 })->middleware('auth');
 
 Auth::routes();
+Auth::routes(['register' => false]);
+
+Route::get('send', 'HomeController@sendNotification');
 
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');
@@ -120,6 +123,7 @@ Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
 Route::get('/usuarios/rol/{id}', 'UserController@getRole');

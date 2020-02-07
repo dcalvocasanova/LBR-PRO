@@ -56,7 +56,9 @@ Vue.use(VueProgressBar, {
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
 Vue.component('users', require('./components/UserComponent.vue').default);
 Vue.component('usersSystem', require('./components/UserSystemComponent.vue').default);
+Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
+
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
@@ -81,7 +83,8 @@ Vue.component('help', require('./components/HelpComponent.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-      search:''
+      search:'',
+      user:{}
     },
     methods:{
       searchit: _.debounce(() => {

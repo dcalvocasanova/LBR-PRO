@@ -13,6 +13,7 @@ use App\Http\Requests\UserRequest;
 use App\Exports\UsersTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\Permission\Models\Permission;
@@ -73,6 +74,18 @@ class UserController extends Controller
     public function show(Request $request)
     {
       $user = User::findOrFail($request->id);
+      return $user;
+    }
+
+    /**
+     * Display the current user
+     *
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getCurrentUser()
+    {
+      $user = Auth::user();
       return $user;
     }
 

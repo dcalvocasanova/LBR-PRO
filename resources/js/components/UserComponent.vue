@@ -35,7 +35,7 @@
               <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
             </div>
           </div>
-        <!--  
+        <!--
           <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
             <button class="btn btn-primary"
             data-toggle="modal"
@@ -412,6 +412,6 @@ export default {
        this.LoadCatalogSex();
        this.LoadCatalogGender();
        this.LoadCatalogEthnic();
-    }
+  }
 }
 </script>
