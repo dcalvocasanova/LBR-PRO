@@ -35,7 +35,7 @@
               <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
             </div>
           </div>
-
+        <!--  
           <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
             <button class="btn btn-primary"
             data-toggle="modal"
@@ -44,6 +44,7 @@
               <i class="fa fa-plus-circle"></i>
             </button>
           </div>
+        -->
         </div>
         <div class="col-md-7">
           <div class="card">
@@ -292,10 +293,10 @@ export default {
       let me =this;
       axios.get('/usuarios-plantilla')
       .then(response => {
-        let blob = new Blob([response.data],{ type:'application/csv'});
+        let blob = new Blob([response.data],{ type:'application/vnd.ms-excel'});
         let link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = "plantilla.csv";
+        link.download = "users";
         link.click();
       });
     },

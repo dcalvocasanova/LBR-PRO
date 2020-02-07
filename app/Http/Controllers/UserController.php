@@ -205,12 +205,7 @@ class UserController extends Controller
      */
     public function getExcel()
     {
-      return Excel::download(
-        new UsersTemplateExport,
-        'invoices.csv',
-        \Maatwebsite\Excel\Excel::CSV, [
-          'Content-Type' => 'text/csv',
-        ]);
+      return Excel::download(new UsersTemplateExport, 'users.xls', \Maatwebsite\Excel\Excel::XLS);
     }
 
 	  public function loadUsers(Request $request){
