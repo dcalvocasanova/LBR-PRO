@@ -152,7 +152,7 @@ Route::post('/subparametros/guardar', 'SubparameterController@store');
 Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
 Route::get('/subparametros/buscar', 'SubparameterController@show');
 Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParametersByParameterId');
-Route::post('/subparametros/setsession', 'SubParameterController@session');
+Route::post('/subparametros/setsession', 'SubparameterController@session');
 /*Manage Variables*/
 Route::get('/variables', 'VariableController@index');
 Route::put('/variables/actualizar', 'VariableController@update');
