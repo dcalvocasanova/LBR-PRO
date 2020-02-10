@@ -31,6 +31,6 @@ class UsersTableSeeder extends Seeder
           'workingsince' => '1900-01-01 00:00:01',
           'avatar' => 'default.png'
         ]);
-        $user->assignRole('administrator');        
+        $user->assignRole('Administrador');        
     }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Catalog;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+use App\Http\Requests\CatalogRequest;
 
 class CatalogController extends Controller
 {
   /**
-   * Display a listing of the gender catalog.
+   * Display a listing of the catalog.
    *
    * @return \Illuminate\Http\Response
    */
@@ -18,44 +21,30 @@ class CatalogController extends Controller
   }
 
   /**
- * Store a newly created a Gender item  in storage.
+ * Store a newly created an item  in storage.
  *
- * @param  \Illuminate\Http\Request  $request
+ * @param  CatalogRequest  $request
  * @return \Illuminate\Http\Response
  */
-  public function storeItem(Request $request)
+  public function storeItem(CatalogRequest $request)
   {
-    $this->validate($request,[
-        'nombre' => 'required'
-    ]);
-
-    $catalog = new Catalog();
-    $catalog->name = $request->nombre;
-    $catalog->type = $request->tipo;
-    $catalog->save();
-
+    $catalog = Catalog::create($request->all());
   }
 
   /**
- *  Update the gender item in storage.
+ *  Update the item in storage.
  *
- * @param  \Illuminate\Http\Request  $request
+ * @param  CatalogRequest  $request
  * @return \Illuminate\Http\Response
  */
-  public function updateItem(Request $request)
+  public function updateItem(CatalogRequest $request)
   {
-    $this->validate($request,[
-        'nombre' => 'required'
-    ]);
-
     $catalog = Catalog::findOrFail($request->id);
-    $catalog->name = $request->nombre;
-    $catalog->save();
-
+    $catalog->update($request->all());
   }
 
   /**
-   * Remove the specified gender item from storage.
+   * Remove the specified item from storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
@@ -63,5 +52,73 @@ class CatalogController extends Controller
   public function deleteItem(Request $request)
   {
     $catalog = Catalog::destroy($request->id);
+  }
+
+  /**
+   * Get all user types catalogs.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function getRoles(Request $request)
+  {
+    $roles = Role::all();
+    return $roles;
+  }
+
+  /**
+ * Store a new role catalog  in storage.
+ *
+ * @param  CatalogRequest  $request
+ * @return \Illuminate\Http\Response
+ */
+  public function storeRole(CatalogRequest $request)
+  {
+     Role::create(['name' => $request->name]);
+  }
+  /**
+ *  Update the item in storage.
+ *
+ * @param  CatalogRequest  $request
+ * @return \Illuminate\Http\Response
+ */
+  public function updateRole(CatalogRequest $request)
+  {
+    $rol = Role::findOrFail($request->id);
+    $rol->update(['name' => $request->name]);
+  }
+  /**
+   * Remove the specified role from storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function deleteRole(Request $request)
+  {
+    $rol = Role::findOrFail($request->id);
+    $rol->revokePermissionTo(Permission::all());
+    $rol->delete();
+  }
+  /**
+   * Get the all permissions from a role .
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function getAllPermisssionsFromRole(Request $request)
+  {
+    $permissions = Role::findOrFail($request->id)->permissions->pluck('name');
+    return $permissions;
+  }
+  /**
+   * Get the all permissions from a role .
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function updatePermisssionsFromRole(Request $request)
+  {
+    $rol = Role::findOrFail($request->id);
+    $rol->revokePermissionTo(Permission::all());
+    $rol->givePermissionTo($request->roles);
   }
 }

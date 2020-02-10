@@ -55,22 +55,21 @@ Vue.use(VueProgressBar, {
 
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
 Vue.component('users', require('./components/UserComponent.vue').default);
+Vue.component('usersSystem', require('./components/UserSystemComponent.vue').default);
+Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
-Vue.component('catalogs', require('./components/CatalogsComponent.vue').default);
+
+Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
+Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
-<<<<<<< HEAD
-=======
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
 Vue.component('TreeStructureCompany', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
 Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
-Vue.component('levels', require('./components/LevelsComponent.vue').default);
-Vue.component('objectives', require('./components/ObjectivesComponent.vue').default);
->>>>>>> 21f265312efc7011f80b19552223acf85d48dbf2
 Vue.component('help', require('./components/HelpComponent.vue').default);
 
 
@@ -84,7 +83,8 @@ Vue.component('help', require('./components/HelpComponent.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-      search:''
+      search:'',
+      user:{}
     },
     methods:{
       searchit: _.debounce(() => {

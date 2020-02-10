@@ -15,7 +15,7 @@ class RolesTableSeeder extends Seeder
     {
       // Reset cached roles and permissions
       app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-      $rol = Role::create(['name' => 'Administrator']);
+      $rol = Role::create(['name' => 'Administrador']);
       $rol->givePermissionTo(Permission::all());
       $rol->revokePermissionTo('simple_user');
     }

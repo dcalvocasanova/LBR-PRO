@@ -7,42 +7,41 @@
             <h4 class="card-title mt-0"> Catálogos de opciones del sistema</h4>
           </div>
           <div class="card-body">
-              <button class="btn btn-primary"
-                @click="LoadCatalog('GENDER')"
-                data-toggle="modal"
-                data-target="#addCatalogs">
-                <i class="fas fa-swatchbook">
-                  Catálogo: Géneros
-                </i>
-              </button>
-              <button class="btn btn-primary"
-                @click="LoadCatalog('SEX')"
-                data-toggle="modal"
-                data-target="#addCatalogs">
-                <i class="fas fa-swatchbook">
-                  Catálogo: Sexos
-                </i>
-              </button>
-              <button class="btn btn-primary"
-                @click="LoadCatalog('ETHNIC')"
-                data-toggle="modal"
-                data-target="#addCatalogs">
-                <i class="fas fa-swatchbook">
-                  Catálogo: Étnias
-                </i>
-              </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('GENDER')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Géneros
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('SEX')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Sexos
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('ETHNIC')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Étnias
+              </i>
+            </button>
           </div>
           <div class="card-footer">
           </div>
         </div>
       </div>
     </div>
-
     <div class="modal fade" id="addCatalogs" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-lg" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="exampleModalLabel">Gestión del catálogo</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Gestión del catálogo de {{catalog}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -87,7 +86,7 @@
                       <div class="col-md-10">
                         <div class="form-group">
                           <label class="bmd-label-floating">Nombre</label>
-                          <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
+                          <input v-model="form.name" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
                           <has-error :form="form" field="nombre"></has-error>
                         </div>
                       </div>
@@ -107,6 +106,8 @@
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 
@@ -116,9 +117,10 @@
           return{
               form: new Form ({
                 id:"",//User ID
-                tipo:"",
-                nombre:""
+                type:"",
+                name:""
               }),
+              catalog:"",
               title:"Registrar nuevo elemento", //title to show
               type:"GENDER", //indicates which catalog is shown
               updateCatalogo:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -128,6 +130,9 @@
       methods:{
           LoadCatalog(code) {
             this.type = code;
+            if (code === "GENDER"){this.catalog="Géneros"}
+            if (code === "SEX"){this.catalog="Sexos"}
+            if (code === "ETHNIC"){this.catalog="Étnias"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected
@@ -135,7 +140,7 @@
           },
           saveCatalog(){
               let me =this;
-              this.form.tipo = this.type;
+              this.form.type = this.type;
               this.form.post('/catalogo/guardar')
               .then(function (response) {
                   me.clearFields();
@@ -151,7 +156,7 @@
 
           },
           updateCatalog(){
-              this.form.tipo = this.type;
+              this.form.type = this.type;
               this.form.put('/catalogo/actualizar')
               .then(function (response) {
                  toast.fire({
@@ -167,9 +172,7 @@
           },
           loadCatalogoUpdate(catalog){
             this.title= "Actualizar elemento";
-            this.form.nombre = catalog.name;
-            this.form.tipo = catalog.type;
-            this.form.id = catalog.id;
+            this.form.fill(catalog)            
             this.updateCatalogo= catalog.id;
           },
           clearFields(){

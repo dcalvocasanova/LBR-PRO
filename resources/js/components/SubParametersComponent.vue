@@ -124,7 +124,7 @@
             showSubVariables(subparameter){
               let me =this;
               me.showVariable= subparameter.id;
-              me.SubParameter =subparameter;
+              me.SubParameter = subparameter;
               axios.post('/subparametros/setsession',{
                 id:subparameter.id,
                 name: subparameter.name
