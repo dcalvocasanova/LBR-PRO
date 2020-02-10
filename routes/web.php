@@ -133,8 +133,9 @@ Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
 Route::get('/usuarios/buscar', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
-Route::post('/avatar', 'UserController@uploadAvatar');
 Route::post('/uploadfile', 'UserController@loadFiles');
+Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
+Route::put('/usuarios/password-change', 'UserController@savePassword');
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
 Route::put('/parametros/actualizar', 'ParameterController@update');

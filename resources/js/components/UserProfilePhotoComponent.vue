@@ -28,7 +28,7 @@
     },
     computed: {
       AvatarMainPage: function () {
-        return "img/profile-usr/"+ this.user.avatar;
+        return "/img/profile-usr/"+ this.user.avatar;
       }
     },
     methods:{

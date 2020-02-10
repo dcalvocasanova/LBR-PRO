@@ -20,6 +20,8 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Intervention\Image\Facades\Image as Image;
+
 class UserController extends Controller
 {
     /**
@@ -156,41 +158,34 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Update user password
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function uploadAvatar(Request $request)
+    public function savePassword (Request $request)
     {
-      $imageName = time().'.'.$request->file->getClientOriginalExtension();
-      $request->file->move(public_path('images'), $imageName);
-    	return response()->json(['success'=>'You have successfully upload file.']);
+      $user = User::findOrFail($request->id);
+      $user->password =Hash::make($request->password);
+      //pendiente enviar un correo confirmando el cambio de contraseña
+      $user->save();
     }
-
     /**
-     * Update user profile
+     * Update user avatar
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updateProfile (Request $request)
+    public function saveAvatar (Request $request)
     {
-      $this->validate($request,['password' => 'required']);
       $user = User::findOrFail($request->id);
       $current_avatar = $user->avatar;
-      $user->password =Hash::make($randomPass);
-      if($request->avatar != $current_avatar)
-      {
+      if($request->avatar != $current_avatar){
         $file_avatar = time().'.' . explode('/', explode(':', substr($request->avatar, 0, strpos($request->avatar, ';')))[1])[1];
         $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
-        $img->fit(75, 75, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
         $user->avatar = $file_avatar;
         $last_avatar = public_path('img/profile-usr/').$current_avatar;
-        if(file_exists($last_avatar) && $last_avatar !='default.png' ){
+        if(file_exists($last_avatar) && $last_avatar !=='default.png' ){
             @unlink($last_avatar);
         }
       }
