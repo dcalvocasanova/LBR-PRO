@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Gestor de roles y permisos de usuario</h4>
+            <h4 class="card-title mt-0">Gestor de roles y permisos de usuario</h4>
             <button class="btn btn-primary"
               data-toggle="modal"
               data-target="#addRoles">
