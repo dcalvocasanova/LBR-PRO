@@ -17,7 +17,7 @@
                 @slot('title') Catálogo de acciones @endslot
                 @slot('type') success @endslot
                 @slot('subtitle') ir @endslot
-                @slot('url') # @endslot
+                @slot('url') gestionar-catalogos-macroprocesos @endslot
                 @slot('icon') fas fa-tags @endslot
               @endcomponent
               @component('components.colorcard')

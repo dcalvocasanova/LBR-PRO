@@ -31,7 +31,7 @@
                 Catálogo: Riesgos asociados
               </i>
             </button>
-			<button class="btn btn-primary"
+	          <button class="btn btn-primary"
               @click="LoadCatalog('INDICATOR')"
               data-toggle="modal"
               data-target="#addCatalogs">
@@ -39,12 +39,28 @@
                 Catálogo: Indicadores
               </i>
             </button>
-			<button class="btn btn-primary"
+	          <button class="btn btn-primary"
               @click="LoadCatalog('PHVA')"
               data-toggle="modal"
               data-target="#addCatalogs">
               <i class="fas fa-swatchbook">
                 Catálogo: PHVA
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('FRECUENCY')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Frecuencias
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('WORKTYPE')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Tipo de trabajo
               </i>
             </button>
           </div>
@@ -138,7 +154,7 @@
               }),
               catalog:"",
               title:"Registrar nuevo elemento", //title to show
-              type:"GENDER", //indicates which catalog is shown
+              type:"INPUT", //indicates which catalog is shown
               updateCatalogo:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
               Catalog:{}, //BD content
           }
@@ -146,12 +162,13 @@
       methods:{
           LoadCatalog(code) {
             this.type = code;
-			if (code === "INPUT"){this.catalog="Entradas"}
+      			if (code === "INPUT"){this.catalog="Entradas"}
             if (code === "PROVIDER"){this.catalog="Proveedores"}
             if (code === "RISK"){this.catalog="Riesgos"}
             if (code === "INDICATOR"){this.catalog="Indicadores"}
-			if (code === "PHVA"){this.catalog="PHVA"}
-			
+      			if (code === "PHVA"){this.catalog="PHVA"}
+      			if (code === "FRECUENCY"){this.catalog="Frecuencias"}
+      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"} 
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected
@@ -191,7 +208,7 @@
           },
           loadCatalogoUpdate(catalog){
             this.title= "Actualizar elemento";
-            this.form.fill(catalog)            
+            this.form.fill(catalog)
             this.updateCatalogo= catalog.id;
           },
           clearFields(){

@@ -31,18 +31,6 @@ window.toast = toast; //adding to window
 /***************************************************************/
 window.Fire =  new Vue(); //using global comunication
 
-//Using progress bar to present timeout
-import VueProgressBar from 'vue-progressbar';
-
-
-
-Vue.use(VueProgressBar, {
- color: '#114e7e',
- failedColor: '#cc071e',
- height: '5px'
-});
-
-
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -60,6 +48,8 @@ Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue'
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
+Vue.component('MacroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
+
 Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
