@@ -20,7 +20,29 @@ Route::get('/', function () {
 */
 Route::get('/gestionar-actividades', function () {
     return view('containers.activities');
+})->middleware('permission:CRUD_users|CRUD_projects|CR_projects|CRUD_catalogs');
+
+/*
+* Grant access only for users with CRUD_users permission
+*/
+Route::get('/gestionador-proyectos', function () {
+    return view('containers.projectManager');
 })->middleware('permission:CRUD_users|CR_users|CRUD_projects|CR_projects|CRUD_catalogs');
+
+
+/*
+* Grant access only for users with CRUD_parameters
+*/
+Route::get('/gestionador-parametrizacion', function () {
+    return view('containers.parametrizationManager');
+})->middleware('permission:CRUD_parameters');
+
+/*
+* Grant access only for users with CRUD_parameters
+*/
+Route::get('/gestionador-macroprocesos', function () {
+    return view('containers.macroprocessManager');
+})->middleware('permission:CRUD_macroprocess');
 
 /*
 * Grant access only for users with CRUD_users permission

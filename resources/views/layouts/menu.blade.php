@@ -50,37 +50,24 @@
     </a>
     <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_projects','CR_projects'))
-          <h6 class="collapse-header">Configuración del proyecto</h6>
-          <a class="collapse-item" href="/gestionar-usuarios">Usuarios</a>
-          <a class="collapse-item" href="/gestionar-estructura-proyecto">Gestionar niveles</a>
-          <a class="collapse-item" href="#">funciones y validaciones</a>
+        @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_projects','CR_users','CRUD_users'))
+          <h6 class="collapse-header"> Proyectos </h6>
+          <a class="collapse-item" href="/gestionador-proyectos">Gestionar </a>
         @endif
         @if(@Auth::user()->can('CRUD_parameters'))
           <h6 class="collapse-header">Parametrización </h6>
-          <a class="collapse-item" href="/gestionar-parametros">Parámetros</a>
-          <a class="collapse-item" href="#">Tiempos de ajuste</a>
-          <a class="collapse-item" href="/gestionar-plantillas-parametros">Plantillas</a>
-          <a class="collapse-item" href="/gestionar-calendario">Calendario</a>
+          <a class="collapse-item" href="/gestionador-parametrizacion">Gestionar</a>
         @endif
-        @if(@Auth::user()->can('CRUD_macroprocess'))
+        @if(@Auth::user()->hasAnyPermission('CRUD_macroprocess','CRUD_tasks'))
           <h6 class="collapse-header">Macroprocesos</h6>
-          <a class="collapse-item" href="#">Catálogo acciones</a>
-          <a class="collapse-item" href="/gestionar-objetivos">Objetivos</a>
-          <a class="collapse-item" href="/gestionar-macroprocesos">Macroprocesos</a>
-          <a class="collapse-item" href="#">Procesos</a>
-          <a class="collapse-item" href="#">Subprocesos</a>
+          <a class="collapse-item" href="/gestionador-macroprocesos">Gestionar</a>
         @endif
-        @if(@Auth::user()->can('CRUD_tasks'))
-          <a class="collapse-item" href="#">Tareas</a>
-        @endif
-
       </div>
     </div>
   </li>
   @endif
   {{-- Nav Item - Users Collapse Menu--}}
-  @if(@Auth::user()->hasPermissionTo('simple_user'))
+<!--  @if(@Auth::user()->hasPermissionTo('simple_user')) -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
@@ -90,11 +77,10 @@
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
         <a class="collapse-item" href="/ayuda">Ver</a>
-
       </div>
     </div>
   </li>
-  @endif
+<!--  @endif  -->
 
   {{-- Divider--}}
   <hr class="sidebar-divider">
