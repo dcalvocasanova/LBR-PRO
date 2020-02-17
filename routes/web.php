@@ -71,6 +71,14 @@ Route::get('/gestionar-catalogos', function () {
 })->middleware('permission:CRUD_catalogs');
 
 
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas', function () {
+    return view('taskManager.tareas');
+})->middleware('permission:CRUD_tasks');
+
+
 Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-parametros', function () {
       return view('admin.parametros');
