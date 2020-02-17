@@ -3745,6 +3745,255 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      form: new Form({
+        id: "",
+        name: "",
+        type: ""
+      }),
+      showDetails: false,
+      title: "Agregar nueva categoría de parámetro ",
+      //title to show
+      update: 0,
+      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      showVariable: 0,
+      Frecuencies: {},
+      WorkTypes: {},
+      Tasks: [{
+        id: 1,
+        name: "tarea 1",
+        inventory: 5,
+        unit_price: 45.99
+      }, {
+        id: 2,
+        name: "tarea 2",
+        inventory: 10,
+        unit_price: 123.75
+      }, {
+        id: 3,
+        name: "tarea 3",
+        inventory: 2,
+        unit_price: 399.50
+      }]
+    };
+  },
+  methods: {
+    detalle: function detalle() {
+      swal.fire('Por el momento no tenemos Macroprocesos registrados', '¡Muy pronto tendremos la funcionalidad implementada!', 'warning');
+    },
+    getResults: function getResults() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('/variables?page=' + page).then(function (response) {
+        _this.Variables = response.data; //get all projects from page.
+      });
+    },
+    showSubVariables: function showSubVariables(variable) {
+      var me = this;
+      me.showVariable = variable.id;
+      me.Variable = variable;
+      axios.post('/variables/setsession', {
+        id: parameter.id,
+        name: parameter.name
+      }).then(function (response) {
+        me.componentVariableKey += 1;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    showExtraValidations: function showExtraValidations() {
+      if (this.form.tipo == "number") {
+        this.showDetails = true;
+      } else {
+        this.showDetails = false;
+      }
+    },
+    getVaraibles: function getVaraibles() {
+      var me = this;
+      me.clearFields();
+      axios.get('/variables').then(function (response) {
+        me.Variables = response.data; //get all parameters
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    saveVariable: function saveVariable() {
+      var me = this;
+      this.form.post('/variables/guardar').then(function (response) {
+        me.salir();
+        me.getVaraibles(); // show all users
+
+        toast.fire({
+          type: 'success',
+          title: 'Varaible registrada con éxito'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    updateVariable: function updateVariable() {
+      var me = this;
+      this.form.put('/variables/actualizar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Variable actualizada con éxito'
+        });
+        $('#addVariable').modal('toggle');
+        me.getVaraibles();
+        me.salir();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    loadFieldsUpdate: function loadFieldsUpdate(variable) {
+      var me = this;
+      me.update = variable.id;
+      me.title = "Actualizar información de la variable";
+      me.form.nombre = variable.name;
+      me.form.identificador = variable.identificator;
+      me.form.tipo = variable.type;
+      me.form.valor = variable.value;
+      me.form.medida = variable.measure;
+      me.form.regla = variable.rule;
+      me.form.id = variable.id;
+
+      if (me.form.tipo == "number") {
+        this.showDetails = true;
+      }
+    },
+    deleteVariable: function deleteVariable(variable) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar una variable',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una variable",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarla!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/variables/borrar/' + variable.id).then(function (response) {
+            swal.fire('Eliminado', 'Variable fue eliminada', 'success');
+            me.getVaraibles();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      });
+    },
+    clearFields: function clearFields() {
+      var me = this;
+      me.title = "Agregar nueva variable", me.update = 0;
+      me.form.reset();
+      me.showDetails = false;
+    },
+    LoadCatalogFrecuency: function LoadCatalogFrecuency() {
+      var _this2 = this;
+
+      axios.get('catalogo?id=FRECUENCY').then(function (response) {
+        _this2.Frecuencies = response.data; //get all catalogs from category selected
+      });
+    },
+    LoadCatalogWorkType: function LoadCatalogWorkType() {
+      var _this3 = this;
+
+      axios.get('catalogo?id=WORKTYPE').then(function (response) {
+        _this3.WorkTypes = response.data; //get all catalogs from category selected
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.LoadCatalogFrecuency();
+    this.LoadCatalogWorkType();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserComponent.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserComponent.vue?vue&type=script&lang=js& ***!
@@ -5055,6 +5304,29 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -50674,6 +50946,232 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container container-project" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _c("div", { staticClass: "card-header card-header-primary" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "col-md-4",
+                attrs: {
+                  "data-toggle": "tooltip",
+                  "data-placement": "bottom",
+                  title: "Agregar nueva variable"
+                }
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    on: { click: _vm.detalle }
+                  },
+                  [_c("i", { staticClass: "fa fa-plus-circle" })]
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body card-body-fitted " }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.Tasks, function(task) {
+                    return _c("tr", { key: task.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(task.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "btn-group",
+                            attrs: {
+                              role: "group",
+                              "aria-label": "Button group with nested dropdown"
+                            }
+                          },
+                          [
+                            _vm._l(_vm.Frecuencies, function(frecuency) {
+                              return _c("div", { key: frecuency.id }, [
+                                _c("button", {
+                                  staticClass: "btn btn-primary",
+                                  attrs: {
+                                    type: "button",
+                                    "data-toggle": "tooltip",
+                                    "data-placement": "top",
+                                    title: frecuency.name
+                                  },
+                                  domProps: {
+                                    textContent: _vm._s(
+                                      frecuency.name.substr(0, 1)
+                                    )
+                                  }
+                                })
+                              ])
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "btn-group",
+                                attrs: { role: "group" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-danger dropdown-toggle",
+                                    attrs: {
+                                      id: "btnGroupDropWorkType",
+                                      type: "button",
+                                      "data-toggle": "dropdown",
+                                      "aria-haspopup": "true",
+                                      "aria-expanded": "false"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                            Impacto\n                          "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "dropdown-menu",
+                                    attrs: {
+                                      "aria-labelledby": "btnGroupDropWorkType"
+                                    }
+                                  },
+                                  _vm._l(_vm.WorkTypes, function(wt) {
+                                    return _c("div", { key: wt.id }, [
+                                      _c("a", {
+                                        staticClass: "dropdown-item",
+                                        attrs: { href: "#" },
+                                        domProps: {
+                                          textContent: _vm._s(wt.name)
+                                        }
+                                      })
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
+                            )
+                          ],
+                          2
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(2, true),
+                      _vm._v(" "),
+                      _vm._m(3, true),
+                      _vm._v(" "),
+                      _vm._m(4, true)
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-6" })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-footer" })
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-8" }, [
+      _c("h3", { staticClass: "card-title mt-0" }, [_vm._v(" Lista de tareas")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", { staticStyle: { width: "90%" } }, [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "10%" } }, [
+          _vm._v(" Frecuencia y tipo de trabajo ")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "10%" } }, [
+          _vm._v(" Tiempo mínimo ")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Tiempo nomal ")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Tiempo máximo ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserComponent.vue?vue&type=template&id=7f050fd2&":
 /*!****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserComponent.vue?vue&type=template&id=7f050fd2& ***!
@@ -53159,162 +53657,186 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("INPUT")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v("\n                Catálogo: Entradas\n              ")
-                ])
-              ]
-            ),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("INPUT")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Entradas\n                "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("PROVIDER")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Proveedores\n                "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("RISK")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Riesgos asociados\n                "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("INDICATOR")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Indicadores\n                "
+                      )
+                    ])
+                  ]
+                )
+              ])
+            ]),
             _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("PROVIDER")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v(
-                    "\n                Catálogo: Proveedores\n              "
-                  )
-                ])
-              ]
-            ),
+            _c("br"),
             _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("RISK")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v(
-                    "\n                Catálogo: Riesgos asociados\n              "
-                  )
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("INDICATOR")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v(
-                    "\n                Catálogo: Indicadores\n              "
-                  )
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("PHVA")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v("\n                Catálogo: PHVA\n              ")
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("FRECUENCY")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v(
-                    "\n                Catálogo: Frecuencias\n              "
-                  )
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: {
-                  "data-toggle": "modal",
-                  "data-target": "#addCatalogs"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.LoadCatalog("WORKTYPE")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-swatchbook" }, [
-                  _vm._v(
-                    "\n                Catálogo: Tipo de trabajo\n              "
-                  )
-                ])
-              ]
-            )
+            _c("div", { staticClass: "row mb-2" }, [
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("PHVA")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: PHVA\n                "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("FRECUENCY")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Frecuencias\n                "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#addCatalogs"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.LoadCatalog("WORKTYPE")
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-swatchbook" }, [
+                      _vm._v(
+                        "\n                  Catálogo: Tipo de trabajo\n                "
+                      )
+                    ])
+                  ]
+                )
+              ])
+            ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-footer" })
@@ -73814,6 +74336,7 @@ Vue.component('TreeMenu', __webpack_require__(/*! ./components/treeComponent/VTr
 Vue.component('TreeStructureCompany', __webpack_require__(/*! ./components/treeComponent/CompanyTreeStructureComponent.vue */ "./resources/js/components/treeComponent/CompanyTreeStructureComponent.vue")["default"]);
 Vue.component('ProjectStructure', __webpack_require__(/*! ./components/ProjectStructureComponent.vue */ "./resources/js/components/ProjectStructureComponent.vue")["default"]);
 Vue.component('help', __webpack_require__(/*! ./components/HelpComponent.vue */ "./resources/js/components/HelpComponent.vue")["default"]);
+Vue.component('tasks', __webpack_require__(/*! ./components/TaskManagerComponent.vue */ "./resources/js/components/TaskManagerComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -74390,6 +74913,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubParametersComponent_vue_vue_type_template_id_32e6ea7e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubParametersComponent_vue_vue_type_template_id_32e6ea7e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TaskManagerComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/TaskManagerComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TaskManagerComponent.vue?vue&type=template&id=77cefde0& */ "./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0&");
+/* harmony import */ var _TaskManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskManagerComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TaskManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TaskManagerComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskManagerComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskManagerComponent.vue?vue&type=template&id=77cefde0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

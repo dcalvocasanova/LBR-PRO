@@ -47,6 +47,7 @@ Vue.component('usersSystem', require('./components/UserSystemComponent.vue').def
 Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
+
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('MacroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
 
@@ -61,6 +62,7 @@ Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainCompo
 Vue.component('TreeStructureCompany', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
 Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
+Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 
 
 
