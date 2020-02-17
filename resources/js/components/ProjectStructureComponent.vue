@@ -59,7 +59,7 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-						@create-macroprocess="CreateMacroprocess"
+						            @create-macroprocess="CreateMacroprocess"
                         @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
@@ -79,7 +79,7 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="LevelManager"></h5>
+            <h5 class="modal-title" id="LevelManager"> {{title}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -108,11 +108,11 @@
         </div>
       </div>
     </div>
-	 <div class="modal fade" id="MacroprocessManager" tabindex="-2" role="dialog" aria labelledby="MacroprocessManager-lg" aria-hidden="true">
+    <div class="modal fade" id="MacroprocessManager" tabindex="-2" role="dialog" aria labelledby="MacroprocessManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="LevelManager"></h5>
+            <h5 class="modal-title" id="LevelManager">{{title}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -123,11 +123,11 @@
                 <div class="card-body">
                   <div class="col-md-12">
                     <div class="form-group">
-				      <label class="bmd-label-floating">Nombre</label>
+	                    <label class="bmd-label-floating">Nombre</label>
                       <input  v-model="newName" type="text" class="form-control">
                       <label class="bmd-label-floating">Código</label>
                       <input  v-model="newCode" type="text" class="form-control">
-					  <table class="table table-hover">
+		                  <table class="table table-hover">
                        <thead class="">
       										<tr>
       										  <th>Seleccione los objetivos asociados</th>
@@ -135,12 +135,10 @@
                       </thead>
     								  <tbody>
       										<tr v-for="goal in currentNode.goals" :key="goal.pos" >
-												<td><input v-model=Macroprocessgoals type="checkbox" :name=goal.pos :value=goal.pos> {{goal.name}}</td>
+												<td><input v-model=Macroprocessgoals type="checkbox" :name="goal.pos" :value="goal.pos"> {{goal.name}}</td>
       										</tr>
     								  </tbody>
   					        </table>
-											
-      				 
                     </div>
                   </div>
                 </div>
@@ -148,7 +146,7 @@
                   <div class="container-buttons">
                     <button v-if="updateNodeControl== 0" @click="addMacroprocess()" class="btn btn-success">Añadir</button>
                     <button v-if="updateNodeControl!= 0" @click="updateNode()" class="btn btn-info">Actualizar</button>
-                    <button @click="salir()" class="btn btn-secondary">Atrás</button>
+                    <button @click="salirMacroprocess()" class="btn btn-secondary">Atrás</button>
                   </div>
                 </div>
               </div>
@@ -243,14 +241,15 @@
     data(){
       return{
         project_id:0,
-		goalsInherited:[],
-		Macroprocessgoals:[],
+	      goalsInherited:[],
+		    Macroprocessgoals:[],
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
 		    parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
+        title:"",
         newName:"",
 		    newCode:"",
         level: new Form({
@@ -258,7 +257,7 @@
           levels:"",
           project_id:""
         })
-		  
+
       }
     },
     methods:{
@@ -271,7 +270,7 @@
           me.updateNodeControl = 0
           this.getGoalName()
         },
-		CreateMacroprocess(item){
+      CreateMacroprocess(item){
           let me = this;
           me.currentNode = item
           me.updateNodeControl = 0
@@ -283,7 +282,7 @@
 	      me.parentNode = nodo.parent
         me.updateNodeControl = 0
         this.getGoalsInherited()
-    },
+      },
       addObjetivoHeredado(node){
         let me = this;
         if(node.parent !==node.item){
@@ -362,32 +361,36 @@
       },
       addChild(item) {
         let me = this;
+        me.getNodeName()
         me.currentNode = item
         me.updateNodeControl = 0
-        this.getNodeName()
+        me.title= "Agregar nivel de estructura"
+
       },
       editNode(item){
-        let me = this;
+        let me = this
+        me.getNodeName()
         me.currentNode = item
         me.newName = me.currentNode.name
+        me.title= "Modificar nombre del nivel de estructura"
         me.updateNodeControl = 1
-        this.getNodeName()
+
       },
       addNode() {
-        let me = this;
+        let me = this
         me.currentNode.children.push({
           name: me.newName,
           level:me.currentNode.level + 1,
     		  numGoals:0,
     		  goals:[],
     		  inheritedGoals:[],
-			  macroprocess:[]
+			    macroprocess:[]
         })
         me.salir()
       },
       addGoal() {
         let me = this;
-	      me.currentNode.numGoals += 1;
+	      me.currentNode.numGoals += 1
         me.currentNode.goals.push({
 	      code: me.newCode,
           name: me.newName,
@@ -395,7 +398,7 @@
         })
         me.salirObjetivos()
       },
-	  addMacroprocess() {
+	    addMacroprocess() {
         let me = this;
         me.currentNode.macroprocess.push({
 	      code: me.newCode,
@@ -404,10 +407,9 @@
         })
         me.salirMacroprocess()
       },
-	  RelacionarObjetivos(){
-        let me = this;
-	    //me.currentNode.inheritedGoals= me.goalsInherited
-      me.currentNode.inheritedGoals.push({
+	    RelacionarObjetivos(){
+        let me = this
+        me.currentNode.inheritedGoals.push({
 	        goals: me.goalsInherited
         })
         me.salirRelacionarObjetivos()
@@ -443,28 +445,27 @@
         $('#InheritedManager').modal('toggle');
         this.newName = ""
       },
-	  salirMacroprocess(){
+	    salirMacroprocess(){
         $('#MacroprocessManager').modal('toggle');
         this.newName = ""
         this.newCode = ""
-		this.Macroprocessgoals = []
+	      this.Macroprocessgoals = []
       },
       getMacroprocessData(){
         $('#MacroprocessManager').modal('show')
         this.newName = ""
         this.newCode = ""
-		this.Macroprocessgoals = []
+		    this.Macroprocessgoals = []
       },
-	  getNodeName(){
+	    getNodeName(){
         $('#LevelManager').modal('show')
         this.newName = ""
         this.newCode = ""
-		
       },
       getGoalsInherited(){
         $('#InheritedManager').modal('show')
       },
-	  getGoalName(){
+	     getGoalName(){
         $('#GoalManager').modal('show')
       }
     },

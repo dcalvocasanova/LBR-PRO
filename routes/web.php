@@ -69,6 +69,12 @@ Route::get('/gestionar-proyectos', function () {
 Route::get('/gestionar-catalogos', function () {
     return view('admin.catalogos');
 })->middleware('permission:CRUD_catalogs');
+/*
+* Grant access only for users with CRUD_catalogs permission
+*/
+Route::get('/gestionar-catalogos-macroprocesos', function () {
+    return view('admin.catalogos_macroprocesos');
+})->middleware('permission:CRUD_catalogs');
 
 
 /*

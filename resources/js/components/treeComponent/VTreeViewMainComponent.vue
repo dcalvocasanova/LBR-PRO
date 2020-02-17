@@ -1,7 +1,7 @@
 <template>
   <ul class="treeview-list">
     <li class="treeview-item">
-      <div class="main":class="{bold:isParent}" @click="toggle">
+      <div class="main":class="{bold:isParent}" @doubleclick="toggle">
       <h4>
         <span v-if="isParent">[{{ isOpen ? '-' : '+' }}]</span>
         <span @click="$emit('clicked-node', item)">{{ item.name }}</span>
