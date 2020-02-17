@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+use Notification;
+use App\Notifications\Notifier;
+
 class HomeController extends Controller
 {
     /**
@@ -24,5 +28,23 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function sendNotification()
+    {
+        $user = Auth::user();
+
+        $details = [
+            'greeting' => 'Hola Artisan',
+            'body' => 'Tienes una notificación, pendiente para revisar ',
+            'thanks' => 'Esperamos pronto recibir su visita',
+            'actionText' => 'Ver notificación',
+            'actionURL' => url('/notificacion/opa'),
+            'msg' => 'Hello tienes un nuevo mensaje que responder'
+        ];
+
+        Notification::send($user, new Notifier($details));
+
+        dd('done');
     }
 }
