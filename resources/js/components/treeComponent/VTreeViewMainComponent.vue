@@ -10,9 +10,10 @@
           <span @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
         </span>
-        <span class="controls-gol-edit" v-show="showGoalEditor">
-          <span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
-		<span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
+        	<span class="controls-gol-edit" v-show="showGoalEditor">
+          	<span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
+			<span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
+			<span @click="$emit('create-macroprocess',item)"><i class="fas fa-connectdevelop"></i> </span>
         </span>
       </h4>
       </div>
@@ -29,6 +30,7 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
+		    @create-macroprocess="$emit('create-macroprocess', $event)"
 			@assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
       >
       </tree-menu>
