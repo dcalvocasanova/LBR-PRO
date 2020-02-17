@@ -110,6 +110,7 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
 var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
 var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
+var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
 var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
 var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/axios/lib/core/createError.js");
@@ -132,7 +133,8 @@ module.exports = function xhrAdapter(config) {
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
     // Set the request timeout in MS
     request.timeout = config.timeout;
@@ -193,7 +195,11 @@ module.exports = function xhrAdapter(config) {
 
     // Handle timeout
     request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
         request));
 
       // Clean up request
@@ -207,7 +213,7 @@ module.exports = function xhrAdapter(config) {
       var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
 
       // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
         cookies.read(config.xsrfCookieName) :
         undefined;
 
@@ -230,8 +236,8 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
     }
 
     // Add responseType to request if needed
@@ -510,7 +516,15 @@ Axios.prototype.request = function request(config) {
   }
 
   config = mergeConfig(this.defaults, config);
-  config.method = config.method ? config.method.toLowerCase() : 'get';
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
 
   // Hook up interceptors middleware
   var chain = [dispatchRequest, undefined];
@@ -627,6 +641,38 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
+/***/ "./node_modules/axios/lib/core/buildFullPath.js":
+/*!******************************************************!*\
+  !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isAbsoluteURL = __webpack_require__(/*! ../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
+var combineURLs = __webpack_require__(/*! ../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/lib/core/createError.js":
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/core/createError.js ***!
@@ -671,8 +717,6 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 var transformData = __webpack_require__(/*! ./transformData */ "./node_modules/axios/lib/core/transformData.js");
 var isCancel = __webpack_require__(/*! ../cancel/isCancel */ "./node_modules/axios/lib/cancel/isCancel.js");
 var defaults = __webpack_require__(/*! ../defaults */ "./node_modules/axios/lib/defaults.js");
-var isAbsoluteURL = __webpack_require__(/*! ./../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
-var combineURLs = __webpack_require__(/*! ./../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -692,11 +736,6 @@ function throwIfCancellationRequested(config) {
 module.exports = function dispatchRequest(config) {
   throwIfCancellationRequested(config);
 
-  // Support baseURL config
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
-
   // Ensure headers exist
   config.headers = config.headers || {};
 
@@ -711,7 +750,7 @@ module.exports = function dispatchRequest(config) {
   config.headers = utils.merge(
     config.headers.common || {},
     config.headers[config.method] || {},
-    config.headers || {}
+    config.headers
   );
 
   utils.forEach(
@@ -834,13 +873,23 @@ module.exports = function mergeConfig(config1, config2) {
   config2 = config2 || {};
   var config = {};
 
-  utils.forEach(['url', 'method', 'params', 'data'], function valueFromConfig2(prop) {
+  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var defaultToConfig2Keys = [
+    'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
+    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath'
+  ];
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
     if (typeof config2[prop] !== 'undefined') {
       config[prop] = config2[prop];
     }
   });
 
-  utils.forEach(['headers', 'auth', 'proxy'], function mergeDeepProperties(prop) {
+  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
     if (utils.isObject(config2[prop])) {
       config[prop] = utils.deepMerge(config1[prop], config2[prop]);
     } else if (typeof config2[prop] !== 'undefined') {
@@ -852,13 +901,25 @@ module.exports = function mergeConfig(config1, config2) {
     }
   });
 
-  utils.forEach([
-    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
-    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'maxContentLength',
-    'validateStatus', 'maxRedirects', 'httpAgent', 'httpsAgent', 'cancelToken',
-    'socketPath'
-  ], function defaultToConfig2(prop) {
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys
+    .concat(mergeDeepPropertiesKeys)
+    .concat(defaultToConfig2Keys);
+
+  var otherKeys = Object
+    .keys(config2)
+    .filter(function filterAxiosKeys(key) {
+      return axiosKeys.indexOf(key) === -1;
+    });
+
+  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
     if (typeof config2[prop] !== 'undefined') {
       config[prop] = config2[prop];
     } else if (typeof config1[prop] !== 'undefined') {
@@ -966,13 +1027,12 @@ function setContentTypeIfUnset(headers, value) {
 
 function getDefaultAdapter() {
   var adapter;
-  // Only Node.JS has a process variable that is of [[Class]] process
-  if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
-  } else if (typeof XMLHttpRequest !== 'undefined') {
+  if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
     adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
   }
   return adapter;
 }
@@ -1494,7 +1554,6 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -1510,6 +1569,27 @@ var toString = Object.prototype.toString;
  */
 function isArray(val) {
   return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
+    && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
 }
 
 /**
@@ -1566,16 +1646,6 @@ function isString(val) {
  */
 function isNumber(val) {
   return typeof val === 'number';
-}
-
-/**
- * Determine if a value is undefined
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-function isUndefined(val) {
-  return typeof val === 'undefined';
 }
 
 /**
@@ -3211,6 +3281,52 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -3219,6 +3335,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       project_id: 0,
+      goalsInherited: [],
+      Macroprocessgoals: [],
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       Projects: {},
@@ -3250,6 +3368,12 @@ __webpack_require__.r(__webpack_exports__);
       me.currentNode = item;
       me.updateNodeControl = 0;
       this.getGoalName();
+    },
+    CreateMacroprocess: function CreateMacroprocess(item) {
+      var me = this;
+      me.currentNode = item;
+      me.updateNodeControl = 0;
+      this.getMacroprocessData();
     },
     asignarObjetivoHeredado: function asignarObjetivoHeredado(nodo) {
       var me = this;
@@ -3353,7 +3477,8 @@ __webpack_require__.r(__webpack_exports__);
         level: me.currentNode.level + 1,
         numGoals: 0,
         goals: [],
-        inheritedGoals: []
+        inheritedGoals: [],
+        macroprocess: []
       });
       me.salir();
     },
@@ -3366,7 +3491,25 @@ __webpack_require__.r(__webpack_exports__);
         pos: me.currentNode.numGoals // definir contador para objetivos
 
       });
-      me.salirGoal();
+      me.salirObjetivos();
+    },
+    addMacroprocess: function addMacroprocess() {
+      var me = this;
+      me.currentNode.macroprocess.push({
+        code: me.newCode,
+        name: me.newName,
+        goals: me.Macroprocessgoals // definir contador para objetivos
+
+      });
+      me.salirMacroprocess();
+    },
+    RelacionarObjetivos: function RelacionarObjetivos() {
+      var me = this; //me.currentNode.inheritedGoals= me.goalsInherited
+
+      me.currentNode.inheritedGoals.push({
+        goals: me.goalsInherited
+      });
+      me.salirRelacionarObjetivos();
     },
     updateNode: function updateNode() {
       var me = this;
@@ -3398,6 +3541,18 @@ __webpack_require__.r(__webpack_exports__);
     salirRelacionarObjetivos: function salirRelacionarObjetivos() {
       $('#InheritedManager').modal('toggle');
       this.newName = "";
+    },
+    salirMacroprocess: function salirMacroprocess() {
+      $('#MacroprocessManager').modal('toggle');
+      this.newName = "";
+      this.newCode = "";
+      this.Macroprocessgoals = [];
+    },
+    getMacroprocessData: function getMacroprocessData() {
+      $('#MacroprocessManager').modal('show');
+      this.newName = "";
+      this.newCode = "";
+      this.Macroprocessgoals = [];
     },
     getNodeName: function getNodeName() {
       $('#LevelManager').modal('show');
@@ -6026,6 +6181,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -6068,14 +6225,14 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-  * Bootstrap v4.3.1 (https://getbootstrap.com/)
+  * Bootstrap v4.4.1 (https://getbootstrap.com/)
   * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
   */
 (function (global, factory) {
    true ? factory(exports, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"), __webpack_require__(/*! popper.js */ "./node_modules/popper.js/dist/esm/popper.js")) :
   undefined;
-}(this, function (exports, $, Popper) { 'use strict';
+}(this, (function (exports, $, Popper) { 'use strict';
 
   $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
   Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
@@ -6111,20 +6268,35 @@ __webpack_require__.r(__webpack_exports__);
     return obj;
   }
 
-  function _objectSpread(target) {
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i] != null ? arguments[i] : {};
-      var ownKeys = Object.keys(source);
 
-      if (typeof Object.getOwnPropertySymbols === 'function') {
-        ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
-          return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-        }));
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
       }
-
-      ownKeys.forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
     }
 
     return target;
@@ -6138,7 +6310,7 @@ __webpack_require__.r(__webpack_exports__);
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v4.3.1): util.js
+   * Bootstrap (v4.4.1): util.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
    * --------------------------------------------------------------------------
    */
@@ -6287,8 +6459,25 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return Util.findShadowRoot(element.parentNode);
+    },
+    jQueryDetection: function jQueryDetection() {
+      if (typeof $ === 'undefined') {
+        throw new TypeError('Bootstrap\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\'s JavaScript.');
+      }
+
+      var version = $.fn.jquery.split(' ')[0].split('.');
+      var minMajor = 1;
+      var ltMajor = 2;
+      var minMinor = 9;
+      var minPatch = 1;
+      var maxMajor = 4;
+
+      if (version[0] < ltMajor && version[1] < minMinor || version[0] === minMajor && version[1] === minMinor && version[2] < minPatch || version[0] >= maxMajor) {
+        throw new Error('Bootstrap\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0');
+      }
     }
   };
+  Util.jQueryDetection();
   setTransitionEndSupport();
 
   /**
@@ -6298,7 +6487,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME = 'alert';
-  var VERSION = '4.3.1';
+  var VERSION = '4.4.1';
   var DATA_KEY = 'bs.alert';
   var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
@@ -6315,13 +6504,12 @@ __webpack_require__.r(__webpack_exports__);
     ALERT: 'alert',
     FADE: 'fade',
     SHOW: 'show'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Alert =
   /*#__PURE__*/
@@ -6463,7 +6651,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$1 = 'button';
-  var VERSION$1 = '4.3.1';
+  var VERSION$1 = '4.4.1';
   var DATA_KEY$1 = 'bs.button';
   var EVENT_KEY$1 = "." + DATA_KEY$1;
   var DATA_API_KEY$1 = '.data-api';
@@ -6475,21 +6663,23 @@ __webpack_require__.r(__webpack_exports__);
   };
   var Selector$1 = {
     DATA_TOGGLE_CARROT: '[data-toggle^="button"]',
-    DATA_TOGGLE: '[data-toggle="buttons"]',
+    DATA_TOGGLES: '[data-toggle="buttons"]',
+    DATA_TOGGLE: '[data-toggle="button"]',
+    DATA_TOGGLES_BUTTONS: '[data-toggle="buttons"] .btn',
     INPUT: 'input:not([type="hidden"])',
     ACTIVE: '.active',
     BUTTON: '.btn'
   };
   var Event$1 = {
     CLICK_DATA_API: "click" + EVENT_KEY$1 + DATA_API_KEY$1,
-    FOCUS_BLUR_DATA_API: "focus" + EVENT_KEY$1 + DATA_API_KEY$1 + " " + ("blur" + EVENT_KEY$1 + DATA_API_KEY$1)
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
+    FOCUS_BLUR_DATA_API: "focus" + EVENT_KEY$1 + DATA_API_KEY$1 + " " + ("blur" + EVENT_KEY$1 + DATA_API_KEY$1),
+    LOAD_DATA_API: "load" + EVENT_KEY$1 + DATA_API_KEY$1
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Button =
   /*#__PURE__*/
@@ -6505,7 +6695,7 @@ __webpack_require__.r(__webpack_exports__);
     _proto.toggle = function toggle() {
       var triggerChangeEvent = true;
       var addAriaPressed = true;
-      var rootElement = $(this._element).closest(Selector$1.DATA_TOGGLE)[0];
+      var rootElement = $(this._element).closest(Selector$1.DATA_TOGGLES)[0];
 
       if (rootElement) {
         var input = this._element.querySelector(Selector$1.INPUT);
@@ -6521,13 +6711,16 @@ __webpack_require__.r(__webpack_exports__);
                 $(activeElement).removeClass(ClassName$1.ACTIVE);
               }
             }
+          } else if (input.type === 'checkbox') {
+            if (this._element.tagName === 'LABEL' && input.checked === this._element.classList.contains(ClassName$1.ACTIVE)) {
+              triggerChangeEvent = false;
+            }
+          } else {
+            // if it's not a radio button or checkbox don't add a pointless/invalid checked property to the input
+            triggerChangeEvent = false;
           }
 
           if (triggerChangeEvent) {
-            if (input.hasAttribute('disabled') || rootElement.hasAttribute('disabled') || input.classList.contains('disabled') || rootElement.classList.contains('disabled')) {
-              return;
-            }
-
             input.checked = !this._element.classList.contains(ClassName$1.ACTIVE);
             $(input).trigger('change');
           }
@@ -6537,12 +6730,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
-      if (addAriaPressed) {
-        this._element.setAttribute('aria-pressed', !this._element.classList.contains(ClassName$1.ACTIVE));
-      }
+      if (!(this._element.hasAttribute('disabled') || this._element.classList.contains('disabled'))) {
+        if (addAriaPressed) {
+          this._element.setAttribute('aria-pressed', !this._element.classList.contains(ClassName$1.ACTIVE));
+        }
 
-      if (triggerChangeEvent) {
-        $(this._element).toggleClass(ClassName$1.ACTIVE);
+        if (triggerChangeEvent) {
+          $(this._element).toggleClass(ClassName$1.ACTIVE);
+        }
       }
     };
 
@@ -6584,17 +6779,57 @@ __webpack_require__.r(__webpack_exports__);
 
 
   $(document).on(Event$1.CLICK_DATA_API, Selector$1.DATA_TOGGLE_CARROT, function (event) {
-    event.preventDefault();
     var button = event.target;
 
     if (!$(button).hasClass(ClassName$1.BUTTON)) {
-      button = $(button).closest(Selector$1.BUTTON);
+      button = $(button).closest(Selector$1.BUTTON)[0];
     }
 
-    Button._jQueryInterface.call($(button), 'toggle');
+    if (!button || button.hasAttribute('disabled') || button.classList.contains('disabled')) {
+      event.preventDefault(); // work around Firefox bug #1540995
+    } else {
+      var inputBtn = button.querySelector(Selector$1.INPUT);
+
+      if (inputBtn && (inputBtn.hasAttribute('disabled') || inputBtn.classList.contains('disabled'))) {
+        event.preventDefault(); // work around Firefox bug #1540995
+
+        return;
+      }
+
+      Button._jQueryInterface.call($(button), 'toggle');
+    }
   }).on(Event$1.FOCUS_BLUR_DATA_API, Selector$1.DATA_TOGGLE_CARROT, function (event) {
     var button = $(event.target).closest(Selector$1.BUTTON)[0];
     $(button).toggleClass(ClassName$1.FOCUS, /^focus(in)?$/.test(event.type));
+  });
+  $(window).on(Event$1.LOAD_DATA_API, function () {
+    // ensure correct active class is set to match the controls' actual values/states
+    // find all checkboxes/readio buttons inside data-toggle groups
+    var buttons = [].slice.call(document.querySelectorAll(Selector$1.DATA_TOGGLES_BUTTONS));
+
+    for (var i = 0, len = buttons.length; i < len; i++) {
+      var button = buttons[i];
+      var input = button.querySelector(Selector$1.INPUT);
+
+      if (input.checked || input.hasAttribute('checked')) {
+        button.classList.add(ClassName$1.ACTIVE);
+      } else {
+        button.classList.remove(ClassName$1.ACTIVE);
+      }
+    } // find all button toggles
+
+
+    buttons = [].slice.call(document.querySelectorAll(Selector$1.DATA_TOGGLE));
+
+    for (var _i = 0, _len = buttons.length; _i < _len; _i++) {
+      var _button = buttons[_i];
+
+      if (_button.getAttribute('aria-pressed') === 'true') {
+        _button.classList.add(ClassName$1.ACTIVE);
+      } else {
+        _button.classList.remove(ClassName$1.ACTIVE);
+      }
+    }
   });
   /**
    * ------------------------------------------------------------------------
@@ -6617,7 +6852,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$2 = 'carousel';
-  var VERSION$2 = '4.3.1';
+  var VERSION$2 = '4.4.1';
   var DATA_KEY$2 = 'bs.carousel';
   var EVENT_KEY$2 = "." + DATA_KEY$2;
   var DATA_API_KEY$2 = '.data-api';
@@ -6690,13 +6925,12 @@ __webpack_require__.r(__webpack_exports__);
   var PointerType = {
     TOUCH: 'touch',
     PEN: 'pen'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Carousel =
   /*#__PURE__*/
@@ -6816,7 +7050,7 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, Default, config);
+      config = _objectSpread2({}, Default, {}, config);
       Util.typeCheckConfig(NAME$2, config, DefaultType);
       return config;
     };
@@ -6828,7 +7062,8 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var direction = absDeltax / this.touchDeltaX; // swipe left
+      var direction = absDeltax / this.touchDeltaX;
+      this.touchDeltaX = 0; // swipe left
 
       if (direction > 0) {
         this.prev();
@@ -6954,8 +7189,6 @@ __webpack_require__.r(__webpack_exports__);
           event.preventDefault();
           this.next();
           break;
-
-        default:
       }
     };
 
@@ -7107,10 +7340,10 @@ __webpack_require__.r(__webpack_exports__);
       return this.each(function () {
         var data = $(this).data(DATA_KEY$2);
 
-        var _config = _objectSpread({}, Default, $(this).data());
+        var _config = _objectSpread2({}, Default, {}, $(this).data());
 
         if (typeof config === 'object') {
-          _config = _objectSpread({}, _config, config);
+          _config = _objectSpread2({}, _config, {}, config);
         }
 
         var action = typeof config === 'string' ? config : _config.slide;
@@ -7148,7 +7381,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var config = _objectSpread({}, $(target).data(), $(this).data());
+      var config = _objectSpread2({}, $(target).data(), {}, $(this).data());
 
       var slideIndex = this.getAttribute('data-slide-to');
 
@@ -7217,7 +7450,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$3 = 'collapse';
-  var VERSION$3 = '4.3.1';
+  var VERSION$3 = '4.4.1';
   var DATA_KEY$3 = 'bs.collapse';
   var EVENT_KEY$3 = "." + DATA_KEY$3;
   var DATA_API_KEY$3 = '.data-api';
@@ -7250,13 +7483,12 @@ __webpack_require__.r(__webpack_exports__);
   var Selector$3 = {
     ACTIVES: '.show, .collapsing',
     DATA_TOGGLE: '[data-toggle="collapse"]'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Collapse =
   /*#__PURE__*/
@@ -7443,7 +7675,7 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, Default$1, config);
+      config = _objectSpread2({}, Default$1, {}, config);
       config.toggle = Boolean(config.toggle); // Coerce string values
 
       Util.typeCheckConfig(NAME$3, config, DefaultType$1);
@@ -7497,7 +7729,7 @@ __webpack_require__.r(__webpack_exports__);
         var $this = $(this);
         var data = $this.data(DATA_KEY$3);
 
-        var _config = _objectSpread({}, Default$1, $this.data(), typeof config === 'object' && config ? config : {});
+        var _config = _objectSpread2({}, Default$1, {}, $this.data(), {}, typeof config === 'object' && config ? config : {});
 
         if (!data && _config.toggle && /show|hide/.test(config)) {
           _config.toggle = false;
@@ -7577,7 +7809,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$4 = 'dropdown';
-  var VERSION$4 = '4.3.1';
+  var VERSION$4 = '4.4.1';
   var DATA_KEY$4 = 'bs.dropdown';
   var EVENT_KEY$4 = "." + DATA_KEY$4;
   var DATA_API_KEY$4 = '.data-api';
@@ -7637,21 +7869,22 @@ __webpack_require__.r(__webpack_exports__);
     flip: true,
     boundary: 'scrollParent',
     reference: 'toggle',
-    display: 'dynamic'
+    display: 'dynamic',
+    popperConfig: null
   };
   var DefaultType$2 = {
     offset: '(number|string|function)',
     flip: 'boolean',
     boundary: '(string|element)',
     reference: '(string|element)',
-    display: 'string'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
+    display: 'string',
+    popperConfig: '(null|object)'
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Dropdown =
   /*#__PURE__*/
@@ -7675,8 +7908,6 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var parent = Dropdown._getParentFromElement(this._element);
-
       var isActive = $(this._menu).hasClass(ClassName$4.SHOW);
 
       Dropdown._clearMenus();
@@ -7685,10 +7916,25 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+      this.show(true);
+    };
+
+    _proto.show = function show(usePopper) {
+      if (usePopper === void 0) {
+        usePopper = false;
+      }
+
+      if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED) || $(this._menu).hasClass(ClassName$4.SHOW)) {
+        return;
+      }
+
       var relatedTarget = {
         relatedTarget: this._element
       };
       var showEvent = $.Event(Event$4.SHOW, relatedTarget);
+
+      var parent = Dropdown._getParentFromElement(this._element);
+
       $(parent).trigger(showEvent);
 
       if (showEvent.isDefaultPrevented()) {
@@ -7696,7 +7942,7 @@ __webpack_require__.r(__webpack_exports__);
       } // Disable totally Popper.js for Dropdown in Navbar
 
 
-      if (!this._inNavbar) {
+      if (!this._inNavbar && usePopper) {
         /**
          * Check for Popper dependency
          * Popper - https://popper.js.org
@@ -7743,28 +7989,6 @@ __webpack_require__.r(__webpack_exports__);
       $(parent).toggleClass(ClassName$4.SHOW).trigger($.Event(Event$4.SHOWN, relatedTarget));
     };
 
-    _proto.show = function show() {
-      if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED) || $(this._menu).hasClass(ClassName$4.SHOW)) {
-        return;
-      }
-
-      var relatedTarget = {
-        relatedTarget: this._element
-      };
-      var showEvent = $.Event(Event$4.SHOW, relatedTarget);
-
-      var parent = Dropdown._getParentFromElement(this._element);
-
-      $(parent).trigger(showEvent);
-
-      if (showEvent.isDefaultPrevented()) {
-        return;
-      }
-
-      $(this._menu).toggleClass(ClassName$4.SHOW);
-      $(parent).toggleClass(ClassName$4.SHOW).trigger($.Event(Event$4.SHOWN, relatedTarget));
-    };
-
     _proto.hide = function hide() {
       if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED) || !$(this._menu).hasClass(ClassName$4.SHOW)) {
         return;
@@ -7781,6 +8005,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (hideEvent.isDefaultPrevented()) {
         return;
+      }
+
+      if (this._popper) {
+        this._popper.destroy();
       }
 
       $(this._menu).toggleClass(ClassName$4.SHOW);
@@ -7821,7 +8049,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, this.constructor.Default, $(this._element).data(), config);
+      config = _objectSpread2({}, this.constructor.Default, {}, $(this._element).data(), {}, config);
       Util.typeCheckConfig(NAME$4, config, this.constructor.DefaultType);
       return config;
     };
@@ -7870,7 +8098,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (typeof this._config.offset === 'function') {
         offset.fn = function (data) {
-          data.offsets = _objectSpread({}, data.offsets, _this2._config.offset(data.offsets, _this2._element) || {});
+          data.offsets = _objectSpread2({}, data.offsets, {}, _this2._config.offset(data.offsets, _this2._element) || {});
           return data;
         };
       } else {
@@ -7891,9 +8119,8 @@ __webpack_require__.r(__webpack_exports__);
           preventOverflow: {
             boundariesElement: this._config.boundary
           }
-        } // Disable Popper.js if we have a static display
-
-      };
+        }
+      }; // Disable Popper.js if we have a static display
 
       if (this._config.display === 'static') {
         popperConfig.modifiers.applyStyle = {
@@ -7901,7 +8128,7 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
-      return popperConfig;
+      return _objectSpread2({}, popperConfig, {}, this._config.popperConfig);
     } // Static
     ;
 
@@ -7973,6 +8200,11 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         toggles[i].setAttribute('aria-expanded', 'false');
+
+        if (context._popper) {
+          context._popper.destroy();
+        }
+
         $(dropdownMenu).removeClass(ClassName$4.SHOW);
         $(parent).removeClass(ClassName$4.SHOW).trigger($.Event(Event$4.HIDDEN, relatedTarget));
       }
@@ -8013,6 +8245,10 @@ __webpack_require__.r(__webpack_exports__);
 
       var isActive = $(parent).hasClass(ClassName$4.SHOW);
 
+      if (!isActive && event.which === ESCAPE_KEYCODE) {
+        return;
+      }
+
       if (!isActive || isActive && (event.which === ESCAPE_KEYCODE || event.which === SPACE_KEYCODE)) {
         if (event.which === ESCAPE_KEYCODE) {
           var toggle = parent.querySelector(Selector$4.DATA_TOGGLE);
@@ -8023,7 +8259,9 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var items = [].slice.call(parent.querySelectorAll(Selector$4.VISIBLE_ITEMS));
+      var items = [].slice.call(parent.querySelectorAll(Selector$4.VISIBLE_ITEMS)).filter(function (item) {
+        return $(item).is(':visible');
+      });
 
       if (items.length === 0) {
         return;
@@ -8103,7 +8341,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$5 = 'modal';
-  var VERSION$5 = '4.3.1';
+  var VERSION$5 = '4.4.1';
   var DATA_KEY$5 = 'bs.modal';
   var EVENT_KEY$5 = "." + DATA_KEY$5;
   var DATA_API_KEY$5 = '.data-api';
@@ -8124,6 +8362,7 @@ __webpack_require__.r(__webpack_exports__);
   };
   var Event$5 = {
     HIDE: "hide" + EVENT_KEY$5,
+    HIDE_PREVENTED: "hidePrevented" + EVENT_KEY$5,
     HIDDEN: "hidden" + EVENT_KEY$5,
     SHOW: "show" + EVENT_KEY$5,
     SHOWN: "shown" + EVENT_KEY$5,
@@ -8141,7 +8380,8 @@ __webpack_require__.r(__webpack_exports__);
     BACKDROP: 'modal-backdrop',
     OPEN: 'modal-open',
     FADE: 'fade',
-    SHOW: 'show'
+    SHOW: 'show',
+    STATIC: 'modal-static'
   };
   var Selector$5 = {
     DIALOG: '.modal-dialog',
@@ -8150,13 +8390,12 @@ __webpack_require__.r(__webpack_exports__);
     DATA_DISMISS: '[data-dismiss="modal"]',
     FIXED_CONTENT: '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top',
     STICKY_CONTENT: '.sticky-top'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Modal =
   /*#__PURE__*/
@@ -8302,15 +8541,40 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, Default$3, config);
+      config = _objectSpread2({}, Default$3, {}, config);
       Util.typeCheckConfig(NAME$5, config, DefaultType$3);
       return config;
     };
 
-    _proto._showElement = function _showElement(relatedTarget) {
+    _proto._triggerBackdropTransition = function _triggerBackdropTransition() {
       var _this3 = this;
 
+      if (this._config.backdrop === 'static') {
+        var hideEventPrevented = $.Event(Event$5.HIDE_PREVENTED);
+        $(this._element).trigger(hideEventPrevented);
+
+        if (hideEventPrevented.defaultPrevented) {
+          return;
+        }
+
+        this._element.classList.add(ClassName$5.STATIC);
+
+        var modalTransitionDuration = Util.getTransitionDurationFromElement(this._element);
+        $(this._element).one(Util.TRANSITION_END, function () {
+          _this3._element.classList.remove(ClassName$5.STATIC);
+        }).emulateTransitionEnd(modalTransitionDuration);
+
+        this._element.focus();
+      } else {
+        this.hide();
+      }
+    };
+
+    _proto._showElement = function _showElement(relatedTarget) {
+      var _this4 = this;
+
       var transition = $(this._element).hasClass(ClassName$5.FADE);
+      var modalBody = this._dialog ? this._dialog.querySelector(Selector$5.MODAL_BODY) : null;
 
       if (!this._element.parentNode || this._element.parentNode.nodeType !== Node.ELEMENT_NODE) {
         // Don't move modal's DOM position
@@ -8323,8 +8587,8 @@ __webpack_require__.r(__webpack_exports__);
 
       this._element.setAttribute('aria-modal', true);
 
-      if ($(this._dialog).hasClass(ClassName$5.SCROLLABLE)) {
-        this._dialog.querySelector(Selector$5.MODAL_BODY).scrollTop = 0;
+      if ($(this._dialog).hasClass(ClassName$5.SCROLLABLE) && modalBody) {
+        modalBody.scrollTop = 0;
       } else {
         this._element.scrollTop = 0;
       }
@@ -8344,12 +8608,12 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       var transitionComplete = function transitionComplete() {
-        if (_this3._config.focus) {
-          _this3._element.focus();
+        if (_this4._config.focus) {
+          _this4._element.focus();
         }
 
-        _this3._isTransitioning = false;
-        $(_this3._element).trigger(shownEvent);
+        _this4._isTransitioning = false;
+        $(_this4._element).trigger(shownEvent);
       };
 
       if (transition) {
@@ -8361,25 +8625,23 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._enforceFocus = function _enforceFocus() {
-      var _this4 = this;
+      var _this5 = this;
 
       $(document).off(Event$5.FOCUSIN) // Guard against infinite focus loop
       .on(Event$5.FOCUSIN, function (event) {
-        if (document !== event.target && _this4._element !== event.target && $(_this4._element).has(event.target).length === 0) {
-          _this4._element.focus();
+        if (document !== event.target && _this5._element !== event.target && $(_this5._element).has(event.target).length === 0) {
+          _this5._element.focus();
         }
       });
     };
 
     _proto._setEscapeEvent = function _setEscapeEvent() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this._isShown && this._config.keyboard) {
         $(this._element).on(Event$5.KEYDOWN_DISMISS, function (event) {
           if (event.which === ESCAPE_KEYCODE$1) {
-            event.preventDefault();
-
-            _this5.hide();
+            _this6._triggerBackdropTransition();
           }
         });
       } else if (!this._isShown) {
@@ -8388,11 +8650,11 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._setResizeEvent = function _setResizeEvent() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this._isShown) {
         $(window).on(Event$5.RESIZE, function (event) {
-          return _this6.handleUpdate(event);
+          return _this7.handleUpdate(event);
         });
       } else {
         $(window).off(Event$5.RESIZE);
@@ -8400,7 +8662,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._hideModal = function _hideModal() {
-      var _this7 = this;
+      var _this8 = this;
 
       this._element.style.display = 'none';
 
@@ -8413,11 +8675,11 @@ __webpack_require__.r(__webpack_exports__);
       this._showBackdrop(function () {
         $(document.body).removeClass(ClassName$5.OPEN);
 
-        _this7._resetAdjustments();
+        _this8._resetAdjustments();
 
-        _this7._resetScrollbar();
+        _this8._resetScrollbar();
 
-        $(_this7._element).trigger(Event$5.HIDDEN);
+        $(_this8._element).trigger(Event$5.HIDDEN);
       });
     };
 
@@ -8429,7 +8691,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._showBackdrop = function _showBackdrop(callback) {
-      var _this8 = this;
+      var _this9 = this;
 
       var animate = $(this._element).hasClass(ClassName$5.FADE) ? ClassName$5.FADE : '';
 
@@ -8443,8 +8705,8 @@ __webpack_require__.r(__webpack_exports__);
 
         $(this._backdrop).appendTo(document.body);
         $(this._element).on(Event$5.CLICK_DISMISS, function (event) {
-          if (_this8._ignoreBackdropClick) {
-            _this8._ignoreBackdropClick = false;
+          if (_this9._ignoreBackdropClick) {
+            _this9._ignoreBackdropClick = false;
             return;
           }
 
@@ -8452,11 +8714,7 @@ __webpack_require__.r(__webpack_exports__);
             return;
           }
 
-          if (_this8._config.backdrop === 'static') {
-            _this8._element.focus();
-          } else {
-            _this8.hide();
-          }
+          _this9._triggerBackdropTransition();
         });
 
         if (animate) {
@@ -8480,7 +8738,7 @@ __webpack_require__.r(__webpack_exports__);
         $(this._backdrop).removeClass(ClassName$5.SHOW);
 
         var callbackRemove = function callbackRemove() {
-          _this8._removeBackdrop();
+          _this9._removeBackdrop();
 
           if (callback) {
             callback();
@@ -8527,7 +8785,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._setScrollbar = function _setScrollbar() {
-      var _this9 = this;
+      var _this10 = this;
 
       if (this._isBodyOverflowing) {
         // Note: DOMNode.style.paddingRight returns the actual value or '' if not set
@@ -8538,13 +8796,13 @@ __webpack_require__.r(__webpack_exports__);
         $(fixedContent).each(function (index, element) {
           var actualPadding = element.style.paddingRight;
           var calculatedPadding = $(element).css('padding-right');
-          $(element).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + _this9._scrollbarWidth + "px");
+          $(element).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + _this10._scrollbarWidth + "px");
         }); // Adjust sticky content margin
 
         $(stickyContent).each(function (index, element) {
           var actualMargin = element.style.marginRight;
           var calculatedMargin = $(element).css('margin-right');
-          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) - _this9._scrollbarWidth + "px");
+          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) - _this10._scrollbarWidth + "px");
         }); // Adjust body padding
 
         var actualPadding = document.body.style.paddingRight;
@@ -8593,7 +8851,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.each(function () {
         var data = $(this).data(DATA_KEY$5);
 
-        var _config = _objectSpread({}, Default$3, $(this).data(), typeof config === 'object' && config ? config : {});
+        var _config = _objectSpread2({}, Default$3, {}, $(this).data(), {}, typeof config === 'object' && config ? config : {});
 
         if (!data) {
           data = new Modal(this, _config);
@@ -8634,7 +8892,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
   $(document).on(Event$5.CLICK_DATA_API, Selector$5.DATA_TOGGLE, function (event) {
-    var _this10 = this;
+    var _this11 = this;
 
     var target;
     var selector = Util.getSelectorFromElement(this);
@@ -8643,7 +8901,7 @@ __webpack_require__.r(__webpack_exports__);
       target = document.querySelector(selector);
     }
 
-    var config = $(target).data(DATA_KEY$5) ? 'toggle' : _objectSpread({}, $(target).data(), $(this).data());
+    var config = $(target).data(DATA_KEY$5) ? 'toggle' : _objectSpread2({}, $(target).data(), {}, $(this).data());
 
     if (this.tagName === 'A' || this.tagName === 'AREA') {
       event.preventDefault();
@@ -8656,8 +8914,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       $target.one(Event$5.HIDDEN, function () {
-        if ($(_this10).is(':visible')) {
-          _this10.focus();
+        if ($(_this11).is(':visible')) {
+          _this11.focus();
         }
       });
     });
@@ -8680,7 +8938,7 @@ __webpack_require__.r(__webpack_exports__);
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v4.3.1): tools/sanitizer.js
+   * Bootstrap (v4.4.1): tools/sanitizer.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
    * --------------------------------------------------------------------------
    */
@@ -8718,13 +8976,13 @@ __webpack_require__.r(__webpack_exports__);
     strong: [],
     u: [],
     ul: []
-    /**
-     * A pattern that recognizes a commonly useful subset of URLs that are safe.
-     *
-     * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
-     */
-
   };
+  /**
+   * A pattern that recognizes a commonly useful subset of URLs that are safe.
+   *
+   * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
+   */
+
   var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp|tel|file):|[^&:/?#]*(?:[/?#]|$))/gi;
   /**
    * A pattern that matches safe data URLs. Only matches image, video and audio types.
@@ -8791,7 +9049,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     for (var i = 0, len = elements.length; i < len; i++) {
-      var _ret = _loop(i, len);
+      var _ret = _loop(i);
 
       if (_ret === "continue") continue;
     }
@@ -8806,7 +9064,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$6 = 'tooltip';
-  var VERSION$6 = '4.3.1';
+  var VERSION$6 = '4.4.1';
   var DATA_KEY$6 = 'bs.tooltip';
   var EVENT_KEY$6 = "." + DATA_KEY$6;
   var JQUERY_NO_CONFLICT$6 = $.fn[NAME$6];
@@ -8828,7 +9086,8 @@ __webpack_require__.r(__webpack_exports__);
     boundary: '(string|element)',
     sanitize: 'boolean',
     sanitizeFn: '(null|function)',
-    whiteList: 'object'
+    whiteList: 'object',
+    popperConfig: '(null|object)'
   };
   var AttachmentMap$1 = {
     AUTO: 'auto',
@@ -8852,7 +9111,8 @@ __webpack_require__.r(__webpack_exports__);
     boundary: 'scrollParent',
     sanitize: true,
     sanitizeFn: null,
-    whiteList: DefaultWhitelist
+    whiteList: DefaultWhitelist,
+    popperConfig: null
   };
   var HoverState = {
     SHOW: 'show',
@@ -8884,22 +9144,17 @@ __webpack_require__.r(__webpack_exports__);
     FOCUS: 'focus',
     CLICK: 'click',
     MANUAL: 'manual'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Tooltip =
   /*#__PURE__*/
   function () {
     function Tooltip(element, config) {
-      /**
-       * Check for Popper dependency
-       * Popper - https://popper.js.org
-       */
       if (typeof Popper === 'undefined') {
         throw new TypeError('Bootstrap\'s tooltips require Popper.js (https://popper.js.org/)');
       } // private
@@ -8970,7 +9225,7 @@ __webpack_require__.r(__webpack_exports__);
       clearTimeout(this._timeout);
       $.removeData(this.element, this.constructor.DATA_KEY);
       $(this.element).off(this.constructor.EVENT_KEY);
-      $(this.element).closest('.modal').off('hide.bs.modal');
+      $(this.element).closest('.modal').off('hide.bs.modal', this._hideModalHandler);
 
       if (this.tip) {
         $(this.tip).remove();
@@ -8981,7 +9236,7 @@ __webpack_require__.r(__webpack_exports__);
       this._hoverState = null;
       this._activeTrigger = null;
 
-      if (this._popper !== null) {
+      if (this._popper) {
         this._popper.destroy();
       }
 
@@ -9034,29 +9289,7 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         $(this.element).trigger(this.constructor.Event.INSERTED);
-        this._popper = new Popper(this.element, tip, {
-          placement: attachment,
-          modifiers: {
-            offset: this._getOffset(),
-            flip: {
-              behavior: this.config.fallbackPlacement
-            },
-            arrow: {
-              element: Selector$6.ARROW
-            },
-            preventOverflow: {
-              boundariesElement: this.config.boundary
-            }
-          },
-          onCreate: function onCreate(data) {
-            if (data.originalPlacement !== data.placement) {
-              _this._handlePopperPlacementChange(data);
-            }
-          },
-          onUpdate: function onUpdate(data) {
-            return _this._handlePopperPlacementChange(data);
-          }
-        });
+        this._popper = new Popper(this.element, tip, this._getPopperConfig(attachment));
         $(tip).addClass(ClassName$6.SHOW); // If this is a touch-enabled device we add extra
         // empty mouseover listeners to the body's immediate children;
         // only needed because of broken event delegation on iOS
@@ -9204,14 +9437,43 @@ __webpack_require__.r(__webpack_exports__);
     } // Private
     ;
 
-    _proto._getOffset = function _getOffset() {
+    _proto._getPopperConfig = function _getPopperConfig(attachment) {
       var _this3 = this;
+
+      var defaultBsConfig = {
+        placement: attachment,
+        modifiers: {
+          offset: this._getOffset(),
+          flip: {
+            behavior: this.config.fallbackPlacement
+          },
+          arrow: {
+            element: Selector$6.ARROW
+          },
+          preventOverflow: {
+            boundariesElement: this.config.boundary
+          }
+        },
+        onCreate: function onCreate(data) {
+          if (data.originalPlacement !== data.placement) {
+            _this3._handlePopperPlacementChange(data);
+          }
+        },
+        onUpdate: function onUpdate(data) {
+          return _this3._handlePopperPlacementChange(data);
+        }
+      };
+      return _objectSpread2({}, defaultBsConfig, {}, this.config.popperConfig);
+    };
+
+    _proto._getOffset = function _getOffset() {
+      var _this4 = this;
 
       var offset = {};
 
       if (typeof this.config.offset === 'function') {
         offset.fn = function (data) {
-          data.offsets = _objectSpread({}, data.offsets, _this3.config.offset(data.offsets, _this3.element) || {});
+          data.offsets = _objectSpread2({}, data.offsets, {}, _this4.config.offset(data.offsets, _this4.element) || {});
           return data;
         };
       } else {
@@ -9238,32 +9500,35 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._setListeners = function _setListeners() {
-      var _this4 = this;
+      var _this5 = this;
 
       var triggers = this.config.trigger.split(' ');
       triggers.forEach(function (trigger) {
         if (trigger === 'click') {
-          $(_this4.element).on(_this4.constructor.Event.CLICK, _this4.config.selector, function (event) {
-            return _this4.toggle(event);
+          $(_this5.element).on(_this5.constructor.Event.CLICK, _this5.config.selector, function (event) {
+            return _this5.toggle(event);
           });
         } else if (trigger !== Trigger.MANUAL) {
-          var eventIn = trigger === Trigger.HOVER ? _this4.constructor.Event.MOUSEENTER : _this4.constructor.Event.FOCUSIN;
-          var eventOut = trigger === Trigger.HOVER ? _this4.constructor.Event.MOUSELEAVE : _this4.constructor.Event.FOCUSOUT;
-          $(_this4.element).on(eventIn, _this4.config.selector, function (event) {
-            return _this4._enter(event);
-          }).on(eventOut, _this4.config.selector, function (event) {
-            return _this4._leave(event);
+          var eventIn = trigger === Trigger.HOVER ? _this5.constructor.Event.MOUSEENTER : _this5.constructor.Event.FOCUSIN;
+          var eventOut = trigger === Trigger.HOVER ? _this5.constructor.Event.MOUSELEAVE : _this5.constructor.Event.FOCUSOUT;
+          $(_this5.element).on(eventIn, _this5.config.selector, function (event) {
+            return _this5._enter(event);
+          }).on(eventOut, _this5.config.selector, function (event) {
+            return _this5._leave(event);
           });
-        }
-      });
-      $(this.element).closest('.modal').on('hide.bs.modal', function () {
-        if (_this4.element) {
-          _this4.hide();
         }
       });
 
+      this._hideModalHandler = function () {
+        if (_this5.element) {
+          _this5.hide();
+        }
+      };
+
+      $(this.element).closest('.modal').on('hide.bs.modal', this._hideModalHandler);
+
       if (this.config.selector) {
-        this.config = _objectSpread({}, this.config, {
+        this.config = _objectSpread2({}, this.config, {
           trigger: 'manual',
           selector: ''
         });
@@ -9363,7 +9628,7 @@ __webpack_require__.r(__webpack_exports__);
           delete dataAttributes[dataAttr];
         }
       });
-      config = _objectSpread({}, this.constructor.Default, dataAttributes, typeof config === 'object' && config ? config : {});
+      config = _objectSpread2({}, this.constructor.Default, {}, dataAttributes, {}, typeof config === 'object' && config ? config : {});
 
       if (typeof config.delay === 'number') {
         config.delay = {
@@ -9523,21 +9788,21 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$7 = 'popover';
-  var VERSION$7 = '4.3.1';
+  var VERSION$7 = '4.4.1';
   var DATA_KEY$7 = 'bs.popover';
   var EVENT_KEY$7 = "." + DATA_KEY$7;
   var JQUERY_NO_CONFLICT$7 = $.fn[NAME$7];
   var CLASS_PREFIX$1 = 'bs-popover';
   var BSCLS_PREFIX_REGEX$1 = new RegExp("(^|\\s)" + CLASS_PREFIX$1 + "\\S+", 'g');
 
-  var Default$5 = _objectSpread({}, Tooltip.Default, {
+  var Default$5 = _objectSpread2({}, Tooltip.Default, {
     placement: 'right',
     trigger: 'click',
     content: '',
     template: '<div class="popover" role="tooltip">' + '<div class="arrow"></div>' + '<h3 class="popover-header"></h3>' + '<div class="popover-body"></div></div>'
   });
 
-  var DefaultType$5 = _objectSpread({}, Tooltip.DefaultType, {
+  var DefaultType$5 = _objectSpread2({}, Tooltip.DefaultType, {
     content: '(string|element|function)'
   });
 
@@ -9560,13 +9825,12 @@ __webpack_require__.r(__webpack_exports__);
     FOCUSOUT: "focusout" + EVENT_KEY$7,
     MOUSEENTER: "mouseenter" + EVENT_KEY$7,
     MOUSELEAVE: "mouseleave" + EVENT_KEY$7
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Popover =
   /*#__PURE__*/
@@ -9710,7 +9974,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$8 = 'scrollspy';
-  var VERSION$8 = '4.3.1';
+  var VERSION$8 = '4.4.1';
   var DATA_KEY$8 = 'bs.scrollspy';
   var EVENT_KEY$8 = "." + DATA_KEY$8;
   var DATA_API_KEY$6 = '.data-api';
@@ -9749,13 +10013,12 @@ __webpack_require__.r(__webpack_exports__);
   var OffsetMethod = {
     OFFSET: 'offset',
     POSITION: 'position'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var ScrollSpy =
   /*#__PURE__*/
@@ -9837,7 +10100,7 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, Default$6, typeof config === 'object' && config ? config : {});
+      config = _objectSpread2({}, Default$6, {}, typeof config === 'object' && config ? config : {});
 
       if (typeof config.target !== 'string') {
         var id = $(config.target).attr('id');
@@ -10017,7 +10280,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$9 = 'tab';
-  var VERSION$9 = '4.3.1';
+  var VERSION$9 = '4.4.1';
   var DATA_KEY$9 = 'bs.tab';
   var EVENT_KEY$9 = "." + DATA_KEY$9;
   var DATA_API_KEY$7 = '.data-api';
@@ -10044,13 +10307,12 @@ __webpack_require__.r(__webpack_exports__);
     DATA_TOGGLE: '[data-toggle="tab"], [data-toggle="pill"], [data-toggle="list"]',
     DROPDOWN_TOGGLE: '.dropdown-toggle',
     DROPDOWN_ACTIVE_CHILD: '> .dropdown-menu .active'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Tab =
   /*#__PURE__*/
@@ -10252,7 +10514,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$a = 'toast';
-  var VERSION$a = '4.3.1';
+  var VERSION$a = '4.4.1';
   var DATA_KEY$a = 'bs.toast';
   var EVENT_KEY$a = "." + DATA_KEY$a;
   var JQUERY_NO_CONFLICT$a = $.fn[NAME$a];
@@ -10281,13 +10543,12 @@ __webpack_require__.r(__webpack_exports__);
   };
   var Selector$a = {
     DATA_DISMISS: '[data-dismiss="toast"]'
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
   };
+  /**
+   * ------------------------------------------------------------------------
+   * Class Definition
+   * ------------------------------------------------------------------------
+   */
 
   var Toast =
   /*#__PURE__*/
@@ -10307,7 +10568,12 @@ __webpack_require__.r(__webpack_exports__);
     _proto.show = function show() {
       var _this = this;
 
-      $(this._element).trigger(Event$a.SHOW);
+      var showEvent = $.Event(Event$a.SHOW);
+      $(this._element).trigger(showEvent);
+
+      if (showEvent.isDefaultPrevented()) {
+        return;
+      }
 
       if (this._config.animation) {
         this._element.classList.add(ClassName$a.FADE);
@@ -10321,11 +10587,15 @@ __webpack_require__.r(__webpack_exports__);
         $(_this._element).trigger(Event$a.SHOWN);
 
         if (_this._config.autohide) {
-          _this.hide();
+          _this._timeout = setTimeout(function () {
+            _this.hide();
+          }, _this._config.delay);
         }
       };
 
       this._element.classList.remove(ClassName$a.HIDE);
+
+      Util.reflow(this._element);
 
       this._element.classList.add(ClassName$a.SHOWING);
 
@@ -10337,22 +10607,19 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
 
-    _proto.hide = function hide(withoutTimeout) {
-      var _this2 = this;
-
+    _proto.hide = function hide() {
       if (!this._element.classList.contains(ClassName$a.SHOW)) {
         return;
       }
 
-      $(this._element).trigger(Event$a.HIDE);
+      var hideEvent = $.Event(Event$a.HIDE);
+      $(this._element).trigger(hideEvent);
 
-      if (withoutTimeout) {
-        this._close();
-      } else {
-        this._timeout = setTimeout(function () {
-          _this2._close();
-        }, this._config.delay);
+      if (hideEvent.isDefaultPrevented()) {
+        return;
       }
+
+      this._close();
     };
 
     _proto.dispose = function dispose() {
@@ -10371,26 +10638,26 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
-      config = _objectSpread({}, Default$7, $(this._element).data(), typeof config === 'object' && config ? config : {});
+      config = _objectSpread2({}, Default$7, {}, $(this._element).data(), {}, typeof config === 'object' && config ? config : {});
       Util.typeCheckConfig(NAME$a, config, this.constructor.DefaultType);
       return config;
     };
 
     _proto._setListeners = function _setListeners() {
-      var _this3 = this;
+      var _this2 = this;
 
       $(this._element).on(Event$a.CLICK_DISMISS, Selector$a.DATA_DISMISS, function () {
-        return _this3.hide(true);
+        return _this2.hide();
       });
     };
 
     _proto._close = function _close() {
-      var _this4 = this;
+      var _this3 = this;
 
       var complete = function complete() {
-        _this4._element.classList.add(ClassName$a.HIDE);
+        _this3._element.classList.add(ClassName$a.HIDE);
 
-        $(_this4._element).trigger(Event$a.HIDDEN);
+        $(_this3._element).trigger(Event$a.HIDDEN);
       };
 
       this._element.classList.remove(ClassName$a.SHOW);
@@ -10460,31 +10727,6 @@ __webpack_require__.r(__webpack_exports__);
     return Toast._jQueryInterface;
   };
 
-  /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v4.3.1): index.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-   * --------------------------------------------------------------------------
-   */
-
-  (function () {
-    if (typeof $ === 'undefined') {
-      throw new TypeError('Bootstrap\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\'s JavaScript.');
-    }
-
-    var version = $.fn.jquery.split(' ')[0].split('.');
-    var minMajor = 1;
-    var ltMajor = 2;
-    var minMinor = 9;
-    var minPatch = 1;
-    var maxMajor = 4;
-
-    if (version[0] < ltMajor && version[1] < minMinor || version[0] === minMajor && version[1] === minMinor && version[2] < minPatch || version[0] >= maxMajor) {
-      throw new Error('Bootstrap\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0');
-    }
-  })();
-
-  exports.Util = Util;
   exports.Alert = Alert;
   exports.Button = Button;
   exports.Carousel = Carousel;
@@ -10496,10 +10738,11 @@ __webpack_require__.r(__webpack_exports__);
   exports.Tab = Tab;
   exports.Toast = Toast;
   exports.Tooltip = Tooltip;
+  exports.Util = Util;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
 //# sourceMappingURL=bootstrap.js.map
 
 
@@ -10574,7 +10817,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
 
 // exports
 
@@ -10663,28 +10906,6 @@ function toComment(sourceMap) {
 	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
 
 	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/is-buffer/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/is-buffer/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
 
@@ -21396,816 +21617,45 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "0d58":
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__("ce10");
-var enumBugKeys = __webpack_require__("e11e");
-
-module.exports = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
-};
-
-
-/***/ }),
-
-/***/ "11e9":
-/***/ (function(module, exports, __webpack_require__) {
-
-var pIE = __webpack_require__("52a7");
-var createDesc = __webpack_require__("4630");
-var toIObject = __webpack_require__("6821");
-var toPrimitive = __webpack_require__("6a99");
-var has = __webpack_require__("69a8");
-var IE8_DOM_DEFINE = __webpack_require__("c69a");
-var gOPD = Object.getOwnPropertyDescriptor;
-
-exports.f = __webpack_require__("9e1e") ? gOPD : function getOwnPropertyDescriptor(O, P) {
-  O = toIObject(O);
-  P = toPrimitive(P, true);
-  if (IE8_DOM_DEFINE) try {
-    return gOPD(O, P);
-  } catch (e) { /* empty */ }
-  if (has(O, P)) return createDesc(!pIE.f.call(O, P), O[P]);
-};
-
-
-/***/ }),
-
-/***/ "1495":
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__("86cc");
-var anObject = __webpack_require__("cb7c");
-var getKeys = __webpack_require__("0d58");
-
-module.exports = __webpack_require__("9e1e") ? Object.defineProperties : function defineProperties(O, Properties) {
-  anObject(O);
-  var keys = getKeys(Properties);
-  var length = keys.length;
-  var i = 0;
-  var P;
-  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
-  return O;
-};
-
-
-/***/ }),
-
-/***/ "230e":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("d3f4");
-var document = __webpack_require__("7726").document;
-// typeof document.createElement is 'object' in old IE
-var is = isObject(document) && isObject(document.createElement);
-module.exports = function (it) {
-  return is ? document.createElement(it) : {};
-};
-
-
-/***/ }),
-
-/***/ "2aba":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("7726");
-var hide = __webpack_require__("32e9");
-var has = __webpack_require__("69a8");
-var SRC = __webpack_require__("ca5a")('src');
-var $toString = __webpack_require__("fa5b");
-var TO_STRING = 'toString';
-var TPL = ('' + $toString).split(TO_STRING);
-
-__webpack_require__("8378").inspectSource = function (it) {
-  return $toString.call(it);
-};
-
-(module.exports = function (O, key, val, safe) {
-  var isFunction = typeof val == 'function';
-  if (isFunction) has(val, 'name') || hide(val, 'name', key);
-  if (O[key] === val) return;
-  if (isFunction) has(val, SRC) || hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
-  if (O === global) {
-    O[key] = val;
-  } else if (!safe) {
-    delete O[key];
-    hide(O, key, val);
-  } else if (O[key]) {
-    O[key] = val;
-  } else {
-    hide(O, key, val);
-  }
-// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-})(Function.prototype, TO_STRING, function toString() {
-  return typeof this == 'function' && this[SRC] || $toString.call(this);
-});
-
-
-/***/ }),
-
-/***/ "2aeb":
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__("cb7c");
-var dPs = __webpack_require__("1495");
-var enumBugKeys = __webpack_require__("e11e");
-var IE_PROTO = __webpack_require__("613b")('IE_PROTO');
-var Empty = function () { /* empty */ };
-var PROTOTYPE = 'prototype';
-
-// Create object with fake `null` prototype: use iframe Object with cleared prototype
-var createDict = function () {
-  // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__("230e")('iframe');
-  var i = enumBugKeys.length;
-  var lt = '<';
-  var gt = '>';
-  var iframeDocument;
-  iframe.style.display = 'none';
-  __webpack_require__("fab2").appendChild(iframe);
-  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
-  // createDict = iframe.contentWindow.Object;
-  // html.removeChild(iframe);
-  iframeDocument = iframe.contentWindow.document;
-  iframeDocument.open();
-  iframeDocument.write(lt + 'script' + gt + 'document.F=Object' + lt + '/script' + gt);
-  iframeDocument.close();
-  createDict = iframeDocument.F;
-  while (i--) delete createDict[PROTOTYPE][enumBugKeys[i]];
-  return createDict();
-};
-
-module.exports = Object.create || function create(O, Properties) {
-  var result;
-  if (O !== null) {
-    Empty[PROTOTYPE] = anObject(O);
-    result = new Empty();
-    Empty[PROTOTYPE] = null;
-    // add "__proto__" for Object.getPrototypeOf polyfill
-    result[IE_PROTO] = O;
-  } else result = createDict();
-  return Properties === undefined ? result : dPs(result, Properties);
-};
-
-
-/***/ }),
-
-/***/ "2d00":
+/***/ "f6fd":
 /***/ (function(module, exports) {
 
-module.exports = false;
-
-
-/***/ }),
-
-/***/ "2d95":
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function (it) {
-  return toString.call(it).slice(8, -1);
-};
-
-
-/***/ }),
-
-/***/ "32e9":
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__("86cc");
-var createDesc = __webpack_require__("4630");
-module.exports = __webpack_require__("9e1e") ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-
-/***/ "4588":
-/***/ (function(module, exports) {
-
-// 7.1.4 ToInteger
-var ceil = Math.ceil;
-var floor = Math.floor;
-module.exports = function (it) {
-  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-};
-
-
-/***/ }),
-
-/***/ "4630":
-/***/ (function(module, exports) {
-
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
-};
-
-
-/***/ }),
-
-/***/ "52a7":
-/***/ (function(module, exports) {
-
-exports.f = {}.propertyIsEnumerable;
-
-
-/***/ }),
-
-/***/ "5537":
-/***/ (function(module, exports, __webpack_require__) {
-
-var core = __webpack_require__("8378");
-var global = __webpack_require__("7726");
-var SHARED = '__core-js_shared__';
-var store = global[SHARED] || (global[SHARED] = {});
-
-(module.exports = function (key, value) {
-  return store[key] || (store[key] = value !== undefined ? value : {});
-})('versions', []).push({
-  version: core.version,
-  mode: __webpack_require__("2d00") ? 'pure' : 'global',
-  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
-});
-
-
-/***/ }),
-
-/***/ "5ca1":
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__("7726");
-var core = __webpack_require__("8378");
-var hide = __webpack_require__("32e9");
-var redefine = __webpack_require__("2aba");
-var ctx = __webpack_require__("9b43");
-var PROTOTYPE = 'prototype';
-
-var $export = function (type, name, source) {
-  var IS_FORCED = type & $export.F;
-  var IS_GLOBAL = type & $export.G;
-  var IS_STATIC = type & $export.S;
-  var IS_PROTO = type & $export.P;
-  var IS_BIND = type & $export.B;
-  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] || (global[name] = {}) : (global[name] || {})[PROTOTYPE];
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
-  var key, own, out, exp;
-  if (IS_GLOBAL) source = name;
-  for (key in source) {
-    // contains in native
-    own = !IS_FORCED && target && target[key] !== undefined;
-    // export native or passed
-    out = (own ? target : source)[key];
-    // bind timers to global for call from export context
-    exp = IS_BIND && own ? ctx(out, global) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    // extend global
-    if (target) redefine(target, key, out, type & $export.U);
-    // export
-    if (exports[key] != out) hide(exports, key, exp);
-    if (IS_PROTO && expProto[key] != out) expProto[key] = out;
-  }
-};
-global.core = core;
-// type bitmap
-$export.F = 1;   // forced
-$export.G = 2;   // global
-$export.S = 4;   // static
-$export.P = 8;   // proto
-$export.B = 16;  // bind
-$export.W = 32;  // wrap
-$export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
-module.exports = $export;
-
-
-/***/ }),
-
-/***/ "5dbc":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("d3f4");
-var setPrototypeOf = __webpack_require__("8b97").set;
-module.exports = function (that, target, C) {
-  var S = target.constructor;
-  var P;
-  if (S !== C && typeof S == 'function' && (P = S.prototype) !== C.prototype && isObject(P) && setPrototypeOf) {
-    setPrototypeOf(that, P);
-  } return that;
-};
-
-
-/***/ }),
-
-/***/ "613b":
-/***/ (function(module, exports, __webpack_require__) {
-
-var shared = __webpack_require__("5537")('keys');
-var uid = __webpack_require__("ca5a");
-module.exports = function (key) {
-  return shared[key] || (shared[key] = uid(key));
-};
-
-
-/***/ }),
-
-/***/ "626a":
-/***/ (function(module, exports, __webpack_require__) {
-
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__("2d95");
-// eslint-disable-next-line no-prototype-builtins
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
-
-
-/***/ }),
-
-/***/ "6821":
-/***/ (function(module, exports, __webpack_require__) {
-
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__("626a");
-var defined = __webpack_require__("be13");
-module.exports = function (it) {
-  return IObject(defined(it));
-};
-
-
-/***/ }),
-
-/***/ "69a8":
-/***/ (function(module, exports) {
-
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-
-/***/ }),
-
-/***/ "6a99":
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__("d3f4");
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function (it, S) {
-  if (!isObject(it)) return it;
-  var fn, val;
-  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-
-
-/***/ }),
-
-/***/ "7726":
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-
-/***/ }),
-
-/***/ "77f1":
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__("4588");
-var max = Math.max;
-var min = Math.min;
-module.exports = function (index, length) {
-  index = toInteger(index);
-  return index < 0 ? max(index + length, 0) : min(index, length);
-};
-
-
-/***/ }),
-
-/***/ "79e5":
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-
-/***/ }),
-
-/***/ "8378":
-/***/ (function(module, exports) {
-
-var core = module.exports = { version: '2.6.5' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
-
-
-/***/ }),
-
-/***/ "86cc":
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__("cb7c");
-var IE8_DOM_DEFINE = __webpack_require__("c69a");
-var toPrimitive = __webpack_require__("6a99");
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__("9e1e") ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-
-/***/ "8b97":
-/***/ (function(module, exports, __webpack_require__) {
-
-// Works with __proto__ only. Old v8 can't work with null proto objects.
-/* eslint-disable no-proto */
-var isObject = __webpack_require__("d3f4");
-var anObject = __webpack_require__("cb7c");
-var check = function (O, proto) {
-  anObject(O);
-  if (!isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
-};
-module.exports = {
-  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
-    function (test, buggy, set) {
-      try {
-        set = __webpack_require__("9b43")(Function.call, __webpack_require__("11e9").f(Object.prototype, '__proto__').set, 2);
-        set(test, []);
-        buggy = !(test instanceof Array);
-      } catch (e) { buggy = true; }
-      return function setPrototypeOf(O, proto) {
-        check(O, proto);
-        if (buggy) O.__proto__ = proto;
-        else set(O, proto);
-        return O;
-      };
-    }({}, false) : undefined),
-  check: check
-};
-
-
-/***/ }),
-
-/***/ "9093":
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-var $keys = __webpack_require__("ce10");
-var hiddenKeys = __webpack_require__("e11e").concat('length', 'prototype');
-
-exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return $keys(O, hiddenKeys);
-};
-
-
-/***/ }),
-
-/***/ "9b43":
-/***/ (function(module, exports, __webpack_require__) {
-
-// optional / simple context binding
-var aFunction = __webpack_require__("d8e8");
-module.exports = function (fn, that, length) {
-  aFunction(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-
-/***/ }),
-
-/***/ "9def":
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.15 ToLength
-var toInteger = __webpack_require__("4588");
-var min = Math.min;
-module.exports = function (it) {
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-
-/***/ }),
-
-/***/ "9e1e":
-/***/ (function(module, exports, __webpack_require__) {
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__("79e5")(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-
-/***/ "aa77":
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__("5ca1");
-var defined = __webpack_require__("be13");
-var fails = __webpack_require__("79e5");
-var spaces = __webpack_require__("fdef");
-var space = '[' + spaces + ']';
-var non = '\u200b\u0085';
-var ltrim = RegExp('^' + space + space + '*');
-var rtrim = RegExp(space + space + '*$');
-
-var exporter = function (KEY, exec, ALIAS) {
-  var exp = {};
-  var FORCE = fails(function () {
-    return !!spaces[KEY]() || non[KEY]() != non;
-  });
-  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
-  if (ALIAS) exp[ALIAS] = fn;
-  $export($export.P + $export.F * FORCE, 'String', exp);
-};
-
-// 1 -> String#trimLeft
-// 2 -> String#trimRight
-// 3 -> String#trim
-var trim = exporter.trim = function (string, TYPE) {
-  string = String(defined(string));
-  if (TYPE & 1) string = string.replace(ltrim, '');
-  if (TYPE & 2) string = string.replace(rtrim, '');
-  return string;
-};
-
-module.exports = exporter;
-
-
-/***/ }),
-
-/***/ "be13":
-/***/ (function(module, exports) {
-
-// 7.2.1 RequireObjectCoercible(argument)
-module.exports = function (it) {
-  if (it == undefined) throw TypeError("Can't call method on  " + it);
-  return it;
-};
-
-
-/***/ }),
-
-/***/ "c366":
-/***/ (function(module, exports, __webpack_require__) {
-
-// false -> Array#indexOf
-// true  -> Array#includes
-var toIObject = __webpack_require__("6821");
-var toLength = __webpack_require__("9def");
-var toAbsoluteIndex = __webpack_require__("77f1");
-module.exports = function (IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value;
-    // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare
-    if (IS_INCLUDES && el != el) while (length > index) {
-      value = O[index++];
-      // eslint-disable-next-line no-self-compare
-      if (value != value) return true;
-    // Array#indexOf ignores holes, Array#includes - not
-    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
-      if (O[index] === el) return IS_INCLUDES || index || 0;
-    } return !IS_INCLUDES && -1;
-  };
-};
-
-
-/***/ }),
-
-/***/ "c5f6":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var global = __webpack_require__("7726");
-var has = __webpack_require__("69a8");
-var cof = __webpack_require__("2d95");
-var inheritIfRequired = __webpack_require__("5dbc");
-var toPrimitive = __webpack_require__("6a99");
-var fails = __webpack_require__("79e5");
-var gOPN = __webpack_require__("9093").f;
-var gOPD = __webpack_require__("11e9").f;
-var dP = __webpack_require__("86cc").f;
-var $trim = __webpack_require__("aa77").trim;
-var NUMBER = 'Number';
-var $Number = global[NUMBER];
-var Base = $Number;
-var proto = $Number.prototype;
-// Opera ~12 has broken Object#toString
-var BROKEN_COF = cof(__webpack_require__("2aeb")(proto)) == NUMBER;
-var TRIM = 'trim' in String.prototype;
-
-// 7.1.3 ToNumber(argument)
-var toNumber = function (argument) {
-  var it = toPrimitive(argument, false);
-  if (typeof it == 'string' && it.length > 2) {
-    it = TRIM ? it.trim() : $trim(it, 3);
-    var first = it.charCodeAt(0);
-    var third, radix, maxCode;
-    if (first === 43 || first === 45) {
-      third = it.charCodeAt(2);
-      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
-    } else if (first === 48) {
-      switch (it.charCodeAt(1)) {
-        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal /^0b[01]+$/i
-        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal /^0o[0-7]+$/i
-        default: return +it;
+// document.currentScript polyfill by Adam Miller
+
+// MIT license
+
+(function(document){
+  var currentScript = "currentScript",
+      scripts = document.getElementsByTagName('script'); // Live NodeList collection
+
+  // If browser needs currentScript polyfill, add get currentScript() to the document object
+  if (!(currentScript in document)) {
+    Object.defineProperty(document, currentScript, {
+      get: function(){
+
+        // IE 6-10 supports script readyState
+        // IE 10+ support stack trace
+        try { throw new Error(); }
+        catch (err) {
+
+          // Find the second match for the "at" string to get file src url from stack.
+          // Specifically works with the format of stack traces in IE.
+          var i, res = ((/.*at [^\(]*\((.*):.+:.+\)$/ig).exec(err.stack) || [false])[1];
+
+          // For all scripts on the page, if src matches or if ready state is interactive, return the script tag
+          for(i in scripts){
+            if(scripts[i].src == res || scripts[i].readyState == "interactive"){
+              return scripts[i];
+            }
+          }
+
+          // If no match, return null
+          return null;
+        }
       }
-      for (var digits = it.slice(2), i = 0, l = digits.length, code; i < l; i++) {
-        code = digits.charCodeAt(i);
-        // parseInt parses a string to a first unavailable symbol
-        // but ToNumber should return NaN if a string contains unavailable symbols
-        if (code < 48 || code > maxCode) return NaN;
-      } return parseInt(digits, radix);
-    }
-  } return +it;
-};
-
-if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
-  $Number = function Number(value) {
-    var it = arguments.length < 1 ? 0 : value;
-    var that = this;
-    return that instanceof $Number
-      // check on 1..constructor(foo) case
-      && (BROKEN_COF ? fails(function () { proto.valueOf.call(that); }) : cof(that) != NUMBER)
-        ? inheritIfRequired(new Base(toNumber(it)), that, $Number) : toNumber(it);
-  };
-  for (var keys = __webpack_require__("9e1e") ? gOPN(Base) : (
-    // ES3:
-    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
-    // ES6 (in case, if modules with ES6 Number statics required before):
-    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
-    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
-  ).split(','), j = 0, key; keys.length > j; j++) {
-    if (has(Base, key = keys[j]) && !has($Number, key)) {
-      dP($Number, key, gOPD(Base, key));
-    }
+    });
   }
-  $Number.prototype = proto;
-  proto.constructor = $Number;
-  __webpack_require__("2aba")(global, NUMBER, $Number);
-}
-
-
-/***/ }),
-
-/***/ "c69a":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = !__webpack_require__("9e1e") && !__webpack_require__("79e5")(function () {
-  return Object.defineProperty(__webpack_require__("230e")('div'), 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-
-/***/ "ca5a":
-/***/ (function(module, exports) {
-
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-
-/***/ }),
-
-/***/ "cb7c":
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__("d3f4");
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-
-/***/ }),
-
-/***/ "ce10":
-/***/ (function(module, exports, __webpack_require__) {
-
-var has = __webpack_require__("69a8");
-var toIObject = __webpack_require__("6821");
-var arrayIndexOf = __webpack_require__("c366")(false);
-var IE_PROTO = __webpack_require__("613b")('IE_PROTO');
-
-module.exports = function (object, names) {
-  var O = toIObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
-    ~arrayIndexOf(result, key) || result.push(key);
-  }
-  return result;
-};
-
-
-/***/ }),
-
-/***/ "d3f4":
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-
-/***/ }),
-
-/***/ "d8e8":
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
-  return it;
-};
-
-
-/***/ }),
-
-/***/ "e11e":
-/***/ (function(module, exports) {
-
-// IE 8- don't enum bug keys
-module.exports = (
-  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
-).split(',');
-
-
-/***/ }),
-
-/***/ "fa5b":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__("5537")('native-function-to-string', Function.toString);
-
-
-/***/ }),
-
-/***/ "fab2":
-/***/ (function(module, exports, __webpack_require__) {
-
-var document = __webpack_require__("7726").document;
-module.exports = document && document.documentElement;
+})(document);
 
 
 /***/ }),
@@ -22220,6 +21670,10 @@ __webpack_require__.r(__webpack_exports__);
 // This file is imported into lib/wc client bundles.
 
 if (typeof window !== 'undefined') {
+  if (true) {
+    __webpack_require__("f6fd")
+  }
+
   var i
   if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
     __webpack_require__.p = i[1] // eslint-disable-line
@@ -22229,7 +21683,7 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0fa2e68e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"604a59b1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('renderless-laravel-vue-pagination',{attrs:{"data":_vm.data,"limit":_vm.limit,"show-disabled":_vm.showDisabled,"size":_vm.size,"align":_vm.align},on:{"pagination-change-page":_vm.onPaginationChangePage},scopedSlots:_vm._u([{key:"default",fn:function(ref){
 var data = ref.data;
 var limit = ref.limit;
@@ -22251,11 +21705,7 @@ var staticRenderFns = []
 
 // CONCATENATED MODULE: ./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
-var es6_number_constructor = __webpack_require__("c5f6");
-
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/RenderlessLaravelVuePagination.vue?vue&type=script&lang=js&
-
 /* harmony default export */ var RenderlessLaravelVuePaginationvue_type_script_lang_js_ = ({
   props: {
     data: {
@@ -22540,7 +21990,6 @@ var component = normalizeComponent(
 
 /* harmony default export */ var RenderlessLaravelVuePagination = (component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=script&lang=js&
-
 //
 //
 //
@@ -22656,15 +22105,6 @@ var LaravelVuePagination_component = normalizeComponent(
 
 /* harmony default export */ var entry_lib = __webpack_exports__["default"] = (LaravelVuePagination);
 
-
-
-/***/ }),
-
-/***/ "fdef":
-/***/ (function(module, exports) {
-
-module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
-  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
 
 
 /***/ })
@@ -39801,7 +39241,7 @@ module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u20
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.15.0
+ * @version 1.16.1
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -39823,16 +39263,17 @@ __webpack_require__.r(__webpack_exports__);
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined' && typeof navigator !== 'undefined';
 
-var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
-var timeoutDuration = 0;
-for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
-  if (isBrowser && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
-    timeoutDuration = 1;
-    break;
+var timeoutDuration = function () {
+  var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
+  for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
+    if (isBrowser && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
+      return 1;
+    }
   }
-}
+  return 0;
+}();
 
 function microtaskDebounce(fn) {
   var called = false;
@@ -39950,6 +39391,17 @@ function getScrollParent(element) {
   }
 
   return getScrollParent(getParentNode(element));
+}
+
+/**
+ * Returns the reference node of the reference object, or the reference object itself.
+ * @method
+ * @memberof Popper.Utils
+ * @param {Element|Object} reference - the reference element (the popper will be relative to this)
+ * @returns {Element} parent
+ */
+function getReferenceNode(reference) {
+  return reference && reference.referenceNode ? reference.referenceNode : reference;
 }
 
 var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
@@ -40135,7 +39587,7 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
+  return parseFloat(styles['border' + sideA + 'Width']) + parseFloat(styles['border' + sideB + 'Width']);
 }
 
 function getSize(axis, body, html, computedStyle) {
@@ -40260,8 +39712,8 @@ function getBoundingClientRect(element) {
 
   // subtract scrollbar size from sizes
   var sizes = element.nodeName === 'HTML' ? getWindowSizes(element.ownerDocument) : {};
-  var width = sizes.width || element.clientWidth || result.right - result.left;
-  var height = sizes.height || element.clientHeight || result.bottom - result.top;
+  var width = sizes.width || element.clientWidth || result.width;
+  var height = sizes.height || element.clientHeight || result.height;
 
   var horizScrollbar = element.offsetWidth - width;
   var vertScrollbar = element.offsetHeight - height;
@@ -40290,8 +39742,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
-  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
+  var borderTopWidth = parseFloat(styles.borderTopWidth);
+  var borderLeftWidth = parseFloat(styles.borderLeftWidth);
 
   // In cases where the parent is fixed, we must ignore negative scroll in offset calc
   if (fixedPosition && isHTML) {
@@ -40312,8 +39764,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = parseFloat(styles.marginTop, 10);
-    var marginLeft = parseFloat(styles.marginLeft, 10);
+    var marginTop = parseFloat(styles.marginTop);
+    var marginLeft = parseFloat(styles.marginLeft);
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -40413,7 +39865,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
   // NOTE: 1 DOM access here
 
   var boundaries = { top: 0, left: 0 };
-  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, getReferenceNode(reference));
 
   // Handle viewport case
   if (boundariesElement === 'viewport') {
@@ -40541,7 +39993,7 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
 function getReferenceOffsets(state, popper, reference) {
   var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
-  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, getReferenceNode(reference));
   return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
 }
 
@@ -40803,7 +40255,7 @@ function destroy() {
 
   this.disableEventListeners();
 
-  // remove the popper if user explicity asked for the deletion on destroy
+  // remove the popper if user explicitly asked for the deletion on destroy
   // do not use `remove` because IE11 doesn't support it
   if (this.options.removeOnDestroy) {
     this.popper.parentNode.removeChild(this.popper);
@@ -41252,8 +40704,8 @@ function arrow(data, options) {
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
   var css = getStyleComputedProperty(data.instance.popper);
-  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
-  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
+  var popperMarginSide = parseFloat(css['margin' + sideCapitalized]);
+  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width']);
   var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
@@ -43378,7 +42830,7 @@ module.exports = function (css) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-* sweetalert2 v8.17.4
+* sweetalert2 v8.19.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -43682,7 +43134,7 @@ var prefix = function prefix(items) {
 
   return result;
 };
-var swalClasses = prefix(['container', 'shown', 'height-auto', 'iosfix', 'popup', 'modal', 'no-backdrop', 'toast', 'toast-shown', 'toast-column', 'fade', 'show', 'hide', 'noanimation', 'close', 'title', 'header', 'content', 'actions', 'confirm', 'cancel', 'footer', 'icon', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'label', 'textarea', 'inputerror', 'validation-message', 'progress-steps', 'active-progress-step', 'progress-step', 'progress-step-line', 'loading', 'styled', 'top', 'top-start', 'top-end', 'top-left', 'top-right', 'center', 'center-start', 'center-end', 'center-left', 'center-right', 'bottom', 'bottom-start', 'bottom-end', 'bottom-left', 'bottom-right', 'grow-row', 'grow-column', 'grow-fullscreen', 'rtl']);
+var swalClasses = prefix(['container', 'shown', 'height-auto', 'iosfix', 'popup', 'modal', 'no-backdrop', 'toast', 'toast-shown', 'toast-column', 'show', 'hide', 'noanimation', 'close', 'title', 'header', 'content', 'actions', 'confirm', 'cancel', 'footer', 'icon', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'label', 'textarea', 'inputerror', 'validation-message', 'progress-steps', 'active-progress-step', 'progress-step', 'progress-step-line', 'loading', 'styled', 'top', 'top-start', 'top-end', 'top-left', 'top-right', 'center', 'center-start', 'center-end', 'center-left', 'center-right', 'bottom', 'bottom-start', 'bottom-end', 'bottom-left', 'bottom-right', 'grow-row', 'grow-column', 'grow-fullscreen', 'rtl']);
 var iconTypes = prefix(['success', 'warning', 'info', 'question', 'error']);
 
 var states = {
@@ -43691,15 +43143,23 @@ var states = {
 var hasClass = function hasClass(elem, className) {
   return elem.classList.contains(className);
 };
-var applyCustomClass = function applyCustomClass(elem, customClass, className) {
-  // Clean up previous custom classes
+
+var removeCustomClasses = function removeCustomClasses(elem) {
   toArray(elem.classList).forEach(function (className) {
     if (!(objectValues(swalClasses).indexOf(className) !== -1) && !(objectValues(iconTypes).indexOf(className) !== -1)) {
       elem.classList.remove(className);
     }
   });
+};
+
+var applyCustomClass = function applyCustomClass(elem, customClass, className) {
+  removeCustomClasses(elem);
 
   if (customClass && customClass[className]) {
+    if (typeof customClass[className] !== 'string' && !customClass[className].forEach) {
+      return warn("Invalid type of customClass.".concat(className, "! Expected string or iterable object, got \"").concat(_typeof(customClass[className]), "\""));
+    }
+
     addClass(elem, customClass[className]);
   }
 };
@@ -44198,15 +43658,20 @@ var renderInput = function renderInput(instance, params) {
 
     setAttributes(inputType, params.inputAttributes); // set class
 
-    setClass(inputContainer, inputClass, params);
+    inputContainer.className = inputClass;
 
     if (rerender) {
       hide(inputContainer);
     }
   });
 
-  if (params.input && rerender) {
-    showInput(params);
+  if (params.input) {
+    if (rerender) {
+      showInput(params);
+    } // set custom class
+
+
+    setCustomClass(params);
   }
 };
 
@@ -44215,7 +43680,8 @@ var showInput = function showInput(params) {
     return error("Unexpected type of input! Expected \"text\", \"email\", \"password\", \"number\", \"tel\", \"select\", \"radio\", \"checkbox\", \"textarea\", \"file\" or \"url\", got \"".concat(params.input, "\""));
   }
 
-  var input = renderInputType[params.input](params);
+  var inputContainer = getInputContainer(params.input);
+  var input = renderInputType[params.input](inputContainer, params);
   show(input); // input autofocus
 
   setTimeout(function () {
@@ -44253,8 +43719,8 @@ var setAttributes = function setAttributes(inputType, inputAttributes) {
   }
 };
 
-var setClass = function setClass(inputContainer, inputClass, params) {
-  inputContainer.className = inputClass;
+var setCustomClass = function setCustomClass(params) {
+  var inputContainer = getInputContainer(params.input);
 
   if (params.inputClass) {
     addClass(inputContainer, params.inputClass);
@@ -44271,11 +43737,14 @@ var setInputPlaceholder = function setInputPlaceholder(input, params) {
   }
 };
 
+var getInputContainer = function getInputContainer(inputType) {
+  var inputClass = swalClasses[inputType] ? swalClasses[inputType] : swalClasses.input;
+  return getChildByClass(getContent(), inputClass);
+};
+
 var renderInputType = {};
 
-renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = function (params) {
-  var input = getChildByClass(getContent(), swalClasses.input);
-
+renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = function (input, params) {
   if (typeof params.inputValue === 'string' || typeof params.inputValue === 'number') {
     input.value = params.inputValue;
   } else if (!isPromise(params.inputValue)) {
@@ -44287,15 +43756,12 @@ renderInputType.text = renderInputType.email = renderInputType.password = render
   return input;
 };
 
-renderInputType.file = function (params) {
-  var input = getChildByClass(getContent(), swalClasses.file);
+renderInputType.file = function (input, params) {
   setInputPlaceholder(input, params);
-  input.type = params.input;
   return input;
 };
 
-renderInputType.range = function (params) {
-  var range = getChildByClass(getContent(), swalClasses.range);
+renderInputType.range = function (range, params) {
   var rangeInput = range.querySelector('input');
   var rangeOutput = range.querySelector('output');
   rangeInput.value = params.inputValue;
@@ -44304,8 +43770,7 @@ renderInputType.range = function (params) {
   return range;
 };
 
-renderInputType.select = function (params) {
-  var select = getChildByClass(getContent(), swalClasses.select);
+renderInputType.select = function (select, params) {
   select.innerHTML = '';
 
   if (params.inputPlaceholder) {
@@ -44320,26 +43785,22 @@ renderInputType.select = function (params) {
   return select;
 };
 
-renderInputType.radio = function () {
-  var radio = getChildByClass(getContent(), swalClasses.radio);
+renderInputType.radio = function (radio) {
   radio.innerHTML = '';
   return radio;
 };
 
-renderInputType.checkbox = function (params) {
-  var checkbox = getChildByClass(getContent(), swalClasses.checkbox);
-  var checkboxInput = getInput(getContent(), 'checkbox');
-  checkboxInput.type = 'checkbox';
-  checkboxInput.value = 1;
-  checkboxInput.id = swalClasses.checkbox;
-  checkboxInput.checked = Boolean(params.inputValue);
-  var label = checkbox.querySelector('span');
+renderInputType.checkbox = function (checkboxContainer, params) {
+  var checkbox = getInput(getContent(), 'checkbox');
+  checkbox.value = 1;
+  checkbox.id = swalClasses.checkbox;
+  checkbox.checked = Boolean(params.inputValue);
+  var label = checkboxContainer.querySelector('span');
   label.innerHTML = params.inputPlaceholder;
-  return checkbox;
+  return checkboxContainer;
 };
 
-renderInputType.textarea = function (params) {
-  var textarea = getChildByClass(getContent(), swalClasses.textarea);
+renderInputType.textarea = function (textarea, params) {
   textarea.value = params.inputValue;
   setInputPlaceholder(textarea, params);
 
@@ -45086,7 +44547,7 @@ var undoScrollbar = function undoScrollbar() {
 /* istanbul ignore next */
 
 var iOSfix = function iOSfix() {
-  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream || navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
 
   if (iOS && !hasClass(document.body, swalClasses.iosfix)) {
     var offset = document.body.scrollTop;
@@ -45613,7 +45074,6 @@ var fixScrollContainer = function fixScrollContainer(container, scrollbarPadding
 var addClasses = function addClasses(container, popup, params) {
   if (params.animation) {
     addClass(popup, swalClasses.show);
-    addClass(container, swalClasses.fade);
   }
 
   show(popup);
@@ -45630,6 +45090,39 @@ var handleInputOptionsAndValue = function handleInputOptionsAndValue(instance, p
   } else if (['text', 'email', 'number', 'tel', 'textarea'].indexOf(params.input) !== -1 && isPromise(params.inputValue)) {
     handleInputValue(instance, params);
   }
+};
+var getInputValue = function getInputValue(instance, innerParams) {
+  var input = instance.getInput();
+
+  if (!input) {
+    return null;
+  }
+
+  switch (innerParams.input) {
+    case 'checkbox':
+      return getCheckboxValue(input);
+
+    case 'radio':
+      return getRadioValue(input);
+
+    case 'file':
+      return getFileValue(input);
+
+    default:
+      return innerParams.inputAutoTrim ? input.value.trim() : input.value;
+  }
+};
+
+var getCheckboxValue = function getCheckboxValue(input) {
+  return input.checked ? 1 : 0;
+};
+
+var getRadioValue = function getRadioValue(input) {
+  return input.checked ? input.value : null;
+};
+
+var getFileValue = function getFileValue(input) {
+  return input.files.length ? input.getAttribute('multiple') !== null ? input.files : input.files[0] : null;
 };
 
 var handleInputOptions = function handleInputOptions(instance, params) {
@@ -45715,12 +45208,11 @@ var populateInputOptions = {
       radios[0].focus();
     }
   }
-  /**
-   * Converts `inputOptions` into an array of `[value, label]`s
-   * @param inputOptions
-   */
-
 };
+/**
+ * Converts `inputOptions` into an array of `[value, label]`s
+ * @param inputOptions
+ */
 
 var formatInputOptions = function formatInputOptions(inputOptions) {
   var result = [];
@@ -45806,40 +45298,6 @@ var confirm = function confirm(instance, innerParams, value) {
   }
 };
 
-var getInputValue = function getInputValue(instance, innerParams) {
-  var input = instance.getInput();
-
-  if (!input) {
-    return null;
-  }
-
-  switch (innerParams.input) {
-    case 'checkbox':
-      return getCheckboxValue(input);
-
-    case 'radio':
-      return getRadioValue(input);
-
-    case 'file':
-      return getFileValue(input);
-
-    default:
-      return innerParams.inputAutoTrim ? input.value.trim() : input.value;
-  }
-};
-
-var getCheckboxValue = function getCheckboxValue(input) {
-  return input.checked ? 1 : 0;
-};
-
-var getRadioValue = function getRadioValue(input) {
-  return input.checked ? input.value : null;
-};
-
-var getFileValue = function getFileValue(input) {
-  return input.files.length ? input.files[0] : null;
-};
-
 var addKeydownHandler = function addKeydownHandler(instance, globalState, innerParams, dismissWith) {
   if (globalState.keydownTarget && globalState.keydownHandlerAdded) {
     globalState.keydownTarget.removeEventListener('keydown', globalState.keydownHandler, {
@@ -45863,7 +45321,7 @@ var addKeydownHandler = function addKeydownHandler(instance, globalState, innerP
 }; // Focus handling
 
 var setFocus = function setFocus(innerParams, index, increment) {
-  var focusableElements = getFocusableElements(innerParams.focusCancel); // search for visible elements and select the next possible match
+  var focusableElements = getFocusableElements(); // search for visible elements and select the next possible match
 
   for (var i = 0; i < focusableElements.length; i++) {
     index = index + increment; // rollover to first item
@@ -45920,7 +45378,7 @@ var handleEnter = function handleEnter(instance, e, innerParams) {
 
 var handleTab = function handleTab(e, innerParams) {
   var targetElement = e.target;
-  var focusableElements = getFocusableElements(innerParams.focusCancel);
+  var focusableElements = getFocusableElements();
   var btnIndex = -1;
 
   for (var i = 0; i < focusableElements.length; i++) {
@@ -46153,6 +45611,12 @@ var blurActiveElement = function blurActiveElement() {
  */
 
 function update(params) {
+  var popup = getPopup();
+
+  if (!popup || hasClass(popup, swalClasses.hide)) {
+    return warn("You're trying to update the closed or closing popup, that won't work. Use the update() method in preConfirm parameter or show a new popup.");
+  }
+
   var validUpdatableParams = {}; // assign valid params from `params` to `defaults`
 
   Object.keys(params).forEach(function (param) {
@@ -46269,7 +45733,7 @@ Object.keys(instanceMethods).forEach(function (key) {
   };
 });
 SweetAlert.DismissReason = DismissReason;
-SweetAlert.version = '8.17.4';
+SweetAlert.version = '8.19.0';
 
 var Swal = SweetAlert;
 Swal["default"] = Swal;
@@ -46279,7 +45743,7 @@ return Swal;
 })));
 if (typeof this !== 'undefined' && this.Sweetalert2){  this.swal = this.sweetAlert = this.Swal = this.SweetAlert = this.Sweetalert2}
 
-"undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,"@charset \"UTF-8\";.swal2-popup.swal2-toast{flex-direction:row;align-items:center;width:auto;padding:.625em;overflow-y:hidden;box-shadow:0 0 .625em #d9d9d9}.swal2-popup.swal2-toast .swal2-header{flex-direction:row}.swal2-popup.swal2-toast .swal2-title{flex-grow:1;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:static;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon::before{display:flex;align-items:center;font-size:2em;font-weight:700}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-popup.swal2-toast .swal2-icon::before{font-size:.25em}}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{flex-basis:auto!important;width:auto;height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.8em;left:-.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:swal2-toast-show .5s;animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:swal2-toast-hide .1s forwards;animation:swal2-toast-hide .1s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-toast-animate-success-line-tip .75s;animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-toast-animate-success-line-long .75s;animation:swal2-toast-animate-success-line-long .75s}.swal2-container{display:flex;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;flex-direction:row;align-items:center;justify-content:center;padding:.625em;overflow-x:hidden;background-color:transparent;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{align-items:flex-start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{align-items:flex-start;justify-content:flex-end}.swal2-container.swal2-center{align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{align-items:center;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{align-items:center;justify-content:flex-end}.swal2-container.swal2-bottom{align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{align-items:flex-end;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{align-items:flex-end;justify-content:flex-end}.swal2-container.swal2-bottom-end>:first-child,.swal2-container.swal2-bottom-left>:first-child,.swal2-container.swal2-bottom-right>:first-child,.swal2-container.swal2-bottom-start>:first-child,.swal2-container.swal2-bottom>:first-child{margin-top:auto}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:flex!important;flex:1;align-self:stretch;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container.swal2-grow-column{flex:1;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-fade{transition:background-color .1s}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;box-sizing:border-box;flex-direction:column;justify-content:center;width:32em;max-width:100%;padding:1.25em;border:none;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-header{display:flex;flex-direction:column;align-items:center}.swal2-title{position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{display:flex;z-index:1;flex-wrap:wrap;align-items:center;justify-content:center;width:100%;margin:1.25em auto 0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-actions.swal2-loading .swal2-styled.swal2-confirm{box-sizing:border-box;width:2.5em;height:2.5em;margin:.46875em;padding:0;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{content:\"\";display:inline-block;width:15px;height:15px;margin-left:5px;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff}.swal2-styled{margin:.3125em;padding:.625em 2em;box-shadow:none;font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-image{max-width:100%;margin:1.25em auto}.swal2-close{position:absolute;z-index:2;top:0;right:0;justify-content:center;width:1.2em;height:1.2em;padding:0;overflow:hidden;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer}.swal2-close:hover{transform:none;background:0 0;color:#f27474}.swal2-content{z-index:1;justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:400;line-height:normal;text-align:center;word-wrap:break-word}.swal2-checkbox,.swal2-file,.swal2-input,.swal2-radio,.swal2-select,.swal2-textarea{margin:1em auto}.swal2-file,.swal2-input,.swal2-textarea{box-sizing:border-box;width:100%;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;background:inherit;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);color:inherit;font-size:1.125em}.swal2-file.swal2-inputerror,.swal2-input.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-file:focus,.swal2-input:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-file::-webkit-input-placeholder,.swal2-input::-webkit-input-placeholder,.swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-file::-moz-placeholder,.swal2-input::-moz-placeholder,.swal2-textarea::-moz-placeholder{color:#ccc}.swal2-file:-ms-input-placeholder,.swal2-input:-ms-input-placeholder,.swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-file::-ms-input-placeholder,.swal2-input::-ms-input-placeholder,.swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-file::placeholder,.swal2-input::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em auto;background:inherit}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-input[type=number]{max-width:10em}.swal2-file{background:inherit;font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:inherit;color:inherit;font-size:1.125em}.swal2-checkbox,.swal2-radio{align-items:center;justify-content:center;background:inherit;color:inherit}.swal2-checkbox label,.swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-checkbox input,.swal2-radio input{margin:0 .4em}.swal2-validation-message{display:none;align-items:center;justify-content:center;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:\"!\";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;zoom:normal;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}.swal2-icon{position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;zoom:normal;border:.25em solid transparent;border-radius:50%;font-family:inherit;line-height:5em;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-icon::before{display:flex;align-items:center;height:92%;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning::before{content:\"!\"}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info::before{content:\"i\"}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question::before{content:\"?\"}.swal2-icon.swal2-question.swal2-arabic-question-mark::before{content:\"؟\"}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-.25em;left:-.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}.swal2-progress-steps{align-items:center;margin:0 0 1.25em;padding:0;background:inherit;font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#3085d6}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;width:2.5em;height:.4em;margin:0 -1px;background:#3085d6}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}@-webkit-keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@-webkit-keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@-webkit-keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@-webkit-keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;max-width:calc(100% - .625em * 2);background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static!important}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{flex-direction:column;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}");
+"undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,"@charset \"UTF-8\";.swal2-popup.swal2-toast{flex-direction:row;align-items:center;width:auto;padding:.625em;overflow-y:hidden;box-shadow:0 0 .625em #d9d9d9}.swal2-popup.swal2-toast .swal2-header{flex-direction:row}.swal2-popup.swal2-toast .swal2-title{flex-grow:1;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:static;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon::before{display:flex;align-items:center;font-size:2em;font-weight:700}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-popup.swal2-toast .swal2-icon::before{font-size:.25em}}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{flex-basis:auto!important;width:auto;height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.8em;left:-.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:swal2-toast-show .5s;animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:swal2-toast-hide .1s forwards;animation:swal2-toast-hide .1s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-toast-animate-success-line-tip .75s;animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-toast-animate-success-line-long .75s;animation:swal2-toast-animate-success-line-long .75s}.swal2-container{display:flex;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;flex-direction:row;align-items:center;justify-content:center;padding:.625em;overflow-x:hidden;transition:background-color .1s;background-color:transparent;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{align-items:flex-start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{align-items:flex-start;justify-content:flex-end}.swal2-container.swal2-center{align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{align-items:center;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{align-items:center;justify-content:flex-end}.swal2-container.swal2-bottom{align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{align-items:flex-end;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{align-items:flex-end;justify-content:flex-end}.swal2-container.swal2-bottom-end>:first-child,.swal2-container.swal2-bottom-left>:first-child,.swal2-container.swal2-bottom-right>:first-child,.swal2-container.swal2-bottom-start>:first-child,.swal2-container.swal2-bottom>:first-child{margin-top:auto}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:flex!important;flex:1;align-self:stretch;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container.swal2-grow-column{flex:1;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;box-sizing:border-box;flex-direction:column;justify-content:center;width:32em;max-width:100%;padding:1.25em;border:none;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-header{display:flex;flex-direction:column;align-items:center}.swal2-title{position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{display:flex;z-index:1;flex-wrap:wrap;align-items:center;justify-content:center;width:100%;margin:1.25em auto 0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-actions.swal2-loading .swal2-styled.swal2-confirm{box-sizing:border-box;width:2.5em;height:2.5em;margin:.46875em;padding:0;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{content:\"\";display:inline-block;width:15px;height:15px;margin-left:5px;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff}.swal2-styled{margin:.3125em;padding:.625em 2em;box-shadow:none;font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-image{max-width:100%;margin:1.25em auto}.swal2-close{position:absolute;z-index:2;top:0;right:0;justify-content:center;width:1.2em;height:1.2em;padding:0;overflow:hidden;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer}.swal2-close:hover{transform:none;background:0 0;color:#f27474}.swal2-content{z-index:1;justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:400;line-height:normal;text-align:center;word-wrap:break-word}.swal2-checkbox,.swal2-file,.swal2-input,.swal2-radio,.swal2-select,.swal2-textarea{margin:1em auto}.swal2-file,.swal2-input,.swal2-textarea{box-sizing:border-box;width:100%;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;background:inherit;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);color:inherit;font-size:1.125em}.swal2-file.swal2-inputerror,.swal2-input.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-file:focus,.swal2-input:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-file::-webkit-input-placeholder,.swal2-input::-webkit-input-placeholder,.swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-file::-moz-placeholder,.swal2-input::-moz-placeholder,.swal2-textarea::-moz-placeholder{color:#ccc}.swal2-file:-ms-input-placeholder,.swal2-input:-ms-input-placeholder,.swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-file::-ms-input-placeholder,.swal2-input::-ms-input-placeholder,.swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-file::placeholder,.swal2-input::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em auto;background:inherit}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-input[type=number]{max-width:10em}.swal2-file{background:inherit;font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:inherit;color:inherit;font-size:1.125em}.swal2-checkbox,.swal2-radio{align-items:center;justify-content:center;background:inherit;color:inherit}.swal2-checkbox label,.swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-checkbox input,.swal2-radio input{margin:0 .4em}.swal2-validation-message{display:none;align-items:center;justify-content:center;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:\"!\";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}.swal2-icon{position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;border:.25em solid transparent;border-radius:50%;font-family:inherit;line-height:5em;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-icon::before{display:flex;align-items:center;height:92%;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning::before{content:\"!\"}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info::before{content:\"i\"}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question::before{content:\"?\"}.swal2-icon.swal2-question.swal2-arabic-question-mark::before{content:\"؟\"}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-.25em;left:-.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}.swal2-progress-steps{align-items:center;margin:0 0 1.25em;padding:0;background:inherit;font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#3085d6}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;width:2.5em;height:.4em;margin:0 -1px;background:#3085d6}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}@-webkit-keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@-webkit-keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@-webkit-keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@-webkit-keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;max-width:calc(100% - .625em * 2);background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static!important}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{flex-direction:column;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}");
 
 /***/ }),
 
@@ -49078,7 +48542,7 @@ var render = function() {
                           },
                           [
                             _c("i", { staticClass: "fas fa-swatchbook" }, [
-                              _vm._v(" Niveles de estructura")
+                              _vm._v("Niveles de estructura")
                             ])
                           ]
                         )
@@ -49172,6 +48636,7 @@ var render = function() {
                                 "add-item": _vm.addChild,
                                 "clicked-node": _vm.nodoSeleccionado,
                                 "assign-goal": _vm.asignarObjetivoANodo,
+                                "create-macroprocess": _vm.CreateMacroprocess,
                                 "assign-inhetited-goal":
                                   _vm.asignarObjetivoHeredado
                               }
@@ -49324,6 +48789,211 @@ var render = function() {
       {
         staticClass: "modal fade",
         attrs: {
+          id: "MacroprocessManager",
+          tabindex: "-2",
+          role: "dialog",
+          aria: "",
+          labelledby: "MacroprocessManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Nombre")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newName,
+                                expression: "newName"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newName },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newName = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Código")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newCode,
+                                expression: "newCode"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newCode },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newCode = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(5),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.currentNode.goals, function(goal) {
+                                return _c("tr", { key: goal.pos }, [
+                                  _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.Macroprocessgoals,
+                                          expression: "Macroprocessgoals"
+                                        }
+                                      ],
+                                      attrs: {
+                                        type: "checkbox",
+                                        name: goal.pos
+                                      },
+                                      domProps: {
+                                        value: goal.pos,
+                                        checked: Array.isArray(
+                                          _vm.Macroprocessgoals
+                                        )
+                                          ? _vm._i(
+                                              _vm.Macroprocessgoals,
+                                              goal.pos
+                                            ) > -1
+                                          : _vm.Macroprocessgoals
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.Macroprocessgoals,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = goal.pos,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.Macroprocessgoals = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.Macroprocessgoals = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.Macroprocessgoals = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" " + _vm._s(goal.name))
+                                  ])
+                                ])
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer" }, [
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _vm.updateNodeControl == 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.addMacroprocess()
+                                  }
+                                }
+                              },
+                              [_vm._v("Añadir")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.updateNodeControl != 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateNode()
+                                  }
+                                }
+                              },
+                              [_vm._v("Actualizar")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.salir()
+                              }
+                            }
+                          },
+                          [_vm._v("Atrás")]
+                        )
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
           id: "GoalManager",
           tabindex: "-3",
           role: "dialog",
@@ -49340,7 +49010,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(4),
+              _vm._m(6),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "col-md-12" }, [
@@ -49479,7 +49149,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(5),
+              _vm._m(7),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -49487,19 +49157,72 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(6),
+                          _vm._m(8),
                           _vm._v(" "),
                           _c(
                             "tbody",
                             _vm._l(_vm.parentNode.goals, function(goal) {
                               return _c("tr", { key: goal.pos }, [
-                                _c("td", {
-                                  domProps: { textContent: _vm._s(goal.name) }
-                                }),
-                                _vm._v(" "),
-                                _c("td", {
-                                  domProps: { textContent: _vm._s(goal.pos) }
-                                })
+                                _c("td", [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.currentNode.inheritedGoals,
+                                        expression: "currentNode.inheritedGoals"
+                                      }
+                                    ],
+                                    attrs: { type: "checkbox", name: goal.pos },
+                                    domProps: {
+                                      value: goal.pos,
+                                      checked: Array.isArray(
+                                        _vm.currentNode.inheritedGoals
+                                      )
+                                        ? _vm._i(
+                                            _vm.currentNode.inheritedGoals,
+                                            goal.pos
+                                          ) > -1
+                                        : _vm.currentNode.inheritedGoals
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a =
+                                            _vm.currentNode.inheritedGoals,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = goal.pos,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.currentNode,
+                                                "inheritedGoals",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.currentNode,
+                                                "inheritedGoals",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(
+                                            _vm.currentNode,
+                                            "inheritedGoals",
+                                            $$c
+                                          )
+                                        }
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" " + _vm._s(goal.name))
+                                ])
                               ])
                             }),
                             0
@@ -49511,36 +49234,6 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "card-footer" }, [
                     _c("div", { staticClass: "container-buttons" }, [
-                      _vm.updateNodeControl == 0
-                        ? _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success",
-                              on: {
-                                click: function($event) {
-                                  return _vm.addGoal()
-                                }
-                              }
-                            },
-                            [_vm._v("Añadir")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.updateNodeControl != 0
-                        ? _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info",
-                              on: {
-                                click: function($event) {
-                                  return _vm.updateGoal()
-                                }
-                              }
-                            },
-                            [_vm._v("Actualizar")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -49551,7 +49244,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Atrás")]
+                        [_vm._v("Salir")]
                       )
                     ])
                   ])
@@ -49571,7 +49264,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
       _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Lista de proyectos")
+        _vm._v("Lista de proyectos")
       ])
     ])
   },
@@ -49581,11 +49274,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", {}, [
       _c("tr", [
-        _c("th", [_vm._v(" Nombre ")]),
+        _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Logo ")]),
+        _c("th", [_vm._v("Logo")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Niveles de estructura ")])
+        _c("th", [_vm._v("Niveles de estructura")])
       ])
     ])
   },
@@ -49625,6 +49318,35 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "LevelManager" } }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [_c("th", [_vm._v("Seleccione los objetivos asociados")])])
     ])
   },
   function() {
@@ -49677,11 +49399,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v(" Nombre ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" posición ")])
-      ])
+      _c("tr", [_c("th", [_vm._v(" Seleccione los objetivos ")])])
     ])
   }
 ]
@@ -52873,7 +52591,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
       _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Gestor de roles y permisos de usuario")
+        _vm._v("Gestor de roles y permisos de usuario")
       ]),
       _vm._v(" "),
       _c(
@@ -54146,6 +53864,18 @@ var render = function() {
                     }
                   },
                   [_c("i", { staticClass: "fas fa-columns" })]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("create-macroprocess", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-connectdevelop" })]
                 )
               ]
             )
@@ -54196,6 +53926,9 @@ var render = function() {
                     },
                     "assign-goal": function($event) {
                       return _vm.$emit("assign-goal", $event)
+                    },
+                    "create-macroprocess": function($event) {
+                      return _vm.$emit("create-macroprocess", $event)
                     },
                     "assign-inhetited-goal": function($event) {
                       return _vm.$emit("assign-inhetited-goal", $event)
@@ -60617,7 +60350,7 @@ if(false) {}
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.6.10
+ * Vue.js v2.6.11
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -62583,7 +62316,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Techinically it leverages the (macro) task queue,
+  // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -62672,7 +62405,7 @@ var initProxy;
     warn(
       "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals' +
+      'prevent conflicts with Vue internals. ' +
       'See: https://vuejs.org/v2/api/#data',
       target
     );
@@ -63532,7 +63265,7 @@ function bindDynamicKeys (baseObj, values) {
     if (typeof key === 'string' && key) {
       baseObj[values[i]] = values[i + 1];
     } else if (key !== '' && key !== null) {
-      // null is a speical value for explicitly removing a binding
+      // null is a special value for explicitly removing a binding
       warn(
         ("Invalid value for dynamic directive argument (expected string or null): " + key),
         this
@@ -64027,6 +63760,12 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
+      if (isDef(data) && isDef(data.nativeOn)) {
+        warn(
+          ("The .native modifier for v-on is only valid on components but it was used on <" + tag + ">."),
+          context
+        );
+      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -64152,7 +63891,7 @@ function renderMixin (Vue) {
     // render self
     var vnode;
     try {
-      // There's no need to maintain a stack becaues all render fns are called
+      // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -66051,7 +65790,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.10';
+Vue.version = '2.6.11';
 
 /*  */
 
@@ -66724,7 +66463,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
+  function removeVnodes (vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       var ch = vnodes[startIdx];
       if (isDef(ch)) {
@@ -66835,7 +66574,7 @@ function createPatchFunction (backend) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
-      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+      removeVnodes(oldCh, oldStartIdx, oldEndIdx);
     }
   }
 
@@ -66927,7 +66666,7 @@ function createPatchFunction (backend) {
         if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
-        removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+        removeVnodes(oldCh, 0, oldCh.length - 1);
       } else if (isDef(oldVnode.text)) {
         nodeOps.setTextContent(elm, '');
       }
@@ -67156,7 +66895,7 @@ function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
-          removeVnodes(parentElm, [oldVnode], 0, 0);
+          removeVnodes([oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -69862,7 +69601,7 @@ var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
 var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
-// #7298: escape - to avoid being pased as HTML comment when inlined in page
+// #7298: escape - to avoid being passed as HTML comment when inlined in page
 var comment = /^<!\--/;
 var conditionalComment = /^<!\[/;
 
@@ -70147,7 +69886,7 @@ function parseHTML (html, options) {
 /*  */
 
 var onRE = /^@|^v-on:/;
-var dirRE = /^v-|^@|^:/;
+var dirRE = /^v-|^@|^:|^#/;
 var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 var stripParensRE = /^\(|\)$/g;
@@ -70771,7 +70510,7 @@ function processSlotContent (el) {
           if (el.parent && !maybeComponent(el.parent)) {
             warn$2(
               "<template v-slot> can only appear at the root level inside " +
-              "the receiving the component",
+              "the receiving component",
               el
             );
           }
@@ -71334,7 +71073,7 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
+var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
 var fnInvokeRE = /\([^)]*?\);*$/;
 var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -72103,6 +71842,8 @@ function checkNode (node, warn) {
           var range = node.rawAttrsMap[name];
           if (name === 'v-for') {
             checkFor(node, ("v-for=\"" + value + "\""), warn, range);
+          } else if (name === 'v-slot' || name[0] === '#') {
+            checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
           } else if (onRE.test(name)) {
             checkEvent(value, (name + "=\"" + value + "\""), warn, range);
           } else {
@@ -72122,9 +71863,9 @@ function checkNode (node, warn) {
 }
 
 function checkEvent (exp, text, warn, range) {
-  var stipped = exp.replace(stripStringRE, '');
-  var keywordMatch = stipped.match(unaryOperatorsRE);
-  if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
+  var stripped = exp.replace(stripStringRE, '');
+  var keywordMatch = stripped.match(unaryOperatorsRE);
+  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
     warn(
       "avoid using JavaScript unary operator as property name: " +
       "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
@@ -72176,6 +71917,19 @@ function checkExpression (exp, text, warn, range) {
         range
       );
     }
+  }
+}
+
+function checkFunctionParameterExpression (exp, text, warn, range) {
+  try {
+    new Function(exp, '');
+  } catch (e) {
+    warn(
+      "invalid function parameter expression: " + (e.message) + " in\n\n" +
+      "    " + exp + "\n\n" +
+      "  Raw expression: " + (text.trim()) + "\n",
+      range
+    );
   }
 }
 
@@ -74028,8 +73782,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
