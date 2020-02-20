@@ -65,7 +65,6 @@ class UserController extends Controller
       }else{
           $user->givePermissionTo('simple_user');
       }
-
     }
     /**
      * Display the specified resource.
@@ -190,6 +189,27 @@ class UserController extends Controller
         }
       }
       $user->save();
+    }
+    /**
+     * Get unread user's notifications.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unreadNotifications()
+    {
+      $user = Auth::user();
+      return $user->unreadNotifications;
+    }
+
+    /**
+     * Get all user's notifications.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allNotifications()
+    {
+      $user = Auth::user();
+      return $user->notifications;
     }
 
     /**

@@ -5,6 +5,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class Notifier extends Notification
 {
@@ -30,7 +31,7 @@ class Notifier extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['mail','database','broadcast'];
     }
 
     /**
@@ -46,9 +47,6 @@ class Notifier extends Notification
                 ->line($this->details['body'])
                 ->action($this->details['actionText'], $this->details['actionURL'])
                 ->line($this->details['thanks']);
-              /*  ->line('The introduction to the notification.')
-                ->action('Notification Action', url('/'))
-                ->line('Thank you for using our application!');*/
     }
 
     /**
@@ -60,8 +58,24 @@ class Notifier extends Notification
     public function toDataBase($notifiable)
     {
         return [
-          'message'=> $this->details['msg']
+          'message'=> $this->details['msg'],
+          'body'=> $this->details['body'],
         ];
+    }
+
+    /**
+     * Get the broadcast representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage ([
+            'greeting'=> $this->details['greeting'],
+            'body'=> $this->details['body'],
+            'message'=> $this->details['msg'],
+        ]);
     }
 
     /**
@@ -73,7 +87,9 @@ class Notifier extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+          'greeting'=> $this->details['greeting'],
+          'body'=> $this->details['body'],
+          'message'=> $this->details['msg'],
         ];
     }
 }

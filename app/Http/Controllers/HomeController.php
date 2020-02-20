@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
-use Notification;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\Notifier;
 
 class HomeController extends Controller
@@ -43,7 +43,8 @@ class HomeController extends Controller
             'msg' => 'Hello tienes un nuevo mensaje que responder'
         ];
 
-        Notification::send($user, new Notifier($details));
+        //Notification::send($user, new Notifier($details)); //send several UserSystemComponent
+        $user->notify(new Notifier($details)); // notify an particulary user
 
         dd('done');
     }
