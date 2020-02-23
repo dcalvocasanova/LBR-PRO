@@ -27,13 +27,10 @@
                 <span aria-hidden="true">&times;</span>
               </div>
             </div>
-
-
-
           </div>
         </a>
       </div>
-      <a class="dropdown-item text-center small text-gray-500" href="#">Todas las notificaciones</a>
+      <a class="dropdown-item text-center small text-gray-500" href="/notificaciones">Todas las notificaciones</a>
     </div>
   </li>
 </template>
@@ -66,7 +63,12 @@
     },
     mounted() {
       this.getUserNotifications()
-      Echo.join('chat')
+      Echo.private('App.User.'+ this.user.id)
+        .notification((notification) => {
+          this.notification = notification
+            console.log(notification)
+      });
+  /*    Echo.join('chat')
       .here((user) => {
           console.log(user)
       })
@@ -75,7 +77,7 @@
       })
       .leaving((user) => {
           console.log(user)
-      });
+      });*/
     }
   }
 </script>

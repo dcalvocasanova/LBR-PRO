@@ -35,17 +35,15 @@ class HomeController extends Controller
         $user = Auth::user();
 
         $details = [
-            'greeting' => 'Hola Artisan',
+            'greeting' => 'Un saludo cordial',
+            'msg' => 'Aprobar objetivos',
             'body' => 'Tienes una notificación, pendiente para revisar ',
             'thanks' => 'Esperamos pronto recibir su visita',
-            'actionText' => 'Ver notificación',
-            'actionURL' => url('/notificacion/opa'),
-            'msg' => 'Hello tienes un nuevo mensaje que responder'
+            'actionText' => 'Ir al sitio web',
+            'actionURL' => url('/notificaciones'),
         ];
-
         //Notification::send($user, new Notifier($details)); //send several UserSystemComponent
         $user->notify(new Notifier($details)); // notify an particulary user
-
         dd('done');
     }
 }

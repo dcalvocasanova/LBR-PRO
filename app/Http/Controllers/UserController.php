@@ -208,7 +208,7 @@ class UserController extends Controller
      */
     public function allNotifications()
     {
-      $user = Auth::user();
+      $user = Auth::user();    
       return $user->notifications;
     }
 

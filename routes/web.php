@@ -117,6 +117,10 @@ Route::get('/ayuda', function () {
     return view('admin.ayuda');
 })->middleware('auth');
 
+Route::get('/notificaciones', function () {
+    return view('admin.usuariosNotificaciones');
+})->middleware('auth');
+
 Route::get('/perfil-usuario', function () {
     return view('user.profile');
 })->middleware('auth');
@@ -124,7 +128,7 @@ Route::get('/perfil-usuario', function () {
 Auth::routes();
 Auth::routes(['register' => false]);
 
-Route::get('send', 'HomeController@sendNotification');
+Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');

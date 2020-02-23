@@ -46,6 +46,7 @@ Vue.component('users', require('./components/UserComponent.vue').default);
 Vue.component('usersSystem', require('./components/UserSystemComponent.vue').default);
 Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('userNotificator', require('./components/UserNotificationsComponent.vue').default);
+Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
 

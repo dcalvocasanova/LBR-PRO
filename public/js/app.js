@@ -4417,6 +4417,97 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    user: Object
+  },
+  data: function data() {
+    return {
+      notifications: {},
+      notificationToRead: {},
+      showInboxNotification: false
+    };
+  },
+  methods: {
+    getUserNotifications: function getUserNotifications() {
+      var me = this;
+      axios.get('/usuario/notificaciones').then(function (response) {
+        me.notifications = response.data; //get current user
+      });
+    },
+    openNotification: function openNotification(notification) {
+      var me = this;
+      me.notificationToRead = notification;
+      me.showInboxNotification = true;
+    },
+    isUnread: function isUnread(notification) {
+      if (notification.read_at === null) {
+        return "unread";
+      }
+
+      return "readed";
+    }
+  },
+  created: function created() {},
+  mounted: function mounted() {
+    this.getUserNotifications();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationsComponent.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationsComponent.vue?vue&type=script&lang=js& ***!
@@ -4426,9 +4517,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
 //
 //
 //
@@ -4492,14 +4580,23 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   mounted: function mounted() {
+    var _this2 = this;
+
     this.getUserNotifications();
-    Echo.join('chat').here(function (user) {
-      console.log(user);
-    }).joining(function (user) {
-      console.log(user);
-    }).leaving(function (user) {
-      console.log(user);
+    Echo["private"]('App.User.' + this.user.id).notification(function (notification) {
+      _this2.notification = notification;
+      console.log(notification);
     });
+    /*    Echo.join('chat')
+        .here((user) => {
+            console.log(user)
+        })
+        .joining((user) => {
+            console.log(user)
+        })
+        .leaving((user) => {
+            console.log(user)
+        });*/
   }
 });
 
@@ -13259,6 +13356,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
 
 // exports
 
@@ -53430,6 +53546,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=style&index=0&id=38264846&scoped=true&lang=css&":
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/treeComponent/VTreeViewMainComponent.vue?vue&type=style&index=0&id=38264846&scoped=true&lang=css& ***!
@@ -62032,6 +62178,158 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col-12" }, [
+      _c("h3", { staticClass: "card-title mt-0" }, [
+        _vm._v("  Notificaciones (" + _vm._s(_vm.notifications.length) + ")")
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-lg-4 col-md-5" }, [
+      _c(
+        "div",
+        { staticClass: "ibox", attrs: { id: "inbox-notification-container" } },
+        [
+          _c("div", { staticClass: "inbox-notification clf" }, [
+            _c(
+              "table",
+              {
+                staticClass: "table table-hover table-inbox",
+                attrs: { id: "table-inbox" }
+              },
+              _vm._l(_vm.notifications, function(notification) {
+                return _c(
+                  "tbody",
+                  {
+                    key: notification.id,
+                    staticClass: "rowlinkx",
+                    attrs: { "data-link": "row" }
+                  },
+                  [
+                    _c(
+                      "tr",
+                      {
+                        class: _vm.isUnread(notification),
+                        on: {
+                          click: function($event) {
+                            return _vm.openNotification(notification)
+                          }
+                        }
+                      },
+                      [
+                        _c("td", { staticClass: "mail-message" }, [
+                          _vm._v(_vm._s(notification.data.message))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "hidden-xs" })
+                      ]
+                    )
+                  ]
+                )
+              }),
+              0
+            )
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _vm.showInboxNotification
+      ? _c("div", { staticClass: "col-lg-8 col-md-7" }, [
+          _c(
+            "div",
+            { staticClass: "ibox", attrs: { id: "mailbox-container" } },
+            [
+              _c(
+                "div",
+                {
+                  staticClass: "mailbox-header d-flex justify-content-between",
+                  staticStyle: { "border-bottom": "1px solid #e8e8e8" }
+                },
+                [
+                  _c("div", [
+                    _c("h5", { staticClass: "inbox-title" }, [
+                      _vm._v(_vm._s(_vm.notificationToRead.data.message))
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "p-r-10 font-13" }, [
+                      _vm._v(_vm._s(_vm.notificationToRead.created_at) + " ")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "mailbox-body" }, [
+                _c("p", [
+                  _vm._v(" " + _vm._s(_vm.notificationToRead.data.body) + "  ")
+                ])
+              ])
+            ]
+          )
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "m-t-5 font-13" }, [
+      _c("span", { staticClass: "font-strong" }, [_vm._v("Olivia Smith")]),
+      _vm._v(" "),
+      _c(
+        "a",
+        { staticClass: "text-muted m-l-5", attrs: { href: "javascript:;" } },
+        [_vm._v("olivia.smith@gmail.com")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "inbox-toolbar m-l-20" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-default btn-sm",
+          attrs: {
+            "data-action": "reply",
+            "data-toggle": "tooltip",
+            "data-original-title": "Reply"
+          }
+        },
+        [_c("i", { staticClass: "fa fa-reply" })]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationsComponent.vue?vue&type=template&id=dde73d6a&":
 /*!*****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificationsComponent.vue?vue&type=template&id=dde73d6a& ***!
@@ -62117,7 +62415,7 @@ var render = function() {
           "a",
           {
             staticClass: "dropdown-item text-center small text-gray-500",
-            attrs: { href: "#" }
+            attrs: { href: "/notificaciones" }
           },
           [_vm._v("Todas las notificaciones")]
         )
@@ -84393,6 +84691,7 @@ Vue.component('users', __webpack_require__(/*! ./components/UserComponent.vue */
 Vue.component('usersSystem', __webpack_require__(/*! ./components/UserSystemComponent.vue */ "./resources/js/components/UserSystemComponent.vue")["default"]);
 Vue.component('userAvatar', __webpack_require__(/*! ./components/UserProfilePhotoComponent.vue */ "./resources/js/components/UserProfilePhotoComponent.vue")["default"]);
 Vue.component('userNotificator', __webpack_require__(/*! ./components/UserNotificationsComponent.vue */ "./resources/js/components/UserNotificationsComponent.vue")["default"]);
+Vue.component('userInboxNotificator', __webpack_require__(/*! ./components/UserNotificationInboxComponent.vue */ "./resources/js/components/UserNotificationInboxComponent.vue")["default"]);
 Vue.component('profile', __webpack_require__(/*! ./components/ProfileComponent.vue */ "./resources/js/components/ProfileComponent.vue")["default"]);
 Vue.component('catalogs', __webpack_require__(/*! ./components/catalogs/CatalogsComponent.vue */ "./resources/js/components/catalogs/CatalogsComponent.vue")["default"]);
 Vue.component('MacroprocessCatalogs', __webpack_require__(/*! ./components/catalogs/MacroprocessComponent.vue */ "./resources/js/components/catalogs/MacroprocessComponent.vue")["default"]);
@@ -85127,6 +85426,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_template_id_7f050fd2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_template_id_7f050fd2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificationInboxComponent.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/UserNotificationInboxComponent.vue ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8& */ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8&");
+/* harmony import */ var _UserNotificationInboxComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserNotificationInboxComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _UserNotificationInboxComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UserNotificationInboxComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificationInboxComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8& ***!
+  \***************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificationInboxComponent.vue?vue&type=template&id=3e7315b8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationInboxComponent_vue_vue_type_template_id_3e7315b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
