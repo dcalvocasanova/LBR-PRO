@@ -24,8 +24,8 @@
             <div>
                 <h5 class="inbox-title">{{ notificationToRead.data.message}}</h5>
                 <div class="m-t-5 font-13">
-                    <span class="font-strong">Olivia Smith</span>
-                    <a class="text-muted m-l-5" href="javascript:;">olivia.smith@gmail.com</a>
+                    <span class="font-strong">{{ notificationToRead.data.sender.name}}</span>
+
                 </div>
                 <div class="p-r-10 font-13">{{notificationToRead.created_at}} </div>
             </div>

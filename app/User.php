@@ -14,6 +14,14 @@ class User extends Authenticatable
 
 	  protected $guarded = [];
 
+    /*
+    * COnfigure broadcast notification to user
+    */
+    public function receivesBroadcastNotificationsOn()
+    {
+       return 'users.'.$this->id;
+    }
+
     /**
      * The attributes that are mass assignable.
      *

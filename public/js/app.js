@@ -4602,6 +4602,114 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      users: {},
+      notify: [],
+      notification: new Form({
+        msg: "",
+        sender: "",
+        usersToNotify: [],
+        body: ""
+      })
+    };
+  },
+  methods: {
+    getUsers: function getUsers() {
+      var me = this;
+      axios.get('/usuarios').then(function (response) {
+        me.users = response.data; //get current user
+      });
+    },
+    sendNotification: function sendNotification() {
+      var me = this;
+
+      if (me.notify.length > 0) {
+        me.notification.usersToNotify = me.notify;
+        me.notification.post('/sender').then(function (response) {
+          toast.fire({
+            type: 'success',
+            title: 'Mensaje con éxito'
+          });
+          me.notification.reset();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+        me.notification.reset();
+        me.notify = [];
+      } else {
+        swal.fire('Error', 'Debe seleccionar un usuario a notificar', 'error');
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.getUsers();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserProfilePhotoComponent.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserProfilePhotoComponent.vue?vue&type=script&lang=js& ***!
@@ -62267,14 +62375,18 @@ var render = function() {
                       _vm._v(_vm._s(_vm.notificationToRead.data.message))
                     ]),
                     _vm._v(" "),
-                    _vm._m(0),
+                    _c("div", { staticClass: "m-t-5 font-13" }, [
+                      _c("span", { staticClass: "font-strong" }, [
+                        _vm._v(_vm._s(_vm.notificationToRead.data.sender.name))
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "p-r-10 font-13" }, [
                       _vm._v(_vm._s(_vm.notificationToRead.created_at) + " ")
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(1)
+                  _vm._m(0)
                 ]
               ),
               _vm._v(" "),
@@ -62290,20 +62402,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "m-t-5 font-13" }, [
-      _c("span", { staticClass: "font-strong" }, [_vm._v("Olivia Smith")]),
-      _vm._v(" "),
-      _c(
-        "a",
-        { staticClass: "text-muted m-l-5", attrs: { href: "javascript:;" } },
-        [_vm._v("olivia.smith@gmail.com")]
-      )
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -62441,6 +62539,234 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-1" }, [
       _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413& ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-lg-4 col-md-5" }, [
+      _c(
+        "div",
+        { staticClass: "ibox", attrs: { id: "inbox-notification-container" } },
+        [
+          _c("div", { staticClass: "inbox-notification clf" }, [
+            _c(
+              "table",
+              {
+                staticClass: "table table-hover table-inbox",
+                attrs: { id: "table-inbox" }
+              },
+              _vm._l(_vm.users.data, function(user) {
+                return _c(
+                  "tbody",
+                  {
+                    key: user.id,
+                    staticClass: "rowlinkx",
+                    attrs: { "data-link": "row" }
+                  },
+                  [
+                    _c("tr", { staticClass: "users-to-notify" }, [
+                      _c("td", [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.notify,
+                              expression: "notify"
+                            }
+                          ],
+                          attrs: { type: "checkbox", name: user.id },
+                          domProps: {
+                            value: user.id,
+                            checked: Array.isArray(_vm.notify)
+                              ? _vm._i(_vm.notify, user.id) > -1
+                              : _vm.notify
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$a = _vm.notify,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = user.id,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 && (_vm.notify = $$a.concat([$$v]))
+                                } else {
+                                  $$i > -1 &&
+                                    (_vm.notify = $$a
+                                      .slice(0, $$i)
+                                      .concat($$a.slice($$i + 1)))
+                                }
+                              } else {
+                                _vm.notify = $$c
+                              }
+                            }
+                          }
+                        }),
+                        _vm._v(" " + _vm._s(user.name))
+                      ])
+                    ])
+                  ]
+                )
+              }),
+              0
+            )
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-lg-8 col-md-7" }, [
+      _c("div", { staticClass: "card" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c("div", { staticClass: "card-body" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-7" }, [
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("label", { staticClass: "bmd-label-floating" }, [
+                    _vm._v("Titulo")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.notification.msg,
+                        expression: "notification.msg"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid": _vm.notification.errors.has("title")
+                    },
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.notification.msg },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.notification, "msg", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("has-error", {
+                    attrs: { form: _vm.notification, field: "title" }
+                  })
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-5" }, [
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("label", { staticClass: "bmd-label-floating" }, [
+                    _vm._v("Detalle")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.notification.body,
+                        expression: "notification.body"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: {
+                      "is-invalid": _vm.notification.errors.has("body")
+                    },
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.notification.body },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.notification, "body", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("has-error", {
+                    attrs: { form: _vm.notification, field: "body" }
+                  })
+                ],
+                1
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "container-buttons" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                on: {
+                  click: function($event) {
+                    return _vm.sendNotification()
+                  }
+                }
+              },
+              [_vm._v("Enviar")]
+            )
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("h3", { staticClass: "card-title mt-0" }, [
+        _vm._v(" Enviar notificación")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Notificar")])
     ])
   }
 ]
@@ -84692,6 +85018,7 @@ Vue.component('usersSystem', __webpack_require__(/*! ./components/UserSystemComp
 Vue.component('userAvatar', __webpack_require__(/*! ./components/UserProfilePhotoComponent.vue */ "./resources/js/components/UserProfilePhotoComponent.vue")["default"]);
 Vue.component('userNotificator', __webpack_require__(/*! ./components/UserNotificationsComponent.vue */ "./resources/js/components/UserNotificationsComponent.vue")["default"]);
 Vue.component('userInboxNotificator', __webpack_require__(/*! ./components/UserNotificationInboxComponent.vue */ "./resources/js/components/UserNotificationInboxComponent.vue")["default"]);
+Vue.component('notificatorExample', __webpack_require__(/*! ./components/UserNotificatorComponent.vue */ "./resources/js/components/UserNotificatorComponent.vue")["default"]);
 Vue.component('profile', __webpack_require__(/*! ./components/ProfileComponent.vue */ "./resources/js/components/ProfileComponent.vue")["default"]);
 Vue.component('catalogs', __webpack_require__(/*! ./components/catalogs/CatalogsComponent.vue */ "./resources/js/components/catalogs/CatalogsComponent.vue")["default"]);
 Vue.component('MacroprocessCatalogs', __webpack_require__(/*! ./components/catalogs/MacroprocessComponent.vue */ "./resources/js/components/catalogs/MacroprocessComponent.vue")["default"]);
@@ -85582,6 +85909,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationsComponent_vue_vue_type_template_id_dde73d6a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationsComponent_vue_vue_type_template_id_dde73d6a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificatorComponent.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/UserNotificatorComponent.vue ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserNotificatorComponent.vue?vue&type=template&id=282a4413& */ "./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&");
+/* harmony import */ var _UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserNotificatorComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UserNotificatorComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificatorComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificatorComponent.vue?vue&type=template&id=282a4413& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

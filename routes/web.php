@@ -121,6 +121,14 @@ Route::get('/notificaciones', function () {
     return view('admin.usuariosNotificaciones');
 })->middleware('auth');
 
+/*
+*EJEMPLO
+*/
+
+Route::get('/notificador', function () {
+    return view('admin.ejemploNotificacion');
+})->middleware('auth');
+
 Route::get('/perfil-usuario', function () {
     return view('user.profile');
 })->middleware('auth');
@@ -129,6 +137,7 @@ Auth::routes();
 Auth::routes(['register' => false]);
 
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
+Route::post('sender', 'HomeController@sendNoti')->middleware('auth');
 
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');

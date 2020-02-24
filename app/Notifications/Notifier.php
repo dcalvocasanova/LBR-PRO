@@ -60,6 +60,7 @@ class Notifier extends Notification
         return [
           'message'=> $this->details['msg'],
           'body'=> $this->details['body'],
+          'sender'=> $this->details['sender'],
         ];
     }
 
