@@ -113,8 +113,8 @@ class UserController extends Controller
     {
       $user = User::findOrFail($request->id);
       $user->update($request->all());
-      $user->roles()->detach();
       if(isset($request->role)){
+          $user->roles()->detach();
           $user->assignRole($request->role);
       }
     }
@@ -184,7 +184,7 @@ class UserController extends Controller
         $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
         $user->avatar = $file_avatar;
         $last_avatar = public_path('img/profile-usr/').$current_avatar;
-        if(file_exists($last_avatar) && $last_avatar !=='default.png' ){
+        if($last_avatar !=='default.png'){
             @unlink($last_avatar);
         }
       }
@@ -208,7 +208,7 @@ class UserController extends Controller
      */
     public function allNotifications()
     {
-      $user = Auth::user();    
+      $user = Auth::user();
       return $user->notifications;
     }
 

@@ -40,6 +40,20 @@ Route::get('/gestionador-parametrizacion', function () {
 /*
 * Grant access only for users with CRUD_parameters
 */
+Route::get('/parametrizar-tiempos-ajuste', function () {
+    return view('admin.tiempo-ajuste');
+})->middleware('permission:CRUD_parameters');
+
+/*
+* Grant access only for users with CRUD_parameters
+*/
+Route::get('/parametrizar-criterios-evaluacion', function () {
+    return view('admin.criterios_evaluacion');
+})->middleware('permission:CRUD_parameters');
+
+/*
+* Grant access only for users with CRUD_parameters
+*/
 Route::get('/gestionador-macroprocesos', function () {
     return view('containers.macroprocessManager');
 })->middleware('permission:CRUD_macroprocess');
@@ -206,6 +220,7 @@ Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParamet
 Route::post('/subparametros/setsession', 'SubparameterController@session');
 /*Manage Variables*/
 Route::get('/variables', 'VariableController@index');
+Route::get('/variables-tiempos-ajuste', 'VariableController@var_related_time');
 Route::put('/variables/actualizar', 'VariableController@update');
 Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
@@ -218,6 +233,14 @@ Route::post('/plantillas/guardar', 'TemplateController@store');
 Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
 Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByType');
 Route::get('/plantillas/buscar', 'TemplateController@show');
+
+/*Manage Parameters*/
+Route::get('/criterios-evaluacion', 'QuestionController@index');
+Route::put('/criterios-evaluacion/actualizar', 'QuestionController@update');
+Route::post('/criterios-evaluacion/guardar', 'QuestionController@store');
+Route::delete('/criterios-evaluacion/borrar/{id}', 'QuestionController@destroy');
+
+
 /*Manage Macroprocess*/
 Route::get('/macroprocesos', 'MacroprocessController@index');
 Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');

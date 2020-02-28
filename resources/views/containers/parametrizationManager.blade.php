@@ -21,6 +21,14 @@
             @endcomponent
 
             @component('components.colorcard')
+              @slot('title') Gestionar criterios de evaluación @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') parametrizar-criterios-evaluacion @endslot
+              @slot('icon') fa fa-question @endslot
+            @endcomponent
+
+            @component('components.colorcard')
               @slot('title') Plantillas @endslot
               @slot('type') info @endslot
               @slot('subtitle') ir @endslot
@@ -40,7 +48,7 @@
               @slot('title') Tiempos de ajuste @endslot
               @slot('type') warning  @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') # @endslot
+              @slot('url') parametrizar-tiempos-ajuste @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
 

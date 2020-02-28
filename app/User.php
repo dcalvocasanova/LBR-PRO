@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -14,12 +15,14 @@ class User extends Authenticatable
 
 	  protected $guarded = [];
 
-    /*
-    * COnfigure broadcast notification to user
-    */
+    /**
+     * The channels the user receives notification broadcasts on.
+     *
+     * @return string
+     */
     public function receivesBroadcastNotificationsOn()
     {
-       return 'users.'.$this->id;
+        return 'App.User.'. $this->id;
     }
 
     /**

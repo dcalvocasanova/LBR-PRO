@@ -57,13 +57,24 @@
     created(){
       Echo.private('App.User.'+ this.user.id)
         .notification((notification) => {
-          this.notification = notification
-            console.log(notification)
+            console.log('notification')
       });
+/*
+      Echo.join('chat')
+          .here((user) => {
+              console.log(user)
+          })
+          .joining((user) => {
+              console.log(user)
+          })
+          .leaving((user) => {
+              console.log(user)
+          });*/
+
     },
     mounted() {
       this.getUserNotifications()
-      Echo.private('App.User.'+ this.user.id)
+/*      Echo.private('App.User.'+ this.user.id)
         .notification((notification) => {
           this.notification = notification
             console.log(notification)

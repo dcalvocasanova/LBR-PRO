@@ -42,8 +42,8 @@ class HomeController extends Controller
             'actionText' => 'Ir al sitio web',
             'actionURL' => url('/notificaciones'),
         ];
-        //Notification::send($user, new Notifier($details)); //send several UserSystemComponent
-        $user->notify(new Notifier($details)); // notify an particulary user
+        Notification::send($user, new Notifier($details)); //send several UserSystemComponent
+      //  $user->notify(new Notifier($details)); // notify an particulary user
         dd('done');
     }
 
@@ -51,7 +51,6 @@ class HomeController extends Controller
     {
         $usuarios = $request->usersToNotify;
         $users = User::find($usuarios);
-
         $details = [
             'greeting' => 'Un saludo cordial',
             'msg' => $request->msg,
@@ -60,7 +59,7 @@ class HomeController extends Controller
             'thanks' => 'Esperamos pronto de el visto bueno',
             'actionText' => 'Ir al sitio web',
             'actionURL' => url('/notificaciones'),
-        ];      
+        ];
         Notification::send($users, new Notifier($details)); //send several UserSystemComponent
 
       //  $user->notify(new Notifier($details)); // notify an particulary user

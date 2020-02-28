@@ -58,7 +58,12 @@ Vue.component('MacroprocessCatalogs', require('./components/catalogs/Macroproces
 Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
+Vue.component('questions', require('./components/QuestionComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
+Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
+
+
+
 Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
