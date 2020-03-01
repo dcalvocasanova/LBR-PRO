@@ -2,9 +2,8 @@
 
 @section('content')
 
-<div class="wrapper wrapper-full-page">
-  <div class="page-header login-page header-login" filter-color="gray" style="background-image: url('{{ asset('img/PROCAME2.jpg') }}'); ; background-size: cover; background-position: top center;">
-      <div class="container">
+
+    <div class="container mt-4" >
       <div class="row justify-content-center">
           <div class="col-lg-6 col-md-8 col-sm-9 ml-auto mr-auto">
             <form class="form" method="" action="">
@@ -44,7 +43,7 @@
                         </div>
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-red-UNA btn-lg">
+                                <button type="submit" class="btn btn-danger btn-lg">
                                     Enviar
                                 </button>
                             </div>
@@ -56,6 +55,6 @@
           </div>
       </div>
     </div>
-  </div>
-</div>
+
+
 @endsection

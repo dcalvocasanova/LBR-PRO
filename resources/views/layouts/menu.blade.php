@@ -24,8 +24,8 @@
   {{-- Heading
   <div class="sidebar-heading">
     Panel de gestión
-  </div>
---}}
+  </div> --}}
+
   {{-- Nav Item - Projects Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_projects','CR_projects'))
   <li class="nav-item">
@@ -67,7 +67,7 @@
   </li>
   @endif
   {{-- Nav Item - Users Collapse Menu--}}
-<!--  @if(@Auth::user()->hasPermissionTo('simple_user')) -->
+
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
@@ -80,7 +80,22 @@
       </div>
     </div>
   </li>
-<!--  @endif  -->
+
+  {{-- Nav Item - Users Collapse Menu--}}
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNot" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span  style="color:red;"> Ejemplos de Notificación </span>
+    </a>
+    <div id="collapseNot" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
+        <a class="collapse-item" href="/notificador">Ver</a>
+      </div>
+    </div>
+  </li>
+
 
   {{-- Divider--}}
   <hr class="sidebar-divider">

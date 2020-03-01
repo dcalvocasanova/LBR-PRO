@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -13,6 +14,16 @@ class User extends Authenticatable
     use HasRoles;
 
 	  protected $guarded = [];
+
+    /**
+     * The channels the user receives notification broadcasts on.
+     *
+     * @return string
+     */
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'App.User.'. $this->id;
+    }
 
     /**
      * The attributes that are mass assignable.

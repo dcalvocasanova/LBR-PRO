@@ -7,62 +7,85 @@
             <h4 class="card-title mt-0"> Catálogos de opciones del Macro procesos</h4>
           </div>
           <div class="card-body">
-            <button class="btn btn-primary"
-              @click="LoadCatalog('INPUT')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Entradas
-              </i>
-            </button>
-            <button class="btn btn-primary"
-              @click="LoadCatalog('PROVIDER')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Proveedores
-              </i>
-            </button>
-            <button class="btn btn-primary"
-              @click="LoadCatalog('RISK')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Riesgos asociados
-              </i>
-            </button>
-	          <button class="btn btn-primary"
-              @click="LoadCatalog('INDICATOR')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Indicadores
-              </i>
-            </button>
-	          <button class="btn btn-primary"
-              @click="LoadCatalog('PHVA')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: PHVA
-              </i>
-            </button>
-            <button class="btn btn-primary"
-              @click="LoadCatalog('FRECUENCY')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Frecuencias
-              </i>
-            </button>
-            <button class="btn btn-primary"
-              @click="LoadCatalog('WORKTYPE')"
-              data-toggle="modal"
-              data-target="#addCatalogs">
-              <i class="fas fa-swatchbook">
-                Catálogo: Tipo de trabajo
-              </i>
-            </button>
+            <div class="row">
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('INPUT')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Entradas
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('PROVIDER')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Proveedores
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('RISK')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Riesgos asociados
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('INDICATOR')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Indicadores
+                  </i>
+                </button>
+              </div>
+            </div>
+            <br>
+            <div class="row mb-2">
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('PHVA')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: PHVA
+                  </i>
+                </button>
+              </div>
+
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('FRECUENCY')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Frecuencias
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('WORKTYPE')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Tipo de trabajo
+                  </i>
+                </button>
+              </div>
+
+
+
+            </div>
           </div>
           <div class="card-footer">
           </div>
@@ -168,7 +191,7 @@
             if (code === "INDICATOR"){this.catalog="Indicadores"}
       			if (code === "PHVA"){this.catalog="PHVA"}
       			if (code === "FRECUENCY"){this.catalog="Frecuencias"}
-      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"} 
+      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected

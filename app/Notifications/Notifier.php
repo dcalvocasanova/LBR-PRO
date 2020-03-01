@@ -1,15 +1,19 @@
 <?php
 namespace App\Notifications;
 
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class Notifier extends Notification
 {
     use Queueable;
-
+    /**
+     * @var Details
+     */
     public $details;
 
     /**
@@ -18,8 +22,8 @@ class Notifier extends Notification
      * @return void
      */
     public function __construct($details)
-    {
-      $this->details = $details;
+    {       
+       $this->details = $details;
     }
 
     /**
@@ -30,7 +34,7 @@ class Notifier extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['database','broadcast','mail'];
     }
 
     /**
@@ -46,9 +50,6 @@ class Notifier extends Notification
                 ->line($this->details['body'])
                 ->action($this->details['actionText'], $this->details['actionURL'])
                 ->line($this->details['thanks']);
-              /*  ->line('The introduction to the notification.')
-                ->action('Notification Action', url('/'))
-                ->line('Thank you for using our application!');*/
     }
 
     /**
@@ -56,13 +57,15 @@ class Notifier extends Notification
      *
      * @param  mixed  $notifiable
      * @return array[]
-     */
-    public function toDataBase($notifiable)
+     *//*
+    public function toDatabase($notifiable)
     {
         return [
-          'message'=> $this->details['msg']
+          'message'=> $this->details['msg'],
+          'body'=> $this->details['body'],
+          'sender'=> $this->details['sender'],
         ];
-    }
+    }*/
 
     /**
      * Get the array representation of the notification.
@@ -70,10 +73,29 @@ class Notifier extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
+
     public function toArray($notifiable)
     {
         return [
-            //
+          'message'=> $this->details['msg'],
+          'body'=> $this->details['body'],
+          'sender'=> $this->details['sender'],
+          'admin'=> $notifiable
         ];
     }
+
+    /**
+     * Get the broadcast representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage ([
+          'notification'=> $notifiable->notifications()->first()
+        ]);
+    }
+
+
 }

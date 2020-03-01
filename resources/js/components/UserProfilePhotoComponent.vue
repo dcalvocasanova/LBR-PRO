@@ -42,11 +42,11 @@
     },
     created(){
       Fire.$on('updateAvatar',() => {
-          this.getCurrentUser();
+          this.getCurrentUser()
       })
     },
     mounted() {
-      this.getCurrentUser();
+      this.getCurrentUser()      
     }
   }
 </script>
