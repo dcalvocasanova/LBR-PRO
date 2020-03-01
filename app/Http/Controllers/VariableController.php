@@ -21,6 +21,19 @@ class VariableController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function var_related_time()
+    {
+      $variables = Variable::where('subparameter_id','0')->paginate(5);
+      return $variables;
+    }
+
+
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,7 +50,11 @@ class VariableController extends Controller
       $variable->name = $request->nombre;
       $variable->identificator = $request->identificador;
       $variable->type = $request->tipo;
-      $variable->subparameter_id = $request->session()->get('subparameter_id');
+      if (isset($request->esVAT)){
+        $variable->subparameter_id = '0';
+      }else{
+        $variable->subparameter_id = $request->session()->get('subparameter_id');
+      }
       $variable->value = isset($request->valor)? $request->valor:"0";
       $variable->measure = isset($request->medida)? $request->medida:"NA";
       $variable->rule = isset($request->regla)? $request->regla:"NA";
@@ -74,7 +91,11 @@ class VariableController extends Controller
       $variable->name = $request->nombre;
       $variable->identificator = $request->identificador;
       $variable->type = $request->tipo;
-      $variable->subparameter_id = $request->session()->get('subparameter_id');
+      if (isset($request->esVAT)){
+        $variable->subparameter_id = '0';
+      }else{
+        $variable->subparameter_id = $request->session()->get('subparameter_id');
+      }
       $variable->value = isset($request->valor)? $request->valor:"0";
       $variable->measure = isset($request->medida)? $request->medida:"NA";
       $variable->rule = isset($request->regla)? $request->regla:"NA";

@@ -65,7 +65,6 @@ class UserController extends Controller
       }else{
           $user->givePermissionTo('simple_user');
       }
-
     }
     /**
      * Display the specified resource.
@@ -114,8 +113,8 @@ class UserController extends Controller
     {
       $user = User::findOrFail($request->id);
       $user->update($request->all());
-      $user->roles()->detach();
       if(isset($request->role)){
+          $user->roles()->detach();
           $user->assignRole($request->role);
       }
     }
@@ -185,11 +184,32 @@ class UserController extends Controller
         $img = Image::make($request->avatar)->save(public_path('img/profile-usr/').$file_avatar);
         $user->avatar = $file_avatar;
         $last_avatar = public_path('img/profile-usr/').$current_avatar;
-        if(file_exists($last_avatar) && $last_avatar !=='default.png' ){
+        if($last_avatar !=='default.png'){
             @unlink($last_avatar);
         }
       }
       $user->save();
+    }
+    /**
+     * Get unread user's notifications.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unreadNotifications()
+    {
+      $user = Auth::user();
+      return $user->unreadNotifications;
+    }
+
+    /**
+     * Get all user's notifications.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allNotifications()
+    {
+      $user = Auth::user();
+      return $user->notifications;
     }
 
     /**

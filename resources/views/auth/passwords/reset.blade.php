@@ -1,12 +1,10 @@
 @extends('layouts.dashboard')
-
 @section('content')
-
 <div class="wrapper wrapper-full-page">
-  <div class="page-header login-page header-login" filter-color="gray" style="background-image: url('{{ asset('img/PROCAME2.jpg') }}'); ; background-size: cover; background-position: top center;">
+
       <div class="container">
       <div class="row justify-content-center">
-          <div class="col-lg-6 col-md-8 col-sm-9 ml-auto mr-auto">
+          <div class="col-9 ml-auto mr-auto">
             <form class="form" method="" action="">
               <div class="card card-login">
                 <div class="card-header card-header-red-UNA text-center">
@@ -34,9 +32,9 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right"> Nueva contraseña</label>
+                            <label for="password" class="col-md-8 col-form-label text-md-right"> Nueva contraseña</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
 
                                 @error('password')
@@ -69,6 +67,6 @@
           </div>
       </div>
     </div>
-  </div>
+
 </div>
 @endsection
