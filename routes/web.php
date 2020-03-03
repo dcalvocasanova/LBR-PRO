@@ -148,7 +148,7 @@ Route::get('/perfil-usuario', function () {
 })->middleware('auth');
 
 Auth::routes();
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false, 'verify'=>true]);
 
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 Route::post('sender', 'HomeController@sendNoti')->middleware('auth');
