@@ -55,11 +55,11 @@
       }
     },
     created(){
-      Echo.private('App.User.'+ this.user.id)
+/*      Echo.private('App.User.'+ this.user.id)
         .notification((notification) => {
             console.log('notification')
       });
-/*
+
       Echo.join('chat')
           .here((user) => {
               console.log(user)
