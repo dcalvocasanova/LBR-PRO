@@ -62,9 +62,9 @@ Vue.component('questions', require('./components/QuestionComponent.vue').default
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
 
-
-
-Vue.component('macroprocesos', require('./components/MacroProcessComponent.vue').default);
+Vue.component('subprocesos', require('./components/SubprocessComponent.vue').default);
+Vue.component('procesos', require('./components/ProcessComponent.vue').default);
+Vue.component('macroprocesos', require('./components/MacroprocessComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);

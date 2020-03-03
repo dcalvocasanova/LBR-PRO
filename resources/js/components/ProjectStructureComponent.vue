@@ -59,7 +59,8 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-						            @create-macroprocess="CreateMacroprocess"
+						@create-macroprocess="CreateMacroprocess"
+						@relate-goal="relateGoals"
                         @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
@@ -229,6 +230,50 @@
         </div>
       </div>
     </div>
+	<div class="modal fade" id="RelatedManager" tabindex="-4" role="dialog" aria-labelledby="RelatedManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="InheritageManager"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card">
+              <div class="card-body">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <table class="table table-hover">
+                       <thead class="">
+      										<tr>
+      										  <th> Seleccione los objetivos </th>
+      										</tr>
+                      </thead>
+    							
+      										
+  					        </table>
+				  
+				  <div v-for="rows in relatedGoals" class="grid-row">
+                <div v-for="goal in rows"  class="grid-cell">
+                   
+                        {{goal.name}}<input type="checkbox" v-bind:key="goal.randomCellIndex" :value=goal.randomCellIndex  v-model="goal.related" class="grid-cell-editor" />
+                    
+                </div>
+            </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="container-buttons">
+                  <button @click="salirRelacionarObjetivos()" class="btn btn-secondary">Salir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -241,17 +286,21 @@
     data(){
       return{
         project_id:0,
-	      goalsInherited:[],
-		    Macroprocessgoals:[],
+	    goalsInherited:[],
+		relatedGoals:[],
+		relatedTest:[[]],
+		temp:[],
+		Macroprocessgoals:[],
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentNode: {}, //Current node to update or add
-		    parentNode: {}, //Parent node to update or add
+		parentNode: {}, //Parent node to update or add
         updateNodeControl:0, //
+		itemsCopy:[],
         title:"",
         newName:"",
-		    newCode:"",
+		newCode:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
@@ -270,6 +319,55 @@
           me.updateNodeControl = 0
           this.getGoalName()
         },
+		relateGoals(nodo){
+          let me = this;
+          me.currentNode = nodo.item
+	      me.parentNode = nodo.parent
+          me.updateNodeControl = 0
+		  
+		    // Empty two random cells per row
+            for (var i = 0; i < me.parentNode.goals.length; ++i) {
+				let temp1 = [];
+				me.relatedGoals.push(temp1);
+                me.relatedGoals[i].push(me.parentNode.goals[i]);
+				for (var k = 0; k < me.parentNode.goals.length; ++k) {
+                	me.relatedGoals[i].push(me.currentNode.goals[k]);
+				
+            	}	
+            }	
+			
+			// Empty two random cells per row
+            for (var i = 0; i < me.relatedGoals.length; ++i) {
+                for (var k = 0; k < me.relatedGoals[i].length; ++k) {
+					
+				
+  				me.itemsCopy = me.relatedGoals.slice();
+   			    var obj = Object.assign({}, me.itemsCopy[i][k]);
+				let randomCellIndex = me.rndStr(15);
+   				obj.randomCellIndex = randomCellIndex;
+				obj.related = "";
+    			me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
+    			//console.log('text from items: ' + items[i].text)
+    			//console.log('text from itemsCopy: ' + itemsCopy[i].text)
+					
+					
+					
+				
+					
+					
+					
+					
+                    
+                    
+					//me.relatedGoals[i][k].randomCellIndex = randomCellIndex;
+					//me.console(me.relatedGoals[i][k]);
+                }
+            }
+			
+			
+			
+          this.getGoals()
+        },
       CreateMacroprocess(item){
           let me = this;
           me.currentNode = item
@@ -279,7 +377,7 @@
   	  asignarObjetivoHeredado(nodo){
         let me = this;
         me.currentNode = nodo.item
-	      me.parentNode = nodo.parent
+	    me.parentNode = nodo.parent
         me.updateNodeControl = 0
         this.getGoalsInherited()
       },
@@ -384,17 +482,18 @@
     		  numGoals:0,
     		  goals:[],
     		  inheritedGoals:[],
-			    macroprocess:[]
+			  macroprocess:[]
         })
         me.salir()
       },
       addGoal() {
         let me = this;
-	      me.currentNode.numGoals += 1
+	    me.currentNode.numGoals += 1
         me.currentNode.goals.push({
 	      code: me.newCode,
           name: me.newName,
-          pos:me.currentNode.numGoals // definir contador para objetivos
+          pos:me.currentNode.numGoals, // definir contador para objetivos
+		  objectCode:me.rndStr(7)
         })
         me.salirObjetivos()
       },
@@ -465,9 +564,24 @@
       getGoalsInherited(){
         $('#InheritedManager').modal('show')
       },
-	     getGoalName(){
+	  getGoals(){
+        $('#RelatedManager').modal('show')
+      },
+	  getGoalName(){
         $('#GoalManager').modal('show')
-      }
+      },
+	  rndStr(len) {
+    	let text = " "
+    	let chars = "abcdefghijklmnopqrstuvwxyz123456789"
+    
+     	 for( let i=0; i < len; i++ ) {
+			 for(let k=0; k < 8; k++ ){
+				text += chars.charAt(Math.floor(Math.random() * chars.length))
+		     }
+      	}
+		
+		return text
+	 }
     },
     created(){
       Fire.$on('searching',() => {
