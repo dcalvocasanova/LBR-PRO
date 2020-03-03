@@ -58,7 +58,8 @@ class UserController extends Controller
       $user = User::create($request->all());
       $randomPass = '123456';//Str::random(8);
       $user->password =Hash::make($randomPass);
-      if($user->save()){//  $this->sendPassword($randomPass, $email,$nombre);
+      if($user->save()){
+          $this->sendPassword($randomPass, $email,$nombre);
       }
       if(isset($request->role)){
           $user->assignRole($request->role);
