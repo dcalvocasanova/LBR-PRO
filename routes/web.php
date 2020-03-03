@@ -120,6 +120,12 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-macroprocesos', function () {
       return view('admin.macroprocesos');
   });
+  Route::get('/gestionar-procesos', function () {
+      return view('admin.procesos');
+  });
+  Route::get('/gestionar-subprocesos', function () {
+      return view('admin.subprocesos');
+  });
   Route::get('/gestionar-objetivos', function () {
       return view('admin.objetivos_estructura_proyecto');
   });
@@ -261,3 +267,43 @@ Route::put('/objetivos/actualizar', 'ObjectiveController@update');
 Route::post('/objetivos/guardar', 'ObjectiveController@store');
 Route::delete('/objetivos/borrar/{id}', 'ObjectiveController@destroy');
 Route::get('/objetivos/buscar', 'ObjectiveController@show');
+/*Manage Macroprocess*/
+Route::get('/macroprocesos', 'MacroprocessController@index');
+Route::get('/macroproceso', 'MacroprocessController@getCurrentMacroprocess');
+Route::get('/macroprocesos-plantilla', 'MacroprocessController@getExcel');
+Route::get('/macroprocesos/del-sistema', 'MacroprocessController@getMacroprocess');
+Route::get('/macroprocesos/rol/{id}', 'MacroprocessController@getRole');
+Route::any('/macroprocesos/loadmacroprocesos', 'MacroprocessController@loadUsers');
+Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');
+Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
+Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
+Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
+Route::get('/findmacroprocess', 'MacroprocessController@search');
+Route::post('/uploadfile', 'MacroprocessController@loadFiles');
+/*Manage Process*/
+Route::get('/procesos', 'ProcessController@index');
+Route::get('/proceso', 'ProcessController@getCurrentProcess');
+Route::get('/procesos-plantilla', 'ProcessController@getExcel');
+Route::get('/procesos/del-sistema', 'ProcessController@getProcess');
+Route::get('/procesos/rol/{id}', 'ProcessController@getRole');
+Route::any('/procesos/loadmacroprocesos', 'ProcessController@loadUsers');
+Route::put('/procesos/actualizar', 'ProcessController@update');
+Route::post('/procesos/guardar', 'ProcessController@store');
+Route::delete('/procesos/borrar/{id}', 'ProcessController@destroy');
+Route::get('/procesos/buscar', 'ProcessController@show');
+Route::get('/findmacroprocess', 'ProcessController@search');
+Route::post('/uploadfile', 'ProcessController@loadFiles');
+/*Manage Subprocess*/
+Route::get('/subprocesos', 'SubprocessController@index');
+Route::get('/subproceso', 'SubprocessController@getCurrentSubprocess');
+Route::get('/subprocesos-plantilla', 'SubprocessController@getExcel');
+Route::get('/subprocesos/del-sistema', 'SubprocessController@getSubprocess');
+Route::get('/subprocesos/rol/{id}', 'SubprocessController@getRole');
+Route::any('/subprocesos/loadmacroprocesos', 'SubprocessController@loadUsers');
+Route::put('/subprocesos/actualizar', 'SubprocessController@update');
+Route::post('/subprocesos/guardar', 'SubprocessController@store');
+Route::delete('/subprocesos/borrar/{id}', 'SubprocessController@destroy');
+Route::get('/subprocesos/buscar', 'SubprocessController@show');
+Route::get('/findmacroprocess', 'SubprocessController@search');
+Route::post('/uploadfile', 'SubprocessController@loadFiles');
+
