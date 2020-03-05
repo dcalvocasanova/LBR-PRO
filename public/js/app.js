@@ -3928,6 +3928,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -3979,7 +3982,8 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       me.currentNode = nodo.item;
       me.parentNode = nodo.parent;
-      me.updateNodeControl = 0; // Empty two random cells per row
+      me.updateNodeControl = 0;
+      me.relatedGoals = []; // Empty two random cells per row
 
       for (var i = 0; i < me.parentNode.goals.length; ++i) {
         var temp1 = [];
@@ -4175,14 +4179,22 @@ __webpack_require__.r(__webpack_exports__);
     salir: function salir() {
       $('#LevelManager').modal('toggle');
       this.newName = "";
+      this.newCode = "";
     },
     salirObjetivos: function salirObjetivos() {
       $('#GoalManager').modal('toggle');
       this.newName = "";
+      this.newCode = "";
     },
-    salirRelacionarObjetivos: function salirRelacionarObjetivos() {
+    salirManejador: function salirManejador() {
       $('#InheritedManager').modal('toggle');
       this.newName = "";
+      this.newCode = "";
+    },
+    salirRelacionarObjetivos: function salirRelacionarObjetivos() {
+      $('#RelatedManager').modal('toggle');
+      this.newName = "";
+      this.newCode = "";
     },
     salirMacroprocess: function salirMacroprocess() {
       $('#MacroprocessManager').modal('toggle');
@@ -53075,7 +53087,7 @@ var render = function() {
                           staticClass: "btn btn-secondary",
                           on: {
                             click: function($event) {
-                              return _vm.salirRelacionarObjetivos()
+                              return _vm.salirManejador()
                             }
                           }
                         },
@@ -53118,82 +53130,82 @@ var render = function() {
                 _c("div", { staticClass: "card" }, [
                   _c("div", { staticClass: "card-body" }, [
                     _c("div", { staticClass: "col-md-8" }, [
-                      _c(
-                        "div",
-                        { staticClass: "form-group" },
-                        [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("table", { staticClass: "table table-hover" }, [
                           _vm._m(10),
                           _vm._v(" "),
-                          _vm._l(_vm.relatedGoals, function(rows) {
-                            return _c(
-                              "div",
-                              { staticClass: "grid-row" },
-                              _vm._l(rows, function(goal) {
-                                return _c("div", { staticClass: "grid-cell" }, [
-                                  _vm._v(
-                                    "\n                   \n                        " +
-                                      _vm._s(goal.name)
-                                  ),
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: goal.related,
-                                        expression: "goal.related"
-                                      }
-                                    ],
-                                    key: goal.randomCellIndex,
-                                    staticClass: "grid-cell-editor",
-                                    attrs: { type: "checkbox" },
-                                    domProps: {
-                                      value: goal.randomCellIndex,
-                                      checked: Array.isArray(goal.related)
-                                        ? _vm._i(
-                                            goal.related,
-                                            goal.randomCellIndex
-                                          ) > -1
-                                        : goal.related
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        var $$a = goal.related,
-                                          $$el = $event.target,
-                                          $$c = $$el.checked ? true : false
-                                        if (Array.isArray($$a)) {
-                                          var $$v = goal.randomCellIndex,
-                                            $$i = _vm._i($$a, $$v)
-                                          if ($$el.checked) {
-                                            $$i < 0 &&
-                                              _vm.$set(
-                                                goal,
-                                                "related",
-                                                $$a.concat([$$v])
-                                              )
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.relatedGoals, function(rows) {
+                              return _c(
+                                "tr",
+                                _vm._l(rows, function(goal) {
+                                  return _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: goal.related,
+                                          expression: "goal.related"
+                                        }
+                                      ],
+                                      key: goal.randomCellIndex,
+                                      attrs: { type: "checkbox" },
+                                      domProps: {
+                                        value: goal.randomCellIndex,
+                                        checked: Array.isArray(goal.related)
+                                          ? _vm._i(
+                                              goal.related,
+                                              goal.randomCellIndex
+                                            ) > -1
+                                          : goal.related
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = goal.related,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = goal.randomCellIndex,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                _vm.$set(
+                                                  goal,
+                                                  "related",
+                                                  $$a.concat([$$v])
+                                                )
+                                            } else {
+                                              $$i > -1 &&
+                                                _vm.$set(
+                                                  goal,
+                                                  "related",
+                                                  $$a
+                                                    .slice(0, $$i)
+                                                    .concat($$a.slice($$i + 1))
+                                                )
+                                            }
                                           } else {
-                                            $$i > -1 &&
-                                              _vm.$set(
-                                                goal,
-                                                "related",
-                                                $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1))
-                                              )
+                                            _vm.$set(goal, "related", $$c)
                                           }
-                                        } else {
-                                          _vm.$set(goal, "related", $$c)
                                         }
                                       }
-                                    }
-                                  })
-                                ])
-                              }),
-                              0
-                            )
-                          })
-                        ],
-                        2
-                      )
+                                    }),
+                                    _vm._v(
+                                      "\n                              " +
+                                        _vm._s(goal.name) +
+                                        "\n                          "
+                                    )
+                                  ])
+                                }),
+                                0
+                              )
+                            }),
+                            0
+                          )
+                        ])
+                      ])
                     ])
                   ]),
                   _vm._v(" "),
@@ -53387,9 +53399,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table table-hover" }, [
-      _c("thead", {}, [
-        _c("tr", [_c("th", [_vm._v(" Seleccione los objetivos ")])])
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Objetivos del nivel superior ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Objetivos de este nivel ")])
       ])
     ])
   }
@@ -60770,152 +60784,146 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("ul", { staticClass: "treeview-list" }, [
     _c("li", { staticClass: "treeview-item" }, [
-      _c(
-        "div",
-        {
-          staticClass: "main",
-          class: { bold: _vm.isParent },
-          on: { doubleclick: _vm.toggle }
-        },
-        [
-          _c("h4", [
-            _vm.isParent
-              ? _c("span", [_vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("clicked-node", _vm.item)
-                  }
+      _c("div", { staticClass: "main", class: { bold: _vm.isParent } }, [
+        _c("h4", [
+          _vm.isParent
+            ? _c("span", { on: { click: _vm.toggle } }, [
+                _vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.$emit("clicked-node", _vm.item)
                 }
-              },
-              [_vm._v(_vm._s(_vm.item.name))]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showTreeEditor,
-                    expression: "showTreeEditor"
+              }
+            },
+            [_vm._v(_vm._s(_vm.item.name))]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showTreeEditor,
+                  expression: "showTreeEditor"
+                }
+              ],
+              staticClass: "controls-tree-edit"
+            },
+            [
+              !_vm.isParent
+                ? _c("span", { on: { click: _vm.makeParent } }, [
+                    _c("i", { staticClass: "fas fa-project-diagram" })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("edit-node", _vm.item)
+                    }
                   }
-                ],
-                staticClass: "controls-tree-edit"
-              },
-              [
-                !_vm.isParent
-                  ? _c("span", { on: { click: _vm.makeParent } }, [
-                      _c("i", { staticClass: "fas fa-project-diagram" })
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("edit-node", _vm.item)
-                      }
+                },
+                [_c("i", { staticClass: "fas fa-edit" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("delete-node", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-edit" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("delete-node", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-trash-alt" })]
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showGoalEditor,
-                    expression: "showGoalEditor"
                   }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("assign-goal", _vm.item)
-                      }
+                },
+                [_c("i", { staticClass: "fas fa-trash-alt" })]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showGoalEditor,
+                  expression: "showGoalEditor"
+                }
+              ],
+              staticClass: "controls-gol-edit"
+            },
+            [
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("assign-goal", _vm.item)
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-columns" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("assign-inhetited-goal", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-columns" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("assign-inhetited-goal", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-clipboard-list" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("relate-goal", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-clipboard-list" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("relate-goal", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-columns" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("create-macroprocess", _vm.item)
-                      }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-columns" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("create-macroprocess", _vm.item)
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-connectdevelop" })]
-                )
-              ]
-            )
-          ])
-        ]
-      ),
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-connectdevelop" })]
+              )
+            ]
+          )
+        ])
+      ]),
       _vm._v(" "),
       _vm.isParent
         ? _c(

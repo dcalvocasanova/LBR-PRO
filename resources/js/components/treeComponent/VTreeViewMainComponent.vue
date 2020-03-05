@@ -1,9 +1,9 @@
 <template>
   <ul class="treeview-list">
     <li class="treeview-item">
-      <div class="main":class="{bold:isParent}" @doubleclick="toggle">
+      <div class="main":class="{bold:isParent}" >
       <h4>
-        <span v-if="isParent">[{{ isOpen ? '-' : '+' }}]</span>
+        <span v-if="isParent" @click="toggle" >[{{ isOpen ? '-' : '+' }}]</span>
         <span @click="$emit('clicked-node', item)">{{ item.name }}</span>
         <span class="controls-tree-edit" v-show="showTreeEditor">
           <span v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
@@ -11,10 +11,10 @@
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
         </span>
         	<span class="controls-gol-edit" v-show="showGoalEditor">
-			<span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
-          	<span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
-			<span @click="$emit('relate-goal', {'item':item, 'parent':parent})"><i class="fas fa-columns"></i> </span>
-			<span @click="$emit('create-macroprocess',item)"><i class="fas fa-connectdevelop"></i> </span>
+          <span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
+        	<span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
+    			<span @click="$emit('relate-goal', {'item':item, 'parent':parent})"><i class="fas fa-columns"></i> </span>
+    			<span @click="$emit('create-macroprocess',item)"><i class="fas fa-connectdevelop"></i> </span>
         </span>
       </h4>
       </div>
@@ -31,9 +31,9 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
-		    @create-macroprocess="$emit('create-macroprocess', $event)"
-			@assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
-		    @relate-goal="$emit('relate-goal', $event)"
+	          @create-macroprocess="$emit('create-macroprocess', $event)"
+            @assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
+	          @relate-goal="$emit('relate-goal', $event)"
       >
       </tree-menu>
       <li class="add" v-show="showTreeEditor" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
