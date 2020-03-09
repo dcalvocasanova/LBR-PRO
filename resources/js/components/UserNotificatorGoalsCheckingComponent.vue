@@ -1,12 +1,17 @@
 <template>
   <div class="row">
     <div class="col-12">
-        <h3 class="card-title mt-0"> Enviar notificación</h3>
+        <h3 class="card-title mt-0"> Enviar notificación para aprobación de objetivo</h3>
     </div>
   	<div class="col-lg-4 col-md-5">
       <div class="ibox" id="inbox-notification-container">
         <div class="inbox-notification clf">
   				<table class="table table-hover table-inbox" id="table-inbox">
+            <thead>
+              <tr>
+                <th> Usuarios registrados en el nivel de estructura</th>
+              </tr>
+            </thead>
   					<tbody class="rowlinkx" data-link="row"
               v-for="user in users.data" :key="user.id">
   						<tr class="users-to-notify">
@@ -27,15 +32,15 @@
             <div class="col-md-7">
               <div class="form-group">
                 <label class="bmd-label-floating">Titulo</label>
-                <input v-model="notification.title" type="text" class="form-control":class="{ 'is-invalid': notification.errors.has('title') }">
-                <has-error :form="notification" field="title"></has-error>
+                <p> {{notification.title}}</p>
+
               </div>
             </div>
             <div class="col-md-5">
               <div class="form-group">
                 <label class="bmd-label-floating">Detalle</label>
-                <input v-model="notification.body" type="text" class="form-control":class="{ 'is-invalid': notification.errors.has('body') }">
-                <has-error :form="notification" field="body"></has-error>
+                <div id="notificationDetails" v-html="getGoalInformation">
+                </div>
               </div>
             </div>
           </div>
@@ -51,15 +56,30 @@
 
 <script>
   export default {
+    props:{
+        Item: Object,
+    },
     data(){
       return{
         users:{},
         notify:[],
         notification: new Form ({
-          title:"",
-          usersToNotify:[],
-          body:""
+          title:"Aprobación de objetivos",
+          body:"",
+          usersToNotify:[]
         }),
+      }
+    },
+    computed: {
+      getGoalInformation: function () {
+        let msg = "En el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
+        msg +='<br>'
+
+
+        for(let goal in this.Item.goals){
+          msg += "- código: "+ this.Item.goals[goal].code +"\n objetivo: "+this.Item.goals[goal].name+"<br>"
+        }
+        return msg
       }
     },
     methods:{
@@ -74,27 +94,25 @@
         let me = this
         if(me.notify.length > 0){
           me.notification.usersToNotify = me.notify
+          me.notification.body = me.getGoalInformation
           me.notification.post('/sender')
           .then(function (response) {
             toast.fire({
              type: 'success',
-             title: 'Mensaje con éxito'
+             title: 'Notificación enviada con éxito'
             });
-            me.notification.reset()
           })
           .catch(function (error) {
             console.log(error);
           });
-          me.notification.reset()
+          me.$emit('close-modal')
           me.notify=[]
         }else{
           swal.fire(
             'Error','Debe seleccionar un usuario a notificar','error'
           )
         }
-
       }
-
     },
     mounted() {
       this.getUsers()

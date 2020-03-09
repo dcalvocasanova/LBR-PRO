@@ -11,6 +11,7 @@
         <project-structure
           :show-as-structure-editor=false
           :show-as-goal-editor=false
+          :just-show-tree=true
         >
       </project-structure>
       </div>

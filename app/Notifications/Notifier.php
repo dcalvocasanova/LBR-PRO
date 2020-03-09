@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Support\Str;
 
 class Notifier extends Notification
 {
@@ -22,7 +23,7 @@ class Notifier extends Notification
      * @return void
      */
     public function __construct($details)
-    {       
+    {
        $this->details = $details;
     }
 
@@ -45,11 +46,14 @@ class Notifier extends Notification
      */
     public function toMail($notifiable)
     {
+        $body =$this->details['body'];
+        $replaced = Str::replaceArray('<br>', ['','',], $body);
         return (new MailMessage)
-                ->greeting($this->details['greeting'])
-                ->line($this->details['body'])
-                ->action($this->details['actionText'], $this->details['actionURL'])
-                ->line($this->details['thanks']);
+          ->greeting($this->details['greeting'])
+          ->line($this->details['title'])
+          ->line(Str::replaceArray('<br>', ['      ','      ','    ', '   ',''], $body))
+          ->action($this->details['actionText'], $this->details['actionURL'])
+          ->line($this->details['thanks']);
     }
 
     /**
@@ -77,9 +81,11 @@ class Notifier extends Notification
     public function toArray($notifiable)
     {
         return [
-          'message'=> $this->details['msg'],
+          'title'=> $this->details['title'],
           'body'=> $this->details['body'],
           'sender'=> $this->details['sender'],
+          'action'=>"pending",
+          'comments'=>'pending..',
           'admin'=> $notifiable
         ];
     }

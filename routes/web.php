@@ -129,6 +129,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-objetivos', function () {
       return view('admin.objetivos_estructura_proyecto');
   });
+  Route::get('/notificar-aprobacion-de-objetivos', function () {
+      return view('admin.aprobarObjetivos');
+  });
 });
 Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
 Route::group(['middleware' => ['permission:R_reports']], function () {});
@@ -306,4 +309,3 @@ Route::delete('/subprocesos/borrar/{id}', 'SubprocessController@destroy');
 Route::get('/subprocesos/buscar', 'SubprocessController@show');
 Route::get('/findmacroprocess', 'SubprocessController@search');
 Route::post('/uploadfile', 'SubprocessController@loadFiles');
-
