@@ -55,7 +55,6 @@ class Notifier extends Notification
           ->action($this->details['actionText'], $this->details['actionURL'])
           ->line($this->details['thanks']);
     }
-
     /**
      * Get the database representation of the notification.
      *

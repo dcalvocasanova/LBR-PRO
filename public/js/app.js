@@ -1829,6 +1829,232 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    showAsStructureEditor: Boolean,
+    showAsGoalEditor: Boolean,
+    justShowTree: Boolean
+  },
+  data: function data() {
+    return {
+      project_id: 0,
+      Projects: {},
+      //All registered projects
+      Levels: {},
+      // All levels from organization
+      currentNode: {},
+      //Current node to update or add
+      level: new Form({
+        id: "",
+        //level projectID
+        levels: "",
+        project_id: ""
+      })
+    };
+  },
+  methods: {
+    nodoSeleccionado: function nodoSeleccionado(item) {
+      if (item.notificated) {
+        swal.fire('Información', 'Ya el nivel de la estructura fue notificado, para más información dirijase al panel de notificaciones', 'info');
+      } else {
+        if (this.justShowTree) {
+          $('#NotificatorManager').modal('show');
+          this.currentNode = item;
+        }
+      }
+    },
+    getProjectsPaginator: function getProjectsPaginator() {
+      var _this = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('/proyectos?page=' + page).then(function (response) {
+        _this.Projects = response.data; //get all projects from page
+      });
+    },
+    getLogo: function getLogo(project) {
+      var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
+      return logo;
+    },
+    getProjects: function getProjects() {
+      var me = this;
+      axios.get('/proyectos').then(function (response) {
+        me.Projects = response.data; //get all projects
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getLevels: function getLevels() {
+      var me = this;
+      var url = '/estructura?id=' + me.project_id;
+      axios.get(url).then(function (response) {
+        me.Levels = JSON.parse(response.data.levels); //get all structure
+
+        me.level.id = response.data.id;
+        me.level.project_id = response.data.project_id;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    saveLevel: function saveLevel() {
+      var me = this;
+      me.currentNode.notificated = "true";
+      me.level.levels = JSON.stringify(me.Levels);
+      me.updateLevel();
+    },
+    updateLevel: function updateLevel() {
+      var me = this;
+      this.level.put('/estructura/actualizar').then(function (response) {
+        me.level.reset();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    loadLevelData: function loadLevelData(project) {
+      this.project_id = project.id;
+      this.getLevels();
+    },
+    salirNotificador: function salirNotificador() {
+      $('#NotificatorManager').modal('toggle');
+    },
+    salirYNotificar: function salirYNotificar() {
+      this.saveLevel();
+      $('#NotificatorManager').modal('toggle');
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this2.$parent.search;
+      axios.get('/findproject?q=' + query).then(function (response) {
+        _this2.Projects = response.data;
+      })["catch"](function () {});
+    });
+  },
+  mounted: function mounted() {
+    this.getProjects();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/HelpComponent.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/HelpComponent.vue?vue&type=script&lang=js& ***!
@@ -6227,7 +6453,7 @@ __webpack_require__.r(__webpack_exports__);
       msg += '<br>';
 
       for (var goal in this.Item.goals) {
-        msg += "- código: " + this.Item.goals[goal].code + "\n objetivo: " + this.Item.goals[goal].name + "<br>";
+        msg += "- código: " + this.Item.goals[goal].code + " objetivo: " + this.Item.goals[goal].name + "<br>";
       }
 
       return msg;
@@ -13325,6 +13551,25 @@ exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-b
 
 // module
 exports.push([module.i, "/*\n********************************************************************************************************\nThis theme adds emoji next to the day number for major holidays traditionally celebrated in the USA.\n\nThere are two types of holidays: officially-recognized holidays, and traditionally-celebrated ones\n(most of the traditionally-celebrated ones are connected with the Christian faith.)\n\nTo activate this theme, include the CSS and decorate the calendar instance with the `holidays-us-official`\nand/or `holidays-us-traditional` classes.\n********************************************************************************************************\n*/\n\n/*\n****************************************************\nTraditional US Holidays\n****************************************************\n*/\n\n/* Easter: example of a holiday that changes each year. Easy to pre-populate for a reasonable number of years. */\n.cv-wrapper.holiday-us-traditional .d2015-04-05 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2016-03-27 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2017-04-16 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2018-04-01 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2019-04-21 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2020-04-12 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2021-04-04 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2022-04-17 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n.cv-wrapper.holiday-us-traditional .d2023-04-09 .cv-day-number::before {\n\tcontent: \"\\271D\";\n}\n\n/* Cinco de Mayo */\n.cv-wrapper.holiday-us-traditional .d05-05 .cv-day-number::before {\n\tcontent: \"\\1F1F2\\1F1FD\";\n}\n\n/* Halloween - October 31 */\n.cv-wrapper.holiday-us-traditional .d10-31 .cv-day-number::before {\n\tcontent: \"\\1F383\";\n}\n\n/*\n****************************************************\nOfficial US Holidays\n****************************************************\n*/\n\n/**** Same date every year ****/\n\n/* New Year's Day - January 1 */\n.cv-wrapper.holiday-us-official .d01-01 .cv-day-number::before {\n\tcontent: \"\\1F37E\";\n}\n\n/* Independence Day - July 4 */\n.cv-wrapper.holiday-us-official .d07-04 .cv-day-number::before {\n\tcontent: \"\\1F1FA\\1F1F8\";\n}\n\n/* Veteran's Day - November 11 */\n.cv-wrapper.holiday-us-official .d11-11 .cv-day-number::before {\n\tcontent: \"\\1F396\";\n}\n\n/* Christmas Day - December 25 */\n.cv-wrapper.holiday-us-official .d12-25 .cv-day-number::before {\n\tcontent: \"\\1F384\";\n}\n\n/**** Same month position every year ****/\n\n/* Martin Luther King, Jr. Day - 3rd Monday of January */\n.cv-wrapper.holiday-us-official.m01 .day.dow1.instance3 .cv-day-number::before {\n\tcontent: \"\\270C\\1F3FE\";\n}\n\n/* Washington's Birthday - 3rd Monday in February */\n.cv-wrapper.holiday-us-official.m02 .day.dow1.instance3 .cv-day-number::before {\n\tcontent: \"\\1F34E\";\n}\n\n/* Memorial Day - last Monday in May */\n.cv-wrapper.holiday-us-official.m05 .day.dow1.lastInstance .cv-day-number::before {\n\tcontent: \"\\1F1FA\\1F1F8\";\n}\n\n/* Labor Day - 1st Monday in September */\n.cv-wrapper.holiday-us-official.m09 .day.dow1.instance1 .cv-day-number::before {\n\tcontent: \"\\1F4AA\";\n}\n\n/* Columbus Day - 2nd Monday in October */\n.cv-wrapper.holiday-us-official.m10 .day.dow1.instance2 .cv-day-number::before {\n\tcontent: \"\\2388\";\n}\n\n/* Thanksgiving Day - 4th Thursday of November */\n.cv-wrapper.holiday-us-official.m11 .day.dow4.instance4 .cv-day-number::before {\n\tcontent: \"\\1F64F\";\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -45608,6 +45853,36 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ProjectStructureComponent.vue?vue&type=style&index=0&lang=css&":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ProjectStructureComponent.vue?vue&type=style&index=0&lang=css& ***!
@@ -50214,6 +50489,333 @@ AlertSuccess_component.options.__file = "AlertSuccess.vue"
 /***/ })
 
 /******/ });
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container container-project" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.Projects.data, function(project) {
+                    return _c("tr", { key: project.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(project.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", { staticStyle: { width: "80px" } }, [
+                        _c("img", {
+                          staticClass: "img-profile-pic rounded-circle",
+                          attrs: {
+                            src: _vm.getLogo(project),
+                            alt: "Project logo"
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#addLevels"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.loadLevelData(project)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fas fa-swatchbook" }, [
+                              _vm._v("Niveles de estructura")
+                            ])
+                          ]
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.Projects },
+                on: { "pagination-change-page": _vm.getProjectsPaginator }
+              })
+            ],
+            1
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "addLevels",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "LevelModalOptions-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-xl modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h2",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "LevelModalOptions" },
+                    on: {
+                      click: function($event) {
+                        return _vm.saveLevel()
+                      }
+                    }
+                  },
+                  [_vm._v("Niveles de estructura del proyecto")]
+                ),
+                _vm._v(" "),
+                _vm._m(2)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "card" }, [
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "tree-menu" }, [
+                        _c(
+                          "div",
+                          { staticClass: "tree-viewer" },
+                          [
+                            _c("tree-menu", {
+                              staticClass: "item",
+                              attrs: {
+                                item: _vm.Levels,
+                                parent: _vm.Levels,
+                                showTreeEditor: _vm.showAsStructureEditor,
+                                showGoalEditor: _vm.showAsGoalEditor,
+                                justShowTree: _vm.justShowTree
+                              },
+                              on: { "clicked-node": _vm.nodoSeleccionado }
+                            })
+                          ],
+                          1
+                        )
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+                      on: {
+                        click: function($event) {
+                          return _vm.saveLevel()
+                        }
+                      }
+                    },
+                    [_vm._v("Salir")]
+                  )
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "NotificatorManager",
+          tabindex: "-4",
+          role: "dialog",
+          "aria-labelledby": "RelatedManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "card" }, [
+                  _c(
+                    "div",
+                    { staticClass: "card-body" },
+                    [
+                      _c("notificator-goals-chekimg", {
+                        attrs: { Item: _vm.currentNode },
+                        on: { "close-modal": _vm.salirYNotificar }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c("div", { staticClass: "container-buttons" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.salirNotificador()
+                            }
+                          }
+                        },
+                        [_vm._v("Salir")]
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title mt-0" }, [
+        _vm._v("Proyecto a notificar")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Logo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Niveles de estructura")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-title" }, [
+      _c("p", [
+        _vm._v(
+          "\n                A continuación se muestran los niveles de estructura del proyecto,\n                para enviar la solicitud de aprobación de los objetivos sólo de clic en el\n                área o departamento a notificar\n              "
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", {
+        staticClass: "modal-title",
+        attrs: { id: "InheritageManager" }
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
 
 /***/ }),
 
@@ -57772,7 +58374,7 @@ var render = function() {
         _vm._v(" "),
         _c("img", {
           staticClass: "img-profile rounded-circle",
-          attrs: { src: _vm.AvatarMainPage, alt: "User avatar" }
+          attrs: { src: _vm.AvatarMainPage, alt: _vm.user.namer }
         })
       ]
     ),
@@ -80660,6 +81262,7 @@ Vue.component('userNotificator', __webpack_require__(/*! ./components/UserNotifi
 Vue.component('userInboxNotificator', __webpack_require__(/*! ./components/UserNotificationInboxComponent.vue */ "./resources/js/components/UserNotificationInboxComponent.vue")["default"]);
 Vue.component('notificatorExample', __webpack_require__(/*! ./components/UserNotificatorComponent.vue */ "./resources/js/components/UserNotificatorComponent.vue")["default"]);
 Vue.component('notificatorGoalsChekimg', __webpack_require__(/*! ./components/UserNotificatorGoalsCheckingComponent.vue */ "./resources/js/components/UserNotificatorGoalsCheckingComponent.vue")["default"]);
+Vue.component('notificatorProjectStructure', __webpack_require__(/*! ./components/GoalsCheckingManagerComponent.vue */ "./resources/js/components/GoalsCheckingManagerComponent.vue")["default"]);
 Vue.component('profile', __webpack_require__(/*! ./components/ProfileComponent.vue */ "./resources/js/components/ProfileComponent.vue")["default"]);
 Vue.component('catalogs', __webpack_require__(/*! ./components/catalogs/CatalogsComponent.vue */ "./resources/js/components/catalogs/CatalogsComponent.vue")["default"]);
 Vue.component('MacroprocessCatalogs', __webpack_require__(/*! ./components/catalogs/MacroprocessComponent.vue */ "./resources/js/components/catalogs/MacroprocessComponent.vue")["default"]);
@@ -80756,6 +81359,93 @@ if (token) {
 //     wsPort: 6001,
 //     disableStats: true
 //});
+
+/***/ }),
+
+/***/ "./resources/js/components/GoalsCheckingManagerComponent.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/GoalsCheckingManagerComponent.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f& */ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f&");
+/* harmony import */ var _GoalsCheckingManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GoalsCheckingManagerComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _GoalsCheckingManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GoalsCheckingManagerComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GoalsCheckingManagerComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GoalsCheckingManagerComponent.vue?vue&type=template&id=1cb2ca4f&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GoalsCheckingManagerComponent_vue_vue_type_template_id_1cb2ca4f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

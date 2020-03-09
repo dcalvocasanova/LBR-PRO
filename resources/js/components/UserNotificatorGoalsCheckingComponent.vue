@@ -74,10 +74,8 @@
       getGoalInformation: function () {
         let msg = "En el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
         msg +='<br>'
-
-
         for(let goal in this.Item.goals){
-          msg += "- código: "+ this.Item.goals[goal].code +"\n objetivo: "+this.Item.goals[goal].name+"<br>"
+          msg += "- código: "+ this.Item.goals[goal].code +" objetivo: "+this.Item.goals[goal].name+"<br>"
         }
         return msg
       }

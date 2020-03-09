@@ -49,6 +49,7 @@ Vue.component('userNotificator', require('./components/UserNotificationsComponen
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
 Vue.component('notificatorExample', require('./components/UserNotificatorComponent.vue').default);
 Vue.component('notificatorGoalsChekimg', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
+Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
 
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
