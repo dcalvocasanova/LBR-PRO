@@ -44,14 +44,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="card">
-              <div class="card-title" v-show="justShowTree">
-                <p>
-                  A continuación se muestran los niveles de estructura del proyecto,
-                  para enviar la solicitud de aprobación de los objetivos sólo de clic en el
-                  área o departamento a notificar
-                </p>
-              </div>
+            <div class="card">              
               <div class="card-body">
                 <div class="row">
                   <div class="tree-menu">

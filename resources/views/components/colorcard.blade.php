@@ -4,11 +4,11 @@
       <div class="row no-gutters align-items-center">
         <div class="col mr-2">
           <div class="text-xs font-weight-bold text-{{$type}} text-uppercase mb-1">{{ $title }}</div>
-          <button class="btn btn-{{$type}}">
-            <a href="{{ $url }}">
-              <div class="h5 mb-0 font-weight-bold" style="color:white">{{ $subtitle }}</div>              
-            </a>
-          </button>
+          <a href="{{ $url }}">
+            <button class="btn btn-{{$type}}">
+              <div class="h5 mb-0 font-weight-bold" style="color:white">{{ $subtitle }}</div>         
+            </button>
+          </a>
         </div>
         <div class="col-auto">
             <i class="{{ $icon }} fa-2x text-gray-300"></i>

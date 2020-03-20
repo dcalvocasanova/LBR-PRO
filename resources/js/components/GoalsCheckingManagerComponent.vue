@@ -118,6 +118,7 @@
         project_id:0,
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
+        Lista:[],
         currentNode: {}, //Current node to update or add
         level: new Form({
           id:"", //level projectID

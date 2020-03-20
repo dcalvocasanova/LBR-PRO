@@ -19,7 +19,8 @@ class CreateProjectsTable extends Migration
             $table->string('logo_project',80);
             $table->string('logo_sponsor',80);
             $table->string('logo_auxiliar',80);
-            $table->string('description',100);  
+            $table->string('location',100);
+            $table->string('economic_activity',100);
             $table->timestamps();
         });
     }

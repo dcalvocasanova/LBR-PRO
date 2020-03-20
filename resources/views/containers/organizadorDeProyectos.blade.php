@@ -9,9 +9,11 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h2 mb-0 text-gray-900">Gestión de las tareas administrativas para configuración de los proyectos</h1>
+            <h1 class="h2 mb-0 text-gray-900">Gestión de usuarios, niveles y ajustes de los proyectos</h1>
           </div>
           <div class="row">
+
+          @if(auth()->user()->can('CRUD_projects') || auth()->user()->can('CR_projects'))
             @component('components.colorcard')
               @slot('title') Gestionar proyectos @endslot
               @slot('type') success @endslot
@@ -19,19 +21,34 @@
               @slot('url') /gestionar-proyectos @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
-            @if(auth()->user()->can('CRUD_catalogs') )
+          @endif
+
+            @if(auth()->user()->can('CRUD_projects'))
               @component('components.colorcard')
-                @slot('title') Gestionar usuarios del sistema @endslot
+                @slot('title') Gestionar niveles @endslot
                 @slot('type') info @endslot
                 @slot('subtitle') ir @endslot
-                @slot('url') gestionar-usuarios-del-sistema @endslot
+                @slot('url') gestionar-estructura-proyecto @endslot
+                @slot('icon') fas fa-swatchbook @endslot
+              @endcomponent
+            @endif
+
+            @if(auth()->user()->can('CRUD_users') || auth()->user()->can('CR_users'))
+              @component('components.colorcard')
+                @slot('title') Gestionar usuarios @endslot
+                @slot('type') success @endslot
+                @slot('subtitle') ir @endslot
+                @slot('url') gestionar-usuarios @endslot
                 @slot('icon') fas fa-user @endslot
               @endcomponent
+            @endif
+
+            @if(auth()->user()->can('CRUD_users') )
               @component('components.colorcard')
-                @slot('title') Gestionar catálogos @endslot
+                @slot('title') Validaciones y funciones @endslot
                 @slot('type') danger @endslot
                 @slot('subtitle') ir @endslot
-                @slot('url') /gestionar-catalogos @endslot
+                @slot('url') # @endslot
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
             @endif

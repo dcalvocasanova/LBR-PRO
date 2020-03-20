@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\ProjectStructure;
+use App\Function;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StructureProjectRequest;
@@ -76,6 +76,6 @@ class ProjectStructureController extends Controller
     {
       $project = ProjectStructure::where('project_id', $request->id)->first();
       $levels = json_decode($project->levels);
-      return $levels->children;      
+      return $levels->children;
     }
 }

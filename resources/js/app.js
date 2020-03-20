@@ -41,23 +41,32 @@ window.Fire =  new Vue(); //using global comunication
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+
+// Project component
 Vue.component('projects', require('./components/ProjectComponent.vue').default);
+/*
+* All Components related to users
+*/
 Vue.component('users', require('./components/UserComponent.vue').default);
 Vue.component('usersSystem', require('./components/UserSystemComponent.vue').default);
 Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('userNotificator', require('./components/UserNotificationsComponent.vue').default);
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
+Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
+Vue.component('profile', require('./components/ProfileComponent.vue').default);
+/*
+* All Components related to notifications
+*/
 Vue.component('notificatorExample', require('./components/UserNotificatorComponent.vue').default);
 Vue.component('notificatorGoalsChekimg', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
 Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
 
-Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
 
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('MacroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
 
-Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
+
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('questions', require('./components/QuestionComponent.vue').default);
@@ -70,7 +79,7 @@ Vue.component('macroprocesos', require('./components/MacroprocessComponent.vue')
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
-Vue.component('TreeStructureCompany', require('./components/treeComponent/CompanyTreeStructureComponent.vue').default);
+
 Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
@@ -86,8 +95,7 @@ Vue.component('tasks', require('./components/TaskManagerComponent.vue').default)
 const app = new Vue({
     el: '#app',
     data:{
-      search:'',
-      user:{}
+      search:''
     },
     methods:{
       searchit: _.debounce(() => {

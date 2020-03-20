@@ -9,8 +9,9 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <project-structure
-          :show-as-structure-editor=false
+          :show-as-structure-editor=true
           :show-as-goal-editor=false
+          :justShowTree=false
         >
       </project-structure>
       </div>
