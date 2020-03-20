@@ -1,17 +1,6 @@
 <template>
     <div class="container container-project">
       <div class="row">
-        <div class="col-12">
-          <div class="form-group">
-            <label class="bmd-label-floating">Asociado al proyecto</label>
-            <select v-model="form.relatedProjects" class=" form-control">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
-          </div>
-        </div>
-
-      </div>
-      <div class="row">
         <div class="col-md-5">
           <div class="card card-plain">
             <div class="card-header card-header-primary">
@@ -63,6 +52,16 @@
               <h4 class="card-title">{{ title }}</h4>
             </div>
             <div class="card-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Asociado al proyecto</label>
+                    <select v-model="form.relatedProjects" class=" form-control">
+                      <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               <div class="row">
                 <div class="col-md-7">
                   <div class="form-group">
