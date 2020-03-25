@@ -70,9 +70,9 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Macroproceso</label>
+                    <label class="bmd-label-floating"> Macroproceso </label>
                     <select v-model="form.macroprocess" class=" form-control":class="{ 'is-invalid': form.errors.has('macroprocess') }">
-                      <option v-for="macroprocess in Macroprocesses">{{ macroprocess.name }}</option>
+                      <option v-for="macroprocess in Levels">{{ macroprocess }}</option>
                     </select>
                     <has-error :form="form" field="macroprocess"></has-error>
                   </div>
@@ -80,7 +80,7 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Entradas</label>
-                    <select v-model="form.input" class=" form-control":class=" { 'is-invalid': form.errors.has('sex') }">
+                    <select v-model="form.input" class=" form-control":class=" { 'is-invalid': form.errors.has('input') }">
                       <option v-for="input in Inputs">{{ input.name }}</option>
                     </select>
                     <has-error :form="form" field="input"></has-error>
@@ -201,6 +201,11 @@
 export default {
   props: {
      showDeleteAndUpdateButton: Number,
+	 
+     Node: Object,
+	 Title: String,
+	 Title1: Array
+ 
   },
   data(){
     return{
@@ -218,11 +223,20 @@ export default {
             
            
           }),
+		  level: new Form({
+          id:"", //level projectID
+          levels:"",
+          project_id:""
+        }),
+		  project_id:2,
+		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-	        macroprocessFile:"",
+	      macroprocessFile:"",
           Macroprocesos:{}, //BD content
-		  Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
+		  Levels: {},
+		 //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
+		  Macroprocesses:[],
           Inputs:{},
           Providers:{},
           Risks:{},
@@ -383,6 +397,17 @@ export default {
             this.Indicators = response.data; //get all catalogs from category selected
       });
     },
+	getLevels(){
+          let me =this;
+          let url = '/estructura/macroprocesos?id='+me.project_id;
+          axios.get(url).then(function (response) {
+			 me.Levels = response.data;
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+		
+	},
   },
   created(){
     Fire.$on('searching',() => {
@@ -394,13 +419,19 @@ export default {
           .catch(() => {
           })
       })
+	 
   },
   mounted() {
+	  this.getLevels();
        this.getMacroprocesos();
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogIndicator();
+	   
+	  
+	   
+	   
   }
 }
 </script>

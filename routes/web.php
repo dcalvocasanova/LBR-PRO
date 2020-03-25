@@ -186,6 +186,7 @@ Route::get('/catalogo/permisos-del-rol/{id}', 'CatalogController@getAllPermisssi
 Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisssionsFromRole');
 /*Manage Project Levels Structure*/
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
+Route::get('/estructura/macroprocesos', 'ProjectStructureController@getMacroprocessProject');
 Route::put('/estructura/actualizar', 'ProjectStructureController@update');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
