@@ -53,10 +53,10 @@ class HomeController extends Controller
         $users = User::find($usuarios);
         $details = [
             'greeting' => 'Un saludo cordial',
-            'msg' => $request->msg,
+            'title' => $request->title,
             'body' => $request->body,
-            'sender' => Auth::user(),
-            'thanks' => 'Esperamos pronto de el visto bueno',
+            'sender' => Auth::user()->id,
+            'thanks' => 'Visita la plataforma para mayor información',
             'actionText' => 'Ir al sitio web',
             'actionURL' => url('/notificaciones'),
         ];

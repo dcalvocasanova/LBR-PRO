@@ -14,11 +14,11 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $user = User::create([
-          'name' => 'John Doe',
+          'name' => 'Administrador',
           'identification' =>'127001',
           'email' => 'super@admin.com',
           'password' => bcrypt('password'),
-          'type' => 'N/A',
+          'type' => 'sys',
           'gender' => 'N/A',
           'sex' => 'N/A',
           'ethnic' => 'N/A',
@@ -31,6 +31,6 @@ class UsersTableSeeder extends Seeder
           'workingsince' => '1900-01-01 00:00:01',
           'avatar' => 'default.png'
         ]);
-        $user->assignRole('Administrador');        
+        $user->assignRole('Administrador');
     }
 }

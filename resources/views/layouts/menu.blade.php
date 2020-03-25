@@ -24,23 +24,42 @@
   {{-- Heading
   <div class="sidebar-heading">
     Panel de gestión
-  </div> --}}
+  </div>
+  --}}
+
 
   {{-- Nav Item - Projects Collapse Menu--}}
-  @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_projects','CR_projects'))
+  @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_users'))
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralData" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-folder-open"></i>
-      <span>Gestión del sistema</span>
+      <span>Configuración general</span>
     </a>
     <div id="collapseGeneralData" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header"> Principales tareas </h6>
-        <a class="collapse-item" href="/gestionar-actividades">Gestionar </a>
+        <h6 class="collapse-header"> Tareas </h6>
+        <a class="collapse-item" href="/gestionar-variables-del-sistema">Gestionar </a>
       </div>
     </div>
   </li>
   @endif
+
+  {{-- Nav Item - Projects Collapse Menu--}}
+  @if(@Auth::user()->hasAnyPermission('CR_projects','CRUD_projects','CR_users','CRUD_users'))
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralProjects" aria-expanded="true" aria-controls="collapseTwo">
+      <i class="fas fa-folder-open"></i>
+      <span>Proyectos</span>
+    </a>
+    <div id="collapseGeneralProjects" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header"> Proyectos </h6>
+        <a class="collapse-item" href="/gestionador-proyectos">Gestionar</a>
+      </div>
+    </div>
+  </li>
+  @endif
+
   {{-- Nav Item - Users Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_macroprocess','CRUD_tasks'))
   <li class="nav-item">
@@ -50,10 +69,6 @@
     </a>
     <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_projects','CR_users','CRUD_users'))
-          <h6 class="collapse-header"> Proyectos </h6>
-          <a class="collapse-item" href="/gestionador-proyectos">Gestionar </a>
-        @endif
         @if(@Auth::user()->can('CRUD_parameters'))
           <h6 class="collapse-header">Parametrización </h6>
           <a class="collapse-item" href="/gestionador-parametrizacion">Gestionar</a>

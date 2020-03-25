@@ -9,22 +9,29 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h2 mb-0 text-gray-900">Gestiรณn de usuarios, niveles y ajustes de los proyectos</h1>
+            <h1 class="h2 mb-0 text-gray-900">Gestión de usuarios, niveles y ajustes de los proyectos</h1>
           </div>
           <div class="row">
             @if(auth()->user()->can('CRUD_macroprocess') )
               @component('components.colorcard')
-                @slot('title') Catรกlogo de acciones @endslot
+                @slot('title') Catálogo de acciones @endslot
                 @slot('type') success @endslot
                 @slot('subtitle') ir @endslot
                 @slot('url') gestionar-catalogos-macroprocesos @endslot
                 @slot('icon') fas fa-tags @endslot
               @endcomponent
               @component('components.colorcard')
-                @slot('title') Objetivos @endslot
+                @slot('title') Gestionar objetivos @endslot
                 @slot('type') danger @endslot
                 @slot('subtitle') ir @endslot
                 @slot('url') gestionar-objetivos @endslot
+                @slot('icon') fas fa-boxes @endslot
+              @endcomponent
+              @component('components.colorcard')
+                @slot('title') Notificar aprobación de objetivos @endslot
+                @slot('type') danger @endslot
+                @slot('subtitle') ir @endslot
+                @slot('url') notificar-aprobacion-de-objetivos @endslot
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
               @component('components.colorcard')

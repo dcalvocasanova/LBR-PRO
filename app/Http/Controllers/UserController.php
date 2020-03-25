@@ -19,6 +19,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\userRegisterNotificator;
 
 use Intervention\Image\Facades\Image as Image;
 
@@ -56,10 +58,14 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
       $user = User::create($request->all());
-      $randomPass = '123456';//Str::random(8);
+      $randomPass = Str::random(8);
       $user->password =Hash::make($randomPass);
       if($user->save()){
-          $this->sendPassword($randomPass, $email,$nombre);
+        $details = [
+            'usuario' => 'Un saludo cordial '.$user->name,
+            'password' => 'La contraseña temporal es: '.$randomPass
+        ];
+        Notification::send($user, new userRegisterNotificator($details)); //send several UserSystemComponent
       }
       if(isset($request->role)){
           $user->assignRole($request->role);
@@ -212,20 +218,7 @@ class UserController extends Controller
       $user = Auth::user();
       return $user->notifications;
     }
-
-    /**
-     * Send Password
-     *
-     * @param  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function sendPassword($randomPass, $email, $nombre)
-    {
-      $message = ' contraseña temporal '.$randomPass;
-      $for = $email;
-        Mail::to($for)->send(new EmailMessage($nombre, $message));
-        return redirect()->back();
-    }
+  
     /**
      * Get Excel
      *
@@ -239,35 +232,13 @@ class UserController extends Controller
 
 	  public function loadUsers(Request $request){
 
-		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
-
-		//$file = $request->file('file');
-		//$file= $fileName;
-    //  return $request->file('archivo')->getClientOriginalName();
     $datos = Excel::import(new UsersImport, $request->file('archivo'));
-
-  //  return $datos->failures();
-
-		//Excel::import(new UsersImport, $request->file('archivo'));
-		//dd($request);
-		//dd($request->users);
-		//$file = $request->file('users');
-
-
-    //$file->getRealPath();
-    //$file->getClientOriginalName();
-    /*$file->getClientOriginalExtension();
-    $file->getSize();
-    $file->getMimeType();*/
-		//return response()->json(['success'=>'You have successfully upload file'. $file]);
-
-
 		$file =  $request->file('archivo');
         if(!empty($file)){
           $fileName = rand().'.'.$file->getClientOriginalExtension();
           $request->file('archivo')->move(public_path('upload'), $fileName);
           return response()->json(['success'=>'You have successfully upload file.']);
         }
-        return response()->json(['fail'=>'Mamo, no envió nada.']);
+        return response()->json(['fail'=>'No envió nada.']);
 	}
 }

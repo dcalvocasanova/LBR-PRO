@@ -8,12 +8,12 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-        <project-structure
-          :show-as-structure-editor=true
+        <notificator-project-structure
+          :show-as-structure-editor=false
           :show-as-goal-editor=false
-          :justShowTree=false
+          :just-show-tree=true
         >
-      </project-structure>
+      </notificator-project-structure>
       </div>
     </div>
     {{-- Adding footer --}}

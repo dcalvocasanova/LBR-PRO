@@ -18,16 +18,16 @@ Route::get('/', function () {
 /*
 * Grant access only for users with CRUD_users permission
 */
-Route::get('/gestionar-actividades', function () {
-    return view('containers.activities');
-})->middleware('permission:CRUD_users|CRUD_projects|CR_projects|CRUD_catalogs');
+Route::get('/gestionar-variables-del-sistema', function () {
+    return view('containers.organizadorTareasDelSistema');
+})->middleware('permission:CRUD_users|CRUD_catalogs');
 
 /*
 * Grant access only for users with CRUD_users permission
 */
 Route::get('/gestionador-proyectos', function () {
-    return view('containers.projectManager');
-})->middleware('permission:CRUD_users|CR_users|CRUD_projects|CR_projects|CRUD_catalogs');
+    return view('containers.organizadorDeProyectos');
+})->middleware('permission:CRUD_users|CR_users|CRUD_projects|CR_projects');
 
 
 /*
@@ -129,6 +129,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-objetivos', function () {
       return view('admin.objetivos_estructura_proyecto');
   });
+  Route::get('/notificar-aprobacion-de-objetivos', function () {
+      return view('admin.aprobarObjetivos');
+  });
 });
 Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
 Route::group(['middleware' => ['permission:R_reports']], function () {});
@@ -168,6 +171,7 @@ Route::post('/password/reset','ResetPasswordController@reset');
 Route::get('/home', 'HomeController@index')->name('home');
 /*Manage Projects*/
 Route::get('/proyectos', 'ProjectController@index');
+Route::get('/todos-los-proyectos', 'ProjectController@getAllProjects');
 Route::put('/proyectos/actualizar', 'ProjectController@update');
 Route::post('/proyectos/guardar', 'ProjectController@store');
 Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
@@ -190,6 +194,7 @@ Route::put('/estructura/actualizar', 'ProjectStructureController@update');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
+Route::get('/estructura/lista-niveles', 'ProjectStructureController@getListOfProjectLevels');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuario', 'UserController@getCurrentUser');
@@ -306,4 +311,3 @@ Route::delete('/subprocesos/borrar/{id}', 'SubprocessController@destroy');
 Route::get('/subprocesos/buscar', 'SubprocessController@show');
 Route::get('/findmacroprocess', 'SubprocessController@search');
 Route::post('/uploadfile', 'SubprocessController@loadFiles');
-
