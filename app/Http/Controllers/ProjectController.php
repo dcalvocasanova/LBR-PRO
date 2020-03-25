@@ -20,6 +20,18 @@ class ProjectController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllProjects()
+    {
+      $projects = Project::all();
+      return $projects;
+    }
+
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -66,7 +78,8 @@ class ProjectController extends Controller
       }
       $project->logo_auxiliar = isset($request->logo_auxiliar)? $request->logo_auxiliar:"default.png";
 
-      $project->description = isset($request->description)? $request->description:"Proyecto carga de trabajo para ". $request->name;
+      $project->location = isset($request->ubicacion)? $request->ubicacion:"Nacional";
+      $project->economic_activity = isset($request->actividad_economica)? $request->actividad_economica:"Sin fines de lucro";
       $project->save();
       return $project;
     }
@@ -81,17 +94,6 @@ class ProjectController extends Controller
     {
       $project = Project::findOrFail($request->id);
       return $project;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Project $project)
-    {
-        //
     }
 
     /**
@@ -160,10 +162,17 @@ class ProjectController extends Controller
         }
       }
 
-      if (!empty($project->description))
+      if (isset($request->ubicacion))
       {
-        $project->description = $request->description;
+        $project->location = $request->ubicacion;
       }
+
+      if (isset($request->actividad_economica))
+      {
+        $project->economic_activity = $request->actividad_economica;
+      }
+
+
       $project->save();
     }
 

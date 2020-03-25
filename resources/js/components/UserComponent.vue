@@ -53,6 +53,16 @@
             </div>
             <div class="card-body">
               <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Asociado al proyecto</label>
+                    <select v-model="form.relatedProjects" class=" form-control">
+                      <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
                 <div class="col-md-7">
                   <div class="form-group">
                     <label class="bmd-label-floating">Identificación</label>
@@ -234,12 +244,14 @@ export default {
             salary:"",
             workday:"",
             education:"",
-            avatar:""
+            avatar:"",
+            relatedProjects:""
           }),
           title:"Agregar nuevo usuario", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	        userFile:"",
           Users:{}, //BD content
+          Projects:{},
           Sex:{},
           Genders:{},
           Ethnics:{}
@@ -287,6 +299,14 @@ export default {
       axios.get('/usuarios?page=' + page)
       .then(response => {
             me.Users = response.data; //get all projects from page
+      });
+    },
+    getProjectos(){
+      let me =this;
+      me.clearFields();
+      axios.get('/todos-los-proyectos')
+      .then(response => {
+            me.Projects = response.data; //get all projects from page
       });
     },
     getTemplate() {
@@ -408,10 +428,11 @@ export default {
       })
   },
   mounted() {
-       this.getUsuarios();
-       this.LoadCatalogSex();
-       this.LoadCatalogGender();
-       this.LoadCatalogEthnic();
+     this.getProjectos()
+     this.getUsuarios()
+     this.LoadCatalogSex()
+     this.LoadCatalogGender()
+     this.LoadCatalogEthnic()
   }
 }
 </script>

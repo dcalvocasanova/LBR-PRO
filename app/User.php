@@ -31,7 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'identification', 'type', 'email','salary', 'position', 'job','birthday','workingsince', 'education','workday', 'avatar', 'gender','ethnic','sex','password'
+        'name', 'identification', 'type', 'email','salary', 'position', 'job','birthday','workingsince', 'education','workday', 'avatar', 'gender','ethnic','sex','password','relatedProjects'
     ];
 
     /**
@@ -49,7 +49,10 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime', 'workingsince'=> 'date', 'birthday'=> 'date'
+        'email_verified_at' => 'datetime',
+        'workingsince'=> 'date',
+        'birthday'=> 'date',
+        'relatedProjects' => 'array'
     ];
 
     /**
@@ -115,6 +118,9 @@ class User extends Authenticatable implements MustVerifyEmail
         });
         static::creating(function ($query) {
             $query->sex = $query->sex ?? 'N/A';
+        });
+        static::creating(function ($query) {
+            $query->relatedProjects = $query->relatedProjects ?? '';
         });
         static::creating(function ($query) {
             $query->password = $query->password ?? Str::random(15);

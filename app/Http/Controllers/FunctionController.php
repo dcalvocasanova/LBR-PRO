@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\ProjectStructure;
+use App\Function;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StructureProjectRequest;
@@ -15,39 +15,9 @@ class ProjectStructureController extends Controller
      */
     public function getProjectLevels(Request $request)
     {
-     $levels = ProjectStructure::where('project_id', $request->id)->first();
-	  
-		return ($levels);
+      $levels = ProjectStructure::where('project_id', $request->id)->first();
+      return $levels;
     }
-	
-	//obtiene el nombre de los macroprocesos
-	public function getMacroprocessProject(Request $request)
-    {
-        $levels = ProjectStructure::where('project_id', $request->id)->first();
-		$obj = json_decode($levels->levels,true);
-		$macroprocesos = array();
-		$this->hasChildren($obj,$macroprocesos);
-		return ($macroprocesos);
-		//return $obj['children'][0]['macroprocess'][0]['name'];
-    }
-	
-	//funci'on recursiva para recuperar los macroprocesos
-	function hasChildren($children,&$macroprocesos)
-	{
-		if(isset($children['children']) and !empty($children['children']) ){
-		 	for ( $i = 0; $i< count($children['children']); $i++){
-				$this->hasChildren($children['children'][$i],$macroprocesos);
-	   		 }
-		}
-		else{
-			if(isset($children['macroprocess']) and !empty($children['macroprocess']) ){
-		 		for ( $i = 0; $i< count($children['macroprocess']); $i++){
-					array_push($macroprocesos,$children['macroprocess'][$i]['name']);
-				 }
-			}
-		}
-	}
-	
 
     /**
      * Store a newly created resource in storage.
@@ -106,6 +76,6 @@ class ProjectStructureController extends Controller
     {
       $project = ProjectStructure::where('project_id', $request->id)->first();
       $levels = json_decode($project->levels);
-      return $levels->children;      
+      return $levels->children;
     }
 }

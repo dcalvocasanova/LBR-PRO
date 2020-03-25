@@ -46,8 +46,12 @@
                   <has-error :form="form" field="name"></has-error>
               </div>
               <div class="form-group">
-                  <label>Descripción</label>
-                  <input v-model="form.description" type="text" class="form-control">
+                  <label>Ubicación</label>
+                  <input v-model="form.ubicacion" type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                  <label>Actividad económica</label>
+                  <input v-model="form.actividad_economica" type="text" class="form-control">
               </div>
               <div class="form-group">
                 <label for="logo_organization" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo de la organización <span v-html="loadLogoProject"></span></i> </label>
@@ -109,7 +113,8 @@
           logo_project:"", //Project's logo
           logo_sponsor:"", //Sponsor's logo
           logo_auxiliar:"", //Auxiliar's logo
-          description:"", // description
+          ubicacion:"", // ubicación
+          actividad_economica:"" // actividad económica
         }),
         level: new Form({
           id:"", //level projectID
@@ -234,14 +239,14 @@
           this.update = project.id
           let me =this;
           me.title="Actualizar proyecto";
-          let url = '/proyectos/buscar?id='+this.update;
-          axios.get(url).then(function (response) {
-            me.form.fill(response.data);
-          })
-          .catch(function (error) {
-              // handle error
-              console.log(error);
-          });
+          me.form.id = project.id
+          me.form.name = project.name
+          me.form.logo_project = project.logo_project
+          me.form.logo_sponsor = project.logo_sponsor
+          me.form.logo_auxiliar = project.logo_auxiliar
+          me.form.ubicacion = project.location
+          me.form.actividad_economica = project.economic_activity
+
       },
       deleteProject(project){
         let me =this;
