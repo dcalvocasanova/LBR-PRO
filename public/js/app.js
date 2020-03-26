@@ -3897,646 +3897,9 @@ __webpack_require__.r(__webpack_exports__);
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ProjectStructureComponent.vue?vue&type=script&lang=js& ***!
   \************************************************************************************************************************************************************************************/
 /*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    showAsStructureEditor: Boolean,
-    showAsGoalEditor: Boolean,
-    justShowTree: Boolean
-  },
-  data: function data() {
-    return {
-      project_id: 0,
-      goalsInherited: [],
-      relatedGoals: [],
-      relatedTest: [[]],
-      temp: [],
-      Macroprocessgoals: [],
-      update: 0,
-      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-      Projects: {},
-      //All registered projects
-      Levels: {},
-      // All levels from organization
-      currentNode: {},
-      //Current node to update or add
-      parentNode: {},
-      //Parent node to update or add
-      updateNodeControl: 0,
-      //
-      itemsCopy: [],
-      title: "",
-      newName: "",
-      newCode: "",
-      level: new Form({
-        id: "",
-        //level projectID
-        levels: "",
-        project_id: ""
-      })
-    };
-  },
-  methods: {
-    nodoSeleccionado: function nodoSeleccionado(item) {
-      if (this.justShowTree) {
-        $('#NotificatorManager').modal('show');
-        this.currentNode = item;
-      }
-    },
-    asignarObjetivoANodo: function asignarObjetivoANodo(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0;
-      this.getGoalName();
-    },
-    relateGoals: function relateGoals(nodo) {
-      var me = this;
-      me.currentNode = nodo.item;
-      me.parentNode = nodo.parent;
-      me.updateNodeControl = 0;
-      me.relatedGoals = []; // Empty two random cells per row
-
-      for (var i = 0; i < me.parentNode.goals.length; ++i) {
-        var temp1 = [];
-        me.relatedGoals.push(temp1);
-        me.relatedGoals[i].push(me.parentNode.goals[i]);
-
-        for (var k = 0; k < me.parentNode.goals.length; ++k) {
-          me.relatedGoals[i].push(me.currentNode.goals[k]);
-        }
-      } // Empty two random cells per row
-
-
-      for (var i = 0; i < me.relatedGoals.length; ++i) {
-        for (var k = 0; k < me.relatedGoals[i].length; ++k) {
-          me.itemsCopy = me.relatedGoals.slice();
-          var obj = Object.assign({}, me.itemsCopy[i][k]);
-          var randomCellIndex = me.rndStr(15);
-          obj.randomCellIndex = randomCellIndex;
-          obj.related = "";
-          me.itemsCopy[i][k] = obj; //replace the old obj with the new modified one.
-        }
-      }
-
-      this.getGoals();
-    },
-    CreateMacroprocess: function CreateMacroprocess(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0;
-      me.title = "Agregar Macroproceso";
-      this.getMacroprocessData();
-    },
-    asignarObjetivoHeredado: function asignarObjetivoHeredado(nodo) {
-      var me = this;
-      me.currentNode = nodo.item;
-      me.parentNode = nodo.parent;
-      me.updateNodeControl = 0;
-      this.getGoalsInherited();
-    },
-    addObjetivoHeredado: function addObjetivoHeredado(node) {
-      var me = this;
-
-      if (node.parent !== node.item) {} else {
-        node.parent.children = [];
-      }
-    },
-    getProjectsPaginator: function getProjectsPaginator() {
-      var _this = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/proyectos?page=' + page).then(function (response) {
-        _this.Projects = response.data; //get all projects from page
-      });
-    },
-    getLogo: function getLogo(project) {
-      var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
-      return logo;
-    },
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getResultLevel: function getResultLevel() {
-      var _this2 = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/estructura?page=' + page).then(function (response) {
-        _this2.Levels = response.data; //get all projects from page
-      });
-    },
-    getLevels: function getLevels() {
-      var me = this;
-      var url = '/estructura?id=' + me.project_id;
-      axios.get(url).then(function (response) {
-        me.Levels = JSON.parse(response.data.levels); //get all structure
-
-        me.level.id = response.data.id;
-        me.level.project_id = response.data.project_id;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    saveLevel: function saveLevel() {
-      var me = this;
-      me.level.levels = JSON.stringify(me.Levels);
-      me.updateLevel();
-    },
-    updateLevel: function updateLevel() {
-      var me = this;
-      this.level.put('/estructura/actualizar').then(function (response) {
-        toast.fire({
-          type: 'success',
-          title: 'Niveles de estructura registrado con éxito'
-        });
-        me.level.reset();
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    loadLevelData: function loadLevelData(project) {
-      this.project_id = project.id;
-      this.getLevels();
-    },
-    makeParent: function makeParent(item) {
-      var me = this;
-      me.currentNode = item;
-      me.currentNode.featherNode = false;
-      me.updateNodeControl = 0;
-      Vue.set(item, 'children', []);
-      this.getNodeName();
-    },
-    addChild: function addChild(item) {
-      var me = this;
-      me.getNodeName();
-      me.currentNode = item;
-      me.updateNodeControl = 0;
-      me.title = "Agregar nivel de estructura";
-    },
-    editNode: function editNode(item) {
-      var me = this;
-      me.getNodeName();
-      me.currentNode = item;
-      me.newName = me.currentNode.name;
-      me.title = "Modificar nombre del nivel de estructura";
-      me.updateNodeControl = 1;
-    },
-    addNode: function addNode() {
-      var me = this;
-      me.currentNode.children.push({
-        name: me.newName,
-        level: me.currentNode.level + 1,
-        numGoals: 0,
-        featherNode: true,
-        goals: [],
-        inheritedGoals: [],
-        macroprocess: []
-      });
-      me.salir();
-    },
-    addGoal: function addGoal() {
-      var me = this;
-      me.currentNode.numGoals += 1;
-      me.currentNode.goals.push({
-        code: me.newCode,
-        name: me.newName,
-        pos: me.currentNode.numGoals,
-        // definir contador para objetivos
-        objectCode: me.rndStr(7)
-      });
-      me.title = "Agregar Objetivo";
-      me.salirObjetivos();
-    },
-    addMacroprocess: function addMacroprocess() {
-      var me = this;
-      me.currentNode.macroprocess.push({
-        code: me.newCode,
-        name: me.newName,
-        goals: me.Macroprocessgoals // definir contador para objetivos
-
-      });
-      me.salirMacroprocess();
-    },
-    RelacionarObjetivos: function RelacionarObjetivos() {
-      var me = this;
-      me.currentNode.inheritedGoals.push({
-        goals: me.goalsInherited
-      });
-      me.title = "Relacionar objetivos";
-      me.salirRelacionarObjetivos();
-    },
-    updateNode: function updateNode() {
-      var me = this;
-      me.currentNode.name = me.newName;
-      me.salir();
-    },
-    deleteNode: function deleteNode(node) {
-      var me = this;
-
-      if (node.parent !== node.item) {
-        node.parent.children = me.deleteIndex(node.parent.children, node.item);
-      } else {
-        node.parent.children = [];
-      }
-    },
-    deleteIndex: function deleteIndex(arr, index) {
-      return arr.filter(function (i) {
-        return i != index;
-      });
-    },
-    salir: function salir() {
-      $('#LevelManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirObjetivos: function salirObjetivos() {
-      $('#GoalManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirManejador: function salirManejador() {
-      $('#InheritedManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirNotificador: function salirNotificador() {
-      $('#NotificatorManager').modal('toggle');
-    },
-    salirRelacionarObjetivos: function salirRelacionarObjetivos() {
-      $('#RelatedManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirMacroprocess: function salirMacroprocess() {
-      $('#MacroprocessManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getMacroprocessData: function getMacroprocessData() {
-      $('#MacroprocessManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getNodeName: function getNodeName() {
-      $('#LevelManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-    },
-    getGoalsInherited: function getGoalsInherited() {
-      $('#InheritedManager').modal('show');
-    },
-    getGoals: function getGoals() {
-      $('#RelatedManager').modal('show');
-    },
-    getGoalName: function getGoalName() {
-      $('#GoalManager').modal('show');
-    },
-    rndStr: function rndStr(len) {
-      var text = " ";
-      var chars = "abcdefghijklmnopqrstuvwxyz123456789";
-
-      for (var i = 0; i < len; i++) {
-        for (var k = 0; k < 8; k++) {
-          text += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-      }
-
-      return text;
-    }
-  },
-  created: function created() {
-    var _this3 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this3.$parent.search;
-      axios.get('/findproject?q=' + query).then(function (response) {
-        _this3.Projects = response.data;
-      })["catch"](function () {});
-    });
-  },
-  mounted: function mounted() {
-    this.getProjects();
-  }
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\resources\\js\\components\\ProjectStructureComponent.vue: Unexpected token, expected \",\" (395:10)\n\n\u001b[0m \u001b[90m 393 | \u001b[39m            }\u001b[0m\n\u001b[0m \u001b[90m 394 | \u001b[39m          }\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 395 | \u001b[39m          \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mgetGoals()\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 396 | \u001b[39m        }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 397 | \u001b[39m      \u001b[33mCreateMacroprocess\u001b[39m(item){\u001b[0m\n\u001b[0m \u001b[90m 398 | \u001b[39m          let me \u001b[33m=\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n    at Parser.raise (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:6387:17)\n    at Parser.unexpected (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:7704:16)\n    at Parser.expect (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:7690:28)\n    at Parser.parseObj (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:9221:14)\n    at Parser.parseExprAtom (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8855:28)\n    at Parser.parseExprSubscripts (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8483:23)\n    at Parser.parseMaybeUnary (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8463:21)\n    at Parser.parseExprOps (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8329:23)\n    at Parser.parseMaybeConditional (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8302:23)\n    at Parser.parseMaybeAssign (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:8249:21)\n    at Parser.parseExportDefaultExpression (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:11081:24)\n    at Parser.parseExport (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:10976:31)\n    at Parser.parseStatementContent (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:10004:27)\n    at Parser.parseStatement (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:9900:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:10476:25)\n    at Parser.parseBlockBody (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:10463:10)\n    at Parser.parseTopLevel (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:9829:10)\n    at Parser.parse (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:11341:17)\n    at parse (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\parser\\lib\\index.js:11377:38)\n    at parser (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\core\\lib\\transformation\\normalize-file.js:166:34)\n    at normalizeFile (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\core\\lib\\transformation\\normalize-file.js:100:11)\n    at runSync (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\core\\lib\\transformation\\index.js:44:43)\n    at runAsync (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\core\\lib\\transformation\\index.js:35:14)\n    at process.nextTick (C:\\Users\\Deivid\\Desktop\\DEV-PROJECTS\\PROCAME\\node_modules\\@babel\\core\\lib\\transform.js:34:34)\n    at process._tickCallback (internal/process/next_tick.js:61:11)");
 
 /***/ }),
 
@@ -8897,6 +8260,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -62734,100 +62103,6 @@ var render = function() {
                       })
                     }
                   }
-
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("assign-goal", _vm.item)
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-columns" }, [
-                      _vm._v("Asignar objetivo")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _vm.isRoot != 0
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { "data-toggle": "tooltip" },
-                        on: {
-                          click: function($event) {
-                            return _vm.$emit("assign-inhetited-goal", {
-                              item: _vm.item,
-                              parent: _vm.parent
-                            })
-                          }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "fas fa-clipboard-list" }, [
-                          _vm._v("Heredar objetivos")
-                        ])
-                      ]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.isRoot == 0
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { "data-toggle": "tooltip" },
-                        on: {
-                          click: function($event) {
-                            return _vm.$emit("relate-goal", {
-                              item: _vm.item,
-                              parent: _vm.parent
-                            })
-                          }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "fas fa-columns" }, [
-                          _vm._v("Relacionar objetivos")
-                        ])
-                      ]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                !_vm.isParent
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { "data-toggle": "tooltip" },
-                        on: {
-                          click: function($event) {
-                            return _vm.$emit("create-macroprocess", _vm.item)
-                          }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "fas fa-connectdevelop" }, [
-                          _vm._v("Crear Macroproceso")
-                        ])
-                      ]
-                    )
-                  : _vm._e()
-              ]
-            )
-          ])
-        ]
-      ),
-
                 },
                 [_c("i", { staticClass: "fas fa-trash-alt" })]
               )
@@ -62848,6 +62123,90 @@ var render = function() {
               staticClass: "controls-gol-edit"
             },
             [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("assign-goal", _vm.item)
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-columns" }, [
+                    _vm._v("Asignar objetivo")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _vm.isRoot != 0
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { "data-toggle": "tooltip" },
+                      on: {
+                        click: function($event) {
+                          return _vm.$emit("assign-inhetited-goal", {
+                            item: _vm.item,
+                            parent: _vm.parent
+                          })
+                        }
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-clipboard-list" }, [
+                        _vm._v("Heredar objetivos")
+                      ])
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.isRoot == 0
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { "data-toggle": "tooltip" },
+                      on: {
+                        click: function($event) {
+                          return _vm.$emit("relate-goal", {
+                            item: _vm.item,
+                            parent: _vm.parent
+                          })
+                        }
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-columns" }, [
+                        _vm._v("Relacionar objetivos")
+                      ])
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.isParent
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { "data-toggle": "tooltip" },
+                      on: {
+                        click: function($event) {
+                          return _vm.$emit("create-macroprocess", _vm.item)
+                        }
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-connectdevelop" }, [
+                        _vm._v("Crear Macroproceso")
+                      ])
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c(
                 "span",
                 {
@@ -62905,7 +62264,6 @@ var render = function() {
           )
         ])
       ]),
-
       _vm._v(" "),
       _vm.isParent
         ? _c(
