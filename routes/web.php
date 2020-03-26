@@ -34,7 +34,7 @@ Route::get('/gestionador-proyectos', function () {
 * Grant access only for users with CRUD_parameters
 */
 Route::get('/gestionador-parametrizacion', function () {
-    return view('containers.parametrizationManager');
+    return view('containers.organizadorParametrizacionGeneral');
 })->middleware('permission:CRUD_parameters');
 
 /*
@@ -55,7 +55,7 @@ Route::get('/parametrizar-criterios-evaluacion', function () {
 * Grant access only for users with CRUD_parameters
 */
 Route::get('/gestionador-macroprocesos', function () {
-    return view('containers.macroprocessManager');
+    return view('containers.organizadorParametrizacionDeProyectos');
 })->middleware('permission:CRUD_macroprocess');
 
 /*
@@ -93,7 +93,6 @@ Route::get('/gestionar-catalogos', function () {
 Route::get('/gestionar-catalogos-macroprocesos', function () {
     return view('admin.catalogos_macroprocesos');
 })->middleware('permission:CRUD_catalogs');
-
 
 /*
 * Grant access only for users with CRUD_task
