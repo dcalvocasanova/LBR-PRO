@@ -9018,17 +9018,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -62913,61 +62902,7 @@ var render = function() {
                       ])
                     ]
                   )
-                : _vm._e(),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("assign-goal", _vm.item)
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-columns" })]
-              ),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("assign-inhetited-goal", {
-                        item: _vm.item,
-                        parent: _vm.parent
-                      })
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-clipboard-list" })]
-              ),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("relate-goal", {
-                        item: _vm.item,
-                        parent: _vm.parent
-                      })
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-columns" })]
-              ),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("create-macroprocess", _vm.item)
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-connectdevelop" })]
-              )
+                : _vm._e()
             ]
           )
         ])
