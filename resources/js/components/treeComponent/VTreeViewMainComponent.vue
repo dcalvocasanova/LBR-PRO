@@ -10,11 +10,30 @@
           <span @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
         </span>
+		  
         	<span class="controls-gol-edit" v-show="showGoalEditor">
+
+			<button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
+            <i class="fas fa-columns">Asignar objetivo</i>
+            </button>	
+			
+			<button class="btn btn-primary" @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})" data-toggle="tooltip" v-if="isRoot !=0">
+            <i class="fas fa-clipboard-list">Heredar objetivos</i>
+            </button>
+			
+			<button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip"  v-if="isRoot ==0">
+            <i class="fas fa-columns">Relacionar objetivos</i>
+            </button>
+				
+			<button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip" v-if="!isParent">
+            <i class="fas fa-connectdevelop">Crear Macroproceso</i>
+            </button>
+          
           <span @click="$emit('assign-goal',item)"><i class="fas fa-columns"></i> </span>
         	<span @click="$emit('assign-inhetited-goal', {'item':item, 'parent':parent})"><i class="fas fa-clipboard-list"></i> </span>
     			<span @click="$emit('relate-goal', {'item':item, 'parent':parent})"><i class="fas fa-columns"></i> </span>
     			<span @click="$emit('create-macroprocess',item)"><i class="fas fa-connectdevelop"></i> </span>
+
         </span>
       </h4>
       </div>
@@ -61,6 +80,10 @@ export default {
    isParent() {
      return this.item.children &&
        this.item.children.length
+     },
+	 isRoot() {
+     return this.item.level
+       
      }
    },
   methods: {

@@ -374,15 +374,22 @@
           for (var k = 0; k < me.relatedGoals[i].length; ++k) {
 			      me.itemsCopy = me.relatedGoals.slice();
    			    var obj = Object.assign({}, me.itemsCopy[i][k]);
+
+				let randomCellIndex = me.rndStr(15);
+   				obj.randomCellIndex = randomCellIndex;
+				obj.related = "";
+    			me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
+    			
+                }
+            }
+			
+			
+
 		        let randomCellIndex = me.rndStr(15);
 			      obj.randomCellIndex = randomCellIndex;
 		        obj.related = "";
 		        me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-    			//console.log('text from items: ' + items[i].text)
-    			//console.log('text from itemsCopy: ' + itemsCopy[i].text)
-
-					//me.relatedGoals[i][k].randomCellIndex = randomCellIndex;
-					//me.console(me.relatedGoals[i][k]);
+    			
             }
           }
           this.getGoals()
@@ -391,6 +398,7 @@
           let me = this;
           me.currentNode = item
           me.updateNodeControl = 0
+		  me.title= "Agregar Macroproceso"
           this.getMacroprocessData()
         },
   	  asignarObjetivoHeredado(nodo){
@@ -439,6 +447,7 @@
           let url = '/estructura?id='+me.project_id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
+			 
               me.level.id= response.data.id;
               me.level.project_id=response.data.project_id;
           })
@@ -472,6 +481,7 @@
       makeParent(item) {
         let me = this;
         me.currentNode = item
+		me.currentNode.featherNode=false
         me.updateNodeControl = 0
         Vue.set(item, 'children', [])
         this.getNodeName()
@@ -499,6 +509,7 @@
           name: me.newName,
           level:me.currentNode.level + 1,
     		  numGoals:0,
+			  featherNode:true,
     		  goals:[],
     		  inheritedGoals:[],
 			  macroprocess:[]
@@ -514,6 +525,7 @@
           pos:me.currentNode.numGoals, // definir contador para objetivos
           objectCode:me.rndStr(7)
         })
+		me.title= "Agregar Objetivo"
         me.salirObjetivos()
       },
 	    addMacroprocess() {
@@ -530,6 +542,7 @@
         me.currentNode.inheritedGoals.push({
 	        goals: me.goalsInherited
         })
+	    me.title= "Relacionar objetivos"
         me.salirRelacionarObjetivos()
       },
       updateNode() {
