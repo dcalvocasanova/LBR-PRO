@@ -2393,7 +2393,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    showDeleteAndUpdateButton: Number
+    showDeleteAndUpdateButton: Number,
+    Node: Object,
+    Title: String,
+    Title1: Array
   },
   data: function data() {
     return {
@@ -2410,6 +2413,14 @@ __webpack_require__.r(__webpack_exports__);
         risk: "",
         indicator: ""
       }),
+      level: new Form({
+        id: "",
+        //level projectID
+        levels: "",
+        project_id: ""
+      }),
+      project_id: 2,
+      //Levels:{}, //All registered projects
       title: "Agregar nueva Ficha",
       //title to show
       update: 0,
@@ -2417,11 +2428,9 @@ __webpack_require__.r(__webpack_exports__);
       macroprocessFile: "",
       Macroprocesos: {},
       //BD content
-      Macroprocesses: [{
-        name: 'macroproceso 1'
-      }, {
-        name: 'macroproceso 2'
-      }],
+      Levels: {},
+      //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
+      Macroprocesses: [],
       Inputs: {},
       Providers: {},
       Risks: {},
@@ -2573,6 +2582,15 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=INDICATOR').then(function (response) {
         _this4.Indicators = response.data; //get all catalogs from category selected
       });
+    },
+    getLevels: function getLevels() {
+      var me = this;
+      var url = '/estructura/macroprocesos?id=' + me.project_id;
+      axios.get(url).then(function (response) {
+        me.Levels = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   },
   created: function created() {
@@ -2586,6 +2604,7 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   mounted: function mounted() {
+    this.getLevels();
     this.getMacroprocesos();
     this.LoadCatalogInput();
     this.LoadCatalogProvider();
@@ -4269,10 +4288,6 @@ __webpack_require__.r(__webpack_exports__);
           obj.randomCellIndex = randomCellIndex;
           obj.related = "";
           me.itemsCopy[i][k] = obj; //replace the old obj with the new modified one.
-          //console.log('text from items: ' + items[i].text)
-          //console.log('text from itemsCopy: ' + itemsCopy[i].text)
-          //me.relatedGoals[i][k].randomCellIndex = randomCellIndex;
-          //me.console(me.relatedGoals[i][k]);
         }
       }
 
@@ -4282,6 +4297,7 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       me.currentNode = item;
       me.updateNodeControl = 0;
+      me.title = "Agregar Macroproceso";
       this.getMacroprocessData();
     },
     asignarObjetivoHeredado: function asignarObjetivoHeredado(nodo) {
@@ -4362,6 +4378,7 @@ __webpack_require__.r(__webpack_exports__);
     makeParent: function makeParent(item) {
       var me = this;
       me.currentNode = item;
+      me.currentNode.featherNode = false;
       me.updateNodeControl = 0;
       Vue.set(item, 'children', []);
       this.getNodeName();
@@ -4387,6 +4404,7 @@ __webpack_require__.r(__webpack_exports__);
         name: me.newName,
         level: me.currentNode.level + 1,
         numGoals: 0,
+        featherNode: true,
         goals: [],
         inheritedGoals: [],
         macroprocess: []
@@ -4403,6 +4421,7 @@ __webpack_require__.r(__webpack_exports__);
         // definir contador para objetivos
         objectCode: me.rndStr(7)
       });
+      me.title = "Agregar Objetivo";
       me.salirObjetivos();
     },
     addMacroprocess: function addMacroprocess() {
@@ -4420,6 +4439,7 @@ __webpack_require__.r(__webpack_exports__);
       me.currentNode.inheritedGoals.push({
         goals: me.goalsInherited
       });
+      me.title = "Relacionar objetivos";
       me.salirRelacionarObjetivos();
     },
     updateNode: function updateNode() {
@@ -8921,6 +8941,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -8937,6 +8970,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     isParent: function isParent() {
       return this.item.children && this.item.children.length;
+    },
+    isRoot: function isRoot() {
+      return this.item.level;
     }
   },
   methods: {
@@ -51297,7 +51333,7 @@ var render = function() {
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Macroproceso")
+                      _vm._v(" Macroproceso ")
                     ]),
                     _vm._v(" "),
                     _c(
@@ -51335,8 +51371,8 @@ var render = function() {
                           }
                         }
                       },
-                      _vm._l(_vm.Macroprocesses, function(macroprocess) {
-                        return _c("option", [_vm._v(_vm._s(macroprocess.name))])
+                      _vm._l(_vm.Levels, function(macroprocess) {
+                        return _c("option", [_vm._v(_vm._s(macroprocess))])
                       }),
                       0
                     ),
@@ -51370,7 +51406,7 @@ var render = function() {
                           }
                         ],
                         staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("sex") },
+                        class: { "is-invalid": _vm.form.errors.has("input") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -62698,6 +62734,100 @@ var render = function() {
                       })
                     }
                   }
+
+                ],
+                staticClass: "controls-gol-edit"
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("assign-goal", _vm.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-columns" }, [
+                      _vm._v("Asignar objetivo")
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.isRoot != 0
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { "data-toggle": "tooltip" },
+                        on: {
+                          click: function($event) {
+                            return _vm.$emit("assign-inhetited-goal", {
+                              item: _vm.item,
+                              parent: _vm.parent
+                            })
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fas fa-clipboard-list" }, [
+                          _vm._v("Heredar objetivos")
+                        ])
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isRoot == 0
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { "data-toggle": "tooltip" },
+                        on: {
+                          click: function($event) {
+                            return _vm.$emit("relate-goal", {
+                              item: _vm.item,
+                              parent: _vm.parent
+                            })
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fas fa-columns" }, [
+                          _vm._v("Relacionar objetivos")
+                        ])
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.isParent
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { "data-toggle": "tooltip" },
+                        on: {
+                          click: function($event) {
+                            return _vm.$emit("create-macroprocess", _vm.item)
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fas fa-connectdevelop" }, [
+                          _vm._v("Crear Macroproceso")
+                        ])
+                      ]
+                    )
+                  : _vm._e()
+              ]
+            )
+          ])
+        ]
+      ),
+
                 },
                 [_c("i", { staticClass: "fas fa-trash-alt" })]
               )
@@ -62775,6 +62905,7 @@ var render = function() {
           )
         ])
       ]),
+
       _vm._v(" "),
       _vm.isParent
         ? _c(
