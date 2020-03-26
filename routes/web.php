@@ -65,6 +65,10 @@ Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
 })->middleware('permission:CRUD_users|CR_users');
 
+Route::get('/gestionar-funciones-usuarios', function () {
+    return view('admin.usuariosFunciones');
+})->middleware('permission:CRUD_users|CR_users');
+
 /*
 * Grant access only for users with CRUD_users permission
 */
@@ -156,8 +160,12 @@ Route::get('/perfil-usuario', function () {
     return view('user.profile');
 })->middleware('auth');
 
-Auth::routes();
-Auth::routes(['register' => false, 'verify'=>true]);
+//Auth::routes();
+Auth::routes([
+  'login' => true,
+  'logout' => true,
+  'register' => false,
+  'verify'=>false]);
 
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 Route::post('sender', 'HomeController@sendNoti')->middleware('auth');
@@ -311,3 +319,9 @@ Route::delete('/subprocesos/borrar/{id}', 'SubprocessController@destroy');
 Route::get('/subprocesos/buscar', 'SubprocessController@show');
 Route::get('/findmacroprocess', 'SubprocessController@search');
 Route::post('/uploadfile', 'SubprocessController@loadFiles');
+
+/*Manage User's functions*/
+Route::get('/funciones', 'UserFunctionController@getUserFunctionsById');
+Route::put('/funciones/actualizar', 'UserFunctionController@update');
+Route::post('/funciones/guardar', 'UserFunctionController@store');
+Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
