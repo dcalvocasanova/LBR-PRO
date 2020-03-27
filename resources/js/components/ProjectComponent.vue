@@ -210,7 +210,6 @@
                 type: 'success',
                 title: 'Proyecto agregado con éxito'
               });
-              console.log(response)
               me.form.reset();
               me.getProjects();// show all projetcs
               me.saveLevel(response.data);
