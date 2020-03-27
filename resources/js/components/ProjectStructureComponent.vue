@@ -44,7 +44,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="card">              
+            <div class="card">
               <div class="card-body">
                 <div class="row">
                   <div class="tree-menu">
@@ -368,28 +368,15 @@
             	me.relatedGoals[i].push(me.currentNode.goals[k]);
           	}
         }
-
 		     // Empty two random cells per row
         for (var i = 0; i < me.relatedGoals.length; ++i) {
           for (var k = 0; k < me.relatedGoals[i].length; ++k) {
 			      me.itemsCopy = me.relatedGoals.slice();
    			    var obj = Object.assign({}, me.itemsCopy[i][k]);
-
-				let randomCellIndex = me.rndStr(15);
-   				obj.randomCellIndex = randomCellIndex;
-				obj.related = "";
-    			me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-    			
-                }
-            }
-			
-			
-
-		        let randomCellIndex = me.rndStr(15);
-			      obj.randomCellIndex = randomCellIndex;
+	          let randomCellIndex = me.rndStr(15);
+				    obj.randomCellIndex = randomCellIndex;
 		        obj.related = "";
-		        me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-    			
+	          me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.    			
             }
           }
           this.getGoals()
@@ -447,7 +434,7 @@
           let url = '/estructura?id='+me.project_id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
-			 
+
               me.level.id= response.data.id;
               me.level.project_id=response.data.project_id;
           })

@@ -35,11 +35,7 @@ window.Fire =  new Vue(); //using global comunication
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+**/
 
 
 // Project component
@@ -54,6 +50,7 @@ Vue.component('userNotificator', require('./components/UserNotificationsComponen
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
 Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
+Vue.component('userFunctions', require('./components/users/UserFunctionsComponent.vue').default);
 /*
 * All Components related to notifications
 */

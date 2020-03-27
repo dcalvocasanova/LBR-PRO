@@ -45,10 +45,10 @@
 
             @if(auth()->user()->can('CRUD_users') )
               @component('components.colorcard')
-                @slot('title') Validaciones y funciones @endslot
+                @slot('title') Funciones de los usuarios @endslot
                 @slot('type') danger @endslot
                 @slot('subtitle') ir @endslot
-                @slot('url') # @endslot
+                @slot('url') gestionar-funciones-usuarios @endslot
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
             @endif
