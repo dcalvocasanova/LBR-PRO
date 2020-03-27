@@ -40,7 +40,7 @@ class Macroprocess extends Model
      * @var array
      */
       protected $hidden = [
-          'password', 'remember_token',
+          //'password', 'remember_token',
       ];
 
     /**

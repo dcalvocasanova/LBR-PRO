@@ -300,7 +300,7 @@ Route::get('/macroproceso', 'MacroprocessController@getCurrentMacroprocess');
 Route::get('/macroprocesos-plantilla', 'MacroprocessController@getExcel');
 Route::get('/macroprocesos/del-sistema', 'MacroprocessController@getMacroprocess');
 Route::get('/macroprocesos/rol/{id}', 'MacroprocessController@getRole');
-Route::any('/macroprocesos/loadmacroprocesos', 'MacroprocessController@loadUsers');
+Route::any('/macroprocesos/loadmacroprocess', 'MacroprocessController@loadMacroprocess');
 Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');
 Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
 Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');

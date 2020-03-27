@@ -373,12 +373,16 @@
           for (var k = 0; k < me.relatedGoals[i].length; ++k) {
 			      me.itemsCopy = me.relatedGoals.slice();
    			    var obj = Object.assign({}, me.itemsCopy[i][k]);
-	          let randomCellIndex = me.rndStr(15);
-				    obj.randomCellIndex = randomCellIndex;
-		        obj.related = "";
-	          me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.    			
+
+
+				let randomCellIndex = me.rndStr(15);
+   				obj.randomCellIndex = randomCellIndex;
+				obj.related = "";
+    			me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
+    			
+                }
             }
-          }
+			
           this.getGoals()
         },
       CreateMacroprocess(item){

@@ -5,12 +5,12 @@ use Mail;
 use App\Macroprocess;
 use App\Mail\EmailMessage;
 use Illuminate\Support\Str;
-use App\Imports\MacroprocessImport;
+use App\Imports\MacroprocessesImport;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 //use Spatie\Permission\Models\Role;
 use App\Http\Requests\MacroprocessRequest;
-use App\Exports\MacroprocesssTemplateExport;
+use App\Exports\MacroprocessesTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 //use Illuminate\Support\Facades\Auth;
@@ -236,17 +236,28 @@ class MacroprocessController extends Controller
      */
     public function getExcel()
     {
-      return Excel::download(new MacroprocesssTemplateExport, 'users.xls', \Maatwebsite\Excel\Excel::XLS);
+		//$request= request();
+        
+        //$filename= 'macroprocess'.'.xls';
+        //$download_path= $filename;
+       // $ret= \Excel::download(new MacroprocessesTemplateExport, $download_path);
+        //\Log::info($ret);
+        //$headers = ['Content-Type: application/xls','Content-Disposition: attachment; filename={$ret}'];
+
+       // return response($download_path, 200,$headers);
+		
+		
+		return Excel::download(new MacroprocessesTemplateExport, 'users.xls', \Maatwebsite\Excel\Excel::XLS);
     }
 
-	  public function loadMacroprocesss(Request $request){
+	  public function loadMacroprocess(Request $request){
 
 		//$fileName = 'archivo'.'.'.$request->file->getClientOriginalExtension();
 
 		//$file = $request->file('file');
 		//$file= $fileName;
     //  return $request->file('archivo')->getClientOriginalName();
-    $datos = Excel::import(new MacroprocesssImport, $request->file('archivo'));
+    $datos = Excel::import(new MacroprocessesImport, $request->file('archivo'));
 
   //  return $datos->failures();
 
