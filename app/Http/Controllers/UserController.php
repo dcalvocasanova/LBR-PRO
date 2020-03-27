@@ -50,6 +50,18 @@ class UserController extends Controller
     }
 
     /**
+     * Get all users according to a related project
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserByProject(Request $request)
+    {
+      $users = User::where('relatedProjects',$request->project)->latest()->paginate(5);
+      return $users;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  UserRequest  $request
@@ -149,7 +161,8 @@ class UserController extends Controller
         if ($search = \Request::get('q')) {
           $users = User::where(function($query) use ($search){
             $query
-              ->where('name','LIKE',"%$search%")
+              ->where('type','web')
+              ->orWhere('name','LIKE',"%$search%")
               ->orWhere('identification','LIKE',"%$search%")
               ->orWhere('email','LIKE',"%$search%")
               ->orWhere('gender','LIKE',"%$search%")
@@ -158,7 +171,7 @@ class UserController extends Controller
               ->orWhere('ethnic','LIKE',"%$search%");
             })->paginate(10);
         }else{
-            $users = User::latest()->paginate(5);
+            $users = User::where('type','web')->latest()->paginate(5);
         }
         return $users;
     }
@@ -218,7 +231,7 @@ class UserController extends Controller
       $user = Auth::user();
       return $user->notifications;
     }
-  
+
     /**
      * Get Excel
      *

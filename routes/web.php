@@ -205,6 +205,7 @@ Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles', 'ProjectStructureController@getListOfProjectLevels');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
 Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');

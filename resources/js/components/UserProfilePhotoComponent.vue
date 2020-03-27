@@ -2,7 +2,7 @@
   <li class="nav-item dropdown no-arrow">
     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{user.name}}</span>
-      <img  :src="AvatarMainPage" class="img-profile rounded-circle" :alt="user.namer">
+      <img v-if="showPic" :src="AvatarMainPage" class="img-profile rounded-circle" :alt="user.namer">
     </a>
     <!-- Dropdown information-->
     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -23,6 +23,7 @@
   export default {
     data(){
       return{
+        showPic:false,
         user:{}
       }
     },
@@ -37,7 +38,8 @@
         axios.get('/usuario')
         .then(response => {
             me.user = response.data; //get current user
-        });
+            me.showPic=true
+        });    
       }
     },
     created(){

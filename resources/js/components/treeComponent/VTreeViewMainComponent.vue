@@ -6,9 +6,24 @@
         <span v-if="isParent" @click="toggle" >[{{ isOpen ? '-' : '+' }}]</span>
         <span @click="$emit('clicked-node', item)">{{ item.name }}</span>
         <span class="controls-tree-edit" v-show="showTreeEditor">
-          <span v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
-          <span @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
-          <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
+          <span v-if="!isParent" @click="makeParent"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Agregar un sub-nivel">
+              <i class="fas fa-project-diagram"></i>
+          </span>
+          <span @click="$emit('edit-node', item)"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Editar información del nivel">
+            <i class="fas fa-edit"></i>
+          </span>
+          <span @click="$emit('delete-node', {'item':item, 'parent':parent})"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Eliminar nivel">
+            <i class="fas fa-trash-alt"></i>
+          </span>
         </span>
       	<span class="controls-gol-edit" v-show="showGoalEditor">
 	        <button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >

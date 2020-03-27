@@ -5997,6 +5997,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showDeleteAndUpdateButton: Number
@@ -6636,6 +6637,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      showPic: false,
       user: {}
     };
   },
@@ -6649,6 +6651,8 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       axios.get('/usuario').then(function (response) {
         me.user = response.data; //get current user
+
+        me.showPic = true;
       });
     }
   },
@@ -9018,6 +9022,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -9111,135 +9130,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    showDeleteAndUpdateButton: Number
-  },
   data: function data() {
     return {
       form: new Form({
         id: "",
         //User ID
-        identification: "",
-        name: "",
-        email: "",
-        gender: "",
-        sex: "",
-        ethnic: "",
-        type: "web",
-        birthday: "",
-        workingsince: "",
-        job: "",
-        position: "",
-        salary: "",
-        workday: "",
-        education: "",
-        avatar: "",
-        relatedProjects: ""
+        user_id: "",
+        user_functions: ""
       }),
       title: "Agregar nuevo usuario",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-      userFile: "",
       Users: {},
       //BD content
       Projects: {},
-      Sex: {},
-      Genders: {},
-      Ethnics: {}
+      currentProject: ''
     };
   },
   methods: {
-    loadfile: function loadfile(event) {
-      var files = event.target.files || event.dataTransfer.files;
-      this.userFile = event.target.files[0];
-      alert(files[0]);
-      axios.post('/usuarios/loadusers', {
-        users: this.userFile
-      }).then(function (response) {
-        console.log(response);
-      })["catch"](function (response) {
-        console.log(response);
-      });
-    },
-    EventSubir: function EventSubir(f) {
-      var me = this;
-      me.userFile = f.target.files[0];
-      console.log(me.userFile);
-      var data = new FormData();
-      data.append('archivo', me.userFile);
-      axios.post('/usuarios/loadusers', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(function (response) {
-        toast.fire({
-          type: 'success',
-          title: 'Se cargó el archivo'
-        });
-      })["catch"](function (error) {
-        console.log(error);
-        alert("no funca");
-      });
-    },
-    handleFileUpload: function handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-    },
     getUsuarios: function getUsuarios() {
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var me = this;
       me.clearFields();
-      axios.get('/usuarios?page=' + page).then(function (response) {
+      axios.get('/usuarios-por-proyecto/' + me.currentProject + '?page=' + page).then(function (response) {
         me.Users = response.data; //get all projects from page
       });
     },
@@ -9249,22 +9164,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/todos-los-proyectos').then(function (response) {
         me.Projects = response.data; //get all projects from page
       });
-    },
-    getTemplate: function getTemplate() {
-      var me = this;
-      axios.get('/usuarios-plantilla').then(function (response) {
-        var blob = new Blob([response.data], {
-          type: 'application/vnd.ms-excel'
-        });
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "users";
-        link.click();
-      });
-    },
-    getAvatar: function getAvatar(user) {
-      var logo = user.avatar.length > 200 ? user.avatar : "img/profile-usr/" + user.avatar;
-      return logo;
     },
     saveUser: function saveUser() {
       var me = this;
@@ -9327,45 +9226,20 @@ __webpack_require__.r(__webpack_exports__);
       me.title = "Registrar nuevo usuario";
       me.update = 0;
       me.form.reset();
-    },
-    LoadCatalogSex: function LoadCatalogSex() {
-      var _this = this;
-
-      axios.get('catalogo?id=SEX').then(function (response) {
-        _this.Sex = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogGender: function LoadCatalogGender() {
-      var _this2 = this;
-
-      axios.get('catalogo?id=GENDER').then(function (response) {
-        _this2.Genders = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogEthnic: function LoadCatalogEthnic() {
-      var _this3 = this;
-
-      axios.get('catalogo?id=ETHNIC').then(function (response) {
-        _this3.Ethnics = response.data; //get all catalogs from category selected
-      });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this = this;
 
     Fire.$on('searching', function () {
-      var query = _this4.$parent.search;
+      var query = _this.$parent.search;
       axios.get('/finduser?q=' + query).then(function (response) {
-        _this4.Users = response.data;
+        _this.Users = response.data;
       })["catch"](function () {});
     });
   },
   mounted: function mounted() {
     this.getProjectos();
-    this.getUsuarios();
-    this.LoadCatalogSex();
-    this.LoadCatalogGender();
-    this.LoadCatalogEthnic();
   }
 });
 
@@ -57206,51 +57080,63 @@ var render = function() {
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-12" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { staticClass: "bmd-label-floating" }, [
-                    _vm._v("Asociado al proyecto")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.relatedProjects,
-                          expression: "form.relatedProjects"
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Asociado al proyecto")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.relatedProjects,
+                            expression: "form.relatedProjects"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: {
+                          "is-invalid": _vm.form.errors.has("relatedProjects")
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "relatedProjects",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
                         }
-                      ],
-                      staticClass: " form-control",
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.$set(
-                            _vm.form,
-                            "relatedProjects",
-                            $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          )
-                        }
-                      }
-                    },
-                    _vm._l(_vm.Projects, function(p) {
-                      return _c("option", { domProps: { value: p.id } }, [
-                        _vm._v(_vm._s(p.name))
-                      ])
-                    }),
-                    0
-                  )
-                ])
+                      },
+                      _vm._l(_vm.Projects, function(p) {
+                        return _c("option", { domProps: { value: p.id } }, [
+                          _vm._v(_vm._s(p.name))
+                        ])
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c("has-error", {
+                      attrs: { form: _vm.form, field: "relatedProjects" }
+                    })
+                  ],
+                  1
+                )
               ])
             ]),
             _vm._v(" "),
@@ -58729,10 +58615,12 @@ var render = function() {
           [_vm._v(_vm._s(_vm.user.name))]
         ),
         _vm._v(" "),
-        _c("img", {
-          staticClass: "img-profile rounded-circle",
-          attrs: { src: _vm.AvatarMainPage, alt: _vm.user.namer }
-        })
+        _vm.showPic
+          ? _c("img", {
+              staticClass: "img-profile rounded-circle",
+              attrs: { src: _vm.AvatarMainPage, alt: _vm.user.namer }
+            })
+          : _vm._e()
       ]
     ),
     _vm._v(" "),
@@ -62772,14 +62660,28 @@ var render = function() {
             },
             [
               !_vm.isParent
-                ? _c("span", { on: { click: _vm.makeParent } }, [
-                    _c("i", { staticClass: "fas fa-project-diagram" })
-                  ])
+                ? _c(
+                    "span",
+                    {
+                      attrs: {
+                        "data-toggle": "tooltip",
+                        "data-placement": "top",
+                        title: "Agregar un sub-nivel"
+                      },
+                      on: { click: _vm.makeParent }
+                    },
+                    [_c("i", { staticClass: "fas fa-project-diagram" })]
+                  )
                 : _vm._e(),
               _vm._v(" "),
               _c(
                 "span",
                 {
+                  attrs: {
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    title: "Editar información del nivel"
+                  },
                   on: {
                     click: function($event) {
                       return _vm.$emit("edit-node", _vm.item)
@@ -62792,6 +62694,11 @@ var render = function() {
               _c(
                 "span",
                 {
+                  attrs: {
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    title: "Eliminar nivel"
+                  },
                   on: {
                     click: function($event) {
                       return _vm.$emit("delete-node", {
@@ -63017,7 +62924,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-5" }, [
+      _c("div", { staticClass: "col-12" }, [
         _c("div", { staticClass: "card card-plain" }, [
           _vm._m(0),
           _vm._v(" "),
@@ -63035,29 +62942,30 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.form.relatedProjects,
-                        expression: "form.relatedProjects"
+                        value: _vm.currentProject,
+                        expression: "currentProject"
                       }
                     ],
                     staticClass: " form-control",
                     on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.$set(
-                          _vm.form,
-                          "relatedProjects",
-                          $event.target.multiple
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.currentProject = $event.target.multiple
                             ? $$selectedVal
                             : $$selectedVal[0]
-                        )
-                      }
+                        },
+                        function($event) {
+                          return _vm.getUsuarios()
+                        }
+                      ]
                     }
                   },
                   _vm._l(_vm.Projects, function(p) {
@@ -63072,32 +62980,7 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "table-responsive" }, [
               _c("table", { staticClass: "table table-hover" }, [
-                _c("thead", {}, [
-                  _c("tr", [
-                    _c("th", [_vm._v(" Nombre ")]),
-                    _vm._v(" "),
-                    _c("th", { staticStyle: { width: "192px" } }, [
-                      _vm._v(" Foto ")
-                    ]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v(" email ")]),
-                    _vm._v(" "),
-                    _c(
-                      "th",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.showDeleteAndUpdateButton,
-                            expression: "showDeleteAndUpdateButton"
-                          }
-                        ]
-                      },
-                      [_vm._v(" Acciones ")]
-                    )
-                  ])
-                ]),
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
                   "tbody",
@@ -63106,6 +62989,8 @@ var render = function() {
                       _c("td", {
                         domProps: { textContent: _vm._s(user.name) }
                       }),
+                      _vm._v(" "),
+                      _c("td", { domProps: { textContent: _vm._s(user.job) } }),
                       _vm._v(" "),
                       _c("td", [
                         _c(
@@ -63118,7 +63003,7 @@ var render = function() {
                               }
                             }
                           },
-                          [_c("i", { staticClass: "fas fa-edit" })]
+                          [_c("i", { staticClass: "fa fa-tasks" })]
                         )
                       ])
                     ])
@@ -63142,85 +63027,7 @@ var render = function() {
           )
         ])
       ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "loadUsers",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "loadUsersModalLabel-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-lg modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _vm._m(1),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "row" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      on: { click: _vm.getTemplate }
-                    },
-                    [_vm._v("Generar archivo")]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-12" }, [
-                    _c("div", { staticClass: "card" }, [
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "card-body" }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-8" }, [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c(
-                                "label",
-                                { staticClass: "bmd-label-floating" },
-                                [_vm._v("Cargar archivo")]
-                              ),
-                              _vm._v(" "),
-                              _c("input", {
-                                attrs: { type: "file", id: "procesar_archivo" },
-                                on: { change: _vm.EventSubir }
-                              })
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                attrs: { "data-dismiss": "modal" },
-                                on: { click: _vm.getUsuarios }
-                              },
-                              [_vm._v("Regresar")]
-                            )
-                          ])
-                        ])
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -63238,33 +63045,13 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c("h5", {
-        staticClass: "modal-title",
-        attrs: { id: "ParameterModalLabel" }
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary" }, [
-      _c("h4", { staticClass: "card-title" }, [
-        _vm._v("Cargar usuarios usando un archivo excel")
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Nombre ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Puesto ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Agregar funciones ")])
       ])
     ])
   }
