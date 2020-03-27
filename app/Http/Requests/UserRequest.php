@@ -26,6 +26,7 @@ class UserRequest extends FormRequest
           'name' => 'required|string|max:100',
           'email' => 'required|email|unique:users',
           'identification' => 'required|string|unique:users',
+          'relatedProjects'=>'required| max:100',
         ];
     }
     /**
@@ -38,9 +39,8 @@ class UserRequest extends FormRequest
         return [
             'name' => 'nombre',
             'identification' => 'identificación',
-            'salary' => 'salario',
-            'birthday' => 'Fecha de nacimiento',
-            'workingsince' => 'Fecha de inicio de labores',
+            'relatedProjects' => 'proyecto relacionado',
+
         ];
     }
 }

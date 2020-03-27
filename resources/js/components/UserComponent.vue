@@ -56,9 +56,10 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label class="bmd-label-floating">Asociado al proyecto</label>
-                    <select v-model="form.relatedProjects" class=" form-control">
+                    <select v-model="form.relatedProjects" class="form-control":class="{ 'is-invalid': form.errors.has('relatedProjects') }">
                       <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
                     </select>
+                    <has-error :form="form" field="relatedProjects"></has-error>
                   </div>
                 </div>
               </div>

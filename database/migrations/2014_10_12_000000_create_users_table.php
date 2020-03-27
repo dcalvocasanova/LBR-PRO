@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('type');
             $table->string('avatar');
-            $table->json('relatedProjects');
+            $table->bigInteger('relatedProjects');
             $table->rememberToken();
             $table->timestamps();
         });

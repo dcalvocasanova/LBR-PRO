@@ -93,12 +93,25 @@ Route::get('/gestionar-catalogos', function () {
 Route::get('/gestionar-catalogos-macroprocesos', function () {
     return view('admin.catalogos_macroprocesos');
 })->middleware('permission:CRUD_catalogs');
+/*
+* Grant access only for users with CRUD_catalogs permission
+*/
+Route::get('/gestionar-catalogos-tareas', function () {
+    return view('admin.catalogos_tareas');
+})->middleware('permission:CRUD_catalogs');
 
 /*
 * Grant access only for users with CRUD_task
 */
 Route::get('/gestionar-tareas', function () {
     return view('taskManager.tareas');
+})->middleware('permission:CRUD_tasks');
+
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas-con-variables-asociadas', function () {
+    return view('taskManager.tareas-variables-asociadas');
 })->middleware('permission:CRUD_tasks');
 
 
@@ -205,6 +218,7 @@ Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles', 'ProjectStructureController@getListOfProjectLevels');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
+Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
 Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
@@ -321,7 +335,7 @@ Route::get('/findmacroprocess', 'SubprocessController@search');
 Route::post('/uploadfile', 'SubprocessController@loadFiles');
 
 /*Manage User's functions*/
-Route::get('/funciones', 'UserFunctionController@getUserFunctionsById');
+Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');

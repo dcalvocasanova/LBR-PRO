@@ -51,8 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'workingsince'=> 'date',
-        'birthday'=> 'date',
-        'relatedProjects' => 'array'
+        'birthday'=> 'date'
     ];
 
     /**
@@ -120,7 +119,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->sex = $query->sex ?? 'N/A';
         });
         static::creating(function ($query) {
-            $query->relatedProjects = $query->relatedProjects ?? '';
+            $query->relatedProjects = $query->relatedProjects ?? -1;
         });
         static::creating(function ($query) {
             $query->password = $query->password ?? Str::random(15);
