@@ -179,7 +179,7 @@
                         <div class="col-md-8">
                           <div class="form-group">
                             <label class="bmd-label-floating">Cargar archivo</label>
-                            <input  type="file" id ="procesar_archivo" @change="loadMacroprocesos">
+                            <input  type="file" id ="procesar_archivo" @change="EventSubir">
                           </div>
                         </div>
                         <div class="col-md-4">
@@ -228,7 +228,7 @@ export default {
           levels:"",
           project_id:""
         }),
-		  project_id:2,
+		  project_id:0,
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -260,7 +260,7 @@ export default {
           console.log(me.macroprocessFile);
           var data = new FormData();
           data.append('archivo', me.macroprocessFile);
-          axios.post('/Macroprocesos/loadmacroprocess', data, {
+          axios.post('/macroprocesos/loadmacroprocess', data, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
@@ -293,10 +293,10 @@ export default {
       axios.get('/macroprocesos-plantilla')
       .then(response => {
         let blob = new Blob([response.data],{ type:'application/vnd.ms-excel'});
-        let link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "macroprocesss";
-        link.click();
+       let link = document.createElement('a');
+       link.href = window.URL.createObjectURL(blob);
+       link.download = "macroprocesos.xls";
+       link.click();
       });
     },
     

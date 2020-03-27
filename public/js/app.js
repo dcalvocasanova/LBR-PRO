@@ -2489,7 +2489,7 @@ __webpack_require__.r(__webpack_exports__);
         levels: "",
         project_id: ""
       }),
-      project_id: 2,
+      project_id: 0,
       //Levels:{}, //All registered projects
       title: "Agregar nueva Ficha",
       //title to show
@@ -2526,7 +2526,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log(me.macroprocessFile);
       var data = new FormData();
       data.append('archivo', me.macroprocessFile);
-      axios.post('/Macroprocesos/loadmacroprocess', data, {
+      axios.post('/macroprocesos/loadmacroprocess', data, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -2559,7 +2559,7 @@ __webpack_require__.r(__webpack_exports__);
         });
         var link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = "macroprocesss";
+        link.download = "macroprocesos.xls";
         link.click();
       });
     },
@@ -4356,7 +4356,7 @@ __webpack_require__.r(__webpack_exports__);
           var randomCellIndex = me.rndStr(15);
           obj.randomCellIndex = randomCellIndex;
           obj.related = "";
-          me.itemsCopy[i][k] = obj; //replace the old obj with the new modified one.    			
+          me.itemsCopy[i][k] = obj; //replace the old obj with the new modified one.
         }
       }
 
@@ -9016,9 +9016,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -51255,7 +51252,7 @@ var render = function() {
                               _vm._v(" "),
                               _c("input", {
                                 attrs: { type: "file", id: "procesar_archivo" },
-                                on: { change: _vm.loadMacroprocesos }
+                                on: { change: _vm.EventSubir }
                               })
                             ])
                           ]),
@@ -62164,7 +62161,6 @@ var render = function() {
             [
               _c(
                 "button",
-
                 {
                   staticClass: "btn btn-primary",
                   attrs: { "data-toggle": "tooltip" },
@@ -62181,51 +62177,26 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm.isRoot != 0
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { "data-toggle": "tooltip" },
-                      on: {
-                        click: function($event) {
-                          return _vm.$emit("assign-inhetited-goal", {
-                            item: _vm.item,
-                            parent: _vm.parent
-                          })
-                        }
-                      }
-                    },
-                    [
-                      _c("i", { staticClass: "fas fa-clipboard-list" }, [
-                        _vm._v("Heredar objetivos")
-                      ])
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.isRoot == 0
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { "data-toggle": "tooltip" },
-                      on: {
-                        click: function($event) {
-                          return _vm.$emit("relate-goal", {
-                            item: _vm.item,
-                            parent: _vm.parent
-                          })
-                        }
-                      }
-                    },
-                    [
-                      _c("i", { staticClass: "fas fa-columns" }, [
-                        _vm._v("Relacionar objetivos")
-                      ])
-                    ]
-                  )
-                : _vm._e(),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("relate-goal", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-columns" }, [
+                    _vm._v("Relacionar objetivos")
+                  ])
+                ]
+              ),
               _vm._v(" "),
               !_vm.isParent
                 ? _c(
