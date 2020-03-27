@@ -93,12 +93,25 @@ Route::get('/gestionar-catalogos', function () {
 Route::get('/gestionar-catalogos-macroprocesos', function () {
     return view('admin.catalogos_macroprocesos');
 })->middleware('permission:CRUD_catalogs');
+/*
+* Grant access only for users with CRUD_catalogs permission
+*/
+Route::get('/gestionar-catalogos-tareas', function () {
+    return view('admin.catalogos_tareas');
+})->middleware('permission:CRUD_catalogs');
 
 /*
 * Grant access only for users with CRUD_task
 */
 Route::get('/gestionar-tareas', function () {
     return view('taskManager.tareas');
+})->middleware('permission:CRUD_tasks');
+
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas-con-variables-asociadas', function () {
+    return view('taskManager.tareas-variables-asociadas');
 })->middleware('permission:CRUD_tasks');
 
 

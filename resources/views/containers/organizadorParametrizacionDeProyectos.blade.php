@@ -14,10 +14,17 @@
           <div class="row">
             @if(auth()->user()->can('CRUD_macroprocess') )
               @component('components.colorcard')
-                @slot('title') Catálogo de acciones @endslot
+                @slot('title') Catálogo de acciones para macroprocesos @endslot
                 @slot('type') success @endslot
                 @slot('subtitle') ir @endslot
                 @slot('url') gestionar-catalogos-macroprocesos @endslot
+                @slot('icon') fas fa-tags @endslot
+              @endcomponent
+              @component('components.colorcard')
+                @slot('title') Catálogo de acciones para tareas @endslot
+                @slot('type') success @endslot
+                @slot('subtitle') ir @endslot
+                @slot('url') gestionar-catalogos-tareas @endslot
                 @slot('icon') fas fa-tags @endslot
               @endcomponent
               @component('components.colorcard')
@@ -58,10 +65,18 @@
             @endif
             @if(auth()->user()->can('CRUD_tasks') )
               @component('components.colorcard')
-                @slot('title') Tareas @endslot
+                @slot('title') Tareas y frecuencias @endslot
                 @slot('type') info @endslot
                 @slot('subtitle') ir @endslot
-                @slot('url') /gestionar-tareas @endslot
+                @slot('url') gestionar-tareas @endslot
+                @slot('icon') fas fa-boxes @endslot
+              @endcomponent
+
+              @component('components.colorcard')
+                @slot('title') Tareas y variables asociadas @endslot
+                @slot('type') info @endslot
+                @slot('subtitle') ir @endslot
+                @slot('url') gestionar-tareas-con-variables-asociadas @endslot
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
             @endif

@@ -61,7 +61,9 @@ Vue.component('notificatorProjectStructure', require('./components/GoalsChecking
 
 
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
-Vue.component('MacroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
+Vue.component('macroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
+Vue.component('tasksCatalogs', require('./components/catalogs/TasksComponent.vue').default);
+
 
 
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
@@ -80,6 +82,7 @@ Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainCompo
 Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
+Vue.component('tasksVars', require('./components/TaskVarManagerComponent.vue').default);
 
 
 

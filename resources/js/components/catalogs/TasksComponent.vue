@@ -4,47 +4,47 @@
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Catálogos de opciones del Macro procesos</h4>
+            <h4 class="card-title mt-0"> Catálogos de opciones para las tareas</h4>
           </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('INPUT')"
+                  @click="LoadCatalog('ADDED-VALUED-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Entradas
+                    Catálogo: Valor Agregado
                   </i>
                 </button>
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('PROVIDER')"
+                  @click="LoadCatalog('CORRELATION-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Proveedores
+                    Catálogo: Correlación
                   </i>
                 </button>
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('RISK')"
+                  @click="LoadCatalog('RISK-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Riesgos asociados
+                    Catálogo: Riesgos de trabajo
                   </i>
                 </button>
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('INDICATOR')"
+                  @click="LoadCatalog('RISK-CONDITION-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Indicadores
+                    Catálogo: Riesgo de condiciones de trabajo
                   </i>
                 </button>
               </div>
@@ -53,32 +53,53 @@
             <div class="row mb-2">
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('PHVA')"
+                  @click="LoadCatalog('ORGANIZATIONAL-SKILL-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: PHVA
-                  </i>
-                </button>
-              </div>
-
-              <div class="col-md-3">
-                <button class="btn btn-primary"
-                  @click="LoadCatalog('FRECUENCY')"
-                  data-toggle="modal"
-                  data-target="#addCatalogs">
-                  <i class="fas fa-swatchbook">
-                    Catálogo: Frecuencias
+                    Catálogo: Competencias organizacionales
                   </i>
                 </button>
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="LoadCatalog('WORKTYPE')"
+                  @click="LoadCatalog('SPECIFIC-SKILL-T')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Tipo de trabajo
+                    Catálogo: Competencias específicas
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('TECNICAL-SKILL-T')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Competencias técnicas
+                  </i>
+                </button>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('INDICATOR-T')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Indicadores
+                  </i>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-primary"
+                  @click="LoadCatalog('SIDE-EFECT-T')"
+                  data-toggle="modal"
+                  data-target="#addCatalogs">
+                  <i class="fas fa-swatchbook">
+                    Catálogo: Posibles efectos
                   </i>
                 </button>
               </div>
@@ -182,13 +203,15 @@
       methods:{
           LoadCatalog(code) {
             this.type = code;
-      			if (code === "INPUT"){this.catalog="Entradas"}
-            if (code === "PROVIDER"){this.catalog="Proveedores"}
-            if (code === "RISK"){this.catalog="Riesgos"}
-            if (code === "INDICATOR"){this.catalog="Indicadores"}
-      			if (code === "PHVA"){this.catalog="PHVA"}
-      			if (code === "FRECUENCY"){this.catalog="Frecuencias"}
-      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}      			
+      			if (code === "ADDED-VALUED-T"){this.catalog="Valor agregado"}
+            if (code === "CORRELATION-T"){this.catalog="Correlación"}
+            if (code === "RISK-T"){this.catalog="Área de riesgo de trabajo"}
+            if (code === "RISK-CONDITION-T"){this.catalog="Riesgo de condiciones de trabajo"}
+      			if (code === "ORGANIZATIONAL-SKILL-T"){this.catalog="Competencias organizacionales"}
+      			if (code === "SPECIFIC-SKILL-T"){this.catalog="Competencias específicas"}
+      			if (code === "TECNICAL-SKILL-T"){this.catalog="Competencias técnicas"}
+            if (code === "INDICATOR-T"){this.catalog="Indicador"}
+            if (code === "SIDE-EFECT-T"){this.catalog="Posibles efectos"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected
