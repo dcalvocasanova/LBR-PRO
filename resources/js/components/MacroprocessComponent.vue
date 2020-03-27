@@ -48,16 +48,16 @@
               <pagination :data="Macroprocesos" @pagination-change-page="getMacroprocesos"></pagination>
             </div>
           </div>
-        <!--
+        
           <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
             <button class="btn btn-primary"
             data-toggle="modal"
             data-target="#loadMacroprocesos">
-              Cargar usuario usando un archivo
+              Cargar Ficha usando un archivo
               <i class="fa fa-plus-circle"></i>
             </button>
           </div>
-        -->
+        
         </div>
 	</div>
 	<div class="row">
@@ -179,7 +179,7 @@
                         <div class="col-md-8">
                           <div class="form-group">
                             <label class="bmd-label-floating">Cargar archivo</label>
-                            <input  type="file" id ="procesar_archivo" @change="EventSubir">
+                            <input  type="file" id ="procesar_archivo" @change="loadMacroprocesos">
                           </div>
                         </div>
                         <div class="col-md-4">
