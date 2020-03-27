@@ -6,7 +6,7 @@
           <div class="card-header card-header-primary">
             <h4 class="card-title mt-0"> Usuarios en la plataforma</h4>
           </div>
-          <div class="card-body">
+            <div class="card-body">
             <div class="col-12">
               <div class="form-group">
                 <label class="bmd-label-floating">Proyecto base</label>
@@ -21,7 +21,7 @@
                   <tr>
                     <th> Nombre </th>
                     <th> Puesto </th>
-                    <th> Agregar funciones </th>
+                    <th> Agregar o moficar funciones </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -29,15 +29,120 @@
                       <td v-text="user.name"></td>
                       <td v-text="user.job"></td>
                       <td>
-                        <button class="btn btn-info" @click="loadFieldsUpdate(user)"><i class="fa fa-tasks"></i></button>
+                        <button class="btn btn-info"
+                          @click="loadUserFunctions(user)"
+                          data-toggle="modal"
+                          data-target="#UserFunctionsManager">
+                          <i class="fa fa-tasks"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
               </table>
             </div>
           </div>
-          <div class="card-footer">
+            <div class="card-footer">
             <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="UserFunctionsManager" tabindex="1" role="dialog" aria-labelledby="UserFunctionsManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title">
+              Funciones del usuario {{ currentUser.name }}
+              <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva función">
+                <button class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#UserFunctionEditor">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </div>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="">
+                      <tr>
+                        <th> Función </th>
+                        <th> Acciones </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr  v-for="userFunction in UserFunctions" :key="userFunction.id">
+                          <td v-text="userFunction.user_functions"></td>
+                          <td>
+                            <button class="btn btn-info"
+                              @click="loadUserFunctionsEditor(userFunction)"
+                              data-toggle="modal"
+                              data-target="#UserFunctionEditor">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger"
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="Eliminar funciones asignadas" @click="deleteUserFunction(userFunction)">
+                              <i class="fas fa-trash-alt"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="container-buttons">
+                  <button @click="exitUserFunctionManager()" class="btn btn-secondary">Salir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="UserFunctionEditor" tabindex="2" role="dialog" aria-labelledby="UserFunctionEditor-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="UserFunctionEditorModalLabel"> {{ title }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Descripción</label>
+                          <input v-model="form.user_functions" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('user_functions') }">
+                          <has-error :form="form" field="user_functions"></has-error>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="container-buttons">
+                        <button v-if="update== 0" @click="saveUserFunction()" class="btn btn-success">Añadir</button>
+                        <button v-if="update!= 0" @click="updateUserFunction()" class="btn btn-info">Actualizar</button>
+                        <button @click="exit()" class="btn btn-secondary">Atrás</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -54,9 +159,11 @@ export default {
         user_id:"",
         user_functions:""
       }),
-      title:"Agregar nuevo usuario", //title to show
+      currentUser:{},
+      title:"Agregar funciones del usuario", //title to show
       update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       Users:{}, //BD content
+      UserFunctions:{},
       Projects:{},
       currentProject:''
       }
@@ -64,7 +171,6 @@ export default {
   methods:{
     getUsuarios(page = 1) {
       let me =this;
-      me.clearFields();
       axios.get('/usuarios-por-proyecto/'+me.currentProject+'?page=' + page)
       .then(response => {
             me.Users = response.data; //get all projects from page
@@ -78,51 +184,68 @@ export default {
             me.Projects = response.data; //get all projects from page
       });
     },
-
-    saveUser(){
+    loadUserFunctionsEditor(userFunction){
+      let me = this
+      me.form.fill(userFunction)
+      me.update=1
+      me.title="Modificar funciones del usuario"
+    },
+    saveUserFunction(){
       let me =this;
-      this.form.post('/usuarios/guardar')
+      me.form.user_id= me.currentUser.id
+      me.form.post('/funciones/guardar')
       .then(function (response) {
-          me.clearFields();
-          me.getUsuarios();// show all users
+          $('#UserFunctionEditor').modal('toggle')
+          me.loadUserFunctions(me.currentUser)
+          me.exit()
           toast.fire({
             type: 'success',
-            title: 'Usuario registrado con éxito'
+            title: 'Función de usuario registrada con éxito'
           });
+
       })
       .catch(function (error) {
           console.log(error);
       });
 
     },
-    updateUser(){
-        let me = this;
-        me.form.role="Usuario";
-        me.form.put('/usuarios/actualizar')
-        .then(function (response) {
-           toast.fire({
-            type: 'success',
-            title: 'Usuario actualizado con éxito'
-           });
-           me.getUsuarios();
-           me.clearFields();
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    showUserFunction(userFunction){
+      let me = this
+      me.title="Modificar funciones del usuario"
+      me.update = 1
+      me.form.fill(userFunction)
     },
-    loadFieldsUpdate(user){
-      let me =this;
-      this.form.fill(user);
-      me.update = user.id
-      me.title="Actualizar información del usuario";
+    updateUserFunction(){
+      let me = this;
+      me.form.put('/funciones/actualizar')
+      .then(function (response) {
+        me.loadUserFunctions(me.currentUser)
+        me.exit()
+       toast.fire({
+          type: 'success',
+          title: 'Función de usuario actualizada con éxito'
+         });
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
     },
-    deleteUser(user){
+    loadUserFunctions(user){
       let me =this;
-      let user_id = user.id
+      me.currentUser = user
+      axios.get('/funciones/'+ user.id)
+      .then(response => {
+          me.UserFunctions = response.data; //get all projects from page
+      })
+      .catch(function (error) {
+          console.log(error)
+      });
+    },
+    deleteUserFunction(userFunction){
+      let me =this;
       swal.fire({
-        title: 'Eliminar un usuario',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar un usuario",
+        title: 'Eliminar funciones de usuario',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar las funciones de un usuario",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#114e7e',
@@ -131,14 +254,14 @@ export default {
       })
       .then((result) => {
         if (result.value) {
-          axios.delete('/usuarios/borrar/'+user_id)
+          axios.delete('/funciones/borrar/'+userFunction.id)
           .then(function (response) {
+            me.loadUserFunctions(me.currentUser)
             swal.fire(
               'Eliminado',
               'Usuario fue eliminado',
               'success'
             )
-            me.getUsuarios();
           })
           .catch(function (error) {
               console.log(error);
@@ -146,9 +269,16 @@ export default {
         }
       })
     },
+    exitUserFunctionManager(){
+      $('#UserFunctionsManager').modal('toggle');
+    },
+    exit(){
+      $('#UserFunctionEditor').modal('toggle');
+      this.clearFields();
+    },
     clearFields(){
       let me =this;
-      me.title= "Registrar nuevo usuario";
+      me.title= "Agregar funciones del usuario";
       me.update = 0;
       me.form.reset();
     }

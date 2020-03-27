@@ -9130,6 +9130,111 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -9139,12 +9244,14 @@ __webpack_require__.r(__webpack_exports__);
         user_id: "",
         user_functions: ""
       }),
-      title: "Agregar nuevo usuario",
+      currentUser: {},
+      title: "Agregar funciones del usuario",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       Users: {},
       //BD content
+      UserFunctions: {},
       Projects: {},
       currentProject: ''
     };
@@ -9153,7 +9260,6 @@ __webpack_require__.r(__webpack_exports__);
     getUsuarios: function getUsuarios() {
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var me = this;
-      me.clearFields();
       axios.get('/usuarios-por-proyecto/' + me.currentProject + '?page=' + page).then(function (response) {
         me.Users = response.data; //get all projects from page
       });
@@ -9165,46 +9271,60 @@ __webpack_require__.r(__webpack_exports__);
         me.Projects = response.data; //get all projects from page
       });
     },
-    saveUser: function saveUser() {
+    loadUserFunctionsEditor: function loadUserFunctionsEditor(userFunction) {
       var me = this;
-      this.form.post('/usuarios/guardar').then(function (response) {
-        me.clearFields();
-        me.getUsuarios(); // show all users
-
+      me.form.fill(userFunction);
+      me.update = 1;
+      me.title = "Modificar funciones del usuario";
+    },
+    saveUserFunction: function saveUserFunction() {
+      var me = this;
+      me.form.user_id = me.currentUser.id;
+      me.form.post('/funciones/guardar').then(function (response) {
+        $('#UserFunctionEditor').modal('toggle');
+        me.loadUserFunctions(me.currentUser);
+        me.exit();
         toast.fire({
           type: 'success',
-          title: 'Usuario registrado con éxito'
+          title: 'Función de usuario registrada con éxito'
         });
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    updateUser: function updateUser() {
+    showUserFunction: function showUserFunction(userFunction) {
       var me = this;
-      me.form.role = "Usuario";
-      me.form.put('/usuarios/actualizar').then(function (response) {
+      me.title = "Modificar funciones del usuario";
+      me.update = 1;
+      me.form.fill(userFunction);
+    },
+    updateUserFunction: function updateUserFunction() {
+      var me = this;
+      me.form.put('/funciones/actualizar').then(function (response) {
+        me.loadUserFunctions(me.currentUser);
+        me.exit();
         toast.fire({
           type: 'success',
-          title: 'Usuario actualizado con éxito'
+          title: 'Función de usuario actualizada con éxito'
         });
-        me.getUsuarios();
-        me.clearFields();
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    loadFieldsUpdate: function loadFieldsUpdate(user) {
+    loadUserFunctions: function loadUserFunctions(user) {
       var me = this;
-      this.form.fill(user);
-      me.update = user.id;
-      me.title = "Actualizar información del usuario";
+      me.currentUser = user;
+      axios.get('/funciones/' + user.id).then(function (response) {
+        me.UserFunctions = response.data; //get all projects from page
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
-    deleteUser: function deleteUser(user) {
+    deleteUserFunction: function deleteUserFunction(userFunction) {
       var me = this;
-      var user_id = user.id;
       swal.fire({
-        title: 'Eliminar un usuario',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar un usuario",
+        title: 'Eliminar funciones de usuario',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar las funciones de un usuario",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#114e7e',
@@ -9212,18 +9332,25 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: '¡Sí, eliminarlo!'
       }).then(function (result) {
         if (result.value) {
-          axios["delete"]('/usuarios/borrar/' + user_id).then(function (response) {
+          axios["delete"]('/funciones/borrar/' + userFunction.id).then(function (response) {
+            me.loadUserFunctions(me.currentUser);
             swal.fire('Eliminado', 'Usuario fue eliminado', 'success');
-            me.getUsuarios();
           })["catch"](function (error) {
             console.log(error);
           });
         }
       });
     },
+    exitUserFunctionManager: function exitUserFunctionManager() {
+      $('#UserFunctionsManager').modal('toggle');
+    },
+    exit: function exit() {
+      $('#UserFunctionEditor').modal('toggle');
+      this.clearFields();
+    },
     clearFields: function clearFields() {
       var me = this;
-      me.title = "Registrar nuevo usuario";
+      me.title = "Agregar funciones del usuario";
       me.update = 0;
       me.form.reset();
     }
@@ -62997,9 +63124,13 @@ var render = function() {
                           "button",
                           {
                             staticClass: "btn btn-info",
+                            attrs: {
+                              "data-toggle": "modal",
+                              "data-target": "#UserFunctionsManager"
+                            },
                             on: {
                               click: function($event) {
-                                return _vm.loadFieldsUpdate(user)
+                                return _vm.loadUserFunctions(user)
                               }
                             }
                           },
@@ -63027,7 +63158,283 @@ var render = function() {
           )
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "UserFunctionsManager",
+          tabindex: "1",
+          role: "dialog",
+          "aria-labelledby": "UserFunctionsManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c("h5", { staticClass: "modal-title" }, [
+                  _vm._v(
+                    "\n            Funciones del usuario " +
+                      _vm._s(_vm.currentUser.name) +
+                      "\n            "
+                  ),
+                  _vm._m(2)
+                ]),
+                _vm._v(" "),
+                _vm._m(3)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "card" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("div", { staticClass: "table-responsive" }, [
+                      _c("table", { staticClass: "table table-hover" }, [
+                        _vm._m(4),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.UserFunctions, function(userFunction) {
+                            return _c("tr", { key: userFunction.id }, [
+                              _c("td", {
+                                domProps: {
+                                  textContent: _vm._s(
+                                    userFunction.user_functions
+                                  )
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
+                                    attrs: {
+                                      "data-toggle": "modal",
+                                      "data-target": "#UserFunctionEditor"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.loadUserFunctionsEditor(
+                                          userFunction
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-edit" })]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger",
+                                    attrs: {
+                                      "data-toggle": "tooltip",
+                                      "data-placement": "top",
+                                      title: "Eliminar funciones asignadas"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteUserFunction(
+                                          userFunction
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-trash-alt" })]
+                                )
+                              ])
+                            ])
+                          }),
+                          0
+                        )
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c("div", { staticClass: "container-buttons" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.exitUserFunctionManager()
+                            }
+                          }
+                        },
+                        [_vm._v("Salir")]
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "UserFunctionEditor",
+          tabindex: "2",
+          role: "dialog",
+          "aria-labelledby": "UserFunctionEditor-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "UserFunctionEditorModalLabel" }
+                  },
+                  [_vm._v(" " + _vm._s(_vm.title))]
+                ),
+                _vm._v(" "),
+                _vm._m(5)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Descripción")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.user_functions,
+                                      expression: "form.user_functions"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "user_functions"
+                                    )
+                                  },
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.user_functions },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "user_functions",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: {
+                                    form: _vm.form,
+                                    field: "user_functions"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "container-buttons" }, [
+                            _vm.update == 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.saveUserFunction()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Añadir")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.update != 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.updateUserFunction()
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Actualizar")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-secondary",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.exit()
+                                  }
+                                }
+                              },
+                              [_vm._v("Atrás")]
+                            )
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -63051,9 +63458,84 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v(" Puesto ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Agregar funciones ")])
+        _c("th", [_vm._v(" Agregar o moficar funciones ")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "col-md-4",
+        attrs: {
+          "data-toggle": "tooltip",
+          "data-placement": "bottom",
+          title: "Agregar nueva función"
+        }
+      },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            attrs: {
+              "data-toggle": "modal",
+              "data-target": "#UserFunctionEditor"
+            }
+          },
+          [_c("i", { staticClass: "fa fa-plus-circle" })]
+        )
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Función ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

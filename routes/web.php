@@ -322,7 +322,7 @@ Route::get('/findmacroprocess', 'SubprocessController@search');
 Route::post('/uploadfile', 'SubprocessController@loadFiles');
 
 /*Manage User's functions*/
-Route::get('/funciones', 'UserFunctionController@getUserFunctionsById');
+Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');

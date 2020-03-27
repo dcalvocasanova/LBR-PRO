@@ -15,8 +15,9 @@ class UserFunctionController extends Controller
      */
     public function getUserFunctionsById(Request $request)
     {
-      $user_funtions = UserFunction::where('user_id',$request->type)->latest();
-      return $user_funtions;
+
+      $userFunctions = UserFunction::where('user_id','=', $request->id)->get();
+      return $userFunctions;
     }
 
     /**
