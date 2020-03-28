@@ -46,8 +46,9 @@
                   <has-error :form="form" field="name"></has-error>
               </div>
               <div class="form-group">
-                  <label>Ubicación</label>
-                  <input v-model="form.ubicacion" type="text" class="form-control">
+                  <label>Ubicación geográfica</label>
+                  <input v-model="form.latitud" placeholder="Latitud" type="text" class="form-control">
+                  <input v-model="form.longitud" placeholder="Longitud" type="text" class="form-control">
               </div>
               <div class="form-group">
                   <label>Actividad económica</label>
@@ -113,7 +114,8 @@
           logo_project:"", //Project's logo
           logo_sponsor:"", //Sponsor's logo
           logo_auxiliar:"", //Auxiliar's logo
-          ubicacion:"", // ubicación
+          longitud:"", // ubicación
+          latitud:"", // ubicación
           actividad_economica:"" // actividad económica
         }),
         level: new Form({
@@ -299,6 +301,12 @@
             console.log(error);
         });
       },
+      LoadCatalogEconomics() {
+        axios.get('catalogo?id=ECONOMICS')
+        .then(response => {
+              this.Economics = response.data; //get all catalogs from category selected
+        });
+      },
       deleteLevelStructure(id){
         axios.delete('/estructura/borrar/'+ id)
         .then(function (response) {
@@ -320,7 +328,8 @@
       })
     },
     mounted() {
-     this.getProjects();
+     this.getProjects()
+     this.LoadCatalogEconomics()
     }
   }
 </script>
