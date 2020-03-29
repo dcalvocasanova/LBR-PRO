@@ -34,18 +34,18 @@ class ProjectStructureController extends Controller
 	//funci'on recursiva para recuperar los macroprocesos
 	function hasChildren($children,&$macroprocesos)
 	{
+		if(isset($children['macroprocess']) and !empty($children['macroprocess']) ){
+		 		for ( $i = 0; $i< count($children['macroprocess']); $i++){
+					array_push($macroprocesos,$children['macroprocess'][$i]['name']);
+				 }
+			}
+		
 		if(isset($children['children']) and !empty($children['children']) ){
 		 	for ( $i = 0; $i< count($children['children']); $i++){
 				$this->hasChildren($children['children'][$i],$macroprocesos);
 	   		 }
 		}
-		else{
-			if(isset($children['macroprocess']) and !empty($children['macroprocess']) ){
-		 		for ( $i = 0; $i< count($children['macroprocess']); $i++){
-					array_push($macroprocesos,$children['macroprocess'][$i]['name']);
-				 }
-			}
-		}
+		
 	}
 	
 
