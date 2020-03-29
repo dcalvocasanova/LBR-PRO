@@ -46,12 +46,19 @@
                   <has-error :form="form" field="name"></has-error>
               </div>
               <div class="form-group">
-                  <label>Ubicación</label>
-                  <input v-model="form.ubicacion" type="text" class="form-control">
+                  <label>Ubicación geográfica</label>
+                  <br>
+                  <label> Latitud</label>
+                  <input v-model="form.latitud" type="text" class="form-control">
+                  <label> Longitud</label>
+                  <input v-model="form.longitud" type="text" class="form-control">
               </div>
               <div class="form-group">
                   <label>Actividad económica</label>
-                  <input v-model="form.actividad_economica" type="text" class="form-control">
+                  <select v-model="form.actividad_economica" class=" form-control">
+                    <option v-for="activity in Economics">{{ activity.name }}</option>
+                  </select>
+
               </div>
               <div class="form-group">
                 <label for="logo_organization" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo de la organización <span v-html="loadLogoProject"></span></i> </label>
@@ -113,7 +120,8 @@
           logo_project:"", //Project's logo
           logo_sponsor:"", //Sponsor's logo
           logo_auxiliar:"", //Auxiliar's logo
-          ubicacion:"", // ubicación
+          longitud:"", // ubicación
+          latitud:"", // ubicación
           actividad_economica:"" // actividad económica
         }),
         level: new Form({
@@ -129,6 +137,7 @@
         loadLogoSponsor:"",
         loadLogoAuxiliar:"",
         Projects:{}, //All registered projects
+        Economics:{},
         value: [
           { name: 'Gratuito', code: 'GR' }
         ],
@@ -243,7 +252,8 @@
           me.form.logo_project = project.logo_project
           me.form.logo_sponsor = project.logo_sponsor
           me.form.logo_auxiliar = project.logo_auxiliar
-          me.form.ubicacion = project.location
+          me.form.latitud = project.latitude
+          me.form.longitud = project.longitude
           me.form.actividad_economica = project.economic_activity
 
       },
@@ -299,6 +309,12 @@
             console.log(error);
         });
       },
+      LoadCatalogEconomics() {
+        axios.get('catalogo?id=ECONOMICS')
+        .then(response => {
+              this.Economics = response.data; //get all catalogs from category selected
+        });
+      },
       deleteLevelStructure(id){
         axios.delete('/estructura/borrar/'+ id)
         .then(function (response) {
@@ -320,7 +336,8 @@
       })
     },
     mounted() {
-     this.getProjects();
+     this.getProjects()
+     this.LoadCatalogEconomics()
     }
   }
 </script>

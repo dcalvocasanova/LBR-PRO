@@ -78,7 +78,8 @@ class ProjectController extends Controller
       }
       $project->logo_auxiliar = isset($request->logo_auxiliar)? $request->logo_auxiliar:"default.png";
 
-      $project->location = isset($request->ubicacion)? $request->ubicacion:"Nacional";
+      $project->longitude = isset($request->longitud)? $request->longitud:"0,0";
+      $project->latitude = isset($request->latitud)? $request->latitud:"0,0";
       $project->economic_activity = isset($request->actividad_economica)? $request->actividad_economica:"Sin fines de lucro";
       $project->save();
       return $project;

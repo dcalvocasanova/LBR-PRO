@@ -3711,6 +3711,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -3731,7 +3738,9 @@ __webpack_require__.r(__webpack_exports__);
         //Sponsor's logo
         logo_auxiliar: "",
         //Auxiliar's logo
-        ubicacion: "",
+        longitud: "",
+        // ubicación
+        latitud: "",
         // ubicación
         actividad_economica: "" // actividad económica
 
@@ -3753,6 +3762,7 @@ __webpack_require__.r(__webpack_exports__);
       loadLogoAuxiliar: "",
       Projects: {},
       //All registered projects
+      Economics: {},
       value: [{
         name: 'Gratuito',
         code: 'GR'
@@ -3887,7 +3897,8 @@ __webpack_require__.r(__webpack_exports__);
       me.form.logo_project = project.logo_project;
       me.form.logo_sponsor = project.logo_sponsor;
       me.form.logo_auxiliar = project.logo_auxiliar;
-      me.form.ubicacion = project.location;
+      me.form.latitud = project.latitude;
+      me.form.longitud = project.longitude;
       me.form.actividad_economica = project.economic_activity;
     },
     deleteProject: function deleteProject(project) {
@@ -3939,6 +3950,13 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    LoadCatalogEconomics: function LoadCatalogEconomics() {
+      var _this5 = this;
+
+      axios.get('catalogo?id=ECONOMICS').then(function (response) {
+        _this5.Economics = response.data; //get all catalogs from category selected
+      });
+    },
     deleteLevelStructure: function deleteLevelStructure(id) {
       axios["delete"]('/estructura/borrar/' + id).then(function (response) {})["catch"](function (error) {
         console.log(error);
@@ -3946,17 +3964,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
     Fire.$on('searching', function () {
-      var query = _this5.$parent.search;
+      var query = _this6.$parent.search;
       axios.get('/findproject?q=' + query).then(function (response) {
-        _this5.Projects = response.data;
+        _this6.Projects = response.data;
       })["catch"](function () {});
     });
   },
   mounted: function mounted() {
     this.getProjects();
+    this.LoadCatalogEconomics();
   }
 });
 
@@ -7859,6 +7878,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7895,6 +7922,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (code === "ETHNIC") {
         this.catalog = "Étnias";
+      }
+
+      if (code === "ECONOMICS") {
+        this.catalog = "Actividades económicas";
       }
 
       axios.get('catalogo?id=' + code).then(function (response) {
@@ -14495,7 +14526,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -14514,7 +14545,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -14533,7 +14564,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
 
 // exports
 
@@ -14552,7 +14583,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -53783,26 +53814,54 @@ var render = function() {
             ),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Ubicación")]),
+              _c("label", [_vm._v("Ubicación geográfica")]),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("label", [_vm._v(" Latitud")]),
               _vm._v(" "),
               _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.form.ubicacion,
-                    expression: "form.ubicacion"
+                    value: _vm.form.latitud,
+                    expression: "form.latitud"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { type: "text" },
-                domProps: { value: _vm.form.ubicacion },
+                domProps: { value: _vm.form.latitud },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.$set(_vm.form, "ubicacion", $event.target.value)
+                    _vm.$set(_vm.form, "latitud", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", [_vm._v(" Longitud")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.longitud,
+                    expression: "form.longitud"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.form.longitud },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "longitud", $event.target.value)
                   }
                 }
               })
@@ -53811,31 +53870,43 @@ var render = function() {
             _c("div", { staticClass: "form-group" }, [
               _c("label", [_vm._v("Actividad económica")]),
               _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.form.actividad_economica,
-                    expression: "form.actividad_economica"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text" },
-                domProps: { value: _vm.form.actividad_economica },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.actividad_economica,
+                      expression: "form.actividad_economica"
                     }
-                    _vm.$set(
-                      _vm.form,
-                      "actividad_economica",
-                      $event.target.value
-                    )
+                  ],
+                  staticClass: " form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form,
+                        "actividad_economica",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
                   }
-                }
-              })
+                },
+                _vm._l(_vm.Economics, function(activity) {
+                  return _c("option", [_vm._v(_vm._s(activity.name))])
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -60810,6 +60881,29 @@ var render = function() {
               [
                 _c("i", { staticClass: "fas fa-swatchbook" }, [
                   _vm._v("\n              Catálogo: Étnias\n            ")
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: {
+                  "data-toggle": "modal",
+                  "data-target": "#addCatalogs"
+                },
+                on: {
+                  click: function($event) {
+                    return _vm.LoadCatalog("ECONOMICS")
+                  }
+                }
+              },
+              [
+                _c("i", { staticClass: "fas fa-swatchbook" }, [
+                  _vm._v(
+                    "\n              Catálogo: Actividades económicas\n            "
+                  )
                 ])
               ]
             )
@@ -84954,8 +85048,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
