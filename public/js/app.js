@@ -3930,7 +3930,8 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Estructura de niveles',
         level: 0,
         numGoals: 0,
-        goals: []
+        goals: [],
+        macroprocess: []
       });
       this.level.post('/estructura/guardar').then(function (response) {
         me.level.reset();
@@ -9513,8 +9514,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -63506,7 +63505,7 @@ var render = function() {
                   attrs: {
                     "data-toggle": "tooltip",
                     "data-placement": "top",
-                    title: "Editar información del nivel"
+                    title: "Editar informaciรณn del nivel"
                   },
                   on: {
                     click: function($event) {
@@ -63592,25 +63591,23 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              !_vm.isParent
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { "data-toggle": "tooltip" },
-                      on: {
-                        click: function($event) {
-                          return _vm.$emit("create-macroprocess", _vm.item)
-                        }
-                      }
-                    },
-                    [
-                      _c("i", { staticClass: "fas fa-connectdevelop" }, [
-                        _vm._v("Crear Macroproceso")
-                      ])
-                    ]
-                  )
-                : _vm._e()
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("create-macroprocess", _vm.item)
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-connectdevelop" }, [
+                    _vm._v("Crear Macroproceso")
+                  ])
+                ]
+              )
             ]
           )
         ])

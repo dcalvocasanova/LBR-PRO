@@ -15,7 +15,7 @@
           <span @click="$emit('edit-node', item)"
             data-toggle="tooltip"
             data-placement="top"
-            title="Editar información del nivel">
+            title="Editar informaciรณn del nivel">
             <i class="fas fa-edit"></i>
           </span>
           <span @click="$emit('delete-node', {'item':item, 'parent':parent})"
@@ -33,7 +33,7 @@
           <button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip">
           <i class="fas fa-columns">Relacionar objetivos</i>
           </button>
-          <button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip" v-if="!isParent">
+          <button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip">
           <i class="fas fa-connectdevelop">Crear Macroproceso</i>
           </button>
         </span>
@@ -52,9 +52,9 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
-	          @create-macroprocess="$emit('create-macroprocess', $event)"
+	        @create-macroprocess="$emit('create-macroprocess', $event)"
             @assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
-	          @relate-goal="$emit('relate-goal', $event)"
+	        @relate-goal="$emit('relate-goal', $event)"
       >
       </tree-menu>
       <li class="add" v-show="showTreeEditor" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
