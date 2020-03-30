@@ -1,15 +1,19 @@
 <template>
   <div class="container container-project">
-    <div class="row" v-if="this.selectingProjectToAddUsers === true">
-      <div class="col-12">
+    <div class="row h-100" v-if="this.selectingProjectToAddUsers === true">
+      <div class="card card-plain col-12">
+        <div class="card-header card-header-primary ">
+          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran usuarios</h4>
+        </div>
+        <div class="card-body">
           <div class="form-group">
-            <label class="bmd-label-floating">Establecer a cual proyecto se gestionaran usuarios</label>
             <br>
             <select v-model="currentProject" class="form-control" @change="setProject()">
               <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
             </select>
-          </div>
+          </div>        
         </div>
+      </div>
     </div>
     <div class="row" v-if="this.selectingProjectToAddUsers === false">
       <div class="row">
@@ -180,7 +184,7 @@
                     <label class="bmd-label-floating">Rol de usuario</label>
                     <br>
                     <select v-model="form.role" class="form-control">
-                      <option v-for="r in Roles.data" :value="r.name">{{ r.name }}</option>
+                      <option v-for="r in Roles.data" :value="r">{{ r }}</option>
                     </select>
                   </div>
                 </div>
@@ -282,6 +286,7 @@ export default {
       let me = this
       me.selectingProjectToAddUsers=false
       me.getUsuarios()
+      me.loadRoles()
       me.LoadLevelsOfStructure()
     },
 		loadfile(event){
@@ -473,7 +478,6 @@ export default {
    this.LoadCatalogSex()
    this.LoadCatalogGender()
    this.LoadCatalogEthnic()
-   this.loadRoles()
   }
 }
 </script>

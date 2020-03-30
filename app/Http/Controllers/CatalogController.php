@@ -119,10 +119,15 @@ class CatalogController extends Controller
   {
     $listOfRoles = array();
     $roles = Role::all();
-    return $roles;
+
     foreach ($roles as $role ) {
-      if(!($role->hasAnyPermissionTo(['CR_users', 'CRUD_users','CRUD_catalogs','R_reports']))){
-        array_push($listOfRoles,$role->name);
+      if(!($role->hasPermissionTo('CRUD_users')
+       || $role->hasPermissionTo('CR_users')
+       || $role->hasPermissionTo('R_reports')
+       || $role->hasPermissionTo('CRUD_catalogs')
+       || $role->hasPermissionTo('CR_projects')
+       || $role->hasPermissionTo('CRUD_projects') )){
+         array_push($listOfRoles,$role->name);
       }
     }
     return $listOfRoles;

@@ -48,7 +48,7 @@ Vue.component('usersSystem', require('./components/UserSystemComponent.vue').def
 Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
 Vue.component('userNotificator', require('./components/UserNotificationsComponent.vue').default);
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
-Vue.component('UserRoles', require('./components/catalogs/UserRolesComponent.vue').default);
+Vue.component('userRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 Vue.component('userFunctions', require('./components/users/UserFunctionsComponent.vue').default);
 /*
@@ -58,7 +58,10 @@ Vue.component('notificatorExample', require('./components/UserNotificatorCompone
 Vue.component('notificatorGoalsChekimg', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
 Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
 
-
+/*
+*Components realted to Navigation headers
+*/
+Vue.component('projectNavHeader', require('./components/navheaders/ProjectNavHeaderComponent.vue').default);
 
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('macroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
@@ -79,7 +82,7 @@ Vue.component('parameterstemplates', require('./components/templates/TemplatesPa
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
 
-Vue.component('ProjectStructure', require('./components/ProjectStructureComponent.vue').default);
+Vue.component('projectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 Vue.component('tasksVars', require('./components/TaskVarManagerComponent.vue').default);

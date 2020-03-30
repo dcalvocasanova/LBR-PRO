@@ -18,7 +18,7 @@
               @slot('title') Gestionar proyectos @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') /gestionar-proyectos @endslot
+              @slot('url') gestionar-proyectos @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
           @endif
