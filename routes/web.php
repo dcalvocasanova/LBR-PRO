@@ -203,6 +203,7 @@ Route::post('/catalogo/guardar', 'CatalogController@storeItem');
 Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
 Route::delete('/catalogo/borrar/{id}', 'CatalogController@deleteItem');
 Route::get('/catalogo/roles', 'CatalogController@getRoles');
+Route::get('/catalogo/roles-usuario', 'CatalogController@getRolesToSimpleUser');
 Route::post('/catalogo/guardar-rol', 'CatalogController@storeRole');
 Route::put('/catalogo/actualizar-rol', 'CatalogController@updateRole');
 Route::delete('/catalogo/borrar-rol/{id}', 'CatalogController@deleteRole');
@@ -215,7 +216,7 @@ Route::put('/estructura/actualizar', 'ProjectStructureController@update');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
-Route::get('/estructura/lista-niveles', 'ProjectStructureController@getListOfProjectLevels');
+Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');

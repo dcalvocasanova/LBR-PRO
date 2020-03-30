@@ -16,10 +16,10 @@ class ProjectStructureController extends Controller
     public function getProjectLevels(Request $request)
     {
      $levels = ProjectStructure::where('project_id', $request->id)->first();
-	  
+
 		return ($levels);
     }
-	
+
 	//obtiene el nombre de los macroprocesos
 	public function getMacroprocessProject(Request $request)
     {
@@ -30,7 +30,7 @@ class ProjectStructureController extends Controller
 		return ($macroprocesos);
 		//return $obj['children'][0]['macroprocess'][0]['name'];
     }
-	
+
 	//funci'on recursiva para recuperar los macroprocesos
 	function hasChildren($children,&$macroprocesos)
 	{
@@ -39,15 +39,15 @@ class ProjectStructureController extends Controller
 					array_push($macroprocesos,$children['macroprocess'][$i]['name']);
 				 }
 			}
-		
+
 		if(isset($children['children']) and !empty($children['children']) ){
 		 	for ( $i = 0; $i< count($children['children']); $i++){
 				$this->hasChildren($children['children'][$i],$macroprocesos);
 	   		 }
 		}
-		
+
 	}
-	
+
 
     /**
      * Store a newly created resource in storage.
@@ -97,15 +97,38 @@ class ProjectStructureController extends Controller
       return $levels;
     }
 
+
     /**
-     * Display a listing of the structure levels.
-     *
-     * @return \Illuminate\Http\Response
+     *  Display a list of the structure levels.
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return \Illuminate\Http\Response
      */
-    public function getListOfProjectLevels(Request $request)
-    {
-      $project = ProjectStructure::where('project_id', $request->id)->first();
-      $levels = json_decode($project->levels);
-      return $levels->children;      
-    }
+     public function getListOfProjectLevels(Request $request)
+     {
+        $listOfLevels = array();
+        $levels = ProjectStructure::where('project_id', $request->id)->first();
+     		$LevelsObjet = json_decode($levels->levels,true);
+     		$this->getListOfLevels($LevelsObjet,$listOfLevels);
+     		return ($listOfLevels);
+     		//return $obj['children'][0]['macroprocess'][0]['name'];
+      }
+
+    /**
+      * Display a list of the structure levels.
+      *
+      * @param objet $LevelsObjet
+      * @param array $listOfLevels
+      * @return array $listOfLevels
+      */
+     	function getListOfLevels($LevelsObjet,&$listOfLevels)
+     	{
+     		if(isset($LevelsObjet['name']) ){
+     		   array_push($listOfLevels,$LevelsObjet['name']);
+     		}
+     		if(isset($LevelsObjet['children']) and !empty($LevelsObjet['children']) ){
+     		 	for ( $i = 0; $i< count($LevelsObjet['children']); $i++){
+     				$this->getListOfLevels($LevelsObjet['children'][$i],$listOfLevels);
+     	   	}
+     		}
+     	}
 }

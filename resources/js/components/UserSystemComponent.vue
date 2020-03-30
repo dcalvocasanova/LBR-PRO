@@ -70,7 +70,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label class="bmd-label-floating">Rol</label>
-                    <select v-model="form.role" class=" form-control" :class="{ 'is-invalid': form.errors.has('role')}">                      
+                    <select v-model="form.role" class=" form-control" :class="{ 'is-invalid': form.errors.has('role')}">
                       <option v-for="role in Roles.data">{{ role.name }}</option>
                     </select>
                     <has-error :form="form" field="error"></has-error>
@@ -99,7 +99,8 @@
           identification:"",
           email:"",
           type:"sys",
-          role:""
+          role:"",
+          relatedProjects:""
         }),
         title:"Agregar nuevo usuario", //title to show
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -124,7 +125,8 @@
       },
       saveUser(){
         let me =this;
-        this.form.post('/usuarios/guardar')
+        me.form.relatedProjects= -1
+        me.form.post('/usuarios/guardar')
         .then(function (response) {
             me.clearFields();
             me.getUsuarios();// show all users

@@ -16,22 +16,14 @@ class User extends Authenticatable implements MustVerifyEmail
 	  protected $guarded = [];
 
     /**
-     * The channels the user receives notification broadcasts on.
-     *
-     * @return string
-     */
-    public function receivesBroadcastNotificationsOn()
-    {
-        return 'App.User.'. $this->id;
-    }
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'identification', 'type', 'email','salary', 'position', 'job','birthday','workingsince', 'education','workday', 'avatar', 'gender','ethnic','sex','password','relatedProjects'
+        'name','identification','type', 'email','salary','position', 'job',
+        'birthday','workingsince', 'education','workday', 'avatar', 'gender',
+        'ethnic','sex','password','relatedProjects','relatedLevel'
     ];
 
     /**
@@ -120,6 +112,9 @@ class User extends Authenticatable implements MustVerifyEmail
         });
         static::creating(function ($query) {
             $query->relatedProjects = $query->relatedProjects ?? -1;
+        });
+        static::creating(function ($query) {
+            $query->relatedLevel = $query->relatedLevel ?? 'N/A';
         });
         static::creating(function ($query) {
             $query->password = $query->password ?? Str::random(15);
