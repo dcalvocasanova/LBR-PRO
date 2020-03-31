@@ -11,7 +11,7 @@
             <select v-model="currentProject" class="form-control" @change="setProject()">
               <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
             </select>
-          </div>        
+          </div>
         </div>
       </div>
     </div>
@@ -390,8 +390,11 @@ export default {
     },
     loadFieldsUpdate(user){
       let me =this;
-      this.form.fill(user);
+      me.form.fill(user);
       me.update = user.id
+      if(user.roles.length > 0){
+          me.form.role=user.roles[0].name;
+      }
       me.title="Actualizar información del usuario";
     },
     deleteUser(user){

@@ -57,7 +57,19 @@ class UserController extends Controller
      */
     public function getUserByProject(Request $request)
     {
-      $users = User::where('relatedProjects',$request->project)->latest()->paginate(5);
+      $users = User::with('roles')->where('relatedProjects',$request->project)->latest()->paginate(5);
+      return $users;
+    }
+
+    /**
+     * Get all users according to a related level structure
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserByLevelStructure(Request $request)
+    {      
+      $users = User::with('roles')->where('relatedLevel',$request->level)->latest()->paginate(10);
       return $users;
     }
 

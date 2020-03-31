@@ -158,7 +158,9 @@
         this.update = user.id
         let me =this;
         me.form.fill(user);
-        me.form.role=user.roles[0].name;
+        if(user.roles.length > 0){
+            me.form.role=user.roles[0].name;
+        }      
         me.title="Actualizar información del usuario";
       },
       deleteUser(user){

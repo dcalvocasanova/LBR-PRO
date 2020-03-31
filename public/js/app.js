@@ -3942,7 +3942,8 @@ __webpack_require__.r(__webpack_exports__);
         level: 0,
         numGoals: 0,
         goals: [],
-        macroprocess: []
+        macroprocess: [],
+        userFunctions: []
       });
       this.level.post('/estructura/guardar').then(function (response) {
         me.level.reset();
@@ -4496,7 +4497,8 @@ __webpack_require__.r(__webpack_exports__);
         featherNode: true,
         goals: [],
         inheritedGoals: [],
-        macroprocess: []
+        macroprocess: [],
+        userFunctions: []
       });
       me.salir();
     },
@@ -6392,8 +6394,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadFieldsUpdate: function loadFieldsUpdate(user) {
       var me = this;
-      this.form.fill(user);
+      me.form.fill(user);
       me.update = user.id;
+
+      if (user.roles.length > 0) {
+        me.form.role = user.roles[0].name;
+      }
+
       me.title = "Actualizar información del usuario";
     },
     deleteUser: function deleteUser(user) {
@@ -7110,7 +7117,11 @@ __webpack_require__.r(__webpack_exports__);
       this.update = user.id;
       var me = this;
       me.form.fill(user);
-      me.form.role = user.roles[0].name;
+
+      if (user.roles.length > 0) {
+        me.form.role = user.roles[0].name;
+      }
+
       me.title = "Actualizar información del usuario";
     },
     deleteUser: function deleteUser(user) {
@@ -9909,121 +9920,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsUserFunctionsEditor: Boolean
@@ -10031,27 +9927,24 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       project_id: 0,
-      goalsInherited: [],
-      relatedGoals: [],
-      relatedTest: [[]],
-      temp: [],
-      Macroprocessgoals: [],
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      currentNode: {},
+      //Current node to update or add
+      title: "",
+      indexToUpdate: 0,
+      //Catalogs
       Projects: {},
       //All registered projects
       Levels: {},
       // All levels from organization
-      currentNode: {},
-      //Current node to update or add
-      parentNode: {},
-      //Parent node to update or add
-      updateNodeControl: 0,
-      //
-      itemsCopy: [],
-      title: "",
-      newName: "",
-      newCode: "",
+      Users: {},
+      userFunctions: [],
+      //elements inside de userfuntion definition
+      usersRelatedToUserFunction: [],
+      goalsRelatedToUserFunction: [],
+      functionUserName: "",
+      //element send to DB
       level: new Form({
         id: "",
         //level projectID
@@ -10061,71 +9954,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    nodoSeleccionado: function nodoSeleccionado(item) {
-      if (this.justShowTree) {
-        $('#NotificatorManager').modal('show');
-        this.currentNode = item;
-      }
-    },
-    asignarObjetivoANodo: function asignarObjetivoANodo(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0;
-      this.getGoalName();
-    },
-    relateGoals: function relateGoals(nodo) {
-      var me = this;
-      me.currentNode = nodo.item;
-      me.parentNode = nodo.parent;
-      me.updateNodeControl = 0;
-      me.relatedGoals = []; // Empty two random cells per row
-
-      for (var i = 0; i < me.parentNode.goals.length; ++i) {
-        var temp1 = [];
-        me.relatedGoals.push(temp1);
-        me.relatedGoals[i].push(me.parentNode.goals[i]);
-
-        for (var k = 0; k < me.parentNode.goals.length; ++k) {
-          me.relatedGoals[i].push(me.currentNode.goals[k]);
-        }
-      } // Empty two random cells per row
-
-
-      for (var i = 0; i < me.relatedGoals.length; ++i) {
-        for (var k = 0; k < me.relatedGoals[i].length; ++k) {
-          me.itemsCopy = me.relatedGoals.slice();
-          var obj = Object.assign({}, me.itemsCopy[i][k]);
-          var randomCellIndex = me.rndStr(15);
-          obj.randomCellIndex = randomCellIndex;
-          obj.related = "";
-          me.itemsCopy[i][k] = obj; //replace the old obj with the new modified one.
-        }
-      }
-
-      this.getGoals();
-    },
-    CreateMacroprocess: function CreateMacroprocess(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0;
-      me.title = "Agregar Macroproceso";
-      this.getMacroprocessData();
-    },
-    asignarObjetivoHeredado: function asignarObjetivoHeredado(nodo) {
-      var me = this;
-      me.currentNode = nodo.item;
-      me.parentNode = nodo.parent;
-      me.updateNodeControl = 0;
-      this.getGoalsInherited();
-    },
-    addObjetivoHeredado: function addObjetivoHeredado(node) {
-      var me = this;
-
-      if (node.parent !== node.item) {} else {
-        node.parent.children = [];
-      }
-    },
-    getProjectsPaginator: function getProjectsPaginator() {
+    getProjects: function getProjects() {
       var _this = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
@@ -10137,21 +9966,9 @@ __webpack_require__.r(__webpack_exports__);
       var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
       return logo;
     },
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getResultLevel: function getResultLevel() {
-      var _this2 = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/estructura?page=' + page).then(function (response) {
-        _this2.Levels = response.data; //get all projects from page
-      });
+    loadLevelData: function loadLevelData(project) {
+      this.project_id = project.id;
+      this.getLevels();
     },
     getLevels: function getLevels() {
       var me = this;
@@ -10182,156 +9999,117 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    loadLevelData: function loadLevelData(project) {
-      this.project_id = project.id;
-      this.getLevels();
-    },
-    makeParent: function makeParent(item) {
+    createUserFunction: function createUserFunction(item) {
       var me = this;
       me.currentNode = item;
-      me.currentNode.featherNode = false;
-      me.updateNodeControl = 0;
-      Vue.set(item, 'children', []);
-      this.getNodeName();
+      me.update = 0;
+      me.title = "Registrar funciones de usuario";
+      this.functionUserName = "";
+      this.usersRelatedToUserFunction = [];
+      this.goalsRelatedToUserFunction = [];
+      this.userFunctions = [];
+      me.getUserinLevel(me.currentNode.name);
+      me.showUserFuntionEditor();
     },
-    addChild: function addChild(item) {
+    showUserFunctions: function showUserFunctions(item) {
       var me = this;
-      me.getNodeName();
       me.currentNode = item;
-      me.updateNodeControl = 0;
-      me.title = "Agregar nivel de estructura";
+      me.showUserFuntionManager();
     },
-    editNode: function editNode(item) {
+    modifyUserFunction: function modifyUserFunction(item) {
       var me = this;
-      me.getNodeName();
-      me.currentNode = item;
-      me.newName = me.currentNode.name;
-      me.title = "Modificar nombre del nivel de estructura";
-      me.updateNodeControl = 1;
+      me.update = 1;
+      me.indexToUpdate = me.currentNode.userFunctions.indexOf(item);
+      me.title = "Modificar funciones de usuario";
+      me.getUserinLevel(me.currentNode.name);
+      me.usersRelatedToUserFunction = item.users;
+      me.goalsRelatedToUserFunction = item.goals;
+      me.functionUserName = item.name;
+      me.exitMainViewUserFuntions();
+      me.showUserFuntionEditor();
     },
-    addNode: function addNode() {
-      var me = this;
-      me.currentNode.children.push({
-        name: me.newName,
-        level: me.currentNode.level + 1,
-        numGoals: 0,
-        featherNode: true,
-        goals: [],
-        inheritedGoals: [],
-        macroprocess: []
-      });
-      me.salir();
+    showUserFuntionEditor: function showUserFuntionEditor() {
+      $('#UserFunctionsManager').modal('show');
     },
-    addGoal: function addGoal() {
-      var me = this;
-      me.currentNode.numGoals += 1;
-      me.currentNode.goals.push({
-        code: me.newCode,
-        name: me.newName,
-        pos: me.currentNode.numGoals,
-        // definir contador para objetivos
-        objectCode: me.rndStr(7)
-      });
-      me.title = "Agregar Objetivo";
-      me.salirObjetivos();
+    showUserFuntionManager: function showUserFuntionManager() {
+      $('#ModifyUserFunctionsManager').modal('show');
     },
-    addMacroprocess: function addMacroprocess() {
-      var me = this;
-      me.currentNode.macroprocess.push({
-        code: me.newCode,
-        name: me.newName,
-        goals: me.Macroprocessgoals // definir contador para objetivos
+    getUserinLevel: function getUserinLevel(level) {
+      var _this2 = this;
 
+      axios.get('/usuarios-por-nivel/' + level).then(function (response) {
+        _this2.Users = response.data; //get all projects from page
       });
-      me.salirMacroprocess();
     },
-    RelacionarObjetivos: function RelacionarObjetivos() {
-      var me = this;
-      me.currentNode.inheritedGoals.push({
-        goals: me.goalsInherited
-      });
-      me.title = "Relacionar objetivos";
-      me.salirRelacionarObjetivos();
-    },
-    updateNode: function updateNode() {
-      var me = this;
-      me.currentNode.name = me.newName;
-      me.salir();
-    },
-    deleteNode: function deleteNode(node) {
+    addUserFunction: function addUserFunction() {
       var me = this;
 
-      if (node.parent !== node.item) {
-        node.parent.children = me.deleteIndex(node.parent.children, node.item);
+      if (me.functionUserName.trim() != "" && me.usersRelatedToUserFunction.length > 0 && me.goalsRelatedToUserFunction.length > 0) {
+        me.currentNode.userFunctions.push({
+          name: me.functionUserName,
+          users: me.usersRelatedToUserFunction,
+          goals: me.goalsRelatedToUserFunction
+        });
+        me.exitEditorUserFunctions();
       } else {
-        node.parent.children = [];
+        swal.fire('Datos incompletos', 'Es necesario seleccionar objetivos, usuarios y un nombre para registrar la función de usuario', 'warning');
       }
+    },
+    updateUserFunction: function updateUserFunction() {
+      var me = this;
+
+      if (me.functionUserName.trim() != "" && me.usersRelatedToUserFunction.length > 0 && me.goalsRelatedToUserFunction.length > 0) {
+        me.currentNode.userFunctions[me.indexToUpdate].name = me.functionUserName;
+        me.currentNode.userFunctions[me.indexToUpdate].users = me.usersRelatedToUserFunction;
+        me.currentNode.userFunctions[me.indexToUpdate].goals = me.goalsRelatedToUserFunction;
+        me.exitEditorUserFunctions();
+      } else {
+        swal.fire('Datos incompletos', 'Es necesario seleccionar objetivos, usuarios y un nombre para registrar la función de usuario', 'warning');
+      }
+    },
+    deleteUserFunction: function deleteUserFunction(item) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar una función de usuario',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una función usuario",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarla!'
+      }).then(function (result) {
+        if (result.value) {
+          me.currentNode.userFunctions = me.deleteIndex(me.currentNode.userFunctions, item);
+          swal.fire('Eliminado', 'Función de usuario fue eliminada', 'success');
+        }
+      });
     },
     deleteIndex: function deleteIndex(arr, index) {
       return arr.filter(function (i) {
         return i != index;
       });
     },
-    salir: function salir() {
+    exit: function exit() {
       $('#LevelManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
+      this.updateBackgroundTaskUserFunctions();
     },
-    salirObjetivos: function salirObjetivos() {
-      $('#GoalManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirManejador: function salirManejador() {
-      $('#InheritedManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirNotificador: function salirNotificador() {
-      $('#NotificatorManager').modal('toggle');
-    },
-    salirRelacionarObjetivos: function salirRelacionarObjetivos() {
-      $('#RelatedManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-    },
-    salirMacroprocess: function salirMacroprocess() {
-      $('#MacroprocessManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getMacroprocessData: function getMacroprocessData() {
-      $('#MacroprocessManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getNodeName: function getNodeName() {
-      $('#LevelManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-    },
-    getGoalsInherited: function getGoalsInherited() {
-      $('#InheritedManager').modal('show');
-    },
-    getGoals: function getGoals() {
-      $('#RelatedManager').modal('show');
-    },
-    getGoalName: function getGoalName() {
-      $('#GoalManager').modal('show');
-    },
-    rndStr: function rndStr(len) {
-      var text = " ";
-      var chars = "abcdefghijklmnopqrstuvwxyz123456789";
+    exitEditorUserFunctions: function exitEditorUserFunctions() {
+      $('#UserFunctionsManager').modal('toggle');
 
-      for (var i = 0; i < len; i++) {
-        for (var k = 0; k < 8; k++) {
-          text += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
+      if (this.update != 0) {
+        $('#ModifyUserFunctionsManager').modal('show');
       }
 
-      return text;
+      this.updateBackgroundTaskUserFunctions();
+    },
+    exitMainViewUserFuntions: function exitMainViewUserFuntions() {
+      $('#ModifyUserFunctionsManager').modal('toggle');
+      this.updateBackgroundTaskUserFunctions();
+    },
+    updateBackgroundTaskUserFunctions: function updateBackgroundTaskUserFunctions() {
+      var me = this;
+      me.level.levels = JSON.stringify(me.Levels);
+      this.level.put('/estructura/actualizar');
     }
   },
   created: function created() {
@@ -15027,7 +14805,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -64668,6 +64446,15 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
+            _c("p"),
+            _c("h4", [
+              _vm._v(
+                "A continuación se desplega la estructura de niveles de los proyectos para crear las funciones de usuarios"
+              )
+            ]),
+            _vm._v(" "),
+            _c("p"),
+            _vm._v(" "),
             _c("div", { staticClass: "table-responsive" }, [
               _c("table", { staticClass: "table table-hover" }, [
                 _vm._m(1),
@@ -64726,7 +64513,7 @@ var render = function() {
             [
               _c("pagination", {
                 attrs: { data: _vm.Projects },
-                on: { "pagination-change-page": _vm.getProjectsPaginator }
+                on: { "pagination-change-page": _vm.getProjects }
               })
             ],
             1
@@ -64768,7 +64555,11 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("Seleccione el nivel para agregar funciones")]
+                  [
+                    _vm._v(
+                      "Seleccione el nivel para agregar funciones a los usuarios"
+                    )
+                  ]
                 ),
                 _vm._v(" "),
                 _vm._m(2)
@@ -64792,8 +64583,8 @@ var render = function() {
                                   _vm.showAsUserFunctionsEditor
                               },
                               on: {
-                                "create-user-function": _vm.CreateMacroprocess,
-                                "modify-user-function": _vm.CreateMacroprocess
+                                "create-user-function": _vm.createUserFunction,
+                                "modify-user-function": _vm.showUserFunctions
                               }
                             })
                           ],
@@ -64816,7 +64607,7 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("Guardar estructura")]
+                    [_vm._v("Guardar cambios")]
                   )
                 ])
               ])
@@ -64831,132 +64622,11 @@ var render = function() {
       {
         staticClass: "modal fade",
         attrs: {
-          id: "LevelManager",
-          tabindex: "-2",
-          role: "dialog",
-          "aria-labelledby": "LevelManager-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-lg modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header border-bottom-0" }, [
-                _c(
-                  "h5",
-                  { staticClass: "modal-title", attrs: { id: "LevelManager" } },
-                  [_vm._v(" " + _vm._s(_vm.title))]
-                ),
-                _vm._v(" "),
-                _vm._m(3)
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "col-md-12" }, [
-                  _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "col-md-12" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Nombre")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newName,
-                                expression: "newName"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newName },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newName = $event.target.value
-                              }
-                            }
-                          })
-                        ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "card-footer" }, [
-                      _c("div", { staticClass: "container-buttons" }, [
-                        _vm.updateNodeControl == 0
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.addNode()
-                                  }
-                                }
-                              },
-                              [_vm._v("Añadir")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.updateNodeControl != 0
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-info",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.updateNode()
-                                  }
-                                }
-                              },
-                              [_vm._v("Actualizar")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-secondary",
-                            on: {
-                              click: function($event) {
-                                return _vm.salir()
-                              }
-                            }
-                          },
-                          [_vm._v("Atrás")]
-                        )
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "MacroprocessManager",
+          id: "UserFunctionsManager",
           tabindex: "-2",
           role: "dialog",
           aria: "",
-          labelledby: "MacroprocessManager-lg",
+          labelledby: "UserFunctionsManager-lg",
           "aria-hidden": "true"
         }
       },
@@ -64976,145 +64646,229 @@ var render = function() {
                   [_vm._v(_vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(3)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "col-md-12" }, [
+                _c("div", { staticClass: "col-12" }, [
                   _c("div", { staticClass: "card" }, [
                     _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "col-md-12" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Nombre")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newName,
-                                expression: "newName"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newName },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newName = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Código")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newCode,
-                                expression: "newCode"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newCode },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newCode = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("table", { staticClass: "table table-hover" }, [
-                            _vm._m(5),
-                            _vm._v(" "),
-                            _c(
-                              "tbody",
-                              _vm._l(_vm.currentNode.goals, function(goal) {
-                                return _c("tr", { key: goal.pos }, [
-                                  _c("td", [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.Macroprocessgoals,
-                                          expression: "Macroprocessgoals"
-                                        }
-                                      ],
-                                      attrs: {
-                                        type: "checkbox",
-                                        name: goal.pos
-                                      },
-                                      domProps: {
-                                        value: goal.pos,
-                                        checked: Array.isArray(
-                                          _vm.Macroprocessgoals
-                                        )
-                                          ? _vm._i(
-                                              _vm.Macroprocessgoals,
-                                              goal.pos
-                                            ) > -1
-                                          : _vm.Macroprocessgoals
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$a = _vm.Macroprocessgoals,
-                                            $$el = $event.target,
-                                            $$c = $$el.checked ? true : false
-                                          if (Array.isArray($$a)) {
-                                            var $$v = goal.pos,
-                                              $$i = _vm._i($$a, $$v)
-                                            if ($$el.checked) {
-                                              $$i < 0 &&
-                                                (_vm.Macroprocessgoals = $$a.concat(
-                                                  [$$v]
-                                                ))
-                                            } else {
-                                              $$i > -1 &&
-                                                (_vm.Macroprocessgoals = $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1)))
+                      _c("div", { staticClass: "col-12" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c(
+                            "div",
+                            { staticClass: "users-and-goals col-md-6" },
+                            [
+                              _c(
+                                "table",
+                                { staticClass: "table table-hover" },
+                                [
+                                  _vm._m(4),
+                                  _vm._v(" "),
+                                  _c(
+                                    "tbody",
+                                    _vm._l(_vm.currentNode.goals, function(
+                                      goal
+                                    ) {
+                                      return _c("tr", { key: goal.pos }, [
+                                        _c("td", [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value:
+                                                  _vm.goalsRelatedToUserFunction,
+                                                expression:
+                                                  "goalsRelatedToUserFunction"
+                                              }
+                                            ],
+                                            attrs: {
+                                              type: "checkbox",
+                                              name: goal.pos
+                                            },
+                                            domProps: {
+                                              value: goal.pos,
+                                              checked: Array.isArray(
+                                                _vm.goalsRelatedToUserFunction
+                                              )
+                                                ? _vm._i(
+                                                    _vm.goalsRelatedToUserFunction,
+                                                    goal.pos
+                                                  ) > -1
+                                                : _vm.goalsRelatedToUserFunction
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$a =
+                                                    _vm.goalsRelatedToUserFunction,
+                                                  $$el = $event.target,
+                                                  $$c = $$el.checked
+                                                    ? true
+                                                    : false
+                                                if (Array.isArray($$a)) {
+                                                  var $$v = goal.pos,
+                                                    $$i = _vm._i($$a, $$v)
+                                                  if ($$el.checked) {
+                                                    $$i < 0 &&
+                                                      (_vm.goalsRelatedToUserFunction = $$a.concat(
+                                                        [$$v]
+                                                      ))
+                                                  } else {
+                                                    $$i > -1 &&
+                                                      (_vm.goalsRelatedToUserFunction = $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        ))
+                                                  }
+                                                } else {
+                                                  _vm.goalsRelatedToUserFunction = $$c
+                                                }
+                                              }
                                             }
-                                          } else {
-                                            _vm.Macroprocessgoals = $$c
-                                          }
-                                        }
-                                      }
+                                          }),
+                                          _vm._v(
+                                            "\n                                  " +
+                                              _vm._s(goal.name) +
+                                              "\n                              "
+                                          )
+                                        ])
+                                      ])
                                     }),
-                                    _vm._v(" " + _vm._s(goal.name))
-                                  ])
-                                ])
-                              }),
-                              0
-                            )
-                          ])
+                                    0
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "user-functions col-md-6" },
+                            [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "table",
+                                  { staticClass: "table table-hover" },
+                                  [
+                                    _vm._m(5),
+                                    _vm._v(" "),
+                                    _c(
+                                      "tbody",
+                                      _vm._l(_vm.Users.data, function(user) {
+                                        return _c("tr", { key: user.id }, [
+                                          _c("td", [
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.usersRelatedToUserFunction,
+                                                  expression:
+                                                    "usersRelatedToUserFunction"
+                                                }
+                                              ],
+                                              attrs: { type: "checkbox" },
+                                              domProps: {
+                                                value: user.id,
+                                                checked: Array.isArray(
+                                                  _vm.usersRelatedToUserFunction
+                                                )
+                                                  ? _vm._i(
+                                                      _vm.usersRelatedToUserFunction,
+                                                      user.id
+                                                    ) > -1
+                                                  : _vm.usersRelatedToUserFunction
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  var $$a =
+                                                      _vm.usersRelatedToUserFunction,
+                                                    $$el = $event.target,
+                                                    $$c = $$el.checked
+                                                      ? true
+                                                      : false
+                                                  if (Array.isArray($$a)) {
+                                                    var $$v = user.id,
+                                                      $$i = _vm._i($$a, $$v)
+                                                    if ($$el.checked) {
+                                                      $$i < 0 &&
+                                                        (_vm.usersRelatedToUserFunction = $$a.concat(
+                                                          [$$v]
+                                                        ))
+                                                    } else {
+                                                      $$i > -1 &&
+                                                        (_vm.usersRelatedToUserFunction = $$a
+                                                          .slice(0, $$i)
+                                                          .concat(
+                                                            $$a.slice($$i + 1)
+                                                          ))
+                                                    }
+                                                  } else {
+                                                    _vm.usersRelatedToUserFunction = $$c
+                                                  }
+                                                }
+                                              }
+                                            }),
+                                            _vm._v(
+                                              "\n                                    " +
+                                                _vm._s(user.name) +
+                                                "\n                                "
+                                            )
+                                          ])
+                                        ])
+                                      }),
+                                      0
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Función")]
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.functionUserName,
+                                      expression: "functionUserName"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.functionUserName },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.functionUserName = $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ]
+                          )
                         ])
                       ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "card-footer" }, [
                       _c("div", { staticClass: "container-buttons" }, [
-                        _vm.updateNodeControl == 0
+                        _vm.update == 0
                           ? _c(
                               "button",
                               {
                                 staticClass: "btn btn-success",
                                 on: {
                                   click: function($event) {
-                                    return _vm.addMacroprocess()
+                                    return _vm.addUserFunction()
                                   }
                                 }
                               },
@@ -65122,14 +64876,14 @@ var render = function() {
                             )
                           : _vm._e(),
                         _vm._v(" "),
-                        _vm.updateNodeControl != 0
+                        _vm.update != 0
                           ? _c(
                               "button",
                               {
                                 staticClass: "btn btn-info",
                                 on: {
                                   click: function($event) {
-                                    return _vm.updateNode()
+                                    return _vm.updateUserFunction()
                                   }
                                 }
                               },
@@ -65143,11 +64897,11 @@ var render = function() {
                             staticClass: "btn btn-secondary",
                             on: {
                               click: function($event) {
-                                return _vm.salirMacroprocess()
+                                return _vm.exitEditorUserFunctions()
                               }
                             }
                           },
-                          [_vm._v("Atrás")]
+                          [_vm._v("Salir sin guardar")]
                         )
                       ])
                     ])
@@ -65165,10 +64919,10 @@ var render = function() {
       {
         staticClass: "modal fade",
         attrs: {
-          id: "GoalManager",
+          id: "ModifyUserFunctionsManager",
           tabindex: "-3",
           role: "dialog",
-          "aria-labelledby": "GoalManager-lg",
+          "aria-labelledby": "ModifyUserFunctionsManager-lg",
           "aria-hidden": "true"
         }
       },
@@ -65181,433 +64935,96 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(6),
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "ModifyUserFunctionsManager" }
+                  },
+                  [
+                    _vm._v(
+                      " Lista de funciones de usuario del nivel: " +
+                        _vm._s(_vm.currentNode.name)
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _vm._m(6)
+              ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "col-md-12" }, [
                   _c("div", { staticClass: "card" }, [
                     _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "col-md-10" }, [
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Código")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newCode,
-                                expression: "newCode"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newCode },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
+                      _c("table", { staticClass: "table table-hover" }, [
+                        _vm._m(7),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.currentNode.userFunctions, function(
+                            userfunctions
+                          ) {
+                            return _c("tr", { key: userfunctions.name }, [
+                              _c("td", {
+                                domProps: {
+                                  textContent: _vm._s(userfunctions.name)
                                 }
-                                _vm.newCode = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Objetivo")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newName,
-                                expression: "newName"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newName },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newName = $event.target.value
-                              }
-                            }
-                          })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "card-footer" }, [
-                        _c("div", { staticClass: "container-buttons" }, [
-                          _vm.updateNodeControl == 0
-                            ? _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-success",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.addGoal()
-                                    }
-                                  }
-                                },
-                                [_vm._v("Añadir")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.updateNodeControl != 0
-                            ? _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.updateGoal()
-                                    }
-                                  }
-                                },
-                                [_vm._v("Actualizar")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-secondary",
-                              on: {
-                                click: function($event) {
-                                  return _vm.salirObjetivos()
-                                }
-                              }
-                            },
-                            [_vm._v("Atrás")]
-                          )
-                        ])
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "InheritedManager",
-          tabindex: "-4",
-          role: "dialog",
-          "aria-labelledby": "InheritedManager-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-lg modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _vm._m(7),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(8),
-                          _vm._v(" "),
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.parentNode.goals, function(goal) {
-                              return _c("tr", { key: goal.pos }, [
-                                _c("td", [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.currentNode.inheritedGoals,
-                                        expression: "currentNode.inheritedGoals"
-                                      }
-                                    ],
-                                    attrs: { type: "checkbox", name: goal.pos },
-                                    domProps: {
-                                      value: goal.pos,
-                                      checked: Array.isArray(
-                                        _vm.currentNode.inheritedGoals
-                                      )
-                                        ? _vm._i(
-                                            _vm.currentNode.inheritedGoals,
-                                            goal.pos
-                                          ) > -1
-                                        : _vm.currentNode.inheritedGoals
-                                    },
+                              }),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info",
                                     on: {
-                                      change: function($event) {
-                                        var $$a =
-                                            _vm.currentNode.inheritedGoals,
-                                          $$el = $event.target,
-                                          $$c = $$el.checked ? true : false
-                                        if (Array.isArray($$a)) {
-                                          var $$v = goal.pos,
-                                            $$i = _vm._i($$a, $$v)
-                                          if ($$el.checked) {
-                                            $$i < 0 &&
-                                              _vm.$set(
-                                                _vm.currentNode,
-                                                "inheritedGoals",
-                                                $$a.concat([$$v])
-                                              )
-                                          } else {
-                                            $$i > -1 &&
-                                              _vm.$set(
-                                                _vm.currentNode,
-                                                "inheritedGoals",
-                                                $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1))
-                                              )
-                                          }
-                                        } else {
-                                          _vm.$set(
-                                            _vm.currentNode,
-                                            "inheritedGoals",
-                                            $$c
-                                          )
-                                        }
+                                      click: function($event) {
+                                        return _vm.modifyUserFunction(
+                                          userfunctions
+                                        )
                                       }
                                     }
-                                  }),
-                                  _vm._v(" " + _vm._s(goal.name))
-                                ])
-                              ])
-                            }),
-                            0
-                          )
-                        ])
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-footer" }, [
-                    _c("div", { staticClass: "container-buttons" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-secondary",
-                          on: {
-                            click: function($event) {
-                              return _vm.salirManejador()
-                            }
-                          }
-                        },
-                        [_vm._v("Salir")]
-                      )
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "RelatedManager",
-          tabindex: "-4",
-          role: "dialog",
-          "aria-labelledby": "RelatedManager-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-lg modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _vm._m(9),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "col-md-8" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(10),
-                          _vm._v(" "),
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.relatedGoals, function(rows) {
-                              return _c(
-                                "tr",
-                                _vm._l(rows, function(goal) {
-                                  return _c("td", [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: goal.related,
-                                          expression: "goal.related"
-                                        }
-                                      ],
-                                      key: goal.randomCellIndex,
-                                      attrs: { type: "checkbox" },
-                                      domProps: {
-                                        value: goal.randomCellIndex,
-                                        checked: Array.isArray(goal.related)
-                                          ? _vm._i(
-                                              goal.related,
-                                              goal.randomCellIndex
-                                            ) > -1
-                                          : goal.related
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$a = goal.related,
-                                            $$el = $event.target,
-                                            $$c = $$el.checked ? true : false
-                                          if (Array.isArray($$a)) {
-                                            var $$v = goal.randomCellIndex,
-                                              $$i = _vm._i($$a, $$v)
-                                            if ($$el.checked) {
-                                              $$i < 0 &&
-                                                _vm.$set(
-                                                  goal,
-                                                  "related",
-                                                  $$a.concat([$$v])
-                                                )
-                                            } else {
-                                              $$i > -1 &&
-                                                _vm.$set(
-                                                  goal,
-                                                  "related",
-                                                  $$a
-                                                    .slice(0, $$i)
-                                                    .concat($$a.slice($$i + 1))
-                                                )
-                                            }
-                                          } else {
-                                            _vm.$set(goal, "related", $$c)
-                                          }
-                                        }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-edit" })]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteUserFunction(
+                                          userfunctions
+                                        )
                                       }
-                                    }),
-                                    _vm._v(
-                                      "\n                              " +
-                                        _vm._s(goal.name) +
-                                        "\n                          "
-                                    )
-                                  ])
-                                }),
-                                0
-                              )
-                            }),
-                            0
-                          )
-                        ])
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-trash-alt" })]
+                                )
+                              ])
+                            ])
+                          }),
+                          0
+                        )
                       ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-footer" }, [
-                    _c("div", { staticClass: "container-buttons" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-secondary",
-                          on: {
-                            click: function($event) {
-                              return _vm.salirRelacionarObjetivos()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer" }, [
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.exitMainViewUserFuntions()
+                              }
                             }
-                          }
-                        },
-                        [_vm._v("Salir")]
-                      )
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "NotificatorManager",
-          tabindex: "-4",
-          role: "dialog",
-          "aria-labelledby": "RelatedManager-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-lg modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _vm._m(11),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c(
-                    "div",
-                    { staticClass: "card-body" },
-                    [
-                      _c("notificator-goals-chekimg", {
-                        attrs: { Item: _vm.currentNode },
-                        on: { "close-modal": _vm.salirNotificador }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-footer" }, [
-                    _c("div", { staticClass: "container-buttons" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-secondary",
-                          on: {
-                            click: function($event) {
-                              return _vm.salirNotificador()
-                            }
-                          }
-                        },
-                        [_vm._v("Salir")]
-                      )
+                          },
+                          [_vm._v("salir")]
+                        )
+                      ])
                     ])
                   ])
                 ])
@@ -65682,6 +65099,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Seleccione los objetivos asociados a la tarea")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Seleccione el usuario asociados a la tarea")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c(
       "button",
       {
@@ -65699,121 +65136,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [_c("th", [_vm._v("Seleccione los objetivos asociados")])])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c("h5", { staticClass: "modal-title", attrs: { id: "GoalManager" } }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c("h5", {
-        staticClass: "modal-title",
-        attrs: { id: "InheritageManager" }
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [_c("th", [_vm._v(" Seleccione los objetivos ")])])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c("h5", {
-        staticClass: "modal-title",
-        attrs: { id: "InheritageManager" }
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v(" Objetivos del nivel superior ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" Objetivos de este nivel ")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
-      _c("h5", {
-        staticClass: "modal-title",
-        attrs: { id: "InheritageManager" }
-      }),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
+    return _c("thead", [
+      _c("tr", [_c("th", [_vm._v("Lista de funciones del nivel")])])
     ])
   }
 ]
