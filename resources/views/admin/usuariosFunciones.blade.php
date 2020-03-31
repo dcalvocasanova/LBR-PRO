@@ -8,7 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-            <user-functions></user-functions>
+            <user-functions :show-as-user-functions-editor=true></user-functions>
       </div>
     </div>
     {{-- Adding footer --}}

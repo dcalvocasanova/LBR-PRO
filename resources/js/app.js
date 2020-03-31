@@ -50,7 +50,7 @@ Vue.component('userNotificator', require('./components/UserNotificationsComponen
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
 Vue.component('userRoles', require('./components/catalogs/UserRolesComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
-Vue.component('userFunctions', require('./components/users/UserFunctionsComponent.vue').default);
+Vue.component('userFunctions', require('./components/users/TaskProjectStructureComponent.vue').default);
 /*
 * All Components related to notifications
 */
