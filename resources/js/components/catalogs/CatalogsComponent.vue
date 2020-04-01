@@ -31,6 +31,14 @@
                 Catálogo: Étnias
               </i>
             </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('ECONOMICS')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Actividades económicas
+              </i>
+            </button>
           </div>
           <div class="card-footer">
           </div>
@@ -133,6 +141,7 @@
             if (code === "GENDER"){this.catalog="Géneros"}
             if (code === "SEX"){this.catalog="Sexos"}
             if (code === "ETHNIC"){this.catalog="Étnias"}
+            if (code === "ECONOMICS"){this.catalog="Actividades económicas"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected
@@ -172,7 +181,7 @@
           },
           loadCatalogoUpdate(catalog){
             this.title= "Actualizar elemento";
-            this.form.fill(catalog)            
+            this.form.fill(catalog)
             this.updateCatalogo= catalog.id;
           },
           clearFields(){

@@ -131,6 +131,16 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-tree', function () {
       return view('admin.tree');
   });
+
+  Route::get('/gestionador-parametrizacion-catalogos', function () {
+      return view('containers.parametrizacion-catalogos');
+  });
+
+  Route::get('/gestionador-parametrizacion-diseno', function () {
+      return view('containers.parametrizacion-disegno');
+  });
+
+
 });
 Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-macroprocesos', function () {
@@ -203,6 +213,7 @@ Route::post('/catalogo/guardar', 'CatalogController@storeItem');
 Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
 Route::delete('/catalogo/borrar/{id}', 'CatalogController@deleteItem');
 Route::get('/catalogo/roles', 'CatalogController@getRoles');
+Route::get('/catalogo/roles-usuario', 'CatalogController@getRolesToSimpleUser');
 Route::post('/catalogo/guardar-rol', 'CatalogController@storeRole');
 Route::put('/catalogo/actualizar-rol', 'CatalogController@updateRole');
 Route::delete('/catalogo/borrar-rol/{id}', 'CatalogController@deleteRole');
@@ -215,10 +226,12 @@ Route::put('/estructura/actualizar', 'ProjectStructureController@update');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
-Route::get('/estructura/lista-niveles', 'ProjectStructureController@getListOfProjectLevels');
+Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
+Route::get('/estructura/lista-funciones-de-usuario/{id}', 'ProjectStructureController@getListOfUserFunctions');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
+Route::get('/usuarios-por-nivel/{level}', 'UserController@getUserByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');

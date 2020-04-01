@@ -1,5 +1,21 @@
 <template>
-    <div class="container container-project">
+  <div class="container container-project">
+    <div class="row h-100" v-if="this.selectingProjectToAddUsers === true">
+      <div class="card card-plain col-12">
+        <div class="card-header card-header-primary ">
+          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran usuarios</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <br>
+            <select v-model="currentProject" class="form-control" @change="setProject()">
+              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="this.selectingProjectToAddUsers === false">
       <div class="row">
         <div class="col-md-5">
           <div class="card card-plain">
@@ -35,16 +51,6 @@
               <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
             </div>
           </div>
-        <!--
-          <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#loadUsers">
-              Cargar usuario usando un archivo
-              <i class="fa fa-plus-circle"></i>
-            </button>
-          </div>
-        -->
         </div>
         <div class="col-md-7">
           <div class="card">
@@ -52,17 +58,6 @@
               <h4 class="card-title">{{ title }}</h4>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Asociado al proyecto</label>
-                    <select v-model="form.relatedProjects" class="form-control":class="{ 'is-invalid': form.errors.has('relatedProjects') }">
-                      <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-                    </select>
-                    <has-error :form="form" field="relatedProjects"></has-error>
-                  </div>
-                </div>
-              </div>
               <div class="row">
                 <div class="col-md-7">
                   <div class="form-group">
@@ -97,7 +92,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -173,6 +167,28 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nivel de estructura donde está el usuario</label>
+                    <br>
+                    <select v-model="form.relatedLevel" class="form-control">
+                      <option v-for="l in Levels" :value="l">{{ l }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Rol de usuario</label>
+                    <br>
+                    <select v-model="form.role" class="form-control">
+                      <option v-for="r in Roles.data" :value="r">{{ r }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
@@ -183,32 +199,33 @@
         </div>
       </div>
       <div class="modal fade" id="loadUsers" tabindex="-1" role="dialog" aria-labelledby="loadUsersModalLabel-lg" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header border-bottom-0">
-              <h5 class="modal-title" id="ParameterModalLabel"></h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <button @click="getTemplate" class="btn btn-success">Generar archivo</button>
-                <div class="col-md-12">
-                  <div class="card">
-                    <div class="card-header card-header-primary">
-                      <h4 class="card-title">Cargar usuarios usando un archivo excel</h4>
-                    </div>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-8">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Cargar archivo</label>
-                            <input  type="file" id ="procesar_archivo" @change="EventSubir">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="ParameterModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <button @click="getTemplate" class="btn btn-success">Generar archivo</button>
+                  <div class="col-md-12">
+                    <div class="card">
+                      <div class="card-header card-header-primary">
+                        <h4 class="card-title">Cargar usuarios usando un archivo excel</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-8">
+                            <div class="form-group">
+                              <label class="bmd-label-floating">Cargar archivo</label>
+                              <input  type="file" id ="procesar_archivo" @change="EventSubir">
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-md-4">
-                          <button @click="getUsuarios" data-dismiss="modal" class="btn btn-success">Regresar</button>
+                          <div class="col-md-4">
+                            <button @click="getUsuarios" data-dismiss="modal" class="btn btn-success">Regresar</button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -218,8 +235,8 @@
             </div>
           </div>
         </div>
-      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -229,36 +246,49 @@ export default {
   },
   data(){
     return{
-          form: new Form ({
-            id:"",//User ID
-            identification:"",
-            name:"",
-            email:"",
-            gender:"",
-            sex:"",
-            ethnic:"",
-            type:"web",
-            birthday:"",
-            workingsince:"",
-            job:"",
-            position:"",
-            salary:"",
-            workday:"",
-            education:"",
-            avatar:"",
-            relatedProjects:""
-          }),
-          title:"Agregar nuevo usuario", //title to show
-          update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-	        userFile:"",
-          Users:{}, //BD content
-          Projects:{},
-          Sex:{},
-          Genders:{},
-          Ethnics:{}
-      }
+      form: new Form ({
+        id:"",//User ID
+        identification:"",
+        name:"",
+        email:"",
+        gender:"",
+        sex:"",
+        ethnic:"",
+        type:"web",
+        birthday:"",
+        workingsince:"",
+        job:"",
+        position:"",
+        salary:"",
+        workday:"",
+        education:"",
+        avatar:"",
+        relatedProjects:"",
+        relatedLevel:"",
+        role:""
+      }),
+      title:"Agregar nuevo usuario", //title to show
+      update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      userFile:"",
+      selectingProjectToAddUsers:true,
+      currentProject:0,
+      Users:{}, //BD content
+      Projects:{},
+      Sex:{},
+      Genders:{},
+      Ethnics:{},
+      Levels:{},
+      Roles:{}
+    }
   },
   methods:{
+    setProject(){
+      let me = this
+      me.selectingProjectToAddUsers=false
+      me.getUsuarios()
+      me.loadRoles()
+      me.LoadLevelsOfStructure()
+    },
 		loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.userFile = event.target.files[0];
@@ -297,7 +327,7 @@ export default {
     getUsuarios(page = 1) {
       let me =this;
       me.clearFields();
-      axios.get('/usuarios?page=' + page)
+      axios.get('/usuarios-por-proyecto/'+me.currentProject+'?page=' + page)
       .then(response => {
             me.Users = response.data; //get all projects from page
       });
@@ -327,7 +357,8 @@ export default {
     },
     saveUser(){
       let me =this;
-      this.form.post('/usuarios/guardar')
+      me.form.relatedProjects=me.currentProject
+      me.form.post('/usuarios/guardar')
       .then(function (response) {
           me.clearFields();
           me.getUsuarios();// show all users
@@ -359,8 +390,11 @@ export default {
     },
     loadFieldsUpdate(user){
       let me =this;
-      this.form.fill(user);
+      me.form.fill(user);
       me.update = user.id
+      if(user.roles.length > 0){
+          me.form.role=user.roles[0].name;
+      }
       me.title="Actualizar información del usuario";
     },
     deleteUser(user){
@@ -416,6 +450,20 @@ export default {
             this.Ethnics = response.data; //get all catalogs from category selected
       });
     },
+    LoadLevelsOfStructure() {
+      let me = this
+      axios.get('/estructura/lista-niveles/'+me.currentProject)
+      .then(response => {
+            me.Levels = response.data; //get all catalogs from category selected
+      });
+    },
+    loadRoles() {
+      let me = this
+      axios.get('/catalogo/roles-usuario')
+      .then(response => {
+          me.Roles = response; //get all user's roles
+      });
+    }
   },
   created(){
     Fire.$on('searching',() => {
@@ -429,11 +477,10 @@ export default {
       })
   },
   mounted() {
-     this.getProjectos()
-     this.getUsuarios()
-     this.LoadCatalogSex()
-     this.LoadCatalogGender()
-     this.LoadCatalogEthnic()
+   this.getProjectos()
+   this.LoadCatalogSex()
+   this.LoadCatalogGender()
+   this.LoadCatalogEthnic()
   }
 }
 </script>

@@ -347,11 +347,10 @@
    				obj.randomCellIndex = randomCellIndex;
 				obj.related = "";
     			me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-    			
+
                 }
             }
-			
-			
+
           this.getGoals()
         },
       CreateMacroprocess(item){
@@ -469,10 +468,11 @@
           name: me.newName,
           level:me.currentNode.level + 1,
     		  numGoals:0,
-			  featherNode:true,
+			    featherNode:true,
     		  goals:[],
     		  inheritedGoals:[],
-			  macroprocess:[]
+			    macroprocess:[],
+          userFunctions:[]
         })
         me.salir()
       },

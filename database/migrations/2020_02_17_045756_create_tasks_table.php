@@ -15,13 +15,11 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->json('related_to');
             $table->bigInteger('id_project');
-            $table->bigInteger('id_process');
-            $table->string('frecuency');
-            $table->string('min_time');
-            $table->string('std_time');
-            $table->string('max_time');
+            $table->bigInteger('id_product');
+            $table->string('name')
+            $table->json('related_to');
+            $table->string('level');
             $table->string('type');
             $table->timestamps();
         });

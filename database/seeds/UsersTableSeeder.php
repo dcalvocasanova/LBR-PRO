@@ -29,6 +29,8 @@ class UsersTableSeeder extends Seeder
           'salary' => 'N/A',
           'birthday' => '1900-01-01 00:00:01',
           'workingsince' => '1900-01-01 00:00:01',
+          'relatedProjects'=> -1,
+          'relatedLevel'=> 'N/A',
           'avatar' => 'default.png'
         ]);
         $user->assignRole('Administrador');

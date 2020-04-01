@@ -32,7 +32,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('type');
             $table->string('avatar');
-            $table->bigInteger('relatedProjects');
+            $table->string('relatedLevel');
+            $table->bigInteger('relatedProjects');            
             $table->rememberToken();
             $table->timestamps();
         });
