@@ -29,20 +29,40 @@
 	        <button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
           <i class="fas fa-columns">Asignar objetivo</i>
           </button>
-          
-          <button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip">
+
+          <button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})">
           <i class="fas fa-columns">Relacionar objetivos</i>
           </button>
-          <button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip">
+          <button class="btn btn-primary" @click="$emit('create-macroprocess',item)">
           <i class="fas fa-connectdevelop">Crear Macroproceso</i>
           </button>
         </span>
+        <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
+            <button class="btn btn-primary"
+              @click="$emit('create-user-function',item)"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Agregar nueva función">
+              <i class="fas fa-plus-circle"></i>
+            </button>
+            <button class="btn btn-primary"
+              @click="$emit('modify-user-function',item)"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Agregar nueva función">
+              <i class="fas fa-edit"></i>
+            </button>
+        </span>
+
       </h4>
       </div>
       <ul class="nested-list" v-show="isOpen" v-if="isParent">
       <tree-menu
         class="item"
-        :parent="item" :showTreeEditor="showTreeEditor" :showGoalEditor="showGoalEditor"
+        :parent="item"
+        :showTreeEditor="showTreeEditor"
+        :showGoalEditor="showGoalEditor"
+        :showUserFunctionsEditor="showUserFunctionsEditor"
           v-for="(child, index) in item.children"
             :key="index"
             :item="child"
@@ -52,9 +72,11 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
-	        @create-macroprocess="$emit('create-macroprocess', $event)"
+            @create-macroprocess="$emit('create-macroprocess', $event)"
             @assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
-	        @relate-goal="$emit('relate-goal', $event)"
+            @relate-goal="$emit('relate-goal', $event)"
+            @create-user-function="$emit('create-user-function',$event)"
+            @modify-user-function="$emit('modify-user-function',$event)"
       >
       </tree-menu>
       <li class="add" v-show="showTreeEditor" style="color:blue" @click="$emit('add-item', item)"><i class="fa fa-plus-circle"></i></li>
@@ -70,8 +92,8 @@ export default {
     item: Object,
     parent: Object,
     showTreeEditor: Boolean,
-    showGoalEditor: Boolean
-
+    showGoalEditor: Boolean,
+    showUserFunctionsEditor: Boolean
   },
   data() {
     return {

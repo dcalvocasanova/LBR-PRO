@@ -8,6 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
+        <project-nav-header></project-nav-header>
         @if(auth()->user()->can('CRUD_users') )
           <users :show-delete-and-update-button=1></users>
         @else

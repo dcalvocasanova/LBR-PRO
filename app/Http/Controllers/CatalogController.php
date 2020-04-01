@@ -110,6 +110,29 @@ class CatalogController extends Controller
     return $permissions;
   }
   /**
+   * Get the all roles can be realted to a web system user.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function getRolesToSimpleUser(Request $request)
+  {
+    $listOfRoles = array();
+    $roles = Role::all();
+
+    foreach ($roles as $role ) {
+      if(!($role->hasPermissionTo('CRUD_users')
+       || $role->hasPermissionTo('CR_users')
+       || $role->hasPermissionTo('R_reports')
+       || $role->hasPermissionTo('CRUD_catalogs')
+       || $role->hasPermissionTo('CR_projects')
+       || $role->hasPermissionTo('CRUD_projects') )){
+         array_push($listOfRoles,$role->name);
+      }
+    }
+    return $listOfRoles;
+  }
+  /**
    * Get the all permissions from a role .
    *
    * @param  \Illuminate\Http\Request  $request
