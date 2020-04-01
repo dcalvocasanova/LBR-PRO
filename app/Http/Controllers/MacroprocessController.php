@@ -46,6 +46,12 @@ class MacroprocessController extends Controller
       $macroprocesss = Macroprocess::paginate(5);
       return $macroprocesss;
     }
+	
+	public function getMacroprocessFile(Request $request)
+    {
+      $macroprocess = Macroprocess::select('macroprocess','process')->where('project_id', $request->id)->get();
+      return $macroprocess;
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -56,17 +62,11 @@ class MacroprocessController extends Controller
     public function store(MacroprocessRequest $request)
     {
       $macroprocess = Macroprocess::create($request->all());
-      //$randomPass = '123456';//Str::random(8);
-      // $macroprocess->password =Hash::make($randomPass);
 	  $macroprocess->save();
       if($macroprocess->save()){//  $this->sendPassword($randomPass, $email,$nombre);
       }
-      //if(isset($request->role)){
-      //    $macroprocess->assignRole($request->role);
-      //}else{
-      //    $macroprocess->givePermissionTo('simple_user');
-      //}
     }
+	
     /**
      * Display the specified resource.
      *
