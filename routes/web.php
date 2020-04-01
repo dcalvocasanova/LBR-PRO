@@ -217,6 +217,7 @@ Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
+Route::get('/estructura/lista-funciones-de-usuario/{id}', 'ProjectStructureController@getListOfUserFunctions');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
