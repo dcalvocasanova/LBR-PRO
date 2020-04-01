@@ -318,6 +318,7 @@ Route::put('/macroprocesos/actualizar', 'MacroprocessController@update');
 Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
 Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
 Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
+Route::get('/macroprocesos/file', 'MacroprocessController@getMacroprocessFile');
 Route::get('/findmacroprocess', 'MacroprocessController@search');
 Route::post('/uploadfile', 'MacroprocessController@loadFiles');
 /*Manage Process*/
@@ -331,6 +332,7 @@ Route::put('/procesos/actualizar', 'ProcessController@update');
 Route::post('/procesos/guardar', 'ProcessController@store');
 Route::delete('/procesos/borrar/{id}', 'ProcessController@destroy');
 Route::get('/procesos/buscar', 'ProcessController@show');
+Route::get('/procesos/file', 'ProcessController@getProcessFile');
 Route::get('/findmacroprocess', 'ProcessController@search');
 Route::post('/uploadfile', 'ProcessController@loadFiles');
 /*Manage Subprocess*/

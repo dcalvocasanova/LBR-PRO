@@ -219,7 +219,8 @@ export default {
             process:"",
 			user:"",
 			risk:"",
-			indicator:""
+			indicator:"",
+			project_id:0 //este valor debe ser el current project
             
            
           }),
@@ -228,7 +229,7 @@ export default {
           levels:"",
           project_id:""
         }),
-		  project_id:0,
+		  project_id:0,//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -405,8 +406,7 @@ export default {
           })
           .catch(function (error) {
               console.log(error);
-          });
-		
+          });	
 	},
   },
   created(){
@@ -422,7 +422,7 @@ export default {
 	 
   },
   mounted() {
-	  this.getLevels();
+	   this.getLevels();
        this.getMacroprocesos();
        this.LoadCatalogInput();
        this.LoadCatalogProvider();

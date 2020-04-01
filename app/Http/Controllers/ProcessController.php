@@ -46,6 +46,12 @@ class ProcessController extends Controller
       $process = Process::paginate(5);
       return $process;
     }
+	
+	public function getProcessFile(Request $request)
+    {
+      $macroprocess = Process::select('file','subprocessProduct')->where('project_id', $request->id)->get();
+      return $macroprocess;
+    }
 
     /**
      * Store a newly created resource in storage.
