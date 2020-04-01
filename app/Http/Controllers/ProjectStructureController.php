@@ -149,9 +149,9 @@ class ProjectStructureController extends Controller
     */
     function getUserFunctionsR($LevelsObjet,&$listOfUserFunctions)
     {
-      if(isset($LevelsObjet['userFunctions']) and !empty($LevelsObjet['userFunctions'] ){
+      if(isset($LevelsObjet['userFunctions']) and !empty($LevelsObjet['userFunctions'])) {
         for ( $i = 0; $i< count($LevelsObjet['userFunctions']); $i++){
-          array_push($listOfUserFunctions, array($LevelsObjet['userFunctions'][$i]['name'],$LevelsObjet['name']));
+          array_push($listOfUserFunctions, array($LevelsObjet['userFunctions'][$i]['name'],$LevelsObjet['userFunctions'][$i]['users'],$LevelsObjet['name']));
          }
       }
       if(isset($LevelsObjet['children']) and !empty($LevelsObjet['children']) ){

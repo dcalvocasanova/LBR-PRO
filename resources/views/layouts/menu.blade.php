@@ -77,6 +77,15 @@
           <h6 class="collapse-header">Macroprocesos</h6>
           <a class="collapse-item" href="/gestionador-macroprocesos">Gestionar</a>
         @endif
+        @if(@Auth::user()->can('CRUD_parameters'))
+          <h6 class="collapse-header">Parametrización: catálogos </h6>
+          <a class="collapse-item" href="/gestionador-parametrizacion-catalogos">Gestionar</a>
+        @endif
+        @if(@Auth::user()->can('CRUD_parameters'))
+          <h6 class="collapse-header">Parametrización: diseño instrumentos </h6>
+          <a class="collapse-item" href="/gestionador-parametrizacion-diseno">Gestionar</a>
+        @endif
+
       </div>
     </div>
   </li>

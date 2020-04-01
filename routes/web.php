@@ -131,6 +131,16 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-tree', function () {
       return view('admin.tree');
   });
+
+  Route::get('/gestionador-parametrizacion-catalogos', function () {
+      return view('containers.parametrizacion-catalogos');
+  });
+
+  Route::get('/gestionador-parametrizacion-diseno', function () {
+      return view('containers.parametrizacion-disegno');
+  });
+
+
 });
 Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-macroprocesos', function () {

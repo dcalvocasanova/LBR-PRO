@@ -5618,6 +5618,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5626,14 +5670,19 @@ __webpack_require__.r(__webpack_exports__);
         name: "",
         type: ""
       }),
+      currentProject: 0,
       showDetails: false,
+      selectingProjectToAddUsers: true,
       title: "Agregar nueva categoría de parámetro ",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      Projects: {},
+      Users: {},
       showVariable: 0,
       Frecuencies: {},
       WorkTypes: {},
+      UserFunctions: {},
       Tasks: [{
         id: 1,
         name: "tarea 1",
@@ -5656,132 +5705,27 @@ __webpack_require__.r(__webpack_exports__);
     detalle: function detalle() {
       swal.fire('Por el momento no tenemos Macroprocesos registrados', '¡Muy pronto tendremos la funcionalidad implementada!', 'warning');
     },
-    getResults: function getResults() {
+    getUserFunctions: function getUserFunctions() {
       var _this = this;
 
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/variables?page=' + page).then(function (response) {
-        _this.Variables = response.data; //get all projects from page.
+      axios.get('/estructura/lista-funciones-de-usuario/' + this.currentProject).then(function (response) {
+        _this.UserFunctions = response.data; //get all projects from page.
       });
     },
-    showSubVariables: function showSubVariables(variable) {
+    setProject: function setProject() {
       var me = this;
-      me.showVariable = variable.id;
-      me.Variable = variable;
-      axios.post('/variables/setsession', {
-        id: parameter.id,
-        name: parameter.name
-      }).then(function (response) {
-        me.componentVariableKey += 1;
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      me.selectingProjectToAddUsers = false;
+      me.getUserFunctions();
     },
-    showExtraValidations: function showExtraValidations() {
-      if (this.form.tipo == "number") {
-        this.showDetails = true;
-      } else {
-        this.showDetails = false;
-      }
-    },
-    getVaraibles: function getVaraibles() {
+    getProjectos: function getProjectos() {
       var me = this;
-      me.clearFields();
-      axios.get('/variables').then(function (response) {
-        me.Variables = response.data; //get all parameters
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    saveVariable: function saveVariable() {
-      var me = this;
-      this.form.post('/variables/guardar').then(function (response) {
-        me.salir();
-        me.getVaraibles(); // show all users
-
-        toast.fire({
-          type: 'success',
-          title: 'Varaible registrada con éxito'
-        });
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    updateVariable: function updateVariable() {
-      var me = this;
-      this.form.put('/variables/actualizar').then(function (response) {
-        toast.fire({
-          type: 'success',
-          title: 'Variable actualizada con éxito'
-        });
-        $('#addVariable').modal('toggle');
-        me.getVaraibles();
-        me.salir();
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    loadFieldsUpdate: function loadFieldsUpdate(variable) {
-      var me = this;
-      me.update = variable.id;
-      me.title = "Actualizar información de la variable";
-      me.form.nombre = variable.name;
-      me.form.identificador = variable.identificator;
-      me.form.tipo = variable.type;
-      me.form.valor = variable.value;
-      me.form.medida = variable.measure;
-      me.form.regla = variable.rule;
-      me.form.id = variable.id;
-
-      if (me.form.tipo == "number") {
-        this.showDetails = true;
-      }
-    },
-    deleteVariable: function deleteVariable(variable) {
-      var me = this;
-      swal.fire({
-        title: 'Eliminar una variable',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar una variable",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#114e7e',
-        cancelButtonColor: '#20c9a6',
-        confirmButtonText: '¡Sí, eliminarla!'
-      }).then(function (result) {
-        if (result.value) {
-          axios["delete"]('/variables/borrar/' + variable.id).then(function (response) {
-            swal.fire('Eliminado', 'Variable fue eliminada', 'success');
-            me.getVaraibles();
-          })["catch"](function (error) {
-            console.log(error);
-          });
-        }
-      });
-    },
-    clearFields: function clearFields() {
-      var me = this;
-      me.title = "Agregar nueva variable", me.update = 0;
-      me.form.reset();
-      me.showDetails = false;
-    },
-    LoadCatalogFrecuency: function LoadCatalogFrecuency() {
-      var _this2 = this;
-
-      axios.get('catalogo?id=FRECUENCY').then(function (response) {
-        _this2.Frecuencies = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogWorkType: function LoadCatalogWorkType() {
-      var _this3 = this;
-
-      axios.get('catalogo?id=WORKTYPE').then(function (response) {
-        _this3.WorkTypes = response.data; //get all catalogs from category selected
+      axios.get('/todos-los-proyectos').then(function (response) {
+        me.Projects = response.data; //get all projects from page
       });
     }
   },
   mounted: function mounted() {
-    this.LoadCatalogFrecuency();
-    this.LoadCatalogWorkType();
+    this.getProjectos();
   }
 });
 
@@ -57089,152 +57033,223 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-plain" }, [
-          _c("div", { staticClass: "card-header card-header-primary" }, [
+    this.selectingProjectToAddUsers === true
+      ? _c("div", { staticClass: "row h-100" }, [
+          _c("div", { staticClass: "card card-plain col-12" }, [
             _vm._m(0),
             _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "col-md-4",
-                attrs: {
-                  "data-toggle": "tooltip",
-                  "data-placement": "bottom",
-                  title: "Agregar nueva variable"
-                }
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    on: { click: _vm.detalle }
-                  },
-                  [_c("i", { staticClass: "fa fa-plus-circle" })]
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body card-body-fitted " }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("table", { staticClass: "table table-hover" }, [
-                _vm._m(1),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c("br"),
                 _vm._v(" "),
                 _c(
-                  "tbody",
-                  _vm._l(_vm.Tasks, function(task) {
-                    return _c("tr", { key: task.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(task.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "btn-group",
-                            attrs: {
-                              role: "group",
-                              "aria-label": "Button group with nested dropdown"
-                            }
-                          },
-                          [
-                            _vm._l(_vm.Frecuencies, function(frecuency) {
-                              return _c("div", { key: frecuency.id }, [
-                                _c("button", {
-                                  staticClass: "btn btn-primary",
-                                  attrs: {
-                                    type: "button",
-                                    "data-toggle": "tooltip",
-                                    "data-placement": "top",
-                                    title: frecuency.name
-                                  },
-                                  domProps: {
-                                    textContent: _vm._s(
-                                      frecuency.name.substr(0, 1)
-                                    )
-                                  }
-                                })
-                              ])
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "btn-group",
-                                attrs: { role: "group" }
-                              },
-                              [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass:
-                                      "btn btn-danger dropdown-toggle",
-                                    attrs: {
-                                      id: "btnGroupDropWorkType",
-                                      type: "button",
-                                      "data-toggle": "dropdown",
-                                      "aria-haspopup": "true",
-                                      "aria-expanded": "false"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                            Impacto\n                          "
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "dropdown-menu",
-                                    attrs: {
-                                      "aria-labelledby": "btnGroupDropWorkType"
-                                    }
-                                  },
-                                  _vm._l(_vm.WorkTypes, function(wt) {
-                                    return _c("div", { key: wt.id }, [
-                                      _c("a", {
-                                        staticClass: "dropdown-item",
-                                        attrs: { href: "#" },
-                                        domProps: {
-                                          textContent: _vm._s(wt.name)
-                                        }
-                                      })
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            )
-                          ],
-                          2
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(2, true),
-                      _vm._v(" "),
-                      _vm._m(3, true),
-                      _vm._v(" "),
-                      _vm._m(4, true)
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.currentProject,
+                        expression: "currentProject"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.currentProject = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.setProject()
+                        }
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.Projects, function(p) {
+                    return _c("option", { domProps: { value: p.id } }, [
+                      _vm._v(_vm._s(p.name))
                     ])
                   }),
                   0
                 )
               ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-footer" })
+            ])
+          ])
         ])
-      ])
-    ])
+      : _vm._e(),
+    _vm._v(" "),
+    this.selectingProjectToAddUsers === false
+      ? _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "card card-plain" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body card-body-fitted " }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.Tasks, function(task) {
+                        return _c("tr", { key: task.id }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(task.name) }
+                          }),
+                          _vm._v(" "),
+                          _c("td")
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-footer" })
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "TaskManager",
+          tabindex: "-1",
+          role: "dialog",
+          aria: "",
+          labelledby: "TaskManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "col-12" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c(
+                            "div",
+                            { staticClass: "users-and-goals col-md-6" },
+                            [
+                              _c(
+                                "table",
+                                { staticClass: "table table-hover" },
+                                [
+                                  _vm._m(4),
+                                  _vm._v(" "),
+                                  _c(
+                                    "tbody",
+                                    _vm._l(_vm.UserFunctions, function(f) {
+                                      return _c("tr", { key: f[0] }, [
+                                        _c("td", [
+                                          _vm._v(
+                                            " >\n                              "
+                                          ),
+                                          _c("span", {
+                                            domProps: {
+                                              textContent: _vm._s(f[0])
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("span", {
+                                            domProps: {
+                                              textContent: _vm._s(f[2])
+                                            }
+                                          })
+                                        ])
+                                      ])
+                                    }),
+                                    0
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm._m(5)
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer" }, [
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _vm.update == 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.addUserFunction()
+                                  }
+                                }
+                              },
+                              [_vm._v("Añadir")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.update != 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateUserFunction()
+                                  }
+                                }
+                              },
+                              [_vm._v("Actualizar")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.exitEditorUserFunctions()
+                              }
+                            }
+                          },
+                          [_vm._v("Salir sin guardar")]
+                        )
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -57242,8 +57257,44 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-8" }, [
-      _c("h3", { staticClass: "card-title mt-0" }, [_vm._v(" Lista de tareas")])
+    return _c("div", { staticClass: "card-header card-header-primary " }, [
+      _c("h4", { staticClass: "card-title mt-0 " }, [
+        _vm._v(" Seleccione el proyecto donde se gestionaran usuarios")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h3", { staticClass: "card-title mt-0" }, [
+          _vm._v(" Lista de tareas")
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "col-md-4",
+          attrs: {
+            "data-toggle": "tooltip",
+            "data-placement": "bottom",
+            title: "Agregar nueva variable"
+          }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { "data-toggle": "modal", "data-target": "#TaskManager" }
+            },
+            [_c("i", { staticClass: "fa fa-plus-circle" })]
+          )
+        ]
+      )
     ])
   },
   function() {
@@ -57252,19 +57303,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", {}, [
       _c("tr", [
-        _c("th", { staticStyle: { width: "90%" } }, [_vm._v(" Nombre ")]),
+        _c("th", [_vm._v(" Nombre ")]),
         _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [
-          _vm._v(" Frecuencia y tipo de trabajo ")
-        ]),
-        _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [
-          _vm._v(" Tiempo mínimo ")
-        ]),
-        _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Tiempo nomal ")]),
-        _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [_vm._v(" Tiempo máximo ")])
+        _c("th", [_vm._v(" Opciones ")])
       ])
     ])
   },
@@ -57272,24 +57313,39 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "TaskManager" } }, [
+        _vm._v(" Funciones de usuario")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    return _c("thead", [
+      _c("tr", [_c("th", [_vm._v("Funciones de usuario a emplear")])])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("input", { attrs: { type: "text", name: "", value: "" } })
+    return _c("div", { staticClass: "user-functions col-md-6" }, [
+      _c("div", { staticClass: "form-group" })
     ])
   }
 ]
