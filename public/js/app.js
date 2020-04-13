@@ -9793,19 +9793,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -56316,7 +56303,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("td", {
-                        domProps: { textContent: _vm._s(subproceso.PHVA) }
+                        domProps: { textContent: _vm._s(subproceso.phva) }
                       }),
                       _vm._v(" "),
                       _c("td", {
@@ -64233,7 +64220,6 @@ var render = function() {
                         return _vm.$emit("assign-goal", _vm.item)
                       }
                     }
-
                   },
                   [
                     _c("i", { staticClass: "fas fa-columns" }, [
@@ -64246,28 +64232,6 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("assign-inhetited-goal", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-clipboard-list" }, [
-                      _vm._v("Heredar objetivos")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
                     on: {
                       click: function($event) {
                         return _vm.$emit("relate-goal", {
@@ -64284,132 +64248,79 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                !_vm.isParent
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { "data-toggle": "tooltip" },
-                        on: {
-                          click: function($event) {
-                            return _vm.$emit("create-macroprocess", _vm.item)
-                          }
-                        }
-                      },
-                      [
-                        _c("i", { staticClass: "fas fa-connectdevelop" }, [
-                          _vm._v("Crear Macroproceso")
-                        ])
-                      ]
-                    )
-                  : _vm._e()
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("create-macroprocess", _vm.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-connectdevelop" }, [
+                      _vm._v("Crear Macroproceso")
+                    ])
+                  ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showUserFunctionsEditor,
+                    expression: "showUserFunctionsEditor"
+                  }
+                ],
+                staticClass: "controls-gol-edit"
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "tooltip",
+                      "data-placement": "top",
+                      title: "Agregar nueva función"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("create-user-function", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-plus-circle" })]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "tooltip",
+                      "data-placement": "top",
+                      title: "Agregar nueva función"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("modify-user-function", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-edit" })]
+                )
               ]
             )
           ])
         ]
       ),
-
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fas fa-columns" }, [
-                    _vm._v("Asignar objetivo")
-                  ])
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("relate-goal", {
-                        item: _vm.item,
-                        parent: _vm.parent
-                      })
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fas fa-columns" }, [
-                    _vm._v("Relacionar objetivos")
-                  ])
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("create-macroprocess", _vm.item)
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fas fa-connectdevelop" }, [
-                    _vm._v("Crear Macroproceso")
-                  ])
-                ]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "span",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.showUserFunctionsEditor,
-                  expression: "showUserFunctionsEditor"
-                }
-              ],
-              staticClass: "controls-gol-edit"
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  attrs: {
-                    "data-toggle": "tooltip",
-                    "data-placement": "top",
-                    title: "Agregar nueva función"
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("create-user-function", _vm.item)
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-plus-circle" })]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  attrs: {
-                    "data-toggle": "tooltip",
-                    "data-placement": "top",
-                    title: "Agregar nueva función"
-                  },
-                  on: {
-                    click: function($event) {
-                      return _vm.$emit("modify-user-function", _vm.item)
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-edit" })]
-              )
-            ]
-          )
-        ])
-      ]),
       _vm._v(" "),
       _vm.isParent
         ? _c(
