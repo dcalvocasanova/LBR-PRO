@@ -69,6 +69,10 @@ Route::get('/gestionar-funciones-usuarios', function () {
     return view('admin.usuariosFunciones');
 })->middleware('permission:CRUD_users|CR_users');
 
+Route::get('/gestionar-roles-usuarios', function () {
+    return view('user.usersRoleSelector');
+})->middleware('permission:CRUD_users|CR_users');
+
 /*
 * Grant access only for users with CRUD_users permission
 */
@@ -207,6 +211,7 @@ Route::post('/proyectos/guardar', 'ProjectController@store');
 Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
+Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
 /*Manage Catalogs*/
 Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');

@@ -27,6 +27,7 @@ class CreateProcessesTable extends Migration
 			$table->string('phva');
 			 $table->string('subclassification');
             $table->string('indicator');
+            $table->string('project_id');
             $table->timestamps();
         });
     }

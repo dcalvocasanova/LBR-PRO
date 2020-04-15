@@ -129,6 +129,7 @@
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
           Projects:{},
           Users:{},
+          Products:{},
           showVariable:0,
           Frecuencies:{},
           WorkTypes:{},
@@ -169,10 +170,17 @@
               this.UserFunctions = response.data; //get all projects from page.
           });
         },
+        getProducts() {
+          axios.get('/proyecto/productos/'+this.currentProject)
+          .then(response => {
+              this.Products = response.data; //get all projects from page.
+          });
+        },
         setProject(){
           let me = this
           me.selectingProjectToAddUsers=false
           me.getUserFunctions()
+          me.getProducts()
         },
         getProjectos(){
           let me =this;

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\Subprocess;
+use App\Process;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image as Image;
 
 class ProjectController extends Controller
@@ -192,6 +195,7 @@ class ProjectController extends Controller
     /**
      * Get the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function search(){
@@ -204,5 +208,18 @@ class ProjectController extends Controller
             $proyects = Project::latest()->paginate(5);
         }
         return $proyects;
+    }
+
+    /**
+     * Get all products related to a project
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getProducts(Request  $request){
+      $project_id = $request->id;
+      $p_process = Process::where('project_id',$request->id)->where('subprocessProduct','producto')->get();
+      $p_subprocess = Subprocess::where('project_id',$request->id)->get();
+      return ['process'=> $p_process , 'subprocess'=>$p_subprocess];
     }
 }

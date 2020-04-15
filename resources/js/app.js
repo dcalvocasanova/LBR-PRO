@@ -49,6 +49,7 @@ Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue'
 Vue.component('userNotificator', require('./components/UserNotificationsComponent.vue').default);
 Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
 Vue.component('userRoles', require('./components/catalogs/UserRolesComponent.vue').default);
+Vue.component('usersRolesPicker', require('./components/UserRoleSelectorComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 Vue.component('userFunctions', require('./components/users/UserFunctionsStructureComponent.vue').default);
 /*

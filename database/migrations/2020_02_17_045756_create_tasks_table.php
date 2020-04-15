@@ -17,9 +17,9 @@ class CreateTasksTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('id_project');
             $table->bigInteger('id_product');
-            $table->string('name')
-            $table->json('related_to');
-            $table->string('level');
+            $table->string('task');
+            $table->string('relatedToLevel');
+            $table->string('allocator');
             $table->string('type');
             $table->timestamps();
         });
