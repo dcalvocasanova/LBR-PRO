@@ -359,3 +359,10 @@ Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
+
+
+/*Manage Task of a project*/
+Route::get('/tareas', 'TaskController@index');
+Route::put('/tareas/actualizar', 'TaskController@update');
+Route::post('/tareas/guardar', 'TaskController@store');
+Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
