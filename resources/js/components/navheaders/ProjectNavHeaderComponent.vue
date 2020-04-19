@@ -32,7 +32,7 @@
         <a href="/gestionar-roles-usuarios">
           <div class="card border-danger shadow text-danger p-3 my-card" ><span class="fas fa-users-cog" aria-hidden="true"></span></div>
           <div class="text-info text-center mt-3"><h4> </h4></div>
-          <div class="text-danger text-center mt-2"><h3>Roles de usuarios</h3></div>
+          <div class="text-danger text-center mt-2"><h3>Roles</h3></div>
         </a>
       </div>
     </div>

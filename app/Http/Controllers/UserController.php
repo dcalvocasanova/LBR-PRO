@@ -68,7 +68,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getUserByLevelStructure(Request $request)
-    {      
+    {
       $users = User::with('roles')->where('relatedLevel',$request->level)->latest()->paginate(10);
       return $users;
     }
@@ -132,6 +132,24 @@ class UserController extends Controller
       $user = User::findOrFail($request->id);
       $role = $user->getRoleNames();
       return $role[0];
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserRoles (Request $request)
+    {
+      $users = User::find($request->users);
+      foreach ($users as $user) {
+        $user->roles()->detach();
+        if($request->role == 'remove'){
+          $user->givePermissionTo('simple_user');
+        }else{
+          $user->assignRole($request->role);
+        }
+      }
     }
 
     /**

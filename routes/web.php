@@ -252,6 +252,7 @@ Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
 Route::get('/usuario/notificaciones', 'UserController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'UserController@unreadNotifications');
+Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
 Route::put('/parametros/actualizar', 'ParameterController@update');
