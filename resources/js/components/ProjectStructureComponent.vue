@@ -53,6 +53,7 @@
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
                         :showTreeEditor="showAsStructureEditor" :showGoalEditor="showAsGoalEditor"
+					    :showMacroprocessesEditor="showAsMacroprocessEditor"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
@@ -135,9 +136,10 @@
       										</tr>
                       </thead>
     								  <tbody>
-      										<tr v-for="goal in currentNode.goals" :key="goal.pos" >
-												<td><input v-model=Macroprocessgoals type="checkbox" :name="goal.pos" :value="goal.pos"> {{goal.name}}</td>
-      										</tr>
+      										<tr v-for="(macro, index) in currentNode.macroprocess" :key="macro.pos">
+   											 <input v-model="macro.name" :key="index">
+  											</tr>
+										  
     								  </tbody>
   					        </table>
                     </div>
@@ -176,6 +178,29 @@
                       <label class="bmd-label-floating">Objetivo</label>
                       <input  v-model="newName" type="text" class="form-control">
                     </div>
+                  </div>
+				  <div class="container-buttons">
+                      <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
+                      <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+                      <button @click="salirObjetivos()" class="btn btn-secondary">Atrás</button>
+                    </div>
+				  <div class="form-group">
+                    <table class="table table-hover">
+                       <thead class="">
+      										<tr>
+      										  <th> Lista de objetivos </th>
+      										</tr>
+                      </thead>
+    								  <tbody>
+      										<!--<tr v-for="goal in currentNode.goals" :key="goal.pos" >
+												<td><input v-model=currentNode.goals type="text" :name=goal.pos :value=goal.pos> {{goal.name}}</td>
+      										</tr>-->
+										  
+										   <tr v-for="(goal, index) in currentNode.goals" :key="goal.pos">
+   											 <input v-model="goal.name" :key="index">
+  											</tr>
+    								  </tbody>
+  					        </table>
                   </div>
                   <div class="card-footer">
                     <div class="container-buttons">
@@ -281,7 +306,8 @@
   export default {
 	props:{
       showAsStructureEditor: Boolean,
-      showAsGoalEditor: Boolean
+      showAsGoalEditor: Boolean,
+	  showAsMacroprocessEditor: Boolean
     },
     data(){
       return{

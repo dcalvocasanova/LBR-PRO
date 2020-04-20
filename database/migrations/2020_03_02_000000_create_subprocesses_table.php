@@ -15,6 +15,7 @@ class CreateSubprocessesTable extends Migration
     {
         Schema::create('subprocesses', function (Blueprint $table) {
             $table->bigIncrements('id');
+           $table->string('process',100);
             $table->string('input',100);
             $table->string('provider',100);
             $table->string('activity');

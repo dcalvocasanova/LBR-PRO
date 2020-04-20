@@ -4387,10 +4387,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
-    showAsGoalEditor: Boolean
+    showAsGoalEditor: Boolean,
+    showAsMacroprocessEditor: Boolean
   },
   data: function data() {
     return {
@@ -10130,6 +10156,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -10137,7 +10170,8 @@ __webpack_require__.r(__webpack_exports__);
     parent: Object,
     showTreeEditor: Boolean,
     showGoalEditor: Boolean,
-    showUserFunctionsEditor: Boolean
+    showUserFunctionsEditor: Boolean,
+    showMacroprocessesEditor: Boolean
   },
   data: function data() {
     return {
@@ -15150,7 +15184,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -15169,7 +15203,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -15188,7 +15222,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
 
 // exports
 
@@ -15226,7 +15260,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
 
 // exports
 
@@ -15245,7 +15279,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 80px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -53178,7 +53212,7 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("td", {
-                        domProps: { textContent: _vm._s(proceso.PHVA) }
+                        domProps: { textContent: _vm._s(proceso.phva) }
                       }),
                       _vm._v(" "),
                       _c("td", {
@@ -54911,7 +54945,9 @@ var render = function() {
                                 item: _vm.Levels,
                                 parent: _vm.Levels,
                                 showTreeEditor: _vm.showAsStructureEditor,
-                                showGoalEditor: _vm.showAsGoalEditor
+                                showGoalEditor: _vm.showAsGoalEditor,
+                                showMacroprocessesEditor:
+                                  _vm.showAsMacroprocessEditor
                               },
                               on: {
                                 "make-parent": _vm.makeParent,
@@ -55172,60 +55208,35 @@ var render = function() {
                             _vm._v(" "),
                             _c(
                               "tbody",
-                              _vm._l(_vm.currentNode.goals, function(goal) {
-                                return _c("tr", { key: goal.pos }, [
-                                  _c("td", [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.Macroprocessgoals,
-                                          expression: "Macroprocessgoals"
-                                        }
-                                      ],
-                                      attrs: {
-                                        type: "checkbox",
-                                        name: goal.pos
-                                      },
-                                      domProps: {
-                                        value: goal.pos,
-                                        checked: Array.isArray(
-                                          _vm.Macroprocessgoals
-                                        )
-                                          ? _vm._i(
-                                              _vm.Macroprocessgoals,
-                                              goal.pos
-                                            ) > -1
-                                          : _vm.Macroprocessgoals
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$a = _vm.Macroprocessgoals,
-                                            $$el = $event.target,
-                                            $$c = $$el.checked ? true : false
-                                          if (Array.isArray($$a)) {
-                                            var $$v = goal.pos,
-                                              $$i = _vm._i($$a, $$v)
-                                            if ($$el.checked) {
-                                              $$i < 0 &&
-                                                (_vm.Macroprocessgoals = $$a.concat(
-                                                  [$$v]
-                                                ))
-                                            } else {
-                                              $$i > -1 &&
-                                                (_vm.Macroprocessgoals = $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1)))
-                                            }
-                                          } else {
-                                            _vm.Macroprocessgoals = $$c
-                                          }
-                                        }
+                              _vm._l(_vm.currentNode.macroprocess, function(
+                                macro,
+                                index
+                              ) {
+                                return _c("tr", { key: macro.pos }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: macro.name,
+                                        expression: "macro.name"
                                       }
-                                    }),
-                                    _vm._v(" " + _vm._s(goal.name))
-                                  ])
+                                    ],
+                                    key: index,
+                                    domProps: { value: macro.name },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          macro,
+                                          "name",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
                                 ])
                               }),
                               0
@@ -55373,6 +55384,93 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _vm.updateNodeControl == 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.addGoal()
+                                  }
+                                }
+                              },
+                              [_vm._v("Añadir")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.updateNodeControl != 0
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateGoal()
+                                  }
+                                }
+                              },
+                              [_vm._v("Actualizar")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.salirObjetivos()
+                              }
+                            }
+                          },
+                          [_vm._v("Atrás")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(7),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.currentNode.goals, function(
+                              goal,
+                              index
+                            ) {
+                              return _c("tr", { key: goal.pos }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: goal.name,
+                                      expression: "goal.name"
+                                    }
+                                  ],
+                                  key: index,
+                                  domProps: { value: goal.name },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        goal,
+                                        "name",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
                       _c("div", { staticClass: "card-footer" }, [
                         _c("div", { staticClass: "container-buttons" }, [
                           _vm.updateNodeControl == 0
@@ -55450,7 +55548,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(7),
+              _vm._m(8),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -55458,7 +55556,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(8),
+                          _vm._m(9),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -55578,7 +55676,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(9),
+              _vm._m(10),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -55588,7 +55686,7 @@ var render = function() {
                         "div",
                         { staticClass: "form-group" },
                         [
-                          _vm._m(10),
+                          _vm._m(11),
                           _vm._v(" "),
                           _vm._l(_vm.relatedGoals, function(rows) {
                             return _c(
@@ -55791,6 +55889,14 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [_c("th", [_vm._v(" Lista de objetivos ")])])
     ])
   },
   function() {
@@ -65268,12 +65374,82 @@ var render = function() {
                       _vm._v("Relacionar objetivos")
                     ])
                   ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showUserFunctionsEditor,
+                    expression: "showUserFunctionsEditor"
+                  }
+                ],
+                staticClass: "controls-gol-edit"
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: {
+                      "data-toggle": "tooltip",
+                      "data-placement": "top",
+                      title: "Agregar nueva función"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("create-user-function", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-plus-circle" })]
                 ),
                 _vm._v(" "),
                 _c(
                   "button",
                   {
                     staticClass: "btn btn-primary",
+
+                    attrs: {
+                      "data-toggle": "tooltip",
+                      "data-placement": "top",
+                      title: "Agregar nueva función"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("modify-user-function", _vm.item)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fas fa-edit" })]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showMacroprocessesEditor,
+                    expression: "showMacroprocessesEditor"
+                  }
+                ],
+                staticClass: "controls-gol-edit"
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
                     on: {
                       click: function($event) {
                         return _vm.$emit("create-macroprocess", _vm.item)
@@ -65286,6 +65462,7 @@ var render = function() {
                     ])
                   ]
                 )
+
               ]
             ),
             _vm._v(" "),
@@ -65338,6 +65515,7 @@ var render = function() {
                   },
                   [_c("i", { staticClass: "fas fa-edit" })]
                 )
+
               ]
             )
           ])
@@ -65368,6 +65546,7 @@ var render = function() {
                     showTreeEditor: _vm.showTreeEditor,
                     showGoalEditor: _vm.showGoalEditor,
                     showUserFunctionsEditor: _vm.showUserFunctionsEditor,
+                    showMacroprocessesEditor: _vm.showMacroprocessesEditor,
                     item: child
                   },
                   on: {
@@ -87108,8 +87287,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
