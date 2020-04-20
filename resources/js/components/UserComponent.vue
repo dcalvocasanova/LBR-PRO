@@ -193,7 +193,7 @@
                 <button v-if="update == 0" @click="saveUser()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateUser()" class="btn btn-info">Actualizar</button>
                 <button v-if="update != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
-            </div>
+              </div>
             </div>
           </div>
         </div>

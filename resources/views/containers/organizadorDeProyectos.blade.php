@@ -41,6 +41,13 @@
                 @slot('url') gestionar-usuarios @endslot
                 @slot('icon') fas fa-user @endslot
               @endcomponent
+              @component('components.colorcard')
+                @slot('title') Gestionar roles de los usuarios @endslot
+                @slot('type') success @endslot
+                @slot('subtitle') ir @endslot
+                @slot('url') gestionar-roles-usuarios @endslot
+                @slot('icon') fas fa-user @endslot
+              @endcomponent
             @endif
 
           </div>

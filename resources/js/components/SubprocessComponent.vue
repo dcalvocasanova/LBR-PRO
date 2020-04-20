@@ -11,7 +11,7 @@
                 <table class="table table-hover">
                   <thead class="">
                     <tr>
-                      
+
 					  <th> Proceso </th>
                       <th> Entradas </th>
                       <th> Provedores </th>
@@ -23,12 +23,12 @@
 					  <th> PHVA </th>
 					  <th> Subclasificacion </th>
 					  <th> Acciones </th>
-                      
+
                     </tr>
                   </thead>
                   <tbody>
                       <tr  v-for="subproceso in Subprocesos.data" :key="subproceso.id">
-                        
+
 						 <td v-text="subproceso.process"></td>
                         <td v-text="subproceso.input"></td>
 						<td v-text="subproceso.provider"></td>
@@ -87,13 +87,13 @@
                     <label class="bmd-label-floating">Entradas</label>
                     <multiselect
                  		  v-model="Entradas"
-                 		  placeholder="Seleccione o escriba una opción" 
+                 		  placeholder="Seleccione o escriba una opción"
 						  :options="Inputs"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagInput" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -101,7 +101,7 @@
                     <label class="bmd-label-floating">Provedores</label>
                     <multiselect
                  		 v-model="Proveedores"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Providers"
 						  :multiple="true"
 						  :taggable="true"
@@ -125,9 +125,9 @@
                   </div>
                 </div>
               </div>
-				
+
               <div class="row">
-				
+
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Producto</label>
@@ -147,30 +147,30 @@
                     <label class="bmd-label-floating">Riesgos Asociados</label>
                     <multiselect
                  		 v-model="Riesgos"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Risks"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagRisk" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
               </div>
-              
+
               <div class="row">
 			    <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">PHVA</label>
                     <multiselect
                  		 v-model="PHVAs"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="PHVA"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagPHVA" >
-                	</multiselect> 
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -178,16 +178,16 @@
                     <label class="bmd-label-floating">Indicadores</label>
                      <multiselect
                  		 v-model="Indicadores"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Indicators"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagIndicator" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
-				  
+
               </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveSubproceso()" class="btn btn-success">Añadir</button>
@@ -261,10 +261,10 @@ export default {
 			phva:"",
 			subclassification:"",
 			indicator:"",
-			project_id:0 //este valor debe ser el current project
+			project_id:1 //este valor debe ser el current project
           }),
           title:"Agregar nueva Ficha", //title to show
-		 project_id:0, //este valor debe ser el current project
+		 project_id:1, //este valor debe ser el current project
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      subprocessFile:"",
           Subprocesos:{}, //BD content
@@ -274,13 +274,13 @@ export default {
           Risks:[],
 		  Indicators:[],
 		  PHVA:[],
-		  //arreglos temporales 
+		  //arreglos temporales
 		  Entradas:[],
           Proveedores:[],
           Riesgos:[],
 		  Indicadores:[],
 		  PHVAs:[]
-		
+
       }
   },
   methods:{
@@ -366,10 +366,10 @@ export default {
           })
           .catch(function (error) {
               console.log(error);
-          });	
+          });
 	},
     saveSubproceso(){
-	
+
       let me =this;
 	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
@@ -487,7 +487,7 @@ export default {
       axios.get('catalogo?id=PHVA')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){	
+		    for (let i =0; i<1;i++){
 				 this.PHVA.push(inputs[i].name);
 			}
       });

@@ -12,7 +12,7 @@
                   <thead class="">
                     <tr>
                       <th> Macroproceso </th>
-                      <th> Entradas </th>		
+                      <th> Entradas </th>
                       <th> Provedores </th>
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
@@ -21,7 +21,7 @@
 					  <th> Riesgos Asociados </th>
 					  <th> Indicadores </th>
 					  <th style ="withd:120px"> Acciones </th>
-                      
+
                     </tr>
                   </thead>
                   <tbody>
@@ -48,7 +48,7 @@
               <pagination :data="Macroprocesos" @pagination-change-page="getMacroprocesos"></pagination>
             </div>
           </div>
-        
+
           <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
             <button class="btn btn-primary"
             data-toggle="modal"
@@ -57,7 +57,7 @@
               <i class="fa fa-plus-circle"></i>
             </button>
           </div>
-        
+
         </div>
 	</div>
 	<div class="row">
@@ -96,7 +96,7 @@
                   </div>
                 </div>
               </div>
-				
+
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -120,7 +120,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -201,11 +201,11 @@
 export default {
   props: {
      showDeleteAndUpdateButton: Number,
-	 
+
      Node: Object,
 	 Title: String,
 	 Title1: Array
- 
+
   },
   data(){
     return{
@@ -221,15 +221,15 @@ export default {
 			risk:"",
 			indicator:"",
 			project_id:0 //este valor debe ser el current project
-            
-           
+
+
           }),
 		  level: new Form({
           id:"", //level projectID
           levels:"",
           project_id:""
         }),
-		  project_id:0,//este valor debe ser el current project
+		  project_id:1,//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -242,7 +242,7 @@ export default {
           Providers:{},
           Risks:{},
 		  Indicators:{}
-		
+
       }
   },
   methods:{
@@ -300,7 +300,7 @@ export default {
        link.click();
       });
     },
-    
+
     saveMacroproceso(){
       let me =this;
       this.form.post('/macroprocesos/guardar')
@@ -406,7 +406,7 @@ export default {
           })
           .catch(function (error) {
               console.log(error);
-          });	
+          });
 	},
   },
   created(){
@@ -419,7 +419,7 @@ export default {
           .catch(() => {
           })
       })
-	 
+
   },
   mounted() {
 	   this.getLevels();
@@ -428,10 +428,10 @@ export default {
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogIndicator();
-	   
-	  
-	   
-	   
+
+
+
+
   }
 }
 </script>

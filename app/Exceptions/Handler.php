@@ -47,10 +47,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof AuthorizationException) {
-          return redirect()->guest('login');
-        }
-
         return parent::render($request, $exception);
     }
 }

@@ -121,7 +121,7 @@ class ProjectStructureController extends Controller
  		}
  		if(isset($LevelsObjet['children']) and !empty($LevelsObjet['children']) ){
  		 	for ( $i = 0; $i< count($LevelsObjet['children']); $i++){
- 				$this->getListOfUserFunctiosR($LevelsObjet['children'][$i],$listOfLevels);
+ 				$this->getListOfLevels($LevelsObjet['children'][$i],$listOfLevels);
  	   	}
  		}
  	}

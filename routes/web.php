@@ -69,6 +69,10 @@ Route::get('/gestionar-funciones-usuarios', function () {
     return view('admin.usuariosFunciones');
 })->middleware('permission:CRUD_users|CR_users');
 
+Route::get('/gestionar-roles-usuarios', function () {
+    return view('user.usersRoleSelector');
+})->middleware('permission:CRUD_users|CR_users');
+
 /*
 * Grant access only for users with CRUD_users permission
 */
@@ -210,6 +214,7 @@ Route::post('/proyectos/guardar', 'ProjectController@store');
 Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
+Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
 /*Manage Catalogs*/
 Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
@@ -250,6 +255,7 @@ Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
 Route::get('/usuario/notificaciones', 'UserController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'UserController@unreadNotifications');
+Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
 Route::put('/parametros/actualizar', 'ParameterController@update');
@@ -357,3 +363,10 @@ Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
+
+
+/*Manage Task of a project*/
+Route::get('/tareas', 'TaskController@index');
+Route::put('/tareas/actualizar', 'TaskController@update');
+Route::post('/tareas/guardar', 'TaskController@store');
+Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
