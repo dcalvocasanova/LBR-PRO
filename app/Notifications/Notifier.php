@@ -83,6 +83,7 @@ class Notifier extends Notification
           'title'=> $this->details['title'],
           'body'=> $this->details['body'],
           'sender'=> $this->details['sender'],
+          'type'=> $this->details['type'],
           'action'=>"pending",
           'comments'=>'pending..',
           'admin'=> $notifiable

@@ -1,16 +1,20 @@
 <template>
   <div class="row">
-    <div class="col-12">
-        <h3 class="card-title mt-0">  Notificaciones ({{ notifications.length }})</h3>
-    </div>
+
   	<div class="col-lg-4 col-md-5">
+      <div class="col-12">
+        <button type="button" class="btn btn-primary ">
+          <h4>Notificaciones <span class="badge badge-light">{{ notifications.length }}</span> </h4>
+        </button>
+        <br><br>
+      </div>
       <div class="ibox" id="inbox-notification-container">
         <div class="inbox-notification clf">
   				<table class="table table-hover table-inbox" id="table-inbox">
   					<tbody class="rowlinkx" data-link="row"
               v-for="notification in notifications" :key="notification.id">
   						<tr :class="isUnread(notification)" @click="openNotification(notification)">
-  							<td class="mail-message">{{ notification.data.message }}</td>
+  							<td class="mail-message">{{ notification.data.title }}</td>
   							<td class="hidden-xs"></td>
   						</tr>
   					</tbody>
@@ -22,19 +26,21 @@
       <div class="ibox" id="mailbox-container">
         <div class="mailbox-header d-flex justify-content-between" style="border-bottom: 1px solid #e8e8e8;">
             <div>
-                <h5 class="inbox-title">{{ notificationToRead.data.message}}</h5>
+                <h5 class="inbox-title">{{ notificationToRead.data.tittle}}</h5>
                 <div class="m-t-5 font-13">
                     <span class="font-strong">{{ notificationToRead.data.sender.name}}</span>
-
                 </div>
-                <div class="p-r-10 font-13">{{notificationToRead.created_at}} </div>
+                <div class="p-r-10 font-13">
+                  <time-ago :datetime="notificationToRead.created_at" refresh locale="es" long></time-ago>
+                </div>
             </div>
             <div class="inbox-toolbar m-l-20">
-                <button class="btn btn-default btn-sm" data-action="reply" data-toggle="tooltip" data-original-title="Reply"><i class="fa fa-reply"></i></button>
+                <button class="btn btn-default btn-sm btn-outline-primary"><i class="fa fa-check"> Aceptar </i></button>
+                <button class="btn btn-default btn-sm btn-outline-danger"><i class="fa fa-times warning"> Rechazar </i></button>
             </div>
         </div>
         <div class="mailbox-body">
-            <p> {{notificationToRead.data.body}}  </p>
+            <p v-html="notificationToRead.data.body"></p>
         </div>
       </div>
   	</div>
@@ -42,7 +48,11 @@
 </template>
 
 <script>
+  import TimeAgo from "vue2-timeago";
   export default {
+    components: {
+      TimeAgo
+    },
     props: {
       user: Object
     },

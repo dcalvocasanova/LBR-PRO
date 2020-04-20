@@ -194,7 +194,7 @@ Auth::routes([
   'verify'=>false]);
 
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
-Route::post('sender', 'HomeController@sendNoti')->middleware('auth');
+Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
 
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');
