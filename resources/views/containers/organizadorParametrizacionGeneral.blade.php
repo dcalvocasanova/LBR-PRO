@@ -26,9 +26,7 @@
               @slot('subtitle') ir @endslot
               @slot('url') parametrizar-criterios-evaluacion @endslot
               @slot('icon') fa fa-question @endslot
-            @endcomponent
-
-          
+            @endcomponent      
 
             @component('components.colorcard')
               @slot('title') Gestionar validaciones @endslot

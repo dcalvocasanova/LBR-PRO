@@ -23,7 +23,8 @@ class TaskRequest extends FormRequest
     public function rules()
     {
         return [
-          'name' => 'required|string|max:100'
+          'task' => 'required|string|max:100',
+          'allocator' => 'required|string|max:100'
         ];
     }
     /**
@@ -34,7 +35,8 @@ class TaskRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'nombre'
+            'task' => 'tarea',
+            'allocator' => 'prouctos, sub producto o función de usuario',
         ];
     }
 }

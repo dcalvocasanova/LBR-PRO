@@ -24,12 +24,12 @@
 					  <th> Subclasificacion </th>
 					  <th> Indicadores </th>
 					  <th> Acciones </th>
-                      
+
                     </tr>
                   </thead>
                   <tbody>
                       <tr  v-for="proceso in Procesos.data" :key="proceso.id">
-                        
+
 						<td v-text="proceso.file"></td>
                         <td v-text="proceso.input"></td>
 						<td v-text="proceso.provider"></td>
@@ -89,13 +89,13 @@
                     <label class="bmd-label-floating">Entradas</label>
 					<multiselect
                  		 v-model="Entradas"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Inputs"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagInput" >
-                	</multiselect>    
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -103,20 +103,20 @@
                     <label class="bmd-label-floating">Provedores</label>
                     <multiselect
                  		 v-model="Proveedores"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Providers"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagProvider" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
-				
+
               </div>
-				
+
 			  <div class="row">
-				  
+
 				  <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Actividades Sustantivas</label>
@@ -124,7 +124,7 @@
                     <has-error :form="form" field="activity"></has-error>
                   </div>
                 </div>
-				  
+
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Responsable</label>
@@ -132,7 +132,7 @@
                     <has-error :form="form" field="responsible"></has-error>
                   </div>
                 </div>
-				  
+
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Subproceso o producto</label>
@@ -141,9 +141,9 @@
                     </select>
                     <has-error :form="form" field="subprocessProduct"></has-error>
                   </div>
-                </div>  
+                </div>
 			  </div>
-				
+
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -164,30 +164,30 @@
                     <label class="bmd-label-floating">Riesgos Asociados</label>
                     <multiselect
                  		 v-model="Riesgos"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Risks"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagRisk" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
               </div>
-				
+
               <div class="row">
 			    <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">PHVA</label>
                     <multiselect
                  		 v-model="PHVAs"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="PHVA"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagPHVA" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
 				 <div class="col-md-4">
@@ -202,16 +202,16 @@
                     <label class="bmd-label-floating">Indicadores</label>
                    <multiselect
                  		 v-model="Indicadores"
-                 		 placeholder="Seleccione o escriba una opción" 
+                 		 placeholder="Seleccione o escriba una opción"
 						  :options="Indicators"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
 						  @tag="addTagIndicator" >
-                	</multiselect>  
+                	</multiselect>
                   </div>
                 </div>
-				  
+
               </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveMacroproceso()" class="btn btn-success">Añadir</button>
@@ -274,7 +274,7 @@ export default {
     return{
           form: new Form ({
             id:"",//Macroprocesfile ID
-            project_id:0,//este valor debe ser el current project
+            project_id:1,//este valor debe ser el current project
 			file:"",
             input:"",
             provider:"",
@@ -287,7 +287,7 @@ export default {
 			phva:"",
 			subclassification:"",
 			indicator:""
-           
+
           }),
 		  project_id:0,//este valor debe ser el current project
           title:"Agregar nueva Ficha", //title to show
@@ -301,13 +301,13 @@ export default {
           Risks:[],
 		  Indicators:[],
 		  PHVA:[],
-		  //arreglos temporales 
+		  //arreglos temporales
 		  Entradas:[],
           Proveedores:[],
           Riesgos:[],
 		  Indicadores:[],
 		  PHVAs:[]
-		
+
       }
   },
   methods:{
@@ -322,27 +322,27 @@ export default {
 		},
 	  addTagInput (newTag) {
       const tag = newTag
-      
+
       this.Entradas.push(tag)
     },
 	addTagProvider (newTag) {
       const tag = newTag
-      
+
       this.Proveedores.push(tag)
     },
 	addTagRisk (newTag) {
       const tag = newTag
-      
+
       this.Riesgos.push(tag)
     },
 	addTagPHVA (newTag) {
       const tag = newTag
-      
+
       this.PHVAs.push(tag)
     },
 	addTagIndicator (newTag) {
       const tag = newTag
-      
+
       this.Indicadores.push(tag)
     },
 		EventSubir(f){
@@ -390,7 +390,7 @@ export default {
         link.click();
       });
     },
-    
+
 	getMacroprocessFile(){
 		 let me =this;
           let url = '/macroprocesos/file?id='+me.project_id;
@@ -399,7 +399,7 @@ export default {
           })
           .catch(function (error) {
               console.log(error);
-          });	
+          });
 	},
     saveMacroproceso(){
       let me =this;
@@ -485,7 +485,7 @@ export default {
             //this.Inputs = response.data; //get all catalogs from category selected
 		    let inputs = response.data;
 		    for (let i =0; i<1;i++){
-				
+
 				 this.Inputs.push(inputs[i].name);
 			}
       });
@@ -495,7 +495,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<1;i++){
-				
+
 				 this.Providers.push(inputs[i].name);
 			}
       });
@@ -505,7 +505,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<1;i++){
-				
+
 				 this.Risks.push(inputs[i].name);
 			}
       });
@@ -515,7 +515,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<1;i++){
-				
+
 				 this.Indicators.push(inputs[i].name);
 			}
       });
@@ -525,7 +525,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<1;i++){
-				
+
 				 this.PHVA.push(inputs[i].name);
 			}
       });
