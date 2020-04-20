@@ -48,10 +48,18 @@
             @endcomponent
 
             @component('components.colorcard')
-              @slot('title') Determinar macroprocesos en la estructura de niveles @endslot
+              @slot('title') Determinar Ficha de macroprocesos @endslot
               @slot('type') info @endslot
               @slot('subtitle') ir @endslot
               @slot('url') gestionar-macroprocesos @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
+			  
+			@component('components.colorcard')
+              @slot('title') Agregar macroprocesos  @endslot
+              @slot('type') info @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') gestionar-macros @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
 

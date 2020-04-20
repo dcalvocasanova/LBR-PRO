@@ -39,7 +39,7 @@
 						  <td v-text="proceso.resultProduct"></td>
 						  <td v-text="proceso.user"></td>
 						  <td v-text="proceso.risk"></td>
-						  <td v-text="proceso.PHVA"></td>
+						  <td v-text="proceso.phva"></td>
 						  <td v-text="proceso.subclassification"></td>
 						  <td v-text="proceso.indicator"></td>
                         <td>
