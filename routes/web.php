@@ -159,6 +159,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/gestionar-objetivos', function () {
       return view('admin.objetivos_estructura_proyecto');
   });
+  Route::get('/gestionar-macros', function () {
+      return view('admin.macroprocesos_estructura_proyecto');
+  });
   Route::get('/notificar-aprobacion-de-objetivos', function () {
       return view('admin.aprobarObjetivos');
   });
