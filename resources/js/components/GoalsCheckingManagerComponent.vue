@@ -88,10 +88,11 @@
           <div class="modal-body">
             <div class="card">
               <div class="card-body">
-                <notificator-goals-chekimg
+                <notificator-goals-cheking
                 :Item=currentNode
+                :Project=project_id
                 @close-modal="salirYNotificar"
-                ></notificator-goals-chekimg>
+                ></notificator-goals-cheking>
               </div>
               <div class="card-footer">
                 <div class="container-buttons">

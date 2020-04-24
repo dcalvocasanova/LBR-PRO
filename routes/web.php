@@ -196,13 +196,18 @@ Auth::routes([
   'register' => false,
   'verify'=>false]);
 
-Route::get('send', 'HomeController@sendNotification')->middleware('auth');
-Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
-
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');
 Route::post('/password/email','ForgotPasswordController@sendResetLinkEmail');
 Route::post('/password/reset','ResetPasswordController@reset');
+
+/*Notification Controller*/
+Route::get('send', 'HomeController@sendNotification')->middleware('auth');
+Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
+Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
+Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
+Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
 
 /*Home page*/
 Route::get('/home', 'HomeController@index')->name('home');
@@ -253,8 +258,6 @@ Route::get('/finduser', 'UserController@search');
 Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
-Route::get('/usuario/notificaciones', 'UserController@allNotifications');
-Route::get('/usuario/notificaciones-nuevas', 'UserController@unreadNotifications');
 Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');

@@ -56,7 +56,7 @@ Vue.component('userFunctions', require('./components/users/UserFunctionsStructur
 * All Components related to notifications
 */
 Vue.component('notificatorExample', require('./components/UserNotificatorComponent.vue').default);
-Vue.component('notificatorGoalsChekimg', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
+Vue.component('notificatorGoalsCheking', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
 Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
 
 /*

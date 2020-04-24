@@ -58,6 +58,7 @@
   export default {
     props:{
         Item: Object,
+        Project: Number,
     },
     data(){
       return{
@@ -66,6 +67,7 @@
         notification: new Form ({
           title:"Aprobación de objetivos",
           body:"",
+          project_id: 5,
           usersToNotify:[]
         }),
       }
@@ -93,6 +95,7 @@
         if(me.notify.length > 0){
           me.notification.usersToNotify = me.notify
           me.notification.body = me.getGoalInformation
+          me.notification.project_id = me.Project
           me.notification.post('/sender')
           .then(function (response) {
             toast.fire({

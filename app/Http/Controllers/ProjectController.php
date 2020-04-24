@@ -85,7 +85,7 @@ class ProjectController extends Controller
       $project->latitude = isset($request->latitud)? $request->latitud:"0,0";
       $project->economic_activity = isset($request->actividad_economica)? $request->actividad_economica:"Sin fines de lucro";
       $project->save();
-      return $project;
+      //return $project;
     }
 
     /**

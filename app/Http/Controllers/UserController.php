@@ -241,28 +241,6 @@ class UserController extends Controller
       $user->save();
     }
     /**
-     * Get unread user's notifications.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function unreadNotifications()
-    {
-      $user = Auth::user();
-      return $user->unreadNotifications;
-    }
-
-    /**
-     * Get all user's notifications.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function allNotifications()
-    {
-      $user = Auth::user();
-      return $user->notifications;
-    }
-
-    /**
      * Get Excel
      *
      * @param  \Illuminate\Http\Request  $request

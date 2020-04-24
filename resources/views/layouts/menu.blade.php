@@ -68,15 +68,7 @@
       <span> Parametrización</span>
     </a>
     <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        @if(@Auth::user()->can('CRUD_parameters'))
-          <h6 class="collapse-header">Parametrización </h6>
-          <a class="collapse-item" href="/gestionador-parametrizacion">Gestionar</a>
-        @endif
-        @if(@Auth::user()->hasAnyPermission('CRUD_macroprocess','CRUD_tasks'))
-          <h6 class="collapse-header">Macroprocesos</h6>
-          <a class="collapse-item" href="/gestionador-macroprocesos">Gestionar</a>
-        @endif
+      <div class="bg-white py-2 collapse-inner rounded">        
         @if(@Auth::user()->can('CRUD_parameters'))
           <h6 class="collapse-header">Parametrización: catálogos </h6>
           <a class="collapse-item" href="/gestionador-parametrizacion-catalogos">Gestionar</a>

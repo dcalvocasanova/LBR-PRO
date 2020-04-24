@@ -12,31 +12,16 @@
         </span>
 
 
-		  
+
         	<span class="controls-gol-edit" v-show="showGoalEditor">
 			<button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
             <i class="fas fa-columns">Asignar objetivo</i>
-            </button>	
-			
+            </button>
+
 			<button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip" >
             <i class="fas fa-columns">Relacionar objetivos</i>
             </button>
-				
-			
-       </span>   
-
-      	<span class="controls-gol-edit" v-show="showGoalEditor">
-	        <button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
-          <i class="fas fa-columns">Asignar objetivo</i>
-          </button>
-
-          <button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})">
-          <i class="fas fa-columns">Relacionar objetivos</i>
-          </button>
-          <button class="btn btn-primary" @click="$emit('create-macroprocess',item)">
-          <i class="fas fa-connectdevelop">Crear Macroproceso</i>
-          </button>
-
+       </span>
 
         <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
             <button class="btn btn-primary"

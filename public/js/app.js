@@ -2016,6 +2016,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -6849,6 +6850,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -6859,6 +6897,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      form: new Form({
+        id: 0,
+        reasons: ""
+      }),
+      dataToSend: {},
       notifications: {},
       notificationToRead: {},
       showInboxNotification: false
@@ -6871,20 +6914,83 @@ __webpack_require__.r(__webpack_exports__);
         me.notifications = response.data; //get current user
       });
     },
+    checkAsOK: function checkAsOK() {
+      var me = this;
+      me.saveStatus();
+    },
+    ableToCheck: function ableToCheck(notification) {
+      if (notification.status !== 'Pending') {
+        return false;
+      }
+
+      return true;
+    },
+    saveStatus: function saveStatus() {
+      this.form.put('/notificaciones/aceptar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Notificación confirmada'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.showInboxNotification = false;
+      this.getUserNotifications();
+    },
     openNotification: function openNotification(notification) {
       var me = this;
       me.notificationToRead = notification;
+      me.form.id = notification.id;
+      me.dataToSend = notification.data;
       me.showInboxNotification = true;
     },
+    getStatus: function getStatus(status) {
+      console.log(status);
+
+      if (status === "Acepted") {
+        return "Notificación aceptada";
+      }
+
+      if (status === "Rejected") {
+        return "Notificación rechazada";
+      }
+
+      if (status === "Correcting") {
+        return "Notificación proceso de subsane";
+      }
+
+      if (status === "Corrected") {
+        return "Notificación ya subsanada";
+      }
+    },
+    reject: function reject() {
+      if (this.form.reasons.trim() === "") {
+        swal.fire('Información', 'Es necesario completar la razón del rechazo', 'warning');
+      } else {
+        this.form.put('/notificaciones/rechazar').then(function (response) {
+          toast.fire({
+            type: 'success',
+            title: 'Notificación rechazada'
+          });
+        })["catch"](function (error) {
+          console.log(error);
+        });
+        this.showInboxNotification = false;
+        $('#RejectionForm').modal('toggle');
+        this.getUserNotifications();
+      }
+    },
+    exit: function exit() {
+      $('#RejectionForm').modal('toggle');
+    },
     isUnread: function isUnread(notification) {
-      if (notification.read_at === null) {
+      if (notification.status === 'Pending') {
         return "unread";
       }
 
       return "readed";
     }
   },
-  created: function created() {},
   mounted: function mounted() {
     this.getUserNotifications();
   }
@@ -6901,6 +7007,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue2_timeago__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-timeago */ "./node_modules/vue2-timeago/dist/vue2-timeago.esm.js");
 //
 //
 //
@@ -6937,8 +7044,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    TimeAgo: vue2_timeago__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   props: {
     user: Object
   },
@@ -7136,7 +7246,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    Item: Object
+    Item: Object,
+    Project: Number
   },
   data: function data() {
     return {
@@ -7145,6 +7256,7 @@ __webpack_require__.r(__webpack_exports__);
       notification: new Form({
         title: "Aprobación de objetivos",
         body: "",
+        project_id: 5,
         usersToNotify: []
       })
     };
@@ -7174,6 +7286,7 @@ __webpack_require__.r(__webpack_exports__);
       if (me.notify.length > 0) {
         me.notification.usersToNotify = me.notify;
         me.notification.body = me.getGoalInformation;
+        me.notification.project_id = me.Project;
         me.notification.post('/sender').then(function (response) {
           toast.fire({
             type: 'success',
@@ -10082,7 +10195,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -15184,7 +15296,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -15203,7 +15315,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -15222,7 +15334,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
 
 // exports
 
@@ -15260,7 +15372,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -15279,7 +15391,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 80px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -51635,8 +51747,11 @@ var render = function() {
                     "div",
                     { staticClass: "card-body" },
                     [
-                      _c("notificator-goals-chekimg", {
-                        attrs: { Item: _vm.currentNode },
+                      _c("notificator-goals-cheking", {
+                        attrs: {
+                          Item: _vm.currentNode,
+                          Project: _vm.project_id
+                        },
                         on: { "close-modal": _vm.salirYNotificar }
                       })
                     ],
@@ -59565,7 +59680,7 @@ var render = function() {
                       },
                       [
                         _c("td", { staticClass: "mail-message" }, [
-                          _vm._v(_vm._s(notification.data.title))
+                          _vm._v(_vm._s(notification.title))
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "hidden-xs" })
@@ -59596,12 +59711,12 @@ var render = function() {
                 [
                   _c("div", [
                     _c("h5", { staticClass: "inbox-title" }, [
-                      _vm._v(_vm._s(_vm.notificationToRead.data.tittle))
+                      _vm._v(_vm._s(_vm.notificationToRead.tittle))
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "m-t-5 font-13" }, [
                       _c("span", { staticClass: "font-strong" }, [
-                        _vm._v(_vm._s(_vm.notificationToRead.data.sender.name))
+                        _vm._v(_vm._s(_vm.notificationToRead.title))
                       ])
                     ]),
                     _vm._v(" "),
@@ -59622,21 +59737,138 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(0)
+                  _vm.ableToCheck(_vm.notificationToRead)
+                    ? _c("div", { staticClass: "inbox-toolbar m-l-20" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-default btn-sm btn-outline-primary",
+                            on: { click: _vm.checkAsOK }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-check" }, [
+                              _vm._v(" Aceptar ")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm._m(0)
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.ableToCheck(_vm.notificationToRead)
+                    ? _c("div", { staticClass: "inbox-toolbar m-l-20" }, [
+                        _c("h3", [
+                          _c("span", { staticClass: "badge badge-primary" }, [
+                            _vm._v(
+                              _vm._s(
+                                _vm.getStatus(_vm.notificationToRead.status)
+                              ) + " "
+                            )
+                          ])
+                        ])
+                      ])
+                    : _vm._e()
                 ]
               ),
               _vm._v(" "),
               _c("div", { staticClass: "mailbox-body" }, [
                 _c("p", {
-                  domProps: {
-                    innerHTML: _vm._s(_vm.notificationToRead.data.body)
-                  }
+                  domProps: { innerHTML: _vm._s(_vm.notificationToRead.body) }
                 })
               ])
             ]
           )
         ])
-      : _vm._e()
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "RejectionForm",
+          tabindex: "-1",
+          role: "dialog",
+          aria: "",
+          labelledby: "RejectionForm-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "card" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("div", { staticClass: "col-12" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.reasons,
+                            expression: "form.reasons"
+                          }
+                        ],
+                        staticStyle: { width: "100%", height: "200px" },
+                        attrs: { name: "reasons" },
+                        domProps: { value: _vm.form.reasons },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.form, "reasons", $event.target.value)
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-info",
+                        on: {
+                          click: function($event) {
+                            return _vm.reject()
+                          }
+                        }
+                      },
+                      [_vm._v("Confirmar rechazo ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        on: {
+                          click: function($event) {
+                            return _vm.exit()
+                          }
+                        }
+                      },
+                      [_vm._v("cancelar")]
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -59644,21 +59876,35 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "inbox-toolbar m-l-20" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-default btn-sm btn-outline-primary" },
-        [_c("i", { staticClass: "fa fa-check" }, [_vm._v(" Aceptar ")])]
-      ),
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-default btn-sm btn-outline-danger",
+        attrs: { "data-toggle": "modal", "data-target": "#RejectionForm" }
+      },
+      [_c("i", { staticClass: "fa fa-times warning" }, [_vm._v(" Rechazar ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "RejectionForm" } }, [
+        _vm._v(" Razones del rechazo")
+      ]),
       _vm._v(" "),
       _c(
         "button",
-        { staticClass: "btn btn-default btn-sm btn-outline-danger" },
-        [
-          _c("i", { staticClass: "fa fa-times warning" }, [
-            _vm._v(" Rechazar ")
-          ])
-        ]
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
   }
@@ -59725,7 +59971,7 @@ var render = function() {
               "a",
               {
                 staticClass: "dropdown-item d-flex align-items-center",
-                attrs: { href: "#" }
+                attrs: { href: "/notificaciones" }
               },
               [
                 _vm._m(0, true),
@@ -59733,16 +59979,26 @@ var render = function() {
                 _c("div", [
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-11" }, [
-                      _c("div", { staticClass: "small text-gray-500" }, [
-                        _vm._v(_vm._s(notification.created_at))
-                      ]),
+                      _c(
+                        "div",
+                        { staticClass: "small text-gray-500" },
+                        [
+                          _c("time-ago", {
+                            attrs: {
+                              datetime: notification.created_at,
+                              refresh: "",
+                              locale: "es",
+                              long: ""
+                            }
+                          })
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _c("span", { staticClass: "font-weight-bold" }, [
-                        _vm._v(_vm._s(notification.data.message))
+                        _vm._v(_vm._s(notification.title))
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(1, true)
+                    ])
                   ])
                 ])
               ]
@@ -59772,14 +60028,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "icon-circle bg-primary" }, [
         _c("i", { staticClass: "fas fa-file-alt text-white" })
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-1" }, [
-      _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])
     ])
   }
 ]
@@ -65360,6 +65608,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
                     on: {
                       click: function($event) {
                         return _vm.$emit("relate-goal", {
@@ -65414,7 +65663,6 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-
                     attrs: {
                       "data-toggle": "tooltip",
                       "data-placement": "top",
@@ -65462,60 +65710,6 @@ var render = function() {
                     ])
                   ]
                 )
-
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showUserFunctionsEditor,
-                    expression: "showUserFunctionsEditor"
-                  }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva función"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("create-user-function", _vm.item)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-plus-circle" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva función"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("modify-user-function", _vm.item)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-edit" })]
-                )
-
               ]
             )
           ])
@@ -84865,7 +85059,7 @@ Vue.component('userFunctions', __webpack_require__(/*! ./components/users/UserFu
 */
 
 Vue.component('notificatorExample', __webpack_require__(/*! ./components/UserNotificatorComponent.vue */ "./resources/js/components/UserNotificatorComponent.vue")["default"]);
-Vue.component('notificatorGoalsChekimg', __webpack_require__(/*! ./components/UserNotificatorGoalsCheckingComponent.vue */ "./resources/js/components/UserNotificatorGoalsCheckingComponent.vue")["default"]);
+Vue.component('notificatorGoalsCheking', __webpack_require__(/*! ./components/UserNotificatorGoalsCheckingComponent.vue */ "./resources/js/components/UserNotificatorGoalsCheckingComponent.vue")["default"]);
 Vue.component('notificatorProjectStructure', __webpack_require__(/*! ./components/GoalsCheckingManagerComponent.vue */ "./resources/js/components/GoalsCheckingManagerComponent.vue")["default"]);
 /*
 *Components realted to Navigation headers
@@ -87287,8 +87481,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
