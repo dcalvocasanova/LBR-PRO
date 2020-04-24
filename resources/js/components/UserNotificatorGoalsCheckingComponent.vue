@@ -58,7 +58,7 @@
   export default {
     props:{
         Item: Object,
-        Project: Number,
+        Project: Object,
     },
     data(){
       return{
@@ -67,14 +67,15 @@
         notification: new Form ({
           title:"Aprobación de objetivos",
           body:"",
-          project_id: 5,
+          project_id: 0,
+          relatedToLevel:'',
           usersToNotify:[]
         }),
       }
     },
     computed: {
       getGoalInformation: function () {
-        let msg = "En el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
+        let msg = "En el proyecto: "+ this.Project.name +" en el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
         msg +='<br>'
         for(let goal in this.Item.goals){
           msg += "- código: "+ this.Item.goals[goal].code +" objetivo: "+this.Item.goals[goal].name+"<br>"
@@ -95,7 +96,8 @@
         if(me.notify.length > 0){
           me.notification.usersToNotify = me.notify
           me.notification.body = me.getGoalInformation
-          me.notification.project_id = me.Project
+          me.notification.relatedToLevel = this.Item.name
+          me.notification.project_id = me.Project.id
           me.notification.post('/sender')
           .then(function (response) {
             toast.fire({

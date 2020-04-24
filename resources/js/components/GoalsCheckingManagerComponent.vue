@@ -90,7 +90,7 @@
               <div class="card-body">
                 <notificator-goals-cheking
                 :Item=currentNode
-                :Project=project_id
+                :Project=currentProject
                 @close-modal="salirYNotificar"
                 ></notificator-goals-cheking>
               </div>
@@ -116,9 +116,9 @@
     },
     data(){
       return{
-        project_id:0,
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
+        currentProject:{}, //Current
         Lista:[],
         currentNode: {}, //Current node to update or add
         level: new Form({
@@ -162,11 +162,11 @@
       },
       getLevels(){
           let me =this;
-          let url = '/estructura?id='+me.project_id;
+          let url = '/estructura?id='+me.currentProject.id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
               me.level.id= response.data.id;
-              me.level.project_id=response.data.project_id;
+              me.level.project_id=me.currentProject.id;
           })
           .catch(function (error) {
               console.log(error);
@@ -174,7 +174,7 @@
       },
       saveLevel(){
         let me =this
-        me.currentNode.notificated ="true"
+        me.currentNode.notificated =true
         me.level.levels =JSON.stringify(me.Levels)
         me.updateLevel()
       },
@@ -182,14 +182,14 @@
           let me = this;
           this.level.put('/estructura/actualizar')
           .then(function (response) {
-             me.level.reset()
+                    
           })
           .catch(function (error) {
               console.log(error);
           });
       },
       loadLevelData(project){
-          this.project_id = project.id;
+          this.currentProject= project;
           this.getLevels();
       },
       salirNotificador(){

@@ -28,32 +28,21 @@ class NotificatorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-
     public function sendGoalsNotification(Request $request)
     {
-        $usuarios = $request->usersToNotify;
-        $users = User::find($usuarios);
-        $details = [
-            'greeting' => 'Un saludo cordial',
-            'title' => $request->title,
-            'body' => $request->body,
-            'sender' => Auth::user()->id,
-            'type'=>'GOALS',
-            'thanks' => 'Visita la plataforma para mayor información',
-            'actionText' => 'Ir al sitio web',
-            'actionURL' => url('/notificaciones'),
-        ];
-        Notification::send($users, new Notifier($details)); //send several UserSystemComponent
-        foreach ($users as $user) {
-            $notification = new Alerting();
-            $notification->title =$request->title;
-            $notification->project_id =$request->project_id;
-            $notification->body =$request->body;
-            $notification->receiver =$user->id;
-            $notification->sender =Auth::user()->id;
-            $notification->type ='GOALS';
-            $notification->save();
-        }
+      $users = $request->usersToNotify;
+      $this->sendEmailConfirmation($users,$request->title,$request->body,'GOALS');
+      foreach ($users as $user) {
+          $notification = new Alerting();
+          $notification->title =$request->title;
+          $notification->project_id =$request->project_id;
+          $notification->relatedToLevel =$request->relatedToLevel;
+          $notification->body =$request->body;
+          $notification->receiver= $user;
+          $notification->sender =Auth::user()->id;
+          $notification->type ='GOALS';
+          $notification->save();
+      }
     }
 
     /**
@@ -64,8 +53,7 @@ class NotificatorController extends Controller
     public function unreadNotifications()
     {
       $user = Auth::user();
-      $unreadNotifications = Alerting::where('receiver', $user->id)
-                            ->where('status','Pending')->get();
+      $unreadNotifications = Alerting::where('receiver', $user->id)->where('status','Pending')->get();
       return $unreadNotifications;
     }
 
@@ -77,9 +65,7 @@ class NotificatorController extends Controller
     public function allNotifications()
     {
       $user = Auth::user();
-      $allNotifications = Alerting::where('receiver', $user->id)
-                                  ->orWhere('sender', $user->id)
-                                  ->orderBy('created_at','desc')->get();
+      $allNotifications = Alerting::where('receiver', $user->id)->orderBy('created_at','desc')->get();
       return $allNotifications;
     }
 
@@ -91,8 +77,21 @@ class NotificatorController extends Controller
      */
     public function getGoalsNotifications(Request $request)
     {
+      $goalsNotifications = Alerting::where('project_id', $request->id)->where('type','GOALS')->get();
+      return $goalsNotifications;
+    }
+
+    /**
+     * Get all notifications of Goals Aprovals from a level on some Project.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getGoalsByLevelNotifications(Request $request)
+    {
       $goalsNotifications = Alerting::where('project_id', $request->id)
-                            ->where('type','GOALS')->get();
+                    ->where('relatedToLevel',$request->relatedTolevel)
+                    ->where('type','GOALS')->get();
       return $goalsNotifications;
     }
 
@@ -104,90 +103,98 @@ class NotificatorController extends Controller
      */
     public function getTasksNotifications(Request $request)
     {
-      $tasksNotifications = Alerting::where('project_id', $request->id)
-                            ->where('type','TASKS')->get();
+      $tasksNotifications = Alerting::where('project_id', $request->id)->where('type','TASKS')->get();
       return $tasksNotifications;
     }
 
     /**
-     * Update a newly created resource in storage.
+     * Get all notifications of Tasks Aprovals from a Project.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getTasksByLevelNotifications(Request $request)
+    {
+      $tasksNotifications = Alerting::where('project_id', $request->id)
+                ->where('relatedToLevel',$request->relatedTolevel)
+                ->where('type','TASKS')->get();
+      return $tasksNotifications;
+    }
+
+    /**
+     * Mark as Acepted
      *
      * @param  \Illuminate\Http\Request  $request
      *
      */
     public function markAsOk(Request $request)
     {
-      $notification = Alerting::findOrFail($request->id);
-      $notification->title .=" -Aceptada-";
-      $notification->status = 'Acepted';
-      $notification->reasons = 'Acepted';
-      $notification->read_at = Carbon::now();
-      $notification->save();
+      $this->saveAlert($request->id ,"Acepted"," -Aceptada-","Aceptada");
     }
     /**
-     * Update a newly created resource in storage.
+     * Mark as rejected
      *
      * @param  \Illuminate\Http\Request  $request
      *
      */
     public function markAsRejected (Request $request)
     {
+      $this->saveAlert($request->id,'Rejected'," -Rechazada-",$request->reasons);
       $notification = Alerting::findOrFail($request->id);
-      $notification->title .=" -Rechazada-";
-      $notification->status = 'Rejected';
-      $notification->reasons = $request->reasons;
-      $notification->read_at = Carbon::now();
-      $notification->save();
-      $this->sendEmailConfirmation($notification->body,$notification->reasons,$notification->sender);
+      $user[0] = $notification->sender;
+      $msg = "En la notificación:".$notification->body." RECHAZADA POR:".$request->reasons;
+      $this->sendEmailConfirmation($user,$notification->title,$msg,'GOAL-REJECTED');
     }
 
     /**
-     * Update a newly created resource in storage.
+     * Mark as correcting.
      *
      * @param  \Illuminate\Http\Request  $request
      *
      */
     public function markAsCorrecting (Request $request)
     {
-      $notification = Alerting::findOrFail($request->id);
-      $notification->title .=" -En corrección-";
-      $notification->status = 'Correcting';
-      $notification->reasons = 'En Corrección';
-      $notification->read_at = Carbon::now();
-      $notification->save();
+      $this->saveAlert($request->id,'Correcting'," -En corrección-",'En Corrección');
     }
 
     /**
-     * Update a newly created resource in storage.
+     * Mark as corrected
      *
      * @param  \Illuminate\Http\Request  $request
      *
      */
     public function markAsCorrected (Request $request)
     {
-      $notification = Alerting::findOrFail($request->id);
-      $notification->status = 'Corrected';
-      $notification->title .=" -Archivada-";
-      $notification->reasons = 'Tarea terminada';
+      $this->saveAlert($request->id,'Corrected'," -Archivada-",'Tarea terminada');
+    }
+
+    /**
+    * Update status of notification
+    */
+    function saveAlert (string $id, string $type, string $title, string $reason){
+      $notification = Alerting::findOrFail($id);
+      $notification->status = $type;
+      $notification->title .= $title;
+      $notification->reasons = $reason;
       $notification->read_at = Carbon::now();
       $notification->save();
     }
 
     /**
-    *
+    * Send Email confirmation to users
     */
-    function sendEmailConfirmation(string $msj, string $reason, string $notificator){
+    function sendEmailConfirmation($notificator, string $title, string $msj, string $type){
       $users = User::find($notificator);
       $details = [
-          'greeting' => 'Un saludo cordial, hay una notificación que fue rechazada',
-          'title' => "Notificación rechazada",
-          'body' => "Mensaje original :". $msj ." <br><br>"."Razón de rechazo :". $reason ,
-          'thanks' => 'Es necesario revisar este pendiente',
+          'greeting' => 'Un saludo cordial',
+          'title' => $title,
+          'body' =>  $msj,
+          'sender' => Auth::user()->id,
+          'type'=> $type,
+          'thanks' => 'Visita la plataforma para mayor información',
           'actionText' => 'Ir al sitio web',
           'actionURL' => url('/notificaciones'),
       ];
-      Notification::send( $users , new Notifier($details)); //send several UserSystemComponent
-
+      Notification::send($users, new Notifier($details)); //send several UserSystemComponent
     }
-
 }

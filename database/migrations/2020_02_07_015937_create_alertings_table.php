@@ -23,6 +23,7 @@ class CreateAlertingsTable extends Migration
           $table->string('status');
           $table->string('receiver');
           $table->string('reasons');
+          $table->string('relatedToLevel');
           $table->timestamp('read_at')->nullable();
           $table->timestamps();
         });

@@ -206,6 +206,10 @@ Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
 Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
 Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
+Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
+Route::get('/notificaciones/objetivos-por-nivel','NotificatorController@getGoalsByLevelNotifications')->middleware('auth');
+Route::get('/notificaciones/tareas','NotificatorController@getTasksNotifications')->middleware('auth');
+Route::get('/notificaciones/objetivos','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
 

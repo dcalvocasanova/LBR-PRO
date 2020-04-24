@@ -2025,11 +2025,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      project_id: 0,
       Projects: {},
       //All registered projects
       Levels: {},
       // All levels from organization
+      currentProject: {},
+      //Current
       Lista: [],
       currentNode: {},
       //Current node to update or add
@@ -2074,32 +2075,30 @@ __webpack_require__.r(__webpack_exports__);
     },
     getLevels: function getLevels() {
       var me = this;
-      var url = '/estructura?id=' + me.project_id;
+      var url = '/estructura?id=' + me.currentProject.id;
       axios.get(url).then(function (response) {
         me.Levels = JSON.parse(response.data.levels); //get all structure
 
         me.level.id = response.data.id;
-        me.level.project_id = response.data.project_id;
+        me.level.project_id = me.currentProject.id;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     saveLevel: function saveLevel() {
       var me = this;
-      me.currentNode.notificated = "true";
+      me.currentNode.notificated = true;
       me.level.levels = JSON.stringify(me.Levels);
       me.updateLevel();
     },
     updateLevel: function updateLevel() {
       var me = this;
-      this.level.put('/estructura/actualizar').then(function (response) {
-        me.level.reset();
-      })["catch"](function (error) {
+      this.level.put('/estructura/actualizar').then(function (response) {})["catch"](function (error) {
         console.log(error);
       });
     },
     loadLevelData: function loadLevelData(project) {
-      this.project_id = project.id;
+      this.currentProject = project;
       this.getLevels();
     },
     salirNotificador: function salirNotificador() {
@@ -6686,7 +6685,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateUser: function updateUser() {
       var me = this;
-      me.form.role = "Usuario";
       me.form.put('/usuarios/actualizar').then(function (response) {
         toast.fire({
           type: 'success',
@@ -7247,7 +7245,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     Item: Object,
-    Project: Number
+    Project: Object
   },
   data: function data() {
     return {
@@ -7256,14 +7254,15 @@ __webpack_require__.r(__webpack_exports__);
       notification: new Form({
         title: "Aprobación de objetivos",
         body: "",
-        project_id: 5,
+        project_id: 0,
+        relatedToLevel: '',
         usersToNotify: []
       })
     };
   },
   computed: {
     getGoalInformation: function getGoalInformation() {
-      var msg = "En el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados <br>";
+      var msg = "En el proyecto: " + this.Project.name + " en el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados <br>";
       msg += '<br>';
 
       for (var goal in this.Item.goals) {
@@ -7286,7 +7285,8 @@ __webpack_require__.r(__webpack_exports__);
       if (me.notify.length > 0) {
         me.notification.usersToNotify = me.notify;
         me.notification.body = me.getGoalInformation;
-        me.notification.project_id = me.Project;
+        me.notification.relatedToLevel = this.Item.name;
+        me.notification.project_id = me.Project.id;
         me.notification.post('/sender').then(function (response) {
           toast.fire({
             type: 'success',
@@ -51750,7 +51750,7 @@ var render = function() {
                       _c("notificator-goals-cheking", {
                         attrs: {
                           Item: _vm.currentNode,
-                          Project: _vm.project_id
+                          Project: _vm.currentProject
                         },
                         on: { "close-modal": _vm.salirYNotificar }
                       })
