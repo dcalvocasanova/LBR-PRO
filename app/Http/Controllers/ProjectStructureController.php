@@ -160,4 +160,38 @@ class ProjectStructureController extends Controller
         }
       }
     }
+
+    /**
+     *  Display a list of the all Goals registered in every level structure.
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return \Illuminate\Http\Response
+     */
+     public function getListOfGoals(Request $request)
+     {
+        $listOfGoals = array();
+        $levels = ProjectStructure::where('project_id', $request->id)->first();
+        $LevelsObjet = json_decode($levels->levels,true);
+        $this->getGoalsR($LevelsObjet,$listOfGoals);
+        return $listOfGoals;
+      }
+
+    /**
+      * Display a list of the userfunctions.
+      *
+      * @param objet $LevelsObjet
+      * @param array $listOfLevels
+      * @return array $listOfLevels
+      */
+      function getGoalsR($LevelsObjet,&$listOfGoals)
+      {
+        if(isset($LevelsObjet['name'])) {
+          $notified = isset($LevelsObjet['notificated'])? true : false;
+          array_push($listOfGoals, array("name" => $LevelsObjet['name'], "goals" => $LevelsObjet['numGoals'], "notified" => $notified));
+        }
+        if(isset($LevelsObjet['children']) and !empty($LevelsObjet['children']) ){
+          for ( $i = 0; $i< count($LevelsObjet['children']); $i++){
+            $this->getGoalsR($LevelsObjet['children'][$i],$listOfGoals);
+          }
+        }
+      }
 }

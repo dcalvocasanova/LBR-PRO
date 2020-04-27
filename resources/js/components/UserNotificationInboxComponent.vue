@@ -39,6 +39,7 @@
               <i class="fa fa-check"> Aceptar </i>
             </button>
             <button class="btn btn-default btn-sm btn-outline-danger"
+              v-if="ableToReject(notificationToRead)"
               data-toggle="modal"
               data-target="#RejectionForm">
                 <i class="fa fa-times warning"> Rechazar </i>
@@ -123,6 +124,12 @@
         }
         return true;
       },
+      ableToReject(notification){
+        if(notification.type === 'REJECTED'){
+          return false;
+        }
+        return true;
+      },
       saveStatus(){
         this.form.put('/notificaciones/aceptar')
         .then(function (response) {
@@ -145,7 +152,6 @@
         me.showInboxNotification = true;
       },
       getStatus(status){
-        console.log(status)
         if (status === "Acepted"){return "Notificación aceptada"}
         if (status === "Rejected"){return "Notificación rechazada"}
         if (status === "Correcting"){return "Notificación proceso de subsane"}

@@ -88,6 +88,9 @@ Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 Vue.component('tasksVars', require('./components/TaskVarManagerComponent.vue').default);
 
+/*Reports*/
+Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
+
 
 
 /**

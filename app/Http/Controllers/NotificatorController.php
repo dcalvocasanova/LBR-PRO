@@ -143,7 +143,7 @@ class NotificatorController extends Controller
       $notification = Alerting::findOrFail($request->id);
       $user[0] = $notification->sender;
       $msg = "En la notificación:".$notification->body." RECHAZADA POR:".$request->reasons;
-      $this->sendEmailConfirmation($user,$notification->title,$msg,'GOAL-REJECTED');
+      $this->sendEmailConfirmation($user,$notification->title,$msg,'REJECTED');
     }
 
     /**

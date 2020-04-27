@@ -177,6 +177,10 @@ Route::get('/notificaciones', function () {
     return view('admin.usuariosNotificaciones');
 })->middleware('auth');
 
+Route::get('/reporte-envio-objetivos', function () {
+    return view('reports.reporteObjetivos');
+})->middleware('auth');
+
 /*
 *EJEMPLO
 */
@@ -209,7 +213,7 @@ Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->m
 Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
 Route::get('/notificaciones/objetivos-por-nivel','NotificatorController@getGoalsByLevelNotifications')->middleware('auth');
 Route::get('/notificaciones/tareas','NotificatorController@getTasksNotifications')->middleware('auth');
-Route::get('/notificaciones/objetivos','NotificatorController@getGoalsNotifications')->middleware('auth');
+Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
 
@@ -245,10 +249,12 @@ Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
 Route::get('/estructura/lista-funciones-de-usuario/{id}', 'ProjectStructureController@getListOfUserFunctions');
+Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
-Route::get('/usuarios-por-nivel/{level}', 'UserController@getUserByLevelStructure');
+Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
+Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
@@ -257,7 +263,7 @@ Route::any('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
-Route::get('/usuarios/buscar', 'UserController@show');
+Route::get('/usuarios/buscar/{id}', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');

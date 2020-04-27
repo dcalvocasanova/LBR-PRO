@@ -90,6 +90,7 @@
               <div class="card-body">
                 <notificator-goals-cheking
                 :Item=currentNode
+                :Users=Users
                 :Project=currentProject
                 @close-modal="salirYNotificar"
                 ></notificator-goals-cheking>
@@ -119,6 +120,7 @@
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
         currentProject:{}, //Current
+        Users:[],
         Lista:[],
         currentNode: {}, //Current node to update or add
         level: new Form({
@@ -135,11 +137,23 @@
             'Información','Ya el nivel de la estructura fue notificado, para más información dirijase al panel de notificaciones','info'
           )
         }else{
+          this.getUsers(item)
           if(this.justShowTree){
             $('#NotificatorManager').modal('show')
             this.currentNode = item
           }
         }
+      },
+      getUsers(item){
+        axios.get('/usuarios-jefes-por-nivel',{
+          params:{
+            project: this.currentProject.id,
+            level: item.name
+          }
+        })
+        .then(response => {
+            this.Users = response.data; //get current user
+        });
       },
       getProjectsPaginator(page = 1) {
         axios.get('/proyectos?page=' + page)
@@ -182,7 +196,7 @@
           let me = this;
           this.level.put('/estructura/actualizar')
           .then(function (response) {
-                    
+
           })
           .catch(function (error) {
               console.log(error);

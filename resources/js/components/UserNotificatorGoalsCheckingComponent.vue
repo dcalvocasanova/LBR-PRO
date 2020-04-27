@@ -13,7 +13,7 @@
               </tr>
             </thead>
   					<tbody class="rowlinkx" data-link="row"
-              v-for="user in users.data" :key="user.id">
+              v-for="user in Users" :key="user.id">
   						<tr class="users-to-notify">
                 <td><input v-model="notify" type="checkbox" :name="user.id" :value="user.id"> {{user.name}}</td>
   						</tr>
@@ -58,11 +58,12 @@
   export default {
     props:{
         Item: Object,
+        Users: Array,
         Project: Object,
     },
     data(){
       return{
-        users:{},
+        sdf:{},
         notify:[],
         notification: new Form ({
           title:"Aprobación de objetivos",
@@ -84,13 +85,6 @@
       }
     },
     methods:{
-      getUsers(){
-        let me =this
-        axios.get('/usuarios')
-        .then(response => {
-            me.users = response.data; //get current user
-        });
-      },
       sendNotification(){
         let me = this
         if(me.notify.length > 0){
@@ -118,7 +112,7 @@
       }
     },
     mounted() {
-      this.getUsers()
+      //this.getUsers()
     }
   }
 </script>
