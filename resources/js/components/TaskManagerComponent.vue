@@ -3,7 +3,7 @@
     <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
       <div class="card card-plain col-12">
         <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran usuarios</h4>
+          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran las tareas</h4>
         </div>
         <div class="card-body">
           <div class="form-group">
@@ -209,7 +209,7 @@
           .then(response => {
               this.Products = response.data; //get all projects from page.
           });
-        },        
+        },
         getTasks(page = 1) {
           let me =this;
           me.clearFields();
@@ -253,12 +253,14 @@
             me.form.id_project = type.project_id
             me.form.id_product = type.id
             me.form.allocator = type.resultProduct
+            me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'PRODUCT'
           }
           if(me.currentTypeTaks =='SUB-PRODUCT'){
             me.form.id_project = type.project_id
             me.form.id_product = type.id
             me.form.allocator = type.product
+            me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'SUB-PRODUCT'
           }
           if(me.currentTypeTaks =='USER-FUNCTION'){

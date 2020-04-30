@@ -22,7 +22,7 @@
             <div class="col-md-8">
                 <h3 class="card-title mt-0"> Lista de tareas</h3>
             </div>
-            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
+            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar variables a una tarea">
               <button class="btn btn-primary"@click="detalle">
                 <i class="fa fa-plus-circle"></i>
               </button>
