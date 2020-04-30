@@ -1,6 +1,21 @@
 <template>
   <div class="container container-project">
-    <div class="row">
+    <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
+      <div class="card card-plain col-12">
+        <div class="card-header card-header-primary ">
+          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran las tareas y procedimientos asociados</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <br>
+            <select v-model="currentProject" class="form-control" @change="setProject()">
+              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="this.selectingProjectToAddTasks === false">
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
@@ -25,7 +40,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="task in Tasks" :key="task.id">
+                    <tr v-for="task in Tasks.data" :key="task.id">
                       <td v-text="task.name"></td>
                       <td>
                         <div class="btn-group" role="group">
@@ -102,10 +117,13 @@
                 name:"",
                 type:""
               }),
+              selectingProjectToAddTasks: true,
+              currentProject:0,
               showDetails: false,
               title:"Agregar nueva categoría de parámetro ", //title to show
               update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
               showVariable:0,
+              Projects:{},
               AddedValue:{},
               Correlation:{},
               Risk:{},
@@ -113,26 +131,29 @@
               OrganizationalSkills:{},
               SpecificSkills:{},
               TecnicalSkills:{},
-              Tasks:[
-                {
-                  id:1,
-                  name: "tarea 1",
-                  inventory: 5,
-                },
-                {
-                  id:2,
-                  name: "tarea 2",
-                  inventory: 10,
-                },
-                {
-                  id:3,
-                  name: "tarea 3",
-                  inventory: 2,
-                }
-              ]
+              Tasks:{}
           }
       },
       methods:{
+        getProjects(){
+          let me =this;
+          axios.get('/todos-los-proyectos')
+          .then(response => {
+              me.Projects = response.data; //get all projects from page
+          });
+        },
+        getTasks(page = 1) {
+          let me =this;
+          axios.get('/tareas/'+this.currentProject)
+          .then(response => {
+            me.Tasks = response.data
+          });
+        },
+        setProject(){
+          let me = this
+          me.selectingProjectToAddTasks=false
+          me.getTasks()
+        },
         detalle(){
           swal.fire(
             'Por el momento no tenemos Macroprocesos registrados',
@@ -184,6 +205,7 @@
         }
       },
       mounted() {
+        this.getProjects()
         this.LoadCatalogAddedValued()
         this.LoadCatalogCorrelation()
         this.LoadCatalogRisk()

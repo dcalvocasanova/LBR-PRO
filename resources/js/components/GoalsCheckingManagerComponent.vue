@@ -88,10 +88,12 @@
           <div class="modal-body">
             <div class="card">
               <div class="card-body">
-                <notificator-goals-chekimg
+                <notificator-goals-cheking
                 :Item=currentNode
+                :Users=Users
+                :Project=currentProject
                 @close-modal="salirYNotificar"
-                ></notificator-goals-chekimg>
+                ></notificator-goals-cheking>
               </div>
               <div class="card-footer">
                 <div class="container-buttons">
@@ -115,9 +117,10 @@
     },
     data(){
       return{
-        project_id:0,
         Projects:{}, //All registered projects
         Levels:{}, // All levels from organization
+        currentProject:{}, //Current
+        Users:[],
         Lista:[],
         currentNode: {}, //Current node to update or add
         level: new Form({
@@ -134,11 +137,23 @@
             'Información','Ya el nivel de la estructura fue notificado, para más información dirijase al panel de notificaciones','info'
           )
         }else{
+          this.getUsers(item)
           if(this.justShowTree){
             $('#NotificatorManager').modal('show')
             this.currentNode = item
           }
         }
+      },
+      getUsers(item){
+        axios.get('/usuarios-jefes-por-nivel',{
+          params:{
+            project: this.currentProject.id,
+            level: item.name
+          }
+        })
+        .then(response => {
+            this.Users = response.data; //get current user
+        });
       },
       getProjectsPaginator(page = 1) {
         axios.get('/proyectos?page=' + page)
@@ -161,11 +176,11 @@
       },
       getLevels(){
           let me =this;
-          let url = '/estructura?id='+me.project_id;
+          let url = '/estructura?id='+me.currentProject.id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
               me.level.id= response.data.id;
-              me.level.project_id=response.data.project_id;
+              me.level.project_id=me.currentProject.id;
           })
           .catch(function (error) {
               console.log(error);
@@ -173,7 +188,7 @@
       },
       saveLevel(){
         let me =this
-        me.currentNode.notificated ="true"
+        me.currentNode.notificated =true
         me.level.levels =JSON.stringify(me.Levels)
         me.updateLevel()
       },
@@ -181,14 +196,14 @@
           let me = this;
           this.level.put('/estructura/actualizar')
           .then(function (response) {
-             me.level.reset()
+
           })
           .catch(function (error) {
               console.log(error);
           });
       },
       loadLevelData(project){
-          this.project_id = project.id;
+          this.currentProject= project;
           this.getLevels();
       },
       salirNotificador(){

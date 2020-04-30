@@ -21,6 +21,12 @@ Route::get('/', function () {
 Route::get('/gestionar-variables-del-sistema', function () {
     return view('containers.organizadorTareasDelSistema');
 })->middleware('permission:CRUD_users|CRUD_catalogs');
+/*
+* Grant access only for users with CRUD_users permission
+*/
+Route::get('/medicion-analisis', function () {
+    return view('containers.medicion-analisis');
+})->middleware('permission:CRUD_tasks|CRUD_catalogs');
 
 /*
 * Grant access only for users with CRUD_users permission
@@ -110,6 +116,12 @@ Route::get('/gestionar-catalogos-tareas', function () {
 Route::get('/gestionar-tareas', function () {
     return view('taskManager.tareas');
 })->middleware('permission:CRUD_tasks');
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas-variables-adicionales', function () {
+    return view('taskManager.tareas-variables-asociadas');
+})->middleware('permission:CRUD_tasks');
 
 /*
 * Grant access only for users with CRUD_task
@@ -177,6 +189,10 @@ Route::get('/notificaciones', function () {
     return view('admin.usuariosNotificaciones');
 })->middleware('auth');
 
+Route::get('/reporte-envio-objetivos', function () {
+    return view('reports.reporteObjetivos');
+})->middleware('auth');
+
 /*
 *EJEMPLO
 */
@@ -196,13 +212,22 @@ Auth::routes([
   'register' => false,
   'verify'=>false]);
 
-Route::get('send', 'HomeController@sendNotification')->middleware('auth');
-Route::post('sender', 'HomeController@sendNoti')->middleware('auth');
-
 /*Authentication*//*
 Route::post ('/login','Auth\LoginController@login');
 Route::post('/password/email','ForgotPasswordController@sendResetLinkEmail');
 Route::post('/password/reset','ResetPasswordController@reset');
+
+/*Notification Controller*/
+Route::get('send', 'HomeController@sendNotification')->middleware('auth');
+Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
+Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
+Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
+Route::get('/notificaciones/objetivos-por-nivel','NotificatorController@getGoalsByLevelNotifications')->middleware('auth');
+Route::get('/notificaciones/tareas','NotificatorController@getTasksNotifications')->middleware('auth');
+Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
+Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
+Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
 
 /*Home page*/
 Route::get('/home', 'HomeController@index')->name('home');
@@ -235,11 +260,13 @@ Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
-Route::get('/estructura/lista-funciones-de-usuario/{id}', 'ProjectStructureController@getListOfUserFunctions');
+Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureController@getListOfUserFunctions');
+Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
-Route::get('/usuarios-por-nivel/{level}', 'UserController@getUserByLevelStructure');
+Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
+Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
@@ -248,13 +275,11 @@ Route::any('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
 Route::delete('/usuarios/borrar/{id}', 'UserController@destroy');
-Route::get('/usuarios/buscar', 'UserController@show');
+Route::get('/usuarios/buscar/{id}', 'UserController@show');
 Route::get('/finduser', 'UserController@search');
 Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
-Route::get('/usuario/notificaciones', 'UserController@allNotifications');
-Route::get('/usuario/notificaciones-nuevas', 'UserController@unreadNotifications');
 Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
@@ -366,7 +391,12 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 
 
 /*Manage Task of a project*/
-Route::get('/tareas', 'TaskController@index');
+Route::get('/tareas/{id}', 'TaskController@index');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
+
+Route::get('/tareas-elementos-asociados/{id}', 'QuestionController@index');
+Route::put('/tareas-elementos-asociados/actualizar', 'QuestionController@update');
+Route::post('/tareas-elementos-asociados/guardar', 'QuestionController@store');
+Route::delete('/tareas-elementos-asociados/borrar/{id}', 'QuestionController@destroy');

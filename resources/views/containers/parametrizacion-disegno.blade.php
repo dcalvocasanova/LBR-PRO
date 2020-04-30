@@ -13,6 +13,46 @@
           </div>
           <div class="row">
             @component('components.colorcard')
+              @slot('title') Gestionar parametrización del análisis de cargas de trabajo @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') gestionar-parametros @endslot
+              @slot('icon') fas fa-tags @endslot
+            @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Gestionar parametrización del análisis psicosocial @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') gestionar-parametros @endslot
+              @slot('icon') fas fa-tags @endslot
+            @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Gestionar criterios de evaluación @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') parametrizar-criterios-evaluacion @endslot
+              @slot('icon') fa fa-question @endslot
+            @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Gestionar validaciones @endslot
+              @slot('type') danger @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') gestionar-calendario @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Tiempos de ajuste @endslot
+              @slot('type') warning  @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') parametrizar-tiempos-ajuste @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
+
+            @component('components.colorcard')
               @slot('title') Plantillas @endslot
               @slot('type') info @endslot
               @slot('subtitle') ir @endslot

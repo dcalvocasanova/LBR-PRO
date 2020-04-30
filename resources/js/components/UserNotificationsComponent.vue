@@ -11,7 +11,7 @@
         Centro de notificaciones
       </h6>
       <div v-for="notification in notifications" :key="notification.id">
-        <a class="dropdown-item d-flex align-items-center" href="#">
+        <a class="dropdown-item d-flex align-items-center" href="/notificaciones">
           <div class="mr-3">
             <div class="icon-circle bg-primary">
               <i class="fas fa-file-alt text-white"></i>
@@ -20,11 +20,10 @@
           <div>
             <div class="row">
               <div class="col-11">
-                <div class="small text-gray-500">{{ notification.created_at }}</div>
-                <span class="font-weight-bold">{{ notification.data.message }}</span>
-              </div>
-              <div class="col-1">
-                <span aria-hidden="true">&times;</span>
+                <div class="small text-gray-500">
+                    <time-ago :datetime="notification.created_at" refresh locale="es" long></time-ago>
+                </div>
+                <span class="font-weight-bold">{{ notification.title }}</span>
               </div>
             </div>
           </div>
@@ -36,7 +35,11 @@
 </template>
 
 <script>
+  import TimeAgo from "vue2-timeago";
   export default {
+    components: {
+      TimeAgo
+    },
     props: {
       user: Object
     },
@@ -53,7 +56,7 @@
             me.notifications = response.data; //get current user
         });
       }
-    },    
+    },
     mounted() {
       this.getUserNotifications()
     }

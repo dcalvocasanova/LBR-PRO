@@ -92,9 +92,7 @@
             'Error','Debe seleccionar un usuario a notificar','error'
           )
         }
-
       }
-
     },
     mounted() {
       this.getUsers()

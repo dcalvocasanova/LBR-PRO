@@ -56,7 +56,7 @@ Vue.component('userFunctions', require('./components/users/UserFunctionsStructur
 * All Components related to notifications
 */
 Vue.component('notificatorExample', require('./components/UserNotificatorComponent.vue').default);
-Vue.component('notificatorGoalsChekimg', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
+Vue.component('notificatorGoalsCheking', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
 Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
 
 /*
@@ -87,6 +87,9 @@ Vue.component('projectStructure', require('./components/ProjectStructureComponen
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 Vue.component('tasksVars', require('./components/TaskVarManagerComponent.vue').default);
+
+/*Reports*/
+Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 
 
 
