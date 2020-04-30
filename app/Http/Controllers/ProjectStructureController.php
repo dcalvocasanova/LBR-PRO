@@ -32,7 +32,7 @@ class ProjectStructureController extends Controller
 	{
 		if(isset($children['macroprocess']) and !empty($children['macroprocess']) ){
 		 		for ( $i = 0; $i< count($children['macroprocess']); $i++){
-					array_push($macroprocesos,$children['macroprocess'][$i]['name']);
+					array_push($macroprocesos,$children['name']."-".$children['macroprocess'][$i]['name']);
 				 }
 			}
 

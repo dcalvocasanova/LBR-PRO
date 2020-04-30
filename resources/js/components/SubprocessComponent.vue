@@ -77,7 +77,7 @@
                   <div class="form-group">
                     <label class="bmd-label-floating">Proceso</label>
                     <select v-model="form.process" class=" form-control":class=" { 'is-invalid': form.errors.has('sex') }">
-                      <option v-for="process in Processfile">{{ process.file }} - {{ process.subprocessProduct }}</option>
+                      <option v-for="process in Processfile">{{ process.relatedToLevel }}-{{ process.file }} - {{ process.subprocessProduct }}</option>
                     </select>
                     <has-error :form="form" field="process"></has-error>
                   </div>
@@ -110,25 +110,33 @@
                 	</multiselect>
                   </div>
                 </div>
-				<div class="col-md-4">
+				
+				
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Actividades Sustantivas</label>
-                    <input type="text" v-model="form.activity"  class="form-control":class="{ 'is-invalid': form.errors.has('activity') }">
-                    <has-error :form="form" field="activity"></has-error>
+                    <label class="bmd-label-floating">Actividades sustantivas</label>
+                    <multiselect
+                 		 v-model="Actividades"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Activities"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagActivity" >
+                	</multiselect>
                   </div>
-                </div>
-				<div class="col-md-4">
+                  </div>
+                <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Responsable</label>
                     <input type="text" v-model="form.responsible"  class="form-control":class="{ 'is-invalid': form.errors.has('responsible') }">
                     <has-error :form="form" field="responsible"></has-error>
                   </div>
                 </div>
-              </div>
-
-              <div class="row">
-
-                <div class="col-md-4">
+				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Producto</label>
                     <input type="text" v-model="form.product"  class="form-control":class="{ 'is-invalid': form.errors.has('product') }">
@@ -138,11 +146,21 @@
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Usuarios</label>
-                    <input type="text" v-model="form.user"  class="form-control":class="{ 'is-invalid': form.errors.has('user') }">
-                    <has-error :form="form" field="user"></has-error>
+                    <multiselect
+                 		 v-model="Usuarios"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Users"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagUser" >
+                	</multiselect>
                   </div>
                 </div>
-                <div class="col-md-4">
+              </div>
+<hr/>
+              <div class="row">
+				 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
                     <multiselect
@@ -156,9 +174,6 @@
                 	</multiselect>
                   </div>
                 </div>
-              </div>
-
-              <div class="row">
 			    <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">PHVA</label>
@@ -250,6 +265,7 @@ export default {
     return{
           form: new Form ({
             id:"",//Macroprocesfile ID
+			relatedToLevel:"",
             process:"",
             input:"",
             provider:"",
@@ -261,10 +277,10 @@ export default {
 			phva:"",
 			subclassification:"",
 			indicator:"",
-			project_id:1 //este valor debe ser el current project
+			project_id:2 //este valor debe ser el current project
           }),
           title:"Agregar nueva Ficha", //title to show
-		 project_id:1, //este valor debe ser el current project
+		 project_id:2, //este valor debe ser el current project
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      subprocessFile:"",
           Subprocesos:{}, //BD content
@@ -273,13 +289,16 @@ export default {
           Providers:[],
           Risks:[],
 		  Indicators:[],
-		  PHVA:[],
+		  PHVA:[], Activities:[],
+		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],
           Proveedores:[],
           Riesgos:[],
 		  Indicadores:[],
-		  PHVAs:[]
+		  PHVAs:[],
+		  Actividades: [],
+		  Usuarios:[]
 
       }
   },
@@ -336,6 +355,16 @@ export default {
       const tag = newTag
       this.Indicadores.push(tag)
     },
+	addTagActivity (newTag) {
+      const tag = newTag
+
+      this.Actividades.push(tag)
+    },
+	addTagUser (newTag) {
+      const tag = newTag
+
+      this.Usuarios.push(tag)
+    },
     handleFileUpload(){
         this.file = this.$refs.file.files[0];
     },
@@ -371,11 +400,17 @@ export default {
     saveSubproceso(){
 
       let me =this;
+	   let myResult = [];
+	  myResult = me.form.process.split("-");
+	  me.form.relatedToLevel = myResult[0];
+	  me.form.process = myResult[1];
 	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.phva = JSON.stringify(me.PHVAs)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
+	  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
       this.form.post('/subprocesos/guardar')
       .then(function (response) {
           me.clearFields();

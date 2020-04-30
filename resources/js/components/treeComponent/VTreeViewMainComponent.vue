@@ -21,8 +21,7 @@
 			<button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip" >
             <i class="fas fa-columns">Relacionar objetivos</i>
             </button>
-       </span>
-
+        </span>   
         <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
             <button class="btn btn-primary"
               @click="$emit('create-user-function',item)"
@@ -35,7 +34,7 @@
               @click="$emit('modify-user-function',item)"
               data-toggle="tooltip"
               data-placement="top"
-              title="Agregar nueva función">
+              title="Agregar nueva funciรณn">
               <i class="fas fa-edit"></i>
             </button>
         </span>

@@ -49,7 +49,7 @@ class ProcessController extends Controller
 	
 	public function getProcessFile(Request $request)
     {
-      $macroprocess = Process::select('file','subprocessProduct')->where('project_id', $request->id)->get();
+      $macroprocess = Process::select('relatedToLevel','file','subprocessProduct')->where('project_id', $request->id)->get();
       return $macroprocess;
     }
 

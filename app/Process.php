@@ -32,7 +32,7 @@ class Process extends Model
      * @var array
      */
     protected $fillable = [
-         'file','input', 'provider', 'activity','responsible','subprocessProduct','resultProduct', 'user','risk','phva','subclassification','indicator','project_id'];
+         'relatedToLevel','file','input', 'provider', 'activity','responsible','subprocessProduct','resultProduct', 'user','risk','phva','subclassification','indicator','project_id'];
 
     /**
      * The attributes that should be hidden for arrays.

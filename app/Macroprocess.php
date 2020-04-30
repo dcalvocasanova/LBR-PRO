@@ -32,7 +32,7 @@ class Macroprocess extends Model
      * @var array
      */
     protected $fillable = [
-        'macroprocess', 'input', 'provider', 'activity','responsible', 'process', 'user','risk','indicator','project_id'];
+        'relatedToLevel','macroprocess', 'input', 'provider', 'activity','responsible', 'process', 'user','risk','indicator','project_id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -80,44 +80,6 @@ class Macroprocess extends Model
     protected static function boot()
     {
         parent::boot();
-     /*   static::creating(function ($query) {
-            $query->avatar = $query->avatar ?? 'default.png';
-        });
-        static::creating(function ($query) {
-            $query->type = $query->type ?? 'web';
-        });
-        static::creating(function ($query) {
-            $query->salary = $query->salary ?? '0';
-        });
-        static::creating(function ($query) {
-            $query->position = $query->position ?? 'Usuario de sistema';
-        });
-        static::creating(function ($query) {
-            $query->job = $query->job ?? 'N/A';
-        });
-        static::creating(function ($query) {
-            $query->workingsince = $query->workingsince ?? now();
-        });
-        static::creating(function ($query) {
-            $query->birthday = $query->birthday ?? now();
-        });
-        static::creating(function ($query) {
-            $query->education = $query->education ?? 'N/A';
-        });
-        static::creating(function ($query) {
-            $query->workday = $query->workday ?? '0';
-        });
-        static::creating(function ($query) {
-            $query->gender = $query->gender ?? 'N/A';
-        });
-        static::creating(function ($query) {
-            $query->ethnic = $query->ethnic ?? 'N/A';
-        });
-        static::creating(function ($query) {
-            $query->sex = $query->sex ?? 'N/A';
-        });
-        static::creating(function ($query) {
-            $query->password = $query->password ?? Str::random(15);
-        });*/
+     
     }
 }
