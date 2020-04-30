@@ -68,7 +68,7 @@
       <span> Parametrización</span>
     </a>
     <div id="collapseParameters" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">        
+      <div class="bg-white py-2 collapse-inner rounded">
         @if(@Auth::user()->can('CRUD_parameters'))
           <h6 class="collapse-header">Parametrización: catálogos </h6>
           <a class="collapse-item" href="/gestionador-parametrizacion-catalogos">Gestionar</a>
@@ -83,35 +83,38 @@
   </li>
   @endif
   {{-- Nav Item - Users Collapse Menu--}}
-
+  @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseUtilities">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMeasures" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
-      <span  style="color:red;"> Ejemplos de ¡AYUDA! </span>
+      <span> Medición</span>
     </a>
-    <div id="collapseHelp" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+    <div id="collapseMeasures" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
-        <a class="collapse-item" href="/ayuda">Ver</a>
+        @if(@Auth::user()->can('CRUD_tasks'))
+          <h6 class="collapse-header">Medición: Análisis </h6>
+          <a class="collapse-item" href="/medicion-analisis">Gestionar</a>
+        @endif
+        @if(@Auth::user()->can('CRUD_tasks'))
+          <h6 class="collapse-header">Medición: Instrumentos </h6>
+          <a class="collapse-item" href="#">Gestionar</a>
+        @endif
+
       </div>
     </div>
   </li>
-
+  @endif
   {{-- Nav Item - Users Collapse Menu--}}
-
+  @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNot" aria-expanded="true" aria-controls="collapseUtilities">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
-      <span  style="color:red;"> Ejemplos de Notificación </span>
+      <span> Reportes</span>
     </a>
-    <div id="collapseNot" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        {{-- <h6 class="collapse-header"> Opciones:</h6> --}}
-        <a class="collapse-item" href="/notificador">Ver</a>
-      </div>
-    </div>
+
   </li>
 
+  @endif
 
   {{-- Divider--}}
   <hr class="sidebar-divider">

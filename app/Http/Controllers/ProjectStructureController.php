@@ -28,8 +28,7 @@ class ProjectStructureController extends Controller
   		return ($macroprocesos);
     }
 
-	//funci'on recursiva para recuperar los macroprocesos
-	function hasChildren($children,&$macroprocesos)
+		function hasChildren($children,&$macroprocesos)
 	{
 		if(isset($children['macroprocess']) and !empty($children['macroprocess']) ){
 		 		for ( $i = 0; $i< count($children['macroprocess']); $i++){
@@ -135,8 +134,8 @@ class ProjectStructureController extends Controller
    {
       $listOfUserFunctions = array();
       $levels = ProjectStructure::where('project_id', $request->id)->first();
-      $LevelsObjet = json_decode($levels->levels,true);
-      $this->getUserFunctionsR($LevelsObjet,$listOfUserFunctions);
+      $LevelsObject = json_decode($levels->levels,true);
+      $this->getUserFunctionsR($LevelsObject,$listOfUserFunctions);
       return ($listOfUserFunctions);
     }
 

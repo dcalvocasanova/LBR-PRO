@@ -5979,6 +5979,14 @@ __webpack_require__.r(__webpack_exports__);
         _this2.Products = response.data; //get all projects from page.
       });
     },
+    getTasks: function getTasks() {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var me = this;
+      me.clearFields();
+      axios.get('/tareas/' + this.currentProject).then(function (response) {
+        me.Tasks = response.data;
+      });
+    },
     setProject: function setProject() {
       var me = this;
       me.selectingProjectToAddTasks = false;
@@ -6081,14 +6089,6 @@ __webpack_require__.r(__webpack_exports__);
 
           _this3.getTasks();
         }
-      });
-    },
-    getTasks: function getTasks() {
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var me = this;
-      me.clearFields();
-      axios.get('/tareas').then(function (response) {
-        me.Tasks = response.data;
       });
     },
     clearFields: function clearFields() {
@@ -6212,6 +6212,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -6220,12 +6235,15 @@ __webpack_require__.r(__webpack_exports__);
         name: "",
         type: ""
       }),
+      selectingProjectToAddTasks: true,
+      currentProject: 0,
       showDetails: false,
       title: "Agregar nueva categoría de parámetro ",
       //title to show
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       showVariable: 0,
+      Projects: {},
       AddedValue: {},
       Correlation: {},
       Risk: {},
@@ -6233,22 +6251,28 @@ __webpack_require__.r(__webpack_exports__);
       OrganizationalSkills: {},
       SpecificSkills: {},
       TecnicalSkills: {},
-      Tasks: [{
-        id: 1,
-        name: "tarea 1",
-        inventory: 5
-      }, {
-        id: 2,
-        name: "tarea 2",
-        inventory: 10
-      }, {
-        id: 3,
-        name: "tarea 3",
-        inventory: 2
-      }]
+      Tasks: {}
     };
   },
   methods: {
+    getProjects: function getProjects() {
+      var me = this;
+      axios.get('/todos-los-proyectos').then(function (response) {
+        me.Projects = response.data; //get all projects from page
+      });
+    },
+    getTasks: function getTasks() {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var me = this;
+      axios.get('/tareas/' + this.currentProject).then(function (response) {
+        me.Tasks = response.data;
+      });
+    },
+    setProject: function setProject() {
+      var me = this;
+      me.selectingProjectToAddTasks = false;
+      me.getTasks();
+    },
     detalle: function detalle() {
       swal.fire('Por el momento no tenemos Macroprocesos registrados', '¡Muy pronto tendremos la funcionalidad implementada!', 'warning');
     },
@@ -6303,6 +6327,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    this.getProjects();
     this.LoadCatalogAddedValued();
     this.LoadCatalogCorrelation();
     this.LoadCatalogRisk();
@@ -58439,239 +58464,323 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-plain" }, [
-          _c("div", { staticClass: "card-header card-header-primary" }, [
+    this.selectingProjectToAddTasks === true
+      ? _c("div", { staticClass: "row h-100" }, [
+          _c("div", { staticClass: "card card-plain col-12" }, [
             _vm._m(0),
             _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "col-md-4",
-                attrs: {
-                  "data-toggle": "tooltip",
-                  "data-placement": "bottom",
-                  title: "Agregar nueva variable"
-                }
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    on: { click: _vm.detalle }
-                  },
-                  [_c("i", { staticClass: "fa fa-plus-circle" })]
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body card-body-fitted " }, [
-            _c("div", { staticClass: "col-md-12" }, [
-              _c("table", { staticClass: "table table-hover" }, [
-                _vm._m(1),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c("br"),
                 _vm._v(" "),
                 _c(
-                  "tbody",
-                  _vm._l(_vm.Tasks, function(task) {
-                    return _c("tr", { key: task.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(task.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "btn-group",
-                            attrs: { role: "group" }
-                          },
-                          [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger dropdown-toggle",
-                                attrs: {
-                                  id: "btnGroupDropWorkTypeSPECIFIC",
-                                  type: "button",
-                                  "data-toggle": "dropdown",
-                                  "aria-haspopup": "true",
-                                  "aria-expanded": "false"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                          Espefíca\n                        "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "dropdown-menu",
-                                attrs: {
-                                  "aria-labelledby":
-                                    "btnGroupDropWorkTypeSPECIFIC"
-                                }
-                              },
-                              _vm._l(_vm.SpecificSkills, function(wt) {
-                                return _c("div", { key: wt.id }, [
-                                  _c("a", {
-                                    staticClass: "dropdown-item",
-                                    attrs: { href: "#" },
-                                    domProps: { textContent: _vm._s(wt.name) }
-                                  })
-                                ])
-                              }),
-                              0
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "btn-group",
-                            attrs: { role: "group" }
-                          },
-                          [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger dropdown-toggle",
-                                attrs: {
-                                  id: "btnGroupDropWorkTypeORGANIZACIONAL",
-                                  type: "button",
-                                  "data-toggle": "dropdown",
-                                  "aria-haspopup": "true",
-                                  "aria-expanded": "false"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                          Organizacional\n                        "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "dropdown-menu",
-                                attrs: {
-                                  "aria-labelledby":
-                                    "btnGroupDropWorkTypeORGANIZACIONAL"
-                                }
-                              },
-                              _vm._l(_vm.OrganizationalSkills, function(wt) {
-                                return _c("div", { key: wt.id }, [
-                                  _c("a", {
-                                    staticClass: "dropdown-item",
-                                    attrs: { href: "#" },
-                                    domProps: { textContent: _vm._s(wt.name) }
-                                  })
-                                ])
-                              }),
-                              0
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "btn-group",
-                            attrs: { role: "group" }
-                          },
-                          [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger dropdown-toggle",
-                                attrs: {
-                                  id: "btnGroupDropWorkTypeTECNICAL",
-                                  type: "button",
-                                  "data-toggle": "dropdown",
-                                  "aria-haspopup": "true",
-                                  "aria-expanded": "false"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                          Ténica\n                        "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "dropdown-menu",
-                                attrs: {
-                                  "aria-labelledby":
-                                    "btnGroupDropWorkTypeTECNICAL"
-                                }
-                              },
-                              _vm._l(_vm.TecnicalSkills, function(wt) {
-                                return _c("div", { key: wt.id }, [
-                                  _c("a", {
-                                    staticClass: "dropdown-item",
-                                    attrs: { href: "#" },
-                                    domProps: { textContent: _vm._s(wt.name) }
-                                  })
-                                ])
-                              }),
-                              0
-                            )
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "select",
-                          { staticClass: "form-control" },
-                          _vm._l(_vm.Risk, function(p) {
-                            return _c("option", { domProps: { value: p.id } }, [
-                              _vm._v(_vm._s(p.name))
-                            ])
-                          }),
-                          0
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "select",
-                          { staticClass: "form-control" },
-                          _vm._l(_vm.RiskCondition, function(p) {
-                            return _c("option", { domProps: { value: p.id } }, [
-                              _vm._v(_vm._s(p.name))
-                            ])
-                          }),
-                          0
-                        )
-                      ])
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.currentProject,
+                        expression: "currentProject"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.currentProject = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.setProject()
+                        }
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.Projects, function(p) {
+                    return _c("option", { domProps: { value: p.id } }, [
+                      _vm._v(_vm._s(p.name))
                     ])
                   }),
                   0
                 )
               ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-footer" })
+            ])
+          ])
         ])
-      ])
-    ])
+      : _vm._e(),
+    _vm._v(" "),
+    this.selectingProjectToAddTasks === false
+      ? _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "card card-plain" }, [
+              _c("div", { staticClass: "card-header card-header-primary" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "col-md-4",
+                    attrs: {
+                      "data-toggle": "tooltip",
+                      "data-placement": "bottom",
+                      title: "Agregar nueva variable"
+                    }
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: { click: _vm.detalle }
+                      },
+                      [_c("i", { staticClass: "fa fa-plus-circle" })]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body card-body-fitted " }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.Tasks.data, function(task) {
+                        return _c("tr", { key: task.id }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(task.name) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "btn-group",
+                                attrs: { role: "group" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-danger dropdown-toggle",
+                                    attrs: {
+                                      id: "btnGroupDropWorkTypeSPECIFIC",
+                                      type: "button",
+                                      "data-toggle": "dropdown",
+                                      "aria-haspopup": "true",
+                                      "aria-expanded": "false"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                          Espefíca\n                        "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "dropdown-menu",
+                                    attrs: {
+                                      "aria-labelledby":
+                                        "btnGroupDropWorkTypeSPECIFIC"
+                                    }
+                                  },
+                                  _vm._l(_vm.SpecificSkills, function(wt) {
+                                    return _c("div", { key: wt.id }, [
+                                      _c("a", {
+                                        staticClass: "dropdown-item",
+                                        attrs: { href: "#" },
+                                        domProps: {
+                                          textContent: _vm._s(wt.name)
+                                        }
+                                      })
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "btn-group",
+                                attrs: { role: "group" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-danger dropdown-toggle",
+                                    attrs: {
+                                      id: "btnGroupDropWorkTypeORGANIZACIONAL",
+                                      type: "button",
+                                      "data-toggle": "dropdown",
+                                      "aria-haspopup": "true",
+                                      "aria-expanded": "false"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                          Organizacional\n                        "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "dropdown-menu",
+                                    attrs: {
+                                      "aria-labelledby":
+                                        "btnGroupDropWorkTypeORGANIZACIONAL"
+                                    }
+                                  },
+                                  _vm._l(_vm.OrganizationalSkills, function(
+                                    wt
+                                  ) {
+                                    return _c("div", { key: wt.id }, [
+                                      _c("a", {
+                                        staticClass: "dropdown-item",
+                                        attrs: { href: "#" },
+                                        domProps: {
+                                          textContent: _vm._s(wt.name)
+                                        }
+                                      })
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "btn-group",
+                                attrs: { role: "group" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-danger dropdown-toggle",
+                                    attrs: {
+                                      id: "btnGroupDropWorkTypeTECNICAL",
+                                      type: "button",
+                                      "data-toggle": "dropdown",
+                                      "aria-haspopup": "true",
+                                      "aria-expanded": "false"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                          Ténica\n                        "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "dropdown-menu",
+                                    attrs: {
+                                      "aria-labelledby":
+                                        "btnGroupDropWorkTypeTECNICAL"
+                                    }
+                                  },
+                                  _vm._l(_vm.TecnicalSkills, function(wt) {
+                                    return _c("div", { key: wt.id }, [
+                                      _c("a", {
+                                        staticClass: "dropdown-item",
+                                        attrs: { href: "#" },
+                                        domProps: {
+                                          textContent: _vm._s(wt.name)
+                                        }
+                                      })
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "select",
+                              { staticClass: "form-control" },
+                              _vm._l(_vm.Risk, function(p) {
+                                return _c(
+                                  "option",
+                                  { domProps: { value: p.id } },
+                                  [_vm._v(_vm._s(p.name))]
+                                )
+                              }),
+                              0
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "select",
+                              { staticClass: "form-control" },
+                              _vm._l(_vm.RiskCondition, function(p) {
+                                return _c(
+                                  "option",
+                                  { domProps: { value: p.id } },
+                                  [_vm._v(_vm._s(p.name))]
+                                )
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6" })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-footer" })
+            ])
+          ])
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary " }, [
+      _c("h4", { staticClass: "card-title mt-0 " }, [
+        _vm._v(
+          " Seleccione el proyecto donde se gestionaran las tareas y procedimientos asociados"
+        )
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

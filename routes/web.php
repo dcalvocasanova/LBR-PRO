@@ -21,6 +21,12 @@ Route::get('/', function () {
 Route::get('/gestionar-variables-del-sistema', function () {
     return view('containers.organizadorTareasDelSistema');
 })->middleware('permission:CRUD_users|CRUD_catalogs');
+/*
+* Grant access only for users with CRUD_users permission
+*/
+Route::get('/medicion-analisis', function () {
+    return view('containers.medicion-analisis');
+})->middleware('permission:CRUD_tasks|CRUD_catalogs');
 
 /*
 * Grant access only for users with CRUD_users permission
@@ -109,6 +115,12 @@ Route::get('/gestionar-catalogos-tareas', function () {
 */
 Route::get('/gestionar-tareas', function () {
     return view('taskManager.tareas');
+})->middleware('permission:CRUD_tasks');
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas-variables-adicionales', function () {
+    return view('taskManager.tareas-variables-asociadas');
 })->middleware('permission:CRUD_tasks');
 
 /*
@@ -248,7 +260,7 @@ Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
-Route::get('/estructura/lista-funciones-de-usuario/{id}', 'ProjectStructureController@getListOfUserFunctions');
+Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureController@getListOfUserFunctions');
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
@@ -379,7 +391,12 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 
 
 /*Manage Task of a project*/
-Route::get('/tareas', 'TaskController@index');
+Route::get('/tareas/{id}', 'TaskController@index');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
+
+Route::get('/tareas-elementos-asociados/{id}', 'QuestionController@index');
+Route::put('/tareas-elementos-asociados/actualizar', 'QuestionController@update');
+Route::post('/tareas-elementos-asociados/guardar', 'QuestionController@store');
+Route::delete('/tareas-elementos-asociados/borrar/{id}', 'QuestionController@destroy');

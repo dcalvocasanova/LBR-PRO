@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Task;
+use App\TaskDetail;
 use Illuminate\Http\Request;
-use App\Http\Requests\TaskRequest;
 
-class TaskController extends Controller
+class TaskDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +14,18 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-      $tasks = Task::where('id_project',$request->id)->latest()->paginate(5);
-      return $tasks;
-    }
-
+      $taskDetails = TaskDetail::where('task_id',$request->task)->get();
+      return $taskDetails;
+    }  
     /**
      * Store a newly created resource in storage.
      *
-     * @param  TaskRequest
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(Request $request)
     {
-        $Task = Task::create($request->all());
+        $taskDetails = TaskDetail::create($request->all());
     }
 
     /**
@@ -38,20 +36,21 @@ class TaskController extends Controller
      */
     public function show(Request $request)
     {
-      $Task = Task::findOrFail($request->id);
-      return $Task;
+      $taskDetails = TaskDetail::findOrFail($request->id);
+      return $taskDetails;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  TaskRequest
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\TaskDetail  $taskDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(TaskRequest $request)
+    public function update(Request $request)
     {
-      $Task = Task::findOrFail($request->id);
-      $Task->update($request->all());
+      $taskDetails = TaskDetail::findOrFail($request->id);
+      $taskDetails->update($request->all());
     }
 
     /**
@@ -62,6 +61,6 @@ class TaskController extends Controller
      */
     public function destroy(Request $request)
     {
-        $Task = Task::destroy($request->id);
+          $taskDetails = TaskDetail::destroy($request->id);
     }
 }
