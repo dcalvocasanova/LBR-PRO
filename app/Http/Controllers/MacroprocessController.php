@@ -49,7 +49,7 @@ class MacroprocessController extends Controller
 	
 	public function getMacroprocessFile(Request $request)
     {
-      $macroprocess = Macroprocess::select('macroprocess','process')->where('project_id', $request->id)->get();
+      $macroprocess = Macroprocess::select('relatedToLevel','macroprocess','process')->where('project_id', $request->id)->get();
       return $macroprocess;
     }
 

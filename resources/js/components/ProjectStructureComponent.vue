@@ -135,6 +135,12 @@
       										  <th>Seleccione los objetivos asociados</th>
       										</tr>
                       </thead>
+							  <tbody>
+      										<tr v-for="goal in currentNode.goals" :key="goal.pos" >
+												<td><input v-model=Macroprocessgoals type="checkbox" :name="goal.pos" :value="goal.pos"> {{goal.name}}</td>
+      										</tr>
+    								  </tbody>
+							  
     								  <tbody>
       										<tr v-for="(macro, index) in currentNode.macroprocess" :key="macro.pos">
    											 <input v-model="macro.name" :key="index">
@@ -435,6 +441,7 @@
 			 
               me.level.id= response.data.id;
               me.level.project_id=response.data.project_id;
+			 
           })
           .catch(function (error) {
               console.log(error);

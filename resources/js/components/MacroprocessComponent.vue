@@ -77,42 +77,73 @@
                     <has-error :form="form" field="macroprocess"></has-error>
                   </div>
                 </div>
-                <div class="col-md-4">
+               <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Entradas</label>
-                    <select v-model="form.input" class=" form-control":class=" { 'is-invalid': form.errors.has('input') }">
-                      <option v-for="input in Inputs">{{ input.name }}</option>
-                    </select>
-                    <has-error :form="form" field="input"></has-error>
+					<multiselect
+                 		 v-model="Entradas"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Inputs"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagInput" >
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Provedores</label>
-                    <select v-model="form.provider" class=" form-control":class=" { 'is-invalid': form.errors.has('provider') }">
-                      <option v-for="provider in Providers">{{ provider.name }}</option>
-                    </select>
-                    <has-error :form="form" field="provider"></has-error>
+                    <multiselect
+                 		 v-model="Proveedores"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Providers"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagProvider" >
+                	</multiselect>
                   </div>
                 </div>
               </div>
-
+				
               <div class="row">
-                <div class="col-md-4">
+				 <div class="col-md-4">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Actividades Sustantivas</label>
-                    <input type="text" v-model="form.activity"  class="form-control":class="{ 'is-invalid': form.errors.has('activity') }">
-                    <has-error :form="form" field="activity"></has-error>
+                    <label class="bmd-label-floating">Usuarios</label>
+                    <multiselect
+                 		 v-model="Usuarios"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Users"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagUser" >
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Actividades sustantivas</label>
+                    <multiselect
+                 		 v-model="Actividades"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Activities"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagActivity" >
+                	</multiselect>
+                  </div>
+                  </div>
+                <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Responsable</label>
                     <input type="text" v-model="form.responsible"  class="form-control":class="{ 'is-invalid': form.errors.has('responsible') }">
                     <has-error :form="form" field="responsible"></has-error>
                   </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Proceso</label>
                     <input type="text" v-model="form.process"  class="form-control":class="{ 'is-invalid': form.errors.has('process') }">
@@ -120,31 +151,35 @@
                   </div>
                 </div>
               </div>
-
+<hr/>
               <div class="row">
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Usuarios</label>
-                    <input type="text" v-model="form.user"  class="form-control":class="{ 'is-invalid': form.errors.has('user') }">
-                    <has-error :form="form" field="user"></has-error>
-                  </div>
-                </div>
+               
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
-                    <select v-model="form.risk" class=" form-control":class=" { 'is-invalid': form.errors.has('risk') }">
-                      <option v-for="risk in Risks">{{ risk.name }}</option>
-                    </select>
-                    <has-error :form="form" field="risk"></has-error>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Indicadores</label>
-                    <select v-model="form.indicator" class=" form-control":class=" { 'is-invalid': form.errors.has('indicator') }">
-                      <option v-for="indicator in Indicators">{{ indicator.name }}</option>
-                    </select>
-                    <has-error :form="form" field="indicator"></has-error>
+                   <multiselect
+                 		 v-model="Indicadores"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Indicators"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagIndicator" >
+                	</multiselect>
                   </div>
                 </div>
               </div>
@@ -199,6 +234,9 @@
 
 <script>
 export default {
+	 components: {
+      Multiselect
+    },
   props: {
      showDeleteAndUpdateButton: Number,
 
@@ -211,6 +249,7 @@ export default {
     return{
           form: new Form ({
             id:"",//Macroprocesfile ID
+			relatedToLevel:"",
             macroprocess:"",
             input:"",
             provider:"",
@@ -220,7 +259,7 @@ export default {
 			user:"",
 			risk:"",
 			indicator:"",
-			project_id:0 //este valor debe ser el current project
+			project_id:2 //este valor debe ser el current project
 
 
           }),
@@ -229,7 +268,7 @@ export default {
           levels:"",
           project_id:""
         }),
-		  project_id:1,//este valor debe ser el current project
+		  project_id:2,//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -238,10 +277,20 @@ export default {
 		  Levels: {},
 		 //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
 		  Macroprocesses:[],
-          Inputs:{},
-          Providers:{},
-          Risks:{},
-		  Indicators:{}
+           Inputs:[],
+          Providers:[],
+          Risks:[],
+		  Indicators:[],
+		 Activities:[],
+		  Users:[],
+		  //arreglos temporales
+		  Entradas:[],
+          Proveedores:[],
+          Riesgos:[],
+		  Indicadores:[],
+		  Actividades: [],
+		  Usuarios:[]
+		
 
       }
   },
@@ -254,7 +303,35 @@ export default {
 				.then(function(response){console.log(response)})
 				.catch(function(response){console.log(response)})
 			;
-		},
+		},addTagInput (newTag) {
+      const tag = newTag
+
+      this.Entradas.push(tag)
+    },
+	addTagProvider (newTag) {
+      const tag = newTag
+
+      this.Proveedores.push(tag)
+    },
+	addTagRisk (newTag) {
+      const tag = newTag
+
+      this.Riesgos.push(tag)
+    },
+	addTagIndicator (newTag) {
+      const tag = newTag
+
+      this.Indicadores.push(tag)
+    },addTagActivity (newTag) {
+      const tag = newTag
+
+      this.Actividades.push(tag)
+    },
+	addTagUser (newTag) {
+      const tag = newTag
+
+      this.Usuarios.push(tag)
+    },
 		EventSubir(f){
           let me =this;
           me.macroprocessFile = f.target.files[0];
@@ -303,6 +380,16 @@ export default {
 
     saveMacroproceso(){
       let me =this;
+	  let myResult = [];
+	  myResult = me.form.macroprocess.split("-");
+	  me.form.relatedToLevel = myResult[0];
+	  me.form.macroprocess = myResult[1];
+	  me.form.input = JSON.stringify(me.Entradas)
+	  me.form.provider = JSON.stringify(me.Proveedores)
+	  me.form.risk = JSON.stringify(me.Riesgos)
+	  me.form.indicator = JSON.stringify(me.Indicadores)
+		  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
       this.form.post('/macroprocesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -377,25 +464,42 @@ export default {
     LoadCatalogInput() {
       axios.get('catalogo?id=INPUT')
       .then(response => {
-            this.Inputs = response.data; //get all catalogs from category selected
+            //this.Inputs = response.data; //get all catalogs from category selected
+		    let inputs = response.data;
+		    for (let i =0; i<1;i++){
+
+				 this.Inputs.push(inputs[i].name);
+			}
       });
     },
     LoadCatalogProvider() {
       axios.get('catalogo?id=PROVIDER')
       .then(response => {
-            this.Providers = response.data; //get all catalogs from category selected
+            let inputs = response.data;
+		    for (let i =0; i<1;i++){
+
+				 this.Providers.push(inputs[i].name);
+			}
       });
     },
     LoadCatalogRisk() {
       axios.get('catalogo?id=RISK')
       .then(response => {
-            this.Risks = response.data; //get all catalogs from category selected
+            let inputs = response.data;
+		    for (let i =0; i<1;i++){
+
+				 this.Risks.push(inputs[i].name);
+			}
       });
     },
 	LoadCatalogIndicator() {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
-            this.Indicators = response.data; //get all catalogs from category selected
+            let inputs = response.data;
+		    for (let i =0; i<1;i++){
+
+				 this.Indicators.push(inputs[i].name);
+			}
       });
     },
 	getLevels(){

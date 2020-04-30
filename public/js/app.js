@@ -2461,7 +2461,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Multiselect: Multiselect
+  },
   props: {
     showDeleteAndUpdateButton: Number,
     Node: Object,
@@ -2473,6 +2511,7 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
+        relatedToLevel: "",
         macroprocess: "",
         input: "",
         provider: "",
@@ -2482,7 +2521,7 @@ __webpack_require__.r(__webpack_exports__);
         user: "",
         risk: "",
         indicator: "",
-        project_id: 0 //este valor debe ser el current project
+        project_id: 2 //este valor debe ser el current project
 
       }),
       level: new Form({
@@ -2491,7 +2530,7 @@ __webpack_require__.r(__webpack_exports__);
         levels: "",
         project_id: ""
       }),
-      project_id: 1,
+      project_id: 2,
       //este valor debe ser el current project
       //Levels:{}, //All registered projects
       title: "Agregar nueva Ficha",
@@ -2504,10 +2543,19 @@ __webpack_require__.r(__webpack_exports__);
       Levels: {},
       //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
       Macroprocesses: [],
-      Inputs: {},
-      Providers: {},
-      Risks: {},
-      Indicators: {}
+      Inputs: [],
+      Providers: [],
+      Risks: [],
+      Indicators: [],
+      Activities: [],
+      Users: [],
+      //arreglos temporales
+      Entradas: [],
+      Proveedores: [],
+      Riesgos: [],
+      Indicadores: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -2522,6 +2570,30 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (response) {
         console.log(response);
       });
+    },
+    addTagInput: function addTagInput(newTag) {
+      var tag = newTag;
+      this.Entradas.push(tag);
+    },
+    addTagProvider: function addTagProvider(newTag) {
+      var tag = newTag;
+      this.Proveedores.push(tag);
+    },
+    addTagRisk: function addTagRisk(newTag) {
+      var tag = newTag;
+      this.Riesgos.push(tag);
+    },
+    addTagIndicator: function addTagIndicator(newTag) {
+      var tag = newTag;
+      this.Indicadores.push(tag);
+    },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
     },
     EventSubir: function EventSubir(f) {
       var me = this;
@@ -2568,6 +2640,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveMacroproceso: function saveMacroproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.macroprocess.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.macroprocess = myResult[1];
+      me.form.input = JSON.stringify(me.Entradas);
+      me.form.provider = JSON.stringify(me.Proveedores);
+      me.form.risk = JSON.stringify(me.Riesgos);
+      me.form.indicator = JSON.stringify(me.Indicadores);
+      me.form.user = JSON.stringify(me.Usuarios);
+      me.form.activity = JSON.stringify(me.Actividades);
       this.form.post('/macroprocesos/guardar').then(function (response) {
         me.clearFields();
         me.getMacroprocesos(); // show all macroprocesss
@@ -2632,28 +2714,45 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('catalogo?id=INPUT').then(function (response) {
-        _this.Inputs = response.data; //get all catalogs from category selected
+        //this.Inputs = response.data; //get all catalogs from category selected
+        var inputs = response.data;
+
+        for (var i = 0; i < 1; i++) {
+          _this.Inputs.push(inputs[i].name);
+        }
       });
     },
     LoadCatalogProvider: function LoadCatalogProvider() {
       var _this2 = this;
 
       axios.get('catalogo?id=PROVIDER').then(function (response) {
-        _this2.Providers = response.data; //get all catalogs from category selected
+        var inputs = response.data;
+
+        for (var i = 0; i < 1; i++) {
+          _this2.Providers.push(inputs[i].name);
+        }
       });
     },
     LoadCatalogRisk: function LoadCatalogRisk() {
       var _this3 = this;
 
       axios.get('catalogo?id=RISK').then(function (response) {
-        _this3.Risks = response.data; //get all catalogs from category selected
+        var inputs = response.data;
+
+        for (var i = 0; i < 1; i++) {
+          _this3.Risks.push(inputs[i].name);
+        }
       });
     },
     LoadCatalogIndicator: function LoadCatalogIndicator() {
       var _this4 = this;
 
       axios.get('catalogo?id=INDICATOR').then(function (response) {
-        _this4.Indicators = response.data; //get all catalogs from category selected
+        var inputs = response.data;
+
+        for (var i = 0; i < 1; i++) {
+          _this4.Indicators.push(inputs[i].name);
+        }
       });
     },
     getLevels: function getLevels() {
@@ -3213,6 +3312,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -3225,7 +3336,8 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
-        project_id: 1,
+        relatedToLevel: "",
+        project_id: 2,
         //este valor debe ser el current project
         file: "",
         input: "",
@@ -3240,7 +3352,7 @@ __webpack_require__.r(__webpack_exports__);
         subclassification: "",
         indicator: ""
       }),
-      project_id: 0,
+      project_id: 2,
       //este valor debe ser el current project
       title: "Agregar nueva Ficha",
       //title to show
@@ -3261,12 +3373,16 @@ __webpack_require__.r(__webpack_exports__);
       Risks: [],
       Indicators: [],
       PHVA: [],
+      Activities: [],
+      Users: [],
       //arreglos temporales
       Entradas: [],
       Proveedores: [],
       Riesgos: [],
       Indicadores: [],
-      PHVAs: []
+      PHVAs: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -3301,6 +3417,14 @@ __webpack_require__.r(__webpack_exports__);
     addTagIndicator: function addTagIndicator(newTag) {
       var tag = newTag;
       this.Indicadores.push(tag);
+    },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
     },
     EventSubir: function EventSubir(f) {
       var me = this;
@@ -3356,11 +3480,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveMacroproceso: function saveMacroproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.file.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.file = myResult[1];
       me.form.input = JSON.stringify(me.Entradas);
       me.form.provider = JSON.stringify(me.Proveedores);
       me.form.risk = JSON.stringify(me.Riesgos);
       me.form.phva = JSON.stringify(me.PHVAs);
       me.form.indicator = JSON.stringify(me.Indicadores);
+      me.form.user = JSON.stringify(me.Usuarios);
+      me.form.activity = JSON.stringify(me.Actividades);
       this.form.post('/procesos/guardar').then(function (response) {
         me.clearFields();
         me.getProcesos(); // show all processs
@@ -4108,6 +4238,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5459,6 +5595,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -5471,6 +5622,7 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
+        relatedToLevel: "",
         process: "",
         input: "",
         provider: "",
@@ -5482,12 +5634,12 @@ __webpack_require__.r(__webpack_exports__);
         phva: "",
         subclassification: "",
         indicator: "",
-        project_id: 1 //este valor debe ser el current project
+        project_id: 2 //este valor debe ser el current project
 
       }),
       title: "Agregar nueva Ficha",
       //title to show
-      project_id: 1,
+      project_id: 2,
       //este valor debe ser el current project
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -5500,12 +5652,16 @@ __webpack_require__.r(__webpack_exports__);
       Risks: [],
       Indicators: [],
       PHVA: [],
+      Activities: [],
+      Users: [],
       //arreglos temporales
       Entradas: [],
       Proveedores: [],
       Riesgos: [],
       Indicadores: [],
-      PHVAs: []
+      PHVAs: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -5561,6 +5717,14 @@ __webpack_require__.r(__webpack_exports__);
       var tag = newTag;
       this.Indicadores.push(tag);
     },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
+    },
     handleFileUpload: function handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
@@ -5595,11 +5759,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveSubproceso: function saveSubproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.process.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.process = myResult[1];
       me.form.input = JSON.stringify(me.Entradas);
       me.form.provider = JSON.stringify(me.Proveedores);
       me.form.risk = JSON.stringify(me.Riesgos);
       me.form.phva = JSON.stringify(me.PHVAs);
       me.form.indicator = JSON.stringify(me.Indicadores);
+      me.form.user = JSON.stringify(me.Usuarios);
+      me.form.activity = JSON.stringify(me.Actividades);
       this.form.post('/subprocesos/guardar').then(function (response) {
         me.clearFields();
         me.getSubprocesos(); // show all subprocesss
@@ -10071,6 +10241,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -52086,47 +52257,22 @@ var render = function() {
                       _vm._v("Entradas")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.input,
-                            expression: "form.input"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("input") },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "input",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Inputs,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Inputs, function(input) {
-                        return _c("option", [_vm._v(_vm._s(input.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "input" }
+                      on: { tag: _vm.addTagInput },
+                      model: {
+                        value: _vm.Entradas,
+                        callback: function($$v) {
+                          _vm.Entradas = $$v
+                        },
+                        expression: "Entradas"
+                      }
                     })
                   ],
                   1
@@ -52142,49 +52288,22 @@ var render = function() {
                       _vm._v("Provedores")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.provider,
-                            expression: "form.provider"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has("provider")
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "provider",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Providers,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Providers, function(provider) {
-                        return _c("option", [_vm._v(_vm._s(provider.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "provider" }
+                      on: { tag: _vm.addTagProvider },
+                      model: {
+                        value: _vm.Proveedores,
+                        callback: function($$v) {
+                          _vm.Proveedores = $$v
+                        },
+                        expression: "Proveedores"
+                      }
                     })
                   ],
                   1
@@ -52199,34 +52318,25 @@ var render = function() {
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Users,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagUser },
+                      model: {
+                        value: _vm.Usuarios,
+                        callback: function($$v) {
+                          _vm.Usuarios = $$v
+                        },
+                        expression: "Usuarios"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
@@ -52234,6 +52344,37 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Actividades sustantivas")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -52275,7 +52416,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -52316,47 +52457,9 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Usuarios")
-                    ]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -52366,47 +52469,22 @@ var render = function() {
                       _vm._v("Riesgos Asociados")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.risk,
-                            expression: "form.risk"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("risk") },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "risk",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Risks, function(risk) {
-                        return _c("option", [_vm._v(_vm._s(risk.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "risk" }
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
                     })
                   ],
                   1
@@ -52422,49 +52500,22 @@ var render = function() {
                       _vm._v("Indicadores")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.indicator,
-                            expression: "form.indicator"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has("indicator")
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "indicator",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Indicators,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Indicators, function(indicator) {
-                        return _c("option", [_vm._v(_vm._s(indicator.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "indicator" }
+                      on: { tag: _vm.addTagIndicator },
+                      model: {
+                        value: _vm.Indicadores,
+                        callback: function($$v) {
+                          _vm.Indicadores = $$v
+                        },
+                        expression: "Indicadores"
+                      }
                     })
                   ],
                   1
@@ -53294,7 +53345,7 @@ var render = function() {
                           }
                         ],
                         staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("sex") },
+                        class: { "is-invalid": _vm.form.errors.has("file") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -53318,8 +53369,10 @@ var render = function() {
                       _vm._l(_vm.Macroprocessfile, function(file) {
                         return _c("option", [
                           _vm._v(
-                            _vm._s(file.macroprocess) +
-                              " - " +
+                            _vm._s(file.relatedToLevel) +
+                              "-" +
+                              _vm._s(file.macroprocess) +
+                              "-" +
                               _vm._s(file.process)
                           )
                         ])
@@ -53405,34 +53458,25 @@ var render = function() {
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Actividades sustantivas")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
@@ -53596,94 +53640,21 @@ var render = function() {
                       _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Riesgos Asociados")
-                    ]),
-                    _vm._v(" "),
                     _c("multiselect", {
                       attrs: {
                         placeholder: "Seleccione o escriba una opción",
-                        options: _vm.Risks,
+                        options: _vm.Users,
                         multiple: true,
                         taggable: true,
                         "show-labels": false
                       },
-                      on: { tag: _vm.addTagRisk },
+                      on: { tag: _vm.addTagUser },
                       model: {
-                        value: _vm.Riesgos,
+                        value: _vm.Usuarios,
                         callback: function($$v) {
-                          _vm.Riesgos = $$v
+                          _vm.Usuarios = $$v
                         },
-                        expression: "Riesgos"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("PHVA")
-                    ]),
-                    _vm._v(" "),
-                    _c("multiselect", {
-                      attrs: {
-                        placeholder: "Seleccione o escriba una opción",
-                        options: _vm.PHVA,
-                        multiple: true,
-                        taggable: true,
-                        "show-labels": false
-                      },
-                      on: { tag: _vm.addTagPHVA },
-                      model: {
-                        value: _vm.PHVAs,
-                        callback: function($$v) {
-                          _vm.PHVAs = $$v
-                        },
-                        expression: "PHVAs"
+                        expression: "Usuarios"
                       }
                     })
                   ],
@@ -53731,6 +53702,72 @@ var render = function() {
                     _vm._v(" "),
                     _c("has-error", {
                       attrs: { form: _vm.form, field: "subclassification" }
+                    })
+                  ],
+                  1
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("PHVA")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.PHVA,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagPHVA },
+                      model: {
+                        value: _vm.PHVAs,
+                        callback: function($$v) {
+                          _vm.PHVAs = $$v
+                        },
+                        expression: "PHVAs"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Riesgos Asociados")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
                     })
                   ],
                   1
@@ -55194,6 +55231,67 @@ var render = function() {
                           _vm._v(" "),
                           _c("table", { staticClass: "table table-hover" }, [
                             _vm._m(5),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.currentNode.goals, function(goal) {
+                                return _c("tr", { key: goal.pos }, [
+                                  _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.Macroprocessgoals,
+                                          expression: "Macroprocessgoals"
+                                        }
+                                      ],
+                                      attrs: {
+                                        type: "checkbox",
+                                        name: goal.pos
+                                      },
+                                      domProps: {
+                                        value: goal.pos,
+                                        checked: Array.isArray(
+                                          _vm.Macroprocessgoals
+                                        )
+                                          ? _vm._i(
+                                              _vm.Macroprocessgoals,
+                                              goal.pos
+                                            ) > -1
+                                          : _vm.Macroprocessgoals
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.Macroprocessgoals,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = goal.pos,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.Macroprocessgoals = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.Macroprocessgoals = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.Macroprocessgoals = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" " + _vm._s(goal.name))
+                                  ])
+                                ])
+                              }),
+                              0
+                            ),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -56852,7 +56950,9 @@ var render = function() {
                       _vm._l(_vm.Processfile, function(process) {
                         return _c("option", [
                           _vm._v(
-                            _vm._s(process.file) +
+                            _vm._s(process.relatedToLevel) +
+                              "-" +
+                              _vm._s(process.file) +
                               " - " +
                               _vm._s(process.subprocessProduct)
                           )
@@ -56929,49 +57029,42 @@ var render = function() {
                   ],
                   1
                 )
-              ]),
-              _vm._v(" "),
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Actividades sustantivas")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -57011,11 +57104,9 @@ var render = function() {
                   ],
                   1
                 )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -57064,37 +57155,32 @@ var render = function() {
                       _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Users,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagUser },
+                      model: {
+                        value: _vm.Usuarios,
+                        callback: function($$v) {
+                          _vm.Usuarios = $$v
+                        },
+                        expression: "Usuarios"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
                     })
                   ],
                   1
                 )
-              ]),
-              _vm._v(" "),
+              ])
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -57124,10 +57210,8 @@ var render = function() {
                   ],
                   1
                 )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
+              ]),
+              _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -65320,6 +65404,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
                     on: {
                       click: function($event) {
                         return _vm.$emit("relate-goal", {
@@ -65359,7 +65444,7 @@ var render = function() {
                     attrs: {
                       "data-toggle": "tooltip",
                       "data-placement": "top",
-                      title: "Agregar nueva función"
+                      title: "Agregar nueva funciรณn"
                     },
                     on: {
                       click: function($event) {
@@ -65374,11 +65459,10 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-
                     attrs: {
                       "data-toggle": "tooltip",
                       "data-placement": "top",
-                      title: "Agregar nueva función"
+                      title: "Agregar nueva funciรณn"
                     },
                     on: {
                       click: function($event) {
@@ -65422,60 +65506,6 @@ var render = function() {
                     ])
                   ]
                 )
-
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showUserFunctionsEditor,
-                    expression: "showUserFunctionsEditor"
-                  }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva función"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("create-user-function", _vm.item)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-plus-circle" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva función"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("modify-user-function", _vm.item)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-edit" })]
-                )
-
               ]
             )
           ])
