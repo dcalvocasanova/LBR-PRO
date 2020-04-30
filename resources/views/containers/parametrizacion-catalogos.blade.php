@@ -48,6 +48,14 @@
             @endcomponent
 
             @component('components.colorcard')
+              @slot('title') Reporte de aprobación de objetivos @endslot
+              @slot('type') danger @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') reporte-envio-objetivos @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
+
+            @component('components.colorcard')
               @slot('title') Determinar Ficha de macroprocesos @endslot
               @slot('title') Gestionar Funciones de Usuarios @endslot
               @slot('type') danger @endslot
@@ -55,7 +63,7 @@
               @slot('url') gestionar-funciones-usuarios @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
-            
+
             @component('components.colorcard')
               @slot('title') Determinar macroprocesos en la estructura de niveles @endslot
               @slot('type') info @endslot
@@ -63,7 +71,7 @@
               @slot('url') gestionar-macroprocesos @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
-			  
+
 			@component('components.colorcard')
               @slot('title') Agregar macroprocesos  @endslot
               @slot('type') info @endslot

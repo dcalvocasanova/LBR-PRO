@@ -69,7 +69,27 @@ class UserController extends Controller
      */
     public function getUserByLevelStructure(Request $request)
     {
-      $users = User::with('roles')->where('relatedLevel',$request->level)->latest()->paginate(10);
+      $users = User::with('roles')
+                ->where('relatedProjects',$request->project)
+                ->where('relatedLevel',$request->level)
+                ->get();
+
+      return $users;
+    }
+
+    /**
+     * Get all users with roles according to a related level structure
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserWhithRolesByLevelStructure(Request $request)
+    {
+      $users = User::whereHas('roles')
+                ->where('relatedProjects',$request->project)
+                ->where('relatedLevel',$request->level)
+                ->get();
+
       return $users;
     }
 
@@ -240,28 +260,6 @@ class UserController extends Controller
       }
       $user->save();
     }
-    /**
-     * Get unread user's notifications.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function unreadNotifications()
-    {
-      $user = Auth::user();
-      return $user->unreadNotifications;
-    }
-
-    /**
-     * Get all user's notifications.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function allNotifications()
-    {
-      $user = Auth::user();
-      return $user->notifications;
-    }
-
     /**
      * Get Excel
      *

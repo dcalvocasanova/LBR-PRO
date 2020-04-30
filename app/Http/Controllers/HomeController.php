@@ -60,9 +60,7 @@ class HomeController extends Controller
             'actionText' => 'Ir al sitio web',
             'actionURL' => url('/notificaciones'),
         ];
-        Notification::send($users, new Notifier($details)); //send several UserSystemComponent
-
-      //  $user->notify(new Notifier($details)); // notify an particulary user
+        Notification::send($users, new Notifier($details)); //send several UserSystemComponent    
 
     }
 }

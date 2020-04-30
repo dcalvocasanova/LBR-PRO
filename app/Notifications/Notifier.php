@@ -35,7 +35,7 @@ class Notifier extends Notification
      */
     public function via($notifiable)
     {
-        return ['database','broadcast','mail'];
+        return ['mail'];
     }
 
     /**
@@ -76,31 +76,19 @@ class Notifier extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-
+/*
     public function toArray($notifiable)
     {
         return [
           'title'=> $this->details['title'],
           'body'=> $this->details['body'],
           'sender'=> $this->details['sender'],
+          'type'=> $this->details['type'],
           'action'=>"pending",
-          'comments'=>'pending..',
-          'admin'=> $notifiable
+          'comments'=>'pending..'
         ];
     }
-
-    /**
-     * Get the broadcast representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage ([
-          'notification'=> $notifiable->notifications()->first()
-        ]);
-    }
+    */
 
 
 }

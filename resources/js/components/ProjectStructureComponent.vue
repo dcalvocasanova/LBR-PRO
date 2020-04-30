@@ -60,8 +60,8 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-						@create-macroprocess="CreateMacroprocess"
-						@relate-goal="relateGoals"
+            						@create-macroprocess="CreateMacroprocess"
+            						@relate-goal="relateGoals"
                         @assign-inhetited-goal="asignarObjetivoHeredado"
                       >
                       </tree-menu>
@@ -281,15 +281,15 @@
       										  <th> Seleccione los objetivos </th>
       										</tr>
                       </thead>
-    							
-      										
+
+
   					        </table>
-				  
+
 				  <div v-for="rows in relatedGoals" class="grid-row">
                 <div v-for="goal in rows"  class="grid-cell">
-                   
+
                         {{goal.name}}<input type="checkbox" v-bind:key="goal.randomCellIndex" :value=goal.randomCellIndex  v-model="goal.related" class="grid-cell-editor" />
-                    
+
                 </div>
             </div>
                   </div>
@@ -332,7 +332,7 @@
 		itemsCopy:[],
         title:"",
         newName:"",
-		newCode:"",
+		    newCode:"",
         level: new Form({
           id:"", //level projectID
           levels:"",
@@ -356,7 +356,7 @@
           me.currentNode = nodo.item
 	      me.parentNode = nodo.parent
           me.updateNodeControl = 0
-		  
+
 		    // Empty two random cells per row
             for (var i = 0; i < me.parentNode.goals.length; ++i) {
 				let temp1 = [];
@@ -364,15 +364,15 @@
                 me.relatedGoals[i].push(me.parentNode.goals[i]);
 				for (var k = 0; k < me.parentNode.goals.length; ++k) {
                 	me.relatedGoals[i].push(me.currentNode.goals[k]);
-				
-            	}	
-            }	
-			
+
+            	}
+            }
+
 			// Empty two random cells per row
             for (var i = 0; i < me.relatedGoals.length; ++i) {
                 for (var k = 0; k < me.relatedGoals[i].length; ++k) {
-					
-				
+
+
   				me.itemsCopy = me.relatedGoals.slice();
    			    var obj = Object.assign({}, me.itemsCopy[i][k]);
 				let randomCellIndex = me.rndStr(15);
@@ -438,7 +438,7 @@
           let url = '/estructura?id='+me.project_id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
-			 
+
               me.level.id= response.data.id;
               me.level.project_id=response.data.project_id;
 			 
@@ -598,13 +598,13 @@
 	  rndStr(len) {
     	let text = " "
     	let chars = "abcdefghijklmnopqrstuvwxyz123456789"
-    
+
      	 for( let i=0; i < len; i++ ) {
 			 for(let k=0; k < 8; k++ ){
 				text += chars.charAt(Math.floor(Math.random() * chars.length))
 		     }
       	}
-		
+
 		return text
 	 }
     },

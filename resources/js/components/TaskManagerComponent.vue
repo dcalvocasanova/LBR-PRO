@@ -209,6 +209,14 @@
           .then(response => {
               this.Products = response.data; //get all projects from page.
           });
+        },        
+        getTasks(page = 1) {
+          let me =this;
+          me.clearFields();
+          axios.get('/tareas/'+this.currentProject)
+          .then(response => {
+            me.Tasks = response.data
+          });
         },
         setProject(){
           let me = this
@@ -271,7 +279,7 @@
               toast.fire({
                 type: 'success',
                 title: 'Tarea registrada con éxito'
-              });              
+              });
           })
           .catch(function (error) {
               console.log(error);
@@ -319,14 +327,6 @@
               this.getTasks();
             }
           })
-        },
-        getTasks(page = 1) {
-          let me =this;
-          me.clearFields();
-          axios.get('/tareas')
-          .then(response => {
-            me.Tasks = response.data
-          });
         },
         clearFields(){
           let me =this;

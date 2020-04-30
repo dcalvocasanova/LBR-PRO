@@ -373,8 +373,7 @@ export default {
 
     },
     updateUser(){
-        let me = this;
-        me.form.role="Usuario";
+        let me = this;        
         me.form.put('/usuarios/actualizar')
         .then(function (response) {
            toast.fire({

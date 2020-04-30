@@ -12,25 +12,22 @@
         </span>
 
 
-		  
+
         	<span class="controls-gol-edit" v-show="showGoalEditor">
 			<button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
             <i class="fas fa-columns">Asignar objetivo</i>
-            </button>	
-			
+            </button>
+
 			<button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip" >
             <i class="fas fa-columns">Relacionar objetivos</i>
             </button>
-				
-			
-       </span>   
-
+        </span>   
         <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
             <button class="btn btn-primary"
               @click="$emit('create-user-function',item)"
               data-toggle="tooltip"
               data-placement="top"
-              title="Agregar nueva funciรณn">
+              title="Agregar nueva función">
               <i class="fas fa-plus-circle"></i>
             </button>
             <button class="btn btn-primary"
