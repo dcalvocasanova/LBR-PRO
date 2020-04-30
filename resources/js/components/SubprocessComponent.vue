@@ -486,7 +486,7 @@ export default {
       axios.get('catalogo?id=INPUT')
       .then(response => {
 		    let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 				 this.Inputs.push(inputs[i].name);
 			}
       });
@@ -495,7 +495,7 @@ export default {
       axios.get('catalogo?id=PROVIDER')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 				 this.Providers.push(inputs[i].name);
 			}
       });
@@ -504,7 +504,7 @@ export default {
       axios.get('catalogo?id=RISK')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 				 this.Risks.push(inputs[i].name);
 			}
       });
@@ -513,7 +513,7 @@ export default {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 				 this.Indicators.push(inputs[i].name);
 			}
       });
@@ -522,7 +522,7 @@ export default {
       axios.get('catalogo?id=PHVA')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 				 this.PHVA.push(inputs[i].name);
 			}
       });

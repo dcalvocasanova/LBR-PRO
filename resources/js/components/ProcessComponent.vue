@@ -115,7 +115,8 @@
               </div>
 
 			  <div class="row">
-				<div class="col-md-4">
+                  
+				  <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Actividades sustantivas</label>
                     <multiselect
@@ -129,7 +130,7 @@
                 	</multiselect>
                   </div>
                   </div>
-
+				  
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Responsable</label>
@@ -157,6 +158,8 @@
                     <has-error :form="form" field="resultProduct"></has-error>
                   </div>
                 </div>
+				
+				  
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Usuarios</label>
@@ -171,6 +174,8 @@
                 	</multiselect>
                   </div>
                 </div> 
+				  
+				
 				  <div class="col-md-4">
 				 <div class="form-group">
                     <label class="bmd-label-floating">Subclasificación</label>
@@ -314,7 +319,7 @@ export default {
           Risks:[],
 		  Indicators:[],
 		  PHVA:[],
-		  Activities:[],
+		  Actiities:[],
 		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],
@@ -362,7 +367,7 @@ export default {
 
       this.Indicadores.push(tag)
     },
-	  addTagActivity (newTag) {
+	addTagActivity (newTag) {
       const tag = newTag
 
       this.Actividades.push(tag)
@@ -435,12 +440,13 @@ export default {
 	  me.form.relatedToLevel = myResult[0];
 	  me.form.file = myResult[1];
 	  me.form.input = JSON.stringify(me.Entradas)
+	
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.phva = JSON.stringify(me.PHVAs)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
-	  me.form.user = JSON.stringify(me.Usuarios)
-	  me.form.activity = JSON.stringify(me.Actividades)
+      me.form.user = JSON.stringify(me.Entradas)
+	  me.form.activity = JSON.stringify(me.Entradas)
       this.form.post('/procesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -517,7 +523,7 @@ export default {
       .then(response => {
             //this.Inputs = response.data; //get all catalogs from category selected
 		    let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 
 				 this.Inputs.push(inputs[i].name);
 			}
@@ -527,7 +533,7 @@ export default {
       axios.get('catalogo?id=PROVIDER')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 
 				 this.Providers.push(inputs[i].name);
 			}
@@ -537,7 +543,7 @@ export default {
       axios.get('catalogo?id=RISK')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 
 				 this.Risks.push(inputs[i].name);
 			}
@@ -547,7 +553,7 @@ export default {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 
 				 this.Indicators.push(inputs[i].name);
 			}
@@ -557,7 +563,7 @@ export default {
       axios.get('catalogo?id=PHVA')
       .then(response => {
             let inputs = response.data;
-		    for (let i =0; i<1;i++){
+		    for (let i =0; i<inputs.length;i++){
 
 				 this.PHVA.push(inputs[i].name);
 			}

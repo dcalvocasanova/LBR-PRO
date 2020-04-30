@@ -2648,28 +2648,61 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('catalogo?id=INPUT').then(function (response) {
+
+        //this.Inputs = response.data; //get all catalogs from category selected
+        var inputs = response.data;
+
+        for (var i = 0; i < inputs.length; i++) {
+          _this.Inputs.push(inputs[i].name);
+        }
+
         _this.Inputs = response.data; //get all catalogs from category selected
+
       });
     },
     LoadCatalogProvider: function LoadCatalogProvider() {
       var _this2 = this;
 
       axios.get('catalogo?id=PROVIDER').then(function (response) {
+
+        var inputs = response.data;
+
+        for (var i = 0; i < inputs.length; i++) {
+          _this2.Providers.push(inputs[i].name);
+        }
+
         _this2.Providers = response.data; //get all catalogs from category selected
+
       });
     },
     LoadCatalogRisk: function LoadCatalogRisk() {
       var _this3 = this;
 
       axios.get('catalogo?id=RISK').then(function (response) {
+
+        var inputs = response.data;
+
+        for (var i = 0; i < inputs.length; i++) {
+          _this3.Risks.push(inputs[i].name);
+        }
+
         _this3.Risks = response.data; //get all catalogs from category selected
+
       });
     },
     LoadCatalogIndicator: function LoadCatalogIndicator() {
       var _this4 = this;
 
       axios.get('catalogo?id=INDICATOR').then(function (response) {
+
+        var inputs = response.data;
+
+        for (var i = 0; i < inputs.length; i++) {
+          _this4.Indicators.push(inputs[i].name);
+        }
+
         _this4.Indicators = response.data; //get all catalogs from category selected
+
       });
     },
     getLevels: function getLevels() {
@@ -3229,6 +3262,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -3277,6 +3329,9 @@ __webpack_require__.r(__webpack_exports__);
       Risks: [],
       Indicators: [],
       PHVA: [],
+      Actiities: [],
+      Users: [],
+
       //arreglos temporales
       Entradas: [],
       Proveedores: [],
@@ -3377,6 +3432,10 @@ __webpack_require__.r(__webpack_exports__);
       me.form.risk = JSON.stringify(me.Riesgos);
       me.form.phva = JSON.stringify(me.PHVAs);
       me.form.indicator = JSON.stringify(me.Indicadores);
+
+      me.form.user = JSON.stringify(me.Entradas);
+      me.form.activity = JSON.stringify(me.Entradas);
+
       this.form.post('/procesos/guardar').then(function (response) {
         me.clearFields();
         me.getProcesos(); // show all processs
@@ -3444,7 +3503,7 @@ __webpack_require__.r(__webpack_exports__);
         //this.Inputs = response.data; //get all catalogs from category selected
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this.Inputs.push(inputs[i].name);
         }
       });
@@ -3455,7 +3514,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=PROVIDER').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this2.Providers.push(inputs[i].name);
         }
       });
@@ -3466,7 +3525,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=RISK').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this3.Risks.push(inputs[i].name);
         }
       });
@@ -3477,7 +3536,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=INDICATOR').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this4.Indicators.push(inputs[i].name);
         }
       });
@@ -3488,7 +3547,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=PHVA').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this5.PHVA.push(inputs[i].name);
         }
       });
@@ -5682,7 +5741,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=INPUT').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this.Inputs.push(inputs[i].name);
         }
       });
@@ -5693,7 +5752,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=PROVIDER').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this2.Providers.push(inputs[i].name);
         }
       });
@@ -5704,7 +5763,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=RISK').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this3.Risks.push(inputs[i].name);
         }
       });
@@ -5715,7 +5774,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=INDICATOR').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this4.Indicators.push(inputs[i].name);
         }
       });
@@ -5726,7 +5785,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('catalogo?id=PHVA').then(function (response) {
         var inputs = response.data;
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           _this5.PHVA.push(inputs[i].name);
         }
       });
