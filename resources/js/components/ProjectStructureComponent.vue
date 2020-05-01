@@ -261,7 +261,7 @@
         </div>
       </div>
     </div>
-	<div class="modal fade" id="RelatedManager" tabindex="-4" role="dialog" aria-labelledby="RelatedManager-lg" aria-hidden="true">
+	  <div class="modal fade" id="RelatedManager" tabindex="-4" role="dialog" aria-labelledby="RelatedManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
@@ -277,21 +277,24 @@
                   <div class="form-group">
                     <table class="table table-hover">
                        <thead class="">
-      										<tr>
-      										  <th> Seleccione los objetivos </th>
-      										</tr>
+    										<tr>
+      										  <th > Objetivos del nivel superior </th>
+      										  <th > Objetivos de este nivel </th>
+      									</tr>
                       </thead>
-
-
+                      <tbody >
+                        <tr v-for="rows in relatedGoals">
+                          <td v-for="goal in rows">
+                            <input
+                              type="checkbox"
+                              v-model="goal.related"
+                              v-bind:key="goal.randomCellIndex"
+                              :value="goal.randomCellIndex">
+                              {{goal.name}}
+                          </td>
+                        </tr>
+                      </tbody>
   					        </table>
-
-				  <div v-for="rows in relatedGoals" class="grid-row">
-                <div v-for="goal in rows"  class="grid-cell">
-
-                        {{goal.name}}<input type="checkbox" v-bind:key="goal.randomCellIndex" :value=goal.randomCellIndex  v-model="goal.related" class="grid-cell-editor" />
-
-                </div>
-            </div>
                   </div>
                 </div>
               </div>
