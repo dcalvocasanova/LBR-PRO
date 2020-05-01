@@ -2477,7 +2477,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Multiselect: Multiselect
+  },
   props: {
     showDeleteAndUpdateButton: Number,
     Node: Object,
@@ -2489,6 +2527,7 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
+        relatedToLevel: "",
         macroprocess: "",
         input: "",
         provider: "",
@@ -2498,7 +2537,7 @@ __webpack_require__.r(__webpack_exports__);
         user: "",
         risk: "",
         indicator: "",
-        project_id: 0 //este valor debe ser el current project
+        project_id: 2 //este valor debe ser el current project
 
       }),
       level: new Form({
@@ -2507,7 +2546,7 @@ __webpack_require__.r(__webpack_exports__);
         levels: "",
         project_id: ""
       }),
-      project_id: 1,
+      project_id: 2,
       //este valor debe ser el current project
       //Levels:{}, //All registered projects
       title: "Agregar nueva Ficha",
@@ -2520,10 +2559,19 @@ __webpack_require__.r(__webpack_exports__);
       Levels: {},
       //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
       Macroprocesses: [],
-      Inputs: {},
-      Providers: {},
-      Risks: {},
-      Indicators: {}
+      Inputs: [],
+      Providers: [],
+      Risks: [],
+      Indicators: [],
+      Activities: [],
+      Users: [],
+      //arreglos temporales
+      Entradas: [],
+      Proveedores: [],
+      Riesgos: [],
+      Indicadores: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -2538,6 +2586,30 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (response) {
         console.log(response);
       });
+    },
+    addTagInput: function addTagInput(newTag) {
+      var tag = newTag;
+      this.Entradas.push(tag);
+    },
+    addTagProvider: function addTagProvider(newTag) {
+      var tag = newTag;
+      this.Proveedores.push(tag);
+    },
+    addTagRisk: function addTagRisk(newTag) {
+      var tag = newTag;
+      this.Riesgos.push(tag);
+    },
+    addTagIndicator: function addTagIndicator(newTag) {
+      var tag = newTag;
+      this.Indicadores.push(tag);
+    },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
     },
     EventSubir: function EventSubir(f) {
       var me = this;
@@ -2584,6 +2656,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveMacroproceso: function saveMacroproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.macroprocess.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.macroprocess = myResult[1];
+      me.form.input = JSON.stringify(me.Entradas);
+      me.form.provider = JSON.stringify(me.Proveedores);
+      me.form.risk = JSON.stringify(me.Riesgos);
+      me.form.indicator = JSON.stringify(me.Indicadores);
+      me.form.user = JSON.stringify(me.Usuarios);
+      me.form.activity = JSON.stringify(me.Actividades);
       this.form.post('/macroprocesos/guardar').then(function (response) {
         me.clearFields();
         me.getMacroprocesos(); // show all macroprocesss
@@ -2648,61 +2730,45 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('catalogo?id=INPUT').then(function (response) {
-
         //this.Inputs = response.data; //get all catalogs from category selected
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
           _this.Inputs.push(inputs[i].name);
         }
-
-        _this.Inputs = response.data; //get all catalogs from category selected
-
       });
     },
     LoadCatalogProvider: function LoadCatalogProvider() {
       var _this2 = this;
 
       axios.get('catalogo?id=PROVIDER').then(function (response) {
-
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
           _this2.Providers.push(inputs[i].name);
         }
-
-        _this2.Providers = response.data; //get all catalogs from category selected
-
       });
     },
     LoadCatalogRisk: function LoadCatalogRisk() {
       var _this3 = this;
 
       axios.get('catalogo?id=RISK').then(function (response) {
-
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
           _this3.Risks.push(inputs[i].name);
         }
-
-        _this3.Risks = response.data; //get all catalogs from category selected
-
       });
     },
     LoadCatalogIndicator: function LoadCatalogIndicator() {
       var _this4 = this;
 
       axios.get('catalogo?id=INDICATOR').then(function (response) {
-
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
           _this4.Indicators.push(inputs[i].name);
         }
-
-        _this4.Indicators = response.data; //get all catalogs from category selected
-
       });
     },
     getLevels: function getLevels() {
@@ -3262,7 +3328,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 //
 //
 //
@@ -3280,7 +3345,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -3293,7 +3357,8 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
-        project_id: 1,
+        relatedToLevel: "",
+        project_id: 2,
         //este valor debe ser el current project
         file: "",
         input: "",
@@ -3308,7 +3373,7 @@ __webpack_require__.r(__webpack_exports__);
         subclassification: "",
         indicator: ""
       }),
-      project_id: 0,
+      project_id: 2,
       //este valor debe ser el current project
       title: "Agregar nueva Ficha",
       //title to show
@@ -3331,13 +3396,14 @@ __webpack_require__.r(__webpack_exports__);
       PHVA: [],
       Actiities: [],
       Users: [],
-
       //arreglos temporales
       Entradas: [],
       Proveedores: [],
       Riesgos: [],
       Indicadores: [],
-      PHVAs: []
+      PHVAs: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -3372,6 +3438,14 @@ __webpack_require__.r(__webpack_exports__);
     addTagIndicator: function addTagIndicator(newTag) {
       var tag = newTag;
       this.Indicadores.push(tag);
+    },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
     },
     EventSubir: function EventSubir(f) {
       var me = this;
@@ -3427,15 +3501,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveMacroproceso: function saveMacroproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.file.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.file = myResult[1];
       me.form.input = JSON.stringify(me.Entradas);
       me.form.provider = JSON.stringify(me.Proveedores);
       me.form.risk = JSON.stringify(me.Riesgos);
       me.form.phva = JSON.stringify(me.PHVAs);
       me.form.indicator = JSON.stringify(me.Indicadores);
-
       me.form.user = JSON.stringify(me.Entradas);
       me.form.activity = JSON.stringify(me.Entradas);
-
       this.form.post('/procesos/guardar').then(function (response) {
         me.clearFields();
         me.getProcesos(); // show all processs
@@ -4183,6 +4259,15 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5534,6 +5619,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -5546,6 +5646,7 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         //Macroprocesfile ID
+        relatedToLevel: "",
         process: "",
         input: "",
         provider: "",
@@ -5557,12 +5658,12 @@ __webpack_require__.r(__webpack_exports__);
         phva: "",
         subclassification: "",
         indicator: "",
-        project_id: 1 //este valor debe ser el current project
+        project_id: 2 //este valor debe ser el current project
 
       }),
       title: "Agregar nueva Ficha",
       //title to show
-      project_id: 1,
+      project_id: 2,
       //este valor debe ser el current project
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -5575,12 +5676,16 @@ __webpack_require__.r(__webpack_exports__);
       Risks: [],
       Indicators: [],
       PHVA: [],
+      Activities: [],
+      Users: [],
       //arreglos temporales
       Entradas: [],
       Proveedores: [],
       Riesgos: [],
       Indicadores: [],
-      PHVAs: []
+      PHVAs: [],
+      Actividades: [],
+      Usuarios: []
     };
   },
   methods: {
@@ -5636,6 +5741,14 @@ __webpack_require__.r(__webpack_exports__);
       var tag = newTag;
       this.Indicadores.push(tag);
     },
+    addTagActivity: function addTagActivity(newTag) {
+      var tag = newTag;
+      this.Actividades.push(tag);
+    },
+    addTagUser: function addTagUser(newTag) {
+      var tag = newTag;
+      this.Usuarios.push(tag);
+    },
     handleFileUpload: function handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
@@ -5670,11 +5783,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveSubproceso: function saveSubproceso() {
       var me = this;
+      var myResult = [];
+      myResult = me.form.process.split("-");
+      me.form.relatedToLevel = myResult[0];
+      me.form.process = myResult[1];
       me.form.input = JSON.stringify(me.Entradas);
       me.form.provider = JSON.stringify(me.Proveedores);
       me.form.risk = JSON.stringify(me.Riesgos);
       me.form.phva = JSON.stringify(me.PHVAs);
       me.form.indicator = JSON.stringify(me.Indicadores);
+      me.form.user = JSON.stringify(me.Usuarios);
+      me.form.activity = JSON.stringify(me.Actividades);
       this.form.post('/subprocesos/guardar').then(function (response) {
         me.clearFields();
         me.getSubprocesos(); // show all subprocesss
@@ -10505,7 +10624,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -15606,7 +15724,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -15625,7 +15743,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -15644,7 +15762,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
 
 // exports
 
@@ -15682,7 +15800,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
 
 // exports
 
@@ -15701,7 +15819,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 80px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -52523,47 +52641,22 @@ var render = function() {
                       _vm._v("Entradas")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.input,
-                            expression: "form.input"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("input") },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "input",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Inputs,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Inputs, function(input) {
-                        return _c("option", [_vm._v(_vm._s(input.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "input" }
+                      on: { tag: _vm.addTagInput },
+                      model: {
+                        value: _vm.Entradas,
+                        callback: function($$v) {
+                          _vm.Entradas = $$v
+                        },
+                        expression: "Entradas"
+                      }
                     })
                   ],
                   1
@@ -52579,49 +52672,22 @@ var render = function() {
                       _vm._v("Provedores")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.provider,
-                            expression: "form.provider"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has("provider")
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "provider",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Providers,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Providers, function(provider) {
-                        return _c("option", [_vm._v(_vm._s(provider.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "provider" }
+                      on: { tag: _vm.addTagProvider },
+                      model: {
+                        value: _vm.Proveedores,
+                        callback: function($$v) {
+                          _vm.Proveedores = $$v
+                        },
+                        expression: "Proveedores"
+                      }
                     })
                   ],
                   1
@@ -52636,34 +52702,25 @@ var render = function() {
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Users,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagUser },
+                      model: {
+                        value: _vm.Usuarios,
+                        callback: function($$v) {
+                          _vm.Usuarios = $$v
+                        },
+                        expression: "Usuarios"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
@@ -52671,6 +52728,37 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Actividades sustantivas")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -52712,7 +52800,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -52753,47 +52841,9 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Usuarios")
-                    ]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -52803,47 +52853,22 @@ var render = function() {
                       _vm._v("Riesgos Asociados")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.risk,
-                            expression: "form.risk"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("risk") },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "risk",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Risks, function(risk) {
-                        return _c("option", [_vm._v(_vm._s(risk.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "risk" }
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
                     })
                   ],
                   1
@@ -52859,49 +52884,22 @@ var render = function() {
                       _vm._v("Indicadores")
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.form.indicator,
-                            expression: "form.indicator"
-                          }
-                        ],
-                        staticClass: " form-control",
-                        class: {
-                          "is-invalid": _vm.form.errors.has("indicator")
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.$set(
-                              _vm.form,
-                              "indicator",
-                              $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            )
-                          }
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Indicators,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
                       },
-                      _vm._l(_vm.Indicators, function(indicator) {
-                        return _c("option", [_vm._v(_vm._s(indicator.name))])
-                      }),
-                      0
-                    ),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "indicator" }
+                      on: { tag: _vm.addTagIndicator },
+                      model: {
+                        value: _vm.Indicadores,
+                        callback: function($$v) {
+                          _vm.Indicadores = $$v
+                        },
+                        expression: "Indicadores"
+                      }
                     })
                   ],
                   1
@@ -53731,7 +53729,7 @@ var render = function() {
                           }
                         ],
                         staticClass: " form-control",
-                        class: { "is-invalid": _vm.form.errors.has("sex") },
+                        class: { "is-invalid": _vm.form.errors.has("file") },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -53755,8 +53753,10 @@ var render = function() {
                       _vm._l(_vm.Macroprocessfile, function(file) {
                         return _c("option", [
                           _vm._v(
-                            _vm._s(file.macroprocess) +
-                              " - " +
+                            _vm._s(file.relatedToLevel) +
+                              "-" +
+                              _vm._s(file.macroprocess) +
+                              "-" +
                               _vm._s(file.process)
                           )
                         ])
@@ -53842,34 +53842,25 @@ var render = function() {
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Actividades sustantivas")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
@@ -54033,94 +54024,21 @@ var render = function() {
                       _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Riesgos Asociados")
-                    ]),
-                    _vm._v(" "),
                     _c("multiselect", {
                       attrs: {
                         placeholder: "Seleccione o escriba una opción",
-                        options: _vm.Risks,
+                        options: _vm.Users,
                         multiple: true,
                         taggable: true,
                         "show-labels": false
                       },
-                      on: { tag: _vm.addTagRisk },
+                      on: { tag: _vm.addTagUser },
                       model: {
-                        value: _vm.Riesgos,
+                        value: _vm.Usuarios,
                         callback: function($$v) {
-                          _vm.Riesgos = $$v
+                          _vm.Usuarios = $$v
                         },
-                        expression: "Riesgos"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
-                _c(
-                  "div",
-                  { staticClass: "form-group" },
-                  [
-                    _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("PHVA")
-                    ]),
-                    _vm._v(" "),
-                    _c("multiselect", {
-                      attrs: {
-                        placeholder: "Seleccione o escriba una opción",
-                        options: _vm.PHVA,
-                        multiple: true,
-                        taggable: true,
-                        "show-labels": false
-                      },
-                      on: { tag: _vm.addTagPHVA },
-                      model: {
-                        value: _vm.PHVAs,
-                        callback: function($$v) {
-                          _vm.PHVAs = $$v
-                        },
-                        expression: "PHVAs"
+                        expression: "Usuarios"
                       }
                     })
                   ],
@@ -54168,6 +54086,72 @@ var render = function() {
                     _vm._v(" "),
                     _c("has-error", {
                       attrs: { form: _vm.form, field: "subclassification" }
+                    })
+                  ],
+                  1
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("PHVA")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.PHVA,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagPHVA },
+                      model: {
+                        value: _vm.PHVAs,
+                        callback: function($$v) {
+                          _vm.PHVAs = $$v
+                        },
+                        expression: "PHVAs"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Riesgos Asociados")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
                     })
                   ],
                   1
@@ -55634,6 +55618,67 @@ var render = function() {
                             _vm._v(" "),
                             _c(
                               "tbody",
+                              _vm._l(_vm.currentNode.goals, function(goal) {
+                                return _c("tr", { key: goal.pos }, [
+                                  _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.Macroprocessgoals,
+                                          expression: "Macroprocessgoals"
+                                        }
+                                      ],
+                                      attrs: {
+                                        type: "checkbox",
+                                        name: goal.pos
+                                      },
+                                      domProps: {
+                                        value: goal.pos,
+                                        checked: Array.isArray(
+                                          _vm.Macroprocessgoals
+                                        )
+                                          ? _vm._i(
+                                              _vm.Macroprocessgoals,
+                                              goal.pos
+                                            ) > -1
+                                          : _vm.Macroprocessgoals
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.Macroprocessgoals,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = goal.pos,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.Macroprocessgoals = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.Macroprocessgoals = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.Macroprocessgoals = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" " + _vm._s(goal.name))
+                                  ])
+                                ])
+                              }),
+                              0
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
                               _vm._l(_vm.currentNode.macroprocess, function(
                                 macro,
                                 index
@@ -56108,82 +56153,82 @@ var render = function() {
                 _c("div", { staticClass: "card" }, [
                   _c("div", { staticClass: "card-body" }, [
                     _c("div", { staticClass: "col-md-8" }, [
-                      _c(
-                        "div",
-                        { staticClass: "form-group" },
-                        [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("table", { staticClass: "table table-hover" }, [
                           _vm._m(11),
                           _vm._v(" "),
-                          _vm._l(_vm.relatedGoals, function(rows) {
-                            return _c(
-                              "div",
-                              { staticClass: "grid-row" },
-                              _vm._l(rows, function(goal) {
-                                return _c("div", { staticClass: "grid-cell" }, [
-                                  _vm._v(
-                                    "\n\n                        " +
-                                      _vm._s(goal.name)
-                                  ),
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: goal.related,
-                                        expression: "goal.related"
-                                      }
-                                    ],
-                                    key: goal.randomCellIndex,
-                                    staticClass: "grid-cell-editor",
-                                    attrs: { type: "checkbox" },
-                                    domProps: {
-                                      value: goal.randomCellIndex,
-                                      checked: Array.isArray(goal.related)
-                                        ? _vm._i(
-                                            goal.related,
-                                            goal.randomCellIndex
-                                          ) > -1
-                                        : goal.related
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        var $$a = goal.related,
-                                          $$el = $event.target,
-                                          $$c = $$el.checked ? true : false
-                                        if (Array.isArray($$a)) {
-                                          var $$v = goal.randomCellIndex,
-                                            $$i = _vm._i($$a, $$v)
-                                          if ($$el.checked) {
-                                            $$i < 0 &&
-                                              _vm.$set(
-                                                goal,
-                                                "related",
-                                                $$a.concat([$$v])
-                                              )
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.relatedGoals, function(rows) {
+                              return _c(
+                                "tr",
+                                _vm._l(rows, function(goal) {
+                                  return _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: goal.related,
+                                          expression: "goal.related"
+                                        }
+                                      ],
+                                      key: goal.randomCellIndex,
+                                      attrs: { type: "checkbox" },
+                                      domProps: {
+                                        value: goal.randomCellIndex,
+                                        checked: Array.isArray(goal.related)
+                                          ? _vm._i(
+                                              goal.related,
+                                              goal.randomCellIndex
+                                            ) > -1
+                                          : goal.related
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = goal.related,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = goal.randomCellIndex,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                _vm.$set(
+                                                  goal,
+                                                  "related",
+                                                  $$a.concat([$$v])
+                                                )
+                                            } else {
+                                              $$i > -1 &&
+                                                _vm.$set(
+                                                  goal,
+                                                  "related",
+                                                  $$a
+                                                    .slice(0, $$i)
+                                                    .concat($$a.slice($$i + 1))
+                                                )
+                                            }
                                           } else {
-                                            $$i > -1 &&
-                                              _vm.$set(
-                                                goal,
-                                                "related",
-                                                $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1))
-                                              )
+                                            _vm.$set(goal, "related", $$c)
                                           }
-                                        } else {
-                                          _vm.$set(goal, "related", $$c)
                                         }
                                       }
-                                    }
-                                  })
-                                ])
-                              }),
-                              0
-                            )
-                          })
-                        ],
-                        2
-                      )
+                                    }),
+                                    _vm._v(
+                                      "\n                              " +
+                                        _vm._s(goal.name) +
+                                        "\n                          "
+                                    )
+                                  ])
+                                }),
+                                0
+                              )
+                            }),
+                            0
+                          )
+                        ])
+                      ])
                     ])
                   ]),
                   _vm._v(" "),
@@ -56385,9 +56430,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table table-hover" }, [
-      _c("thead", {}, [
-        _c("tr", [_c("th", [_vm._v(" Seleccione los objetivos ")])])
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Objetivos del nivel superior ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Objetivos de este nivel ")])
       ])
     ])
   }
@@ -57289,7 +57336,9 @@ var render = function() {
                       _vm._l(_vm.Processfile, function(process) {
                         return _c("option", [
                           _vm._v(
-                            _vm._s(process.file) +
+                            _vm._s(process.relatedToLevel) +
+                              "-" +
+                              _vm._s(process.file) +
                               " - " +
                               _vm._s(process.subprocessProduct)
                           )
@@ -57366,49 +57415,42 @@ var render = function() {
                   ],
                   1
                 )
-              ]),
-              _vm._v(" "),
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Actividades Sustantivas")
+                      _vm._v("Actividades sustantivas")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.activity,
-                          expression: "form.activity"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("activity") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.activity },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "activity", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Activities,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagActivity },
+                      model: {
+                        value: _vm.Actividades,
+                        callback: function($$v) {
+                          _vm.Actividades = $$v
+                        },
+                        expression: "Actividades"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "activity" }
                     })
                   ],
                   1
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -57448,11 +57490,9 @@ var render = function() {
                   ],
                   1
                 )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
@@ -57501,37 +57541,32 @@ var render = function() {
                       _vm._v("Usuarios")
                     ]),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form.user,
-                          expression: "form.user"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      class: { "is-invalid": _vm.form.errors.has("user") },
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.form.user },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(_vm.form, "user", $event.target.value)
-                        }
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Users,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagUser },
+                      model: {
+                        value: _vm.Usuarios,
+                        callback: function($$v) {
+                          _vm.Usuarios = $$v
+                        },
+                        expression: "Usuarios"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("has-error", {
-                      attrs: { form: _vm.form, field: "user" }
                     })
                   ],
                   1
                 )
-              ]),
-              _vm._v(" "),
+              ])
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -57561,10 +57596,8 @@ var render = function() {
                   ],
                   1
                 )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
+              ]),
+              _vm._v(" "),
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -66399,7 +66432,7 @@ var render = function() {
                     attrs: {
                       "data-toggle": "tooltip",
                       "data-placement": "top",
-                      title: "Agregar nueva función"
+                      title: "Agregar nueva funciรณn"
                     },
                     on: {
                       click: function($event) {
@@ -88286,8 +88319,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
