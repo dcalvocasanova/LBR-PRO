@@ -21,6 +21,9 @@ class CreateTasksTable extends Migration
             $table->string('relatedToLevel');
             $table->string('allocator');
             $table->string('type');
+            $table->string('notified')->nullable();
+            $table->timestamp('send_at')->nullable();
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }

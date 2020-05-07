@@ -73,7 +73,6 @@ class UserController extends Controller
                 ->where('relatedProjects',$request->project)
                 ->where('relatedLevel',$request->level)
                 ->get();
-
       return $users;
     }
 

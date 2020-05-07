@@ -113,7 +113,7 @@
                               <tr><th>Seleccione el usuario asociados a la tarea</th></tr>
                             </thead>
                             <tbody>
-                              <tr v-for="user in Users.data" :key="user.id" >
+                              <tr v-for="user in Users" :key="user.id" >
                                 <td>
                                   <input v-model="usersRelatedToUserFunction" type="checkbox"
                                     :value="user.id">
@@ -295,7 +295,12 @@
       $('#ModifyUserFunctionsManager').modal('show')
     },
     getUserinLevel(level){
-      axios.get('/usuarios-por-nivel/'+level)
+      axios.get('/usuarios-por-nivel', {
+          params: {
+            project: this.project_id,
+            level: level
+          }
+      })
       .then(response => {
         this.Users = response.data; //get all projects from page
       });

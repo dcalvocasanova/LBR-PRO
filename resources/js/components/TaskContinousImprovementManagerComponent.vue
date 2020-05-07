@@ -22,8 +22,10 @@
             <div class="col-md-8">
                 <h3 class="card-title mt-0"> Lista de tareas</h3>
             </div>
-            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
-              <button class="btn btn-primary"@click="detalle">
+            <div class="col-md-4"
+              data-toggle="modal"
+              data-target="#TaskCatalogPicker">
+              <button class="btn btn-primary">
                 <i class="fa fa-plus-circle"></i>
               </button>
             </div>
@@ -33,62 +35,13 @@
               <table class="table table-hover">
                 <thead class="">
                   <tr>
-                    <th> Nombre </th>
-                    <th> Tipo de Competencia </th>
-                    <th> Riesgo por área </th>
-                    <th> Factores de riesgo </th>
+                    <th> Procedimiento </th>
+                    <th> Acciones </th>
                   </tr>
                 </thead>
                 <tbody>
                     <tr v-for="task in Tasks.data" :key="task.id">
-                      <td v-text="task.name"></td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <button id="btnGroupDropWorkTypeSPECIFIC" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Espefíca
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="btnGroupDropWorkTypeSPECIFIC">
-                            <div v-for="wt in SpecificSkills":key="wt.id">
-                              <a class="dropdown-item" href="#"  v-text="wt.name"></a>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button id="btnGroupDropWorkTypeORGANIZACIONAL" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Organizacional
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="btnGroupDropWorkTypeORGANIZACIONAL">
-                            <div v-for="wt in OrganizationalSkills":key="wt.id">
-                              <a class="dropdown-item" href="#"  v-text="wt.name"></a>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button id="btnGroupDropWorkTypeTECNICAL" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Ténica
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="btnGroupDropWorkTypeTECNICAL">
-                            <div v-for="wt in TecnicalSkills":key="wt.id">
-                              <a class="dropdown-item" href="#"  v-text="wt.name"></a>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-
-                        <select class="form-control">
-                          <option v-for="p in Risk" :value="p.id">{{ p.name }}</option>
-                        </select>
-
-                      </td>
-                      <td>
-                        <select class="form-control">
-                          <option v-for="p in RiskCondition" :value="p.id">{{ p.name }}</option>
-                        </select>
-                      </td>
-
+                      <td v-text="task.task"></td>
                     </tr>
                   </tbody>
               </table>
@@ -104,7 +57,54 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="TaskCatalogPicker" tabindex="-1" role="dialog" aria labelledby="TaskCatalogPicker-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="TaskCatalogPicker"> Opciones disponibles</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="users-and-goals">
+                          <table class="table table-hover">
+                           <thead>
+                              <th>Funciones de usuario a emplear</th>
+                            </thead>
+                            <tbody>
 
+
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-7">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="col-12">
+                      <div class="row">
+                        aca el contenido
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -153,14 +153,7 @@
           let me = this
           me.selectingProjectToAddTasks=false
           me.getTasks()
-        },
-        detalle(){
-          swal.fire(
-            'Por el momento no tenemos Macroprocesos registrados',
-            '¡Muy pronto tendremos la funcionalidad implementada!',
-            'warning'
-          )
-        },
+        },        
         LoadCatalogAddedValued() {
           axios.get('catalogo?id=ADDED-VALUED-T')
           .then(response => {
