@@ -8,7 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-        <tasks-vars></tasks-vars>
+        <tasks-elements></tasks-elements>
       </div>
     </div>
     {{-- Adding footer --}}

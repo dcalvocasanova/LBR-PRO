@@ -86,7 +86,7 @@ Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainCompo
 Vue.component('projectStructure', require('./components/ProjectStructureComponent.vue').default);
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
-Vue.component('tasksVars', require('./components/TaskVarManagerComponent.vue').default);
+Vue.component('tasksElements', require('./components/TaskElementsManagerComponent.vue').default);
 
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);

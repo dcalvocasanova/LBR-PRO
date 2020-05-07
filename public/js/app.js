@@ -5933,6 +5933,346 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      form: new Form({
+        id: "",
+        project_id: "",
+        task_id: "",
+        procedure: "",
+        PHVA: {},
+        frecuency: "",
+        t_min: "",
+        t_avg: "",
+        t_max: "",
+        laborType: ""
+      }),
+      selectingProjectToAddTasks: true,
+      currentProject: 0,
+      showDetails: false,
+      task_id: [],
+      title: "Agregar nuevos elementos a las tarea",
+      //title to show
+      update: 0,
+      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+      showVariable: 0,
+      Projects: {},
+      Tasks: {},
+      TaskElements: {},
+      PHVA: {},
+      Frecuencies: {},
+      WorkTypes: {}
+    };
+  },
+  methods: {
+    getProjects: function getProjects() {
+      var me = this;
+      axios.get('/todos-los-proyectos').then(function (response) {
+        me.Projects = response.data; //get all projects from page
+      });
+    },
+    getTasks: function getTasks() {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var me = this;
+      axios.get('/tareas/' + this.currentProject + '?page=' + page).then(function (response) {
+        me.Tasks = response.data;
+      });
+    },
+    setProject: function setProject() {
+      var me = this;
+      me.selectingProjectToAddTasks = false;
+      me.getTasks();
+      me.getTaskElements();
+    },
+    getTaskElements: function getTaskElements() {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var me = this;
+      axios.get('/tareas-elementos-asociados/' + this.currentProject + '?page=' + page).then(function (response) {
+        me.TaskElements = response.data;
+      });
+    },
+    saveTask: function saveTask() {
+      var me = this;
+      me.form.project_id = me.currentProject;
+      var PHVA = JSON.stringify(me.form.PHVA);
+      me.form.PHVA = PHVA;
+      me.form.task_id = me.task_id.toString();
+      me.form.post('/tareas-elementos-asociados/guardar').then(function (response) {
+        me.clearFields();
+        me.getTaskElements();
+        toast.fire({
+          type: 'success',
+          title: 'Elementos de la tarea guardados con éxito'
+        });
+      });
+    },
+    showTask: function showTask(task) {
+      var me = this;
+      me.form.fill(task);
+      me.task_id = task.task_id.split(",");
+      me.update = task.id;
+      me.title = "Actualizar información de los elementos de las tareas";
+      $('#TaskCatalogPicker').modal('show');
+    },
+    updateTask: function updateTask(task) {
+      var me = this;
+      me.form.task_id = me.task_id.toString();
+      me.form.put('/tareas-elementos-asociados/actualizar').then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Elementos de la tarea actualizado con éxito'
+        });
+        me.getTaskElements();
+        me.clearFields();
+      });
+    },
+    deleteTask: function deleteTask(task) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar configuración',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      }).then(function (result) {
+        if (result.value) {
+          axios["delete"]('/tareas-elementos-asociados/borrar/' + task.id).then(function (response) {
+            swal.fire('Eliminado', 'Configuración fue eliminada', 'success');
+            me.getTaskElements();
+          });
+        }
+      });
+    },
+    clearFields: function clearFields() {
+      var me = this;
+      $('#TaskCatalogPicker').modal('toggle');
+      me.title = "Agregar nuevos elementos a las tareas";
+      me.update = 0;
+      me.task_id = [];
+      me.form.reset();
+    },
+    LoadCatalogFrecuency: function LoadCatalogFrecuency() {
+      var _this = this;
+
+      axios.get('catalogo?id=FRECUENCY').then(function (response) {
+        _this.Frecuencies = response.data; //get all catalogs from category selected
+      });
+    },
+    LoadCatalogWorkType: function LoadCatalogWorkType() {
+      var _this2 = this;
+
+      axios.get('catalogo?id=WORKTYPE').then(function (response) {
+        _this2.WorkTypes = response.data; //get all catalogs from category selected
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getProjects();
+    this.LoadCatalogFrecuency();
+    this.LoadCatalogWorkType();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskManagerComponent.vue?vue&type=script&lang=js& ***!
@@ -5942,6 +6282,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -6161,7 +6504,7 @@ __webpack_require__.r(__webpack_exports__);
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var me = this;
       me.clearFields();
-      axios.get('/tareas/' + this.currentProject).then(function (response) {
+      axios.get('/tareas/' + this.currentProject + '?page=' + page).then(function (response) {
         me.Tasks = response.data;
       });
     },
@@ -6198,6 +6541,7 @@ __webpack_require__.r(__webpack_exports__);
         me.form.id_project = type.project_id;
         me.form.id_product = type.id;
         me.form.allocator = type.resultProduct;
+        me.form.relatedToLevel = type.relatedToLevel;
         me.form.type = 'PRODUCT';
       }
 
@@ -6205,6 +6549,7 @@ __webpack_require__.r(__webpack_exports__);
         me.form.id_project = type.project_id;
         me.form.id_product = type.id;
         me.form.allocator = type.product;
+        me.form.relatedToLevel = type.relatedToLevel;
         me.form.type = 'SUB-PRODUCT';
       }
 
@@ -6281,238 +6626,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getProjectos();
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      form: new Form({
-        id: "",
-        name: "",
-        type: ""
-      }),
-      selectingProjectToAddTasks: true,
-      currentProject: 0,
-      showDetails: false,
-      title: "Agregar nueva categoría de parámetro ",
-      //title to show
-      update: 0,
-      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-      showVariable: 0,
-      Projects: {},
-      AddedValue: {},
-      Correlation: {},
-      Risk: {},
-      RiskCondition: {},
-      OrganizationalSkills: {},
-      SpecificSkills: {},
-      TecnicalSkills: {},
-      Tasks: {}
-    };
-  },
-  methods: {
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/todos-los-proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects from page
-      });
-    },
-    getTasks: function getTasks() {
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var me = this;
-      axios.get('/tareas/' + this.currentProject).then(function (response) {
-        me.Tasks = response.data;
-      });
-    },
-    setProject: function setProject() {
-      var me = this;
-      me.selectingProjectToAddTasks = false;
-      me.getTasks();
-    },
-    detalle: function detalle() {
-      swal.fire('Por el momento no tenemos Macroprocesos registrados', '¡Muy pronto tendremos la funcionalidad implementada!', 'warning');
-    },
-    LoadCatalogAddedValued: function LoadCatalogAddedValued() {
-      var _this = this;
-
-      axios.get('catalogo?id=ADDED-VALUED-T').then(function (response) {
-        _this.AddedValue = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogCorrelation: function LoadCatalogCorrelation() {
-      var _this2 = this;
-
-      axios.get('catalogo?id=CORRELATION-T').then(function (response) {
-        _this2.Correlation = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogRisk: function LoadCatalogRisk() {
-      var _this3 = this;
-
-      axios.get('catalogo?id=RISK-T').then(function (response) {
-        _this3.Risk = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogRiskCondition: function LoadCatalogRiskCondition() {
-      var _this4 = this;
-
-      axios.get('catalogo?id=RISK-CONDITION-T').then(function (response) {
-        _this4.RiskCondition = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogOrganizationalSkills: function LoadCatalogOrganizationalSkills() {
-      var _this5 = this;
-
-      axios.get('catalogo?id=ORGANIZATIONAL-SKILL-T').then(function (response) {
-        _this5.OrganizationalSkills = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogSpecificSkills: function LoadCatalogSpecificSkills() {
-      var _this6 = this;
-
-      axios.get('catalogo?id=SPECIFIC-SKILL-T').then(function (response) {
-        _this6.SpecificSkills = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogTecnicalSkills: function LoadCatalogTecnicalSkills() {
-      var _this7 = this;
-
-      axios.get('catalogo?id=TECNICAL-SKILL-T').then(function (response) {
-        _this7.TecnicalSkills = response.data; //get all catalogs from category selected
-      });
-    }
-  },
-  mounted: function mounted() {
-    this.getProjects();
-    this.LoadCatalogAddedValued();
-    this.LoadCatalogCorrelation();
-    this.LoadCatalogRisk();
-    this.LoadCatalogRiskCondition();
-    this.LoadCatalogOrganizationalSkills();
-    this.LoadCatalogSpecificSkills();
-    this.LoadCatalogTecnicalSkills();
   }
 });
 
@@ -15724,7 +15837,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -15743,7 +15856,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -15762,7 +15875,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
 
 // exports
 
@@ -15800,7 +15913,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -15819,7 +15932,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 80px);\n    overflow-y: auto;\n}\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -57873,6 +57986,805 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container container-project" }, [
+    this.selectingProjectToAddTasks === true
+      ? _c("div", { staticClass: "row h-100" }, [
+          _c("div", { staticClass: "card card-plain col-12" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c("br"),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.currentProject,
+                        expression: "currentProject"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.currentProject = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.setProject()
+                        }
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.Projects, function(p) {
+                    return _c("option", { domProps: { value: p.id } }, [
+                      _vm._v(_vm._s(p.name))
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    this.selectingProjectToAddTasks === false
+      ? _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "card card-plain" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body card-body-fitted " }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.TaskElements.data, function(task) {
+                        return _c("tr", { key: task.id }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(task.procedure) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.showTask(task)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-edit" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteTask(task)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-trash-alt" })]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "footer" },
+                    [
+                      _c("pagination", {
+                        attrs: { data: _vm.TaskElements },
+                        on: { "pagination-change-page": _vm.getTaskElements }
+                      })
+                    ],
+                    1
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-footer" })
+            ])
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "TaskCatalogPicker",
+          tabindex: "-1",
+          role: "dialog",
+          aria: "",
+          labelledby: "TaskCatalogPicker-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: "TaskCatalogPicker" }
+                  },
+                  [_vm._v(" " + _vm._s(_vm.title))]
+                ),
+                _vm._v(" "),
+                _vm._m(3)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-5" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(4),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.Tasks.data, function(task) {
+                              return _c("tr", { key: task.id }, [
+                                _c("td", [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.task_id,
+                                        expression: "task_id"
+                                      }
+                                    ],
+                                    attrs: { type: "checkbox" },
+                                    domProps: {
+                                      value: task.id,
+                                      checked: Array.isArray(_vm.task_id)
+                                        ? _vm._i(_vm.task_id, task.id) > -1
+                                        : _vm.task_id
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.task_id,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = task.id,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              (_vm.task_id = $$a.concat([$$v]))
+                                          } else {
+                                            $$i > -1 &&
+                                              (_vm.task_id = $$a
+                                                .slice(0, $$i)
+                                                .concat($$a.slice($$i + 1)))
+                                          }
+                                        } else {
+                                          _vm.task_id = $$c
+                                        }
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(task.task) +
+                                      "\n                          "
+                                  )
+                                ])
+                              ])
+                            }),
+                            0
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "footer" },
+                          [
+                            _c("pagination", {
+                              attrs: { data: _vm.Tasks },
+                              on: { "pagination-change-page": _vm.getTasks }
+                            })
+                          ],
+                          1
+                        )
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-7" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "col-12" }, [
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-md-8" }, [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c(
+                                    "label",
+                                    { staticClass: "bmd-label-floating" },
+                                    [_vm._v("Procedimiento asociado")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.procedure,
+                                        expression: "form.procedure"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "procedure"
+                                      )
+                                    },
+                                    attrs: { type: "text" },
+                                    domProps: { value: _vm.form.procedure },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "procedure",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: {
+                                      form: _vm.form,
+                                      field: "procedure"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Tipo Tarea")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.PHVA,
+                                        expression: "form.PHVA"
+                                      }
+                                    ],
+                                    staticClass: " form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.form,
+                                          "PHVA",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  _vm._l(_vm.WorkTypes, function(s) {
+                                    return _c("option", [
+                                      _vm._v(_vm._s(s.name))
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-md-6" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Tipo de trabajo")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.laborType,
+                                        expression: "form.laborType"
+                                      }
+                                    ],
+                                    staticClass: " form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.form,
+                                          "laborType",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  _vm._l(_vm.WorkTypes, function(f) {
+                                    return _c("option", [
+                                      _vm._v(_vm._s(f.name))
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-6" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "label",
+                                  { staticClass: "bmd-label-floating" },
+                                  [_vm._v("Frecuencia")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.frecuency,
+                                        expression: "form.frecuency"
+                                      }
+                                    ],
+                                    staticClass: " form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          _vm.form,
+                                          "frecuency",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      }
+                                    }
+                                  },
+                                  _vm._l(_vm.Frecuencies, function(f) {
+                                    return _c("option", [
+                                      _vm._v(_vm._s(f.name))
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "card-body" }, [
+                              _c("div", { staticClass: "row" }, [
+                                _vm._m(5),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-4" }, [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c(
+                                        "label",
+                                        { staticClass: "bmd-label-floating" },
+                                        [_vm._v("Menor ")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.t_min,
+                                            expression: "form.t_min"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "procedure"
+                                          )
+                                        },
+                                        attrs: { type: "text" },
+                                        domProps: { value: _vm.form.t_min },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "t_min",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "procedure"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-4" }, [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c(
+                                        "label",
+                                        { staticClass: "bmd-label-floating" },
+                                        [_vm._v("Normal ")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.t_avg,
+                                            expression: "form.t_avg"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "procedure"
+                                          )
+                                        },
+                                        attrs: { type: "text" },
+                                        domProps: { value: _vm.form.t_avg },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "t_avg",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "procedure"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-4" }, [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c(
+                                        "label",
+                                        { staticClass: "bmd-label-floating" },
+                                        [_vm._v("Máximo ")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.t_max,
+                                            expression: "form.t_max"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "procedure"
+                                          )
+                                        },
+                                        attrs: { type: "text" },
+                                        domProps: { value: _vm.form.t_max },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "t_max",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "procedure"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ])
+                            ])
+                          ])
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c("div", { staticClass: "container-buttons" }, [
+                  _vm.update == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveTask()
+                            }
+                          }
+                        },
+                        [_vm._v("Añadir")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info",
+                          on: {
+                            click: function($event) {
+                              return _vm.updateTask()
+                            }
+                          }
+                        },
+                        [_vm._v("Actualizar")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.clearFields()
+                            }
+                          }
+                        },
+                        [_vm._v("Atrás")]
+                      )
+                    : _vm._e()
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary " }, [
+      _c("h4", { staticClass: "card-title mt-0 " }, [
+        _vm._v(
+          " Seleccione el proyecto donde se gestionaran las tareas y procedimientos asociados"
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h3", { staticClass: "card-title mt-0" }, [
+          _vm._v(" Lista de tareas")
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "col-md-4",
+          attrs: { "data-toggle": "modal", "data-target": "#TaskCatalogPicker" }
+        },
+        [
+          _c("button", { staticClass: "btn btn-primary" }, [
+            _c("i", { staticClass: "fa fa-plus-circle" })
+          ])
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Procedimiento ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Acciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _vm._v(
+          "\n                         Tarea a seleccionar\n                      "
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("h4", [_vm._v(" Tiempos de las tareas")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0&":
 /*!***********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskManagerComponent.vue?vue&type=template&id=77cefde0& ***!
@@ -57993,6 +58905,18 @@ var render = function() {
                         ])
                       }),
                       0
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "footer" },
+                      [
+                        _c("pagination", {
+                          attrs: { data: _vm.Tasks },
+                          on: { "pagination-change-page": _vm.getTasks }
+                        })
+                      ],
+                      1
                     )
                   ])
                 ])
@@ -58435,7 +59359,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary " }, [
       _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(" Seleccione el proyecto donde se gestionaran usuarios")
+        _vm._v(" Seleccione el proyecto donde se gestionaran las tareas")
       ])
     ])
   },
@@ -58532,370 +59456,6 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [_c("th", [_vm._v("Funciones de usuario a emplear")])])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492&":
-/*!**************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492& ***!
-  \**************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container container-project" }, [
-    this.selectingProjectToAddTasks === true
-      ? _c("div", { staticClass: "row h-100" }, [
-          _c("div", { staticClass: "card card-plain col-12" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("br"),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.currentProject,
-                        expression: "currentProject"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.currentProject = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.setProject()
-                        }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.Projects, function(p) {
-                    return _c("option", { domProps: { value: p.id } }, [
-                      _vm._v(_vm._s(p.name))
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ])
-          ])
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    this.selectingProjectToAddTasks === false
-      ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-12" }, [
-            _c("div", { staticClass: "card card-plain" }, [
-              _c("div", { staticClass: "card-header card-header-primary" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "col-md-4",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "bottom",
-                      title: "Agregar nueva variable"
-                    }
-                  },
-                  [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        on: { click: _vm.detalle }
-                      },
-                      [_c("i", { staticClass: "fa fa-plus-circle" })]
-                    )
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-body card-body-fitted " }, [
-                _c("div", { staticClass: "col-md-12" }, [
-                  _c("table", { staticClass: "table table-hover" }, [
-                    _vm._m(2),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.Tasks.data, function(task) {
-                        return _c("tr", { key: task.id }, [
-                          _c("td", {
-                            domProps: { textContent: _vm._s(task.name) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "btn-group",
-                                attrs: { role: "group" }
-                              },
-                              [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass:
-                                      "btn btn-danger dropdown-toggle",
-                                    attrs: {
-                                      id: "btnGroupDropWorkTypeSPECIFIC",
-                                      type: "button",
-                                      "data-toggle": "dropdown",
-                                      "aria-haspopup": "true",
-                                      "aria-expanded": "false"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                          Espefíca\n                        "
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "dropdown-menu",
-                                    attrs: {
-                                      "aria-labelledby":
-                                        "btnGroupDropWorkTypeSPECIFIC"
-                                    }
-                                  },
-                                  _vm._l(_vm.SpecificSkills, function(wt) {
-                                    return _c("div", { key: wt.id }, [
-                                      _c("a", {
-                                        staticClass: "dropdown-item",
-                                        attrs: { href: "#" },
-                                        domProps: {
-                                          textContent: _vm._s(wt.name)
-                                        }
-                                      })
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "btn-group",
-                                attrs: { role: "group" }
-                              },
-                              [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass:
-                                      "btn btn-danger dropdown-toggle",
-                                    attrs: {
-                                      id: "btnGroupDropWorkTypeORGANIZACIONAL",
-                                      type: "button",
-                                      "data-toggle": "dropdown",
-                                      "aria-haspopup": "true",
-                                      "aria-expanded": "false"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                          Organizacional\n                        "
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "dropdown-menu",
-                                    attrs: {
-                                      "aria-labelledby":
-                                        "btnGroupDropWorkTypeORGANIZACIONAL"
-                                    }
-                                  },
-                                  _vm._l(_vm.OrganizationalSkills, function(
-                                    wt
-                                  ) {
-                                    return _c("div", { key: wt.id }, [
-                                      _c("a", {
-                                        staticClass: "dropdown-item",
-                                        attrs: { href: "#" },
-                                        domProps: {
-                                          textContent: _vm._s(wt.name)
-                                        }
-                                      })
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "btn-group",
-                                attrs: { role: "group" }
-                              },
-                              [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass:
-                                      "btn btn-danger dropdown-toggle",
-                                    attrs: {
-                                      id: "btnGroupDropWorkTypeTECNICAL",
-                                      type: "button",
-                                      "data-toggle": "dropdown",
-                                      "aria-haspopup": "true",
-                                      "aria-expanded": "false"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                          Ténica\n                        "
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "dropdown-menu",
-                                    attrs: {
-                                      "aria-labelledby":
-                                        "btnGroupDropWorkTypeTECNICAL"
-                                    }
-                                  },
-                                  _vm._l(_vm.TecnicalSkills, function(wt) {
-                                    return _c("div", { key: wt.id }, [
-                                      _c("a", {
-                                        staticClass: "dropdown-item",
-                                        attrs: { href: "#" },
-                                        domProps: {
-                                          textContent: _vm._s(wt.name)
-                                        }
-                                      })
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "select",
-                              { staticClass: "form-control" },
-                              _vm._l(_vm.Risk, function(p) {
-                                return _c(
-                                  "option",
-                                  { domProps: { value: p.id } },
-                                  [_vm._v(_vm._s(p.name))]
-                                )
-                              }),
-                              0
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "select",
-                              { staticClass: "form-control" },
-                              _vm._l(_vm.RiskCondition, function(p) {
-                                return _c(
-                                  "option",
-                                  { domProps: { value: p.id } },
-                                  [_vm._v(_vm._s(p.name))]
-                                )
-                              }),
-                              0
-                            )
-                          ])
-                        ])
-                      }),
-                      0
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-6" })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-footer" })
-            ])
-          ])
-        ])
-      : _vm._e()
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary " }, [
-      _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(
-          " Seleccione el proyecto donde se gestionaran las tareas y procedimientos asociados"
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-8" }, [
-      _c("h3", { staticClass: "card-title mt-0" }, [_vm._v(" Lista de tareas")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v(" Nombre ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" Tipo de Competencia ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" Riesgo por área ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" Factores de riesgo ")])
-      ])
-    ])
   }
 ]
 render._withStripped = true
@@ -85849,7 +86409,7 @@ Vue.component('TreeMenu', __webpack_require__(/*! ./components/treeComponent/VTr
 Vue.component('projectStructure', __webpack_require__(/*! ./components/ProjectStructureComponent.vue */ "./resources/js/components/ProjectStructureComponent.vue")["default"]);
 Vue.component('help', __webpack_require__(/*! ./components/HelpComponent.vue */ "./resources/js/components/HelpComponent.vue")["default"]);
 Vue.component('tasks', __webpack_require__(/*! ./components/TaskManagerComponent.vue */ "./resources/js/components/TaskManagerComponent.vue")["default"]);
-Vue.component('tasksVars', __webpack_require__(/*! ./components/TaskVarManagerComponent.vue */ "./resources/js/components/TaskVarManagerComponent.vue")["default"]);
+Vue.component('tasksElements', __webpack_require__(/*! ./components/TaskElementsManagerComponent.vue */ "./resources/js/components/TaskElementsManagerComponent.vue")["default"]);
 /*Reports*/
 
 Vue.component('goalStatus', __webpack_require__(/*! ./components/reports/ReportsGoalsStatus.vue */ "./resources/js/components/reports/ReportsGoalsStatus.vue")["default"]);
@@ -86727,6 +87287,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/TaskElementsManagerComponent.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/TaskElementsManagerComponent.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12& */ "./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12&");
+/* harmony import */ var _TaskElementsManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskElementsManagerComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TaskElementsManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TaskElementsManagerComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskElementsManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskElementsManagerComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskElementsManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskElementsManagerComponent.vue?vue&type=template&id=ba0a4d12&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskElementsManagerComponent_vue_vue_type_template_id_ba0a4d12___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/TaskManagerComponent.vue":
 /*!**********************************************************!*\
   !*** ./resources/js/components/TaskManagerComponent.vue ***!
@@ -86791,75 +87420,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskManagerComponent_vue_vue_type_template_id_77cefde0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TaskVarManagerComponent.vue":
-/*!*************************************************************!*\
-  !*** ./resources/js/components/TaskVarManagerComponent.vue ***!
-  \*************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TaskVarManagerComponent.vue?vue&type=template&id=7949b492& */ "./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492&");
-/* harmony import */ var _TaskVarManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskVarManagerComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _TaskVarManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/TaskVarManagerComponent.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskVarManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskVarManagerComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskVarManagerComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskVarManagerComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492& ***!
-  \********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TaskVarManagerComponent.vue?vue&type=template&id=7949b492& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TaskVarManagerComponent.vue?vue&type=template&id=7949b492&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TaskVarManagerComponent_vue_vue_type_template_id_7949b492___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -88319,8 +88879,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -49,6 +49,9 @@
                     </td>
                   </tr>
                 </tbody>
+                <div class="footer">
+                  <pagination :data="Tasks" @pagination-change-page="getTasks"></pagination>
+                </div>
               </table>
             </div>
           </div>
@@ -213,7 +216,7 @@
         getTasks(page = 1) {
           let me =this;
           me.clearFields();
-          axios.get('/tareas/'+this.currentProject)
+          axios.get('/tareas/'+this.currentProject+'?page=' + page)
           .then(response => {
             me.Tasks = response.data
           });
