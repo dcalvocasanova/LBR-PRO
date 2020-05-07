@@ -4572,6 +4572,109 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -4585,6 +4688,7 @@ __webpack_require__.r(__webpack_exports__);
       relatedGoals: [],
       relatedTest: [[]],
       temp: [],
+      currentSelectedItem: "",
       Macroprocessgoals: [],
       update: 0,
       // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -4649,6 +4753,29 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.getGoals();
+    },
+    loadGoalsUpdate: function loadGoalsUpdate(goal) {
+      var me = this;
+      me.currentSelectedItem = goal;
+      me.title = "Actualizar información del objetivo";
+      me.update = 1;
+      $('#GoalEditManager').modal('show');
+    },
+    updateGoal: function updateGoal() {
+      $('#GoalEditManager').modal('toggle');
+    },
+    loadMacroprocessesUpdate: function loadMacroprocessesUpdate(macro) {
+      var me = this;
+      me.currentSelectedItem = macro;
+      me.title = "Actualizar información del objetivo";
+      me.update = 1;
+      $('#MacroprocessEditManager').modal('show');
+    },
+    updateMacroprocess: function updateMacroprocess() {
+      $('#MacroprocessEditManager').modal('toggle');
+    },
+    exitMacroprocess: function exitMacroprocess() {
+      $('#GoalEditManager').modal('toggle');
     },
     CreateMacroprocess: function CreateMacroprocess(item) {
       var me = this;
@@ -4853,6 +4980,20 @@ __webpack_require__.r(__webpack_exports__);
     },
     getGoals: function getGoals() {
       $('#RelatedManager').modal('show');
+    },
+    editGoal: function editGoal(item) {
+      var me = this;
+      me.currentNode = item;
+      me.updateNodeControl = 0; //this.getGoalName()
+
+      $('#GoalEdit').modal('show');
+    },
+    editMacroprocess: function editMacroprocess(item) {
+      var me = this;
+      me.currentNode = item;
+      me.updateNodeControl = 0; //this.getGoalName()
+
+      $('#MacroprocessEdit').modal('show');
     },
     getGoalName: function getGoalName() {
       $('#GoalManager').modal('show');
@@ -10624,6 +10765,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -55369,7 +55520,9 @@ var render = function() {
                                 "create-macroprocess": _vm.CreateMacroprocess,
                                 "relate-goal": _vm.relateGoals,
                                 "assign-inhetited-goal":
-                                  _vm.asignarObjetivoHeredado
+                                  _vm.asignarObjetivoHeredado,
+                                "edit-goal": _vm.editGoal,
+                                "edit-macroprocess": _vm.editMacroprocess
                               }
                             })
                           ],
@@ -55855,93 +56008,6 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "container-buttons" }, [
-                        _vm.updateNodeControl == 0
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.addGoal()
-                                  }
-                                }
-                              },
-                              [_vm._v("Añadir")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.updateNodeControl != 0
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-info",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.updateGoal()
-                                  }
-                                }
-                              },
-                              [_vm._v("Actualizar")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-secondary",
-                            on: {
-                              click: function($event) {
-                                return _vm.salirObjetivos()
-                              }
-                            }
-                          },
-                          [_vm._v("Atrás")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(7),
-                          _vm._v(" "),
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.currentNode.goals, function(
-                              goal,
-                              index
-                            ) {
-                              return _c("tr", { key: goal.pos }, [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: goal.name,
-                                      expression: "goal.name"
-                                    }
-                                  ],
-                                  key: index,
-                                  domProps: { value: goal.name },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        goal,
-                                        "name",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                })
-                              ])
-                            }),
-                            0
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
                       _c("div", { staticClass: "card-footer" }, [
                         _c("div", { staticClass: "container-buttons" }, [
                           _vm.updateNodeControl == 0
@@ -56003,6 +56069,390 @@ var render = function() {
       {
         staticClass: "modal fade",
         attrs: {
+          id: "GoalEdit",
+          tabindex: "-3",
+          role: "dialog",
+          "aria-labelledby": "GoalManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(7),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(8),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.currentNode.goals, function(goal) {
+                        return _c("tr", { key: goal.code }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(goal.name) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.loadGoalsUpdate(goal)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-edit" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteTask(goal)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-trash-alt" })]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "MacroprocessEdit",
+          tabindex: "-3",
+          role: "dialog",
+          "aria-labelledby": "GoalManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(9),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(10),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.currentNode.macroprocess, function(macro) {
+                        return _c("tr", { key: macro.pos }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(macro.name) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-info",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.loadMacroprocessesUpdate(macro)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-edit" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteTask(_vm.goal)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-trash-alt" })]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "GoalEditManager",
+          tabindex: "-1",
+          role: "dialog",
+          aria: "",
+          labelledby: "TaskManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h5",
+                  { staticClass: "modal-title", attrs: { id: "TaskManager" } },
+                  [_vm._v(" " + _vm._s(_vm.title))]
+                ),
+                _vm._v(" "),
+                _vm._m(11)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-8" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.currentSelectedItem.name,
+                          expression: "currentSelectedItem.name"
+                        }
+                      ],
+                      domProps: { value: _vm.currentSelectedItem.name },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.currentSelectedItem,
+                            "name",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c("div", { staticClass: "container-buttons" }, [
+                  _vm.update == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveTask()
+                            }
+                          }
+                        },
+                        [_vm._v("Añadir")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info",
+                          on: {
+                            click: function($event) {
+                              return _vm.updateGoal()
+                            }
+                          }
+                        },
+                        [_vm._v("Actualizar")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.exitGoal()
+                            }
+                          }
+                        },
+                        [_vm._v("Atrás")]
+                      )
+                    : _vm._e()
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "MacroprocessEditManager",
+          tabindex: "-1",
+          role: "dialog",
+          aria: "",
+          labelledby: "TaskManager-lg",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-lg modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header border-bottom-0" }, [
+                _c(
+                  "h5",
+                  { staticClass: "modal-title", attrs: { id: "MacroManager" } },
+                  [_vm._v(" " + _vm._s(_vm.title))]
+                ),
+                _vm._v(" "),
+                _vm._m(12)
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-8" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.currentSelectedItem.name,
+                          expression: "currentSelectedItem.name"
+                        }
+                      ],
+                      domProps: { value: _vm.currentSelectedItem.name },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.currentSelectedItem,
+                            "name",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c("div", { staticClass: "container-buttons" }, [
+                  _vm.update == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.saveTask()
+                            }
+                          }
+                        },
+                        [_vm._v("Añadir")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info",
+                          on: {
+                            click: function($event) {
+                              return _vm.updateMacroprocess()
+                            }
+                          }
+                        },
+                        [_vm._v("Actualizar")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.update != 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          on: {
+                            click: function($event) {
+                              return _vm.exitMacroprocess()
+                            }
+                          }
+                        },
+                        [_vm._v("Atrás")]
+                      )
+                    : _vm._e()
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
           id: "InheritedManager",
           tabindex: "-4",
           role: "dialog",
@@ -56019,7 +56469,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(8),
+              _vm._m(13),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -56027,7 +56477,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(9),
+                          _vm._m(14),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -56147,7 +56597,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(10),
+              _vm._m(15),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -56155,7 +56605,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(11),
+                          _vm._m(16),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -56366,9 +56816,104 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [_c("th", [_vm._v(" Lista de objetivos ")])])
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "GoalEdit" } }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Objetivo ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Opciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c("h5", {
+        staticClass: "modal-title",
+        attrs: { id: "MacroprocessEdit" }
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", {}, [
+      _c("tr", [
+        _c("th", [_vm._v(" Macroproceso ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Opciones ")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   },
   function() {
     var _vm = this
@@ -66389,6 +66934,24 @@ var render = function() {
                       _vm._v("Relacionar objetivos")
                     ])
                   ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("edit-goal", _vm.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-edit" }, [
+                      _vm._v("Editar objetivos")
+                    ])
+                  ]
                 )
               ]
             ),
@@ -66475,6 +67038,24 @@ var render = function() {
                       _vm._v("Crear Macroproceso")
                     ])
                   ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { "data-toggle": "tooltip" },
+                    on: {
+                      click: function($event) {
+                        return _vm.$emit("edit-macroprocess", _vm.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-edit" }, [
+                      _vm._v("Editar macroprocesos")
+                    ])
+                  ]
                 )
               ]
             )
@@ -66528,8 +67109,14 @@ var render = function() {
                     "assign-goal": function($event) {
                       return _vm.$emit("assign-goal", $event)
                     },
+                    "edit-goal": function($event) {
+                      return _vm.$emit("edit-goal", $event)
+                    },
                     "create-macroprocess": function($event) {
                       return _vm.$emit("create-macroprocess", $event)
+                    },
+                    "edit-macroprocess": function($event) {
+                      return _vm.$emit("edit-macroprocess", $event)
                     },
                     "assign-inhetited-goal": function($event) {
                       return _vm.$emit("assign-inhetited-goal", $event)

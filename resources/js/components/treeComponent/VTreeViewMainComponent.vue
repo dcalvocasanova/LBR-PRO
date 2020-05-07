@@ -21,7 +21,12 @@
 			<button class="btn btn-primary" @click="$emit('relate-goal', {'item':item, 'parent':parent})" data-toggle="tooltip" >
             <i class="fas fa-columns">Relacionar objetivos</i>
             </button>
-        </span>   
+			
+			<button class="btn btn-primary" @click="$emit('edit-goal', item)" data-toggle="tooltip" >
+            <i class="fas fa-edit">Editar objetivos</i>
+            </button>
+        </span>
+		  
         <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
             <button class="btn btn-primary"
               @click="$emit('create-user-function',item)"
@@ -41,6 +46,9 @@
 		<span class="controls-gol-edit" v-show="showMacroprocessesEditor">
 			<button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip">
             <i class="fas fa-connectdevelop">Crear Macroproceso</i>
+            </button>
+			<button class="btn btn-primary" @click="$emit('edit-macroprocess',item)" data-toggle="tooltip" >
+            <i class="fas fa-edit">Editar macroprocesos</i>
             </button>
 	    </span>
 
@@ -63,7 +71,9 @@
             @delete-node="$emit('delete-node', $event)"
             @add-item="$emit('add-item', $event)"
             @assign-goal="$emit('assign-goal', $event)"
+		    @edit-goal="$emit('edit-goal', $event)"
             @create-macroprocess="$emit('create-macroprocess', $event)"
+		    @edit-macroprocess="$emit('edit-macroprocess', $event)"
             @assign-inhetited-goal="$emit('assign-inhetited-goal', $event)"
             @relate-goal="$emit('relate-goal', $event)"
             @create-user-function="$emit('create-user-function',$event)"

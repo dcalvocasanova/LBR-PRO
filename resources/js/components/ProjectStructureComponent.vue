@@ -60,9 +60,12 @@
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-            						@create-macroprocess="CreateMacroprocess"
-            						@relate-goal="relateGoals"
+            			@create-macroprocess="CreateMacroprocess"
+            			@relate-goal="relateGoals"
                         @assign-inhetited-goal="asignarObjetivoHeredado"
+						@edit-goal="editGoal"
+						@edit-macroprocess="editMacroprocess"
+						
                       >
                       </tree-menu>
                     </div>
@@ -185,29 +188,6 @@
                       <input  v-model="newName" type="text" class="form-control">
                     </div>
                   </div>
-				  <div class="container-buttons">
-                      <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
-                      <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                      <button @click="salirObjetivos()" class="btn btn-secondary">Atrás</button>
-                    </div>
-				  <div class="form-group">
-                    <table class="table table-hover">
-                       <thead class="">
-      										<tr>
-      										  <th> Lista de objetivos </th>
-      										</tr>
-                      </thead>
-    								  <tbody>
-      										<!--<tr v-for="goal in currentNode.goals" :key="goal.pos" >
-												<td><input v-model=currentNode.goals type="text" :name=goal.pos :value=goal.pos> {{goal.name}}</td>
-      										</tr>-->
-										  
-										   <tr v-for="(goal, index) in currentNode.goals" :key="goal.pos">
-   											 <input v-model="goal.name" :key="index">
-  											</tr>
-    								  </tbody>
-  					        </table>
-                  </div>
                   <div class="card-footer">
                     <div class="container-buttons">
                       <button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
@@ -222,6 +202,129 @@
         </div>
       </div>
     </div>
+	  
+	<div class="modal fade" id="GoalEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="GoalEdit"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <div class="col-12">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Objetivo </th>
+                    <th> Opciones </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="goal in currentNode.goals" :key="goal.code">
+                    <td v-text="goal.name"></td>
+                    <td>
+                      <button class="btn btn-info" @click="loadGoalsUpdate(goal)"><i class="fas fa-edit"></i></button>
+                      <button class="btn btn-danger" @click="deleteTask(goal)"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	  
+	<div class="modal fade" id="MacroprocessEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="MacroprocessEdit"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <div class="col-12">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Macroproceso </th>
+                    <th> Opciones </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="macro in currentNode.macroprocess" :key="macro.pos">
+                    <td v-text="macro.name"></td>
+                    <td>
+                      <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
+                      <button class="btn btn-danger" @click="deleteTask(goal)"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	  
+	<div class="modal fade" id="GoalEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="TaskManager"> {{ title}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-8">	  
+			  <input v-model="currentSelectedItem.name" >
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-buttons">
+            <button v-if="update == 0" @click="saveTask()" class="btn btn-success">Añadir</button>
+            <button v-if="update != 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
+            <button v-if="update != 0" @click="exitGoal()" class="btn btn-secondary">Atrás</button>
+        </div>
+        </div>
+      </div>
+    </div>
+    </div>
+	  
+	<div class="modal fade" id="MacroprocessEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="MacroManager"> {{ title}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-8">	  
+			  <input v-model="currentSelectedItem.name" >
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-buttons">
+            <button v-if="update == 0" @click="saveTask()" class="btn btn-success">Añadir</button>
+            <button v-if="update != 0" @click="updateMacroprocess()" class="btn btn-info">Actualizar</button>
+            <button v-if="update != 0" @click="exitMacroprocess()" class="btn btn-secondary">Atrás</button>
+        </div>
+        </div>
+      </div>
+    </div>
+    </div>
+	  
     <div class="modal fade" id="InheritedManager" tabindex="-4" role="dialog" aria-labelledby="InheritedManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -325,6 +428,7 @@
 		relatedGoals:[],
 		relatedTest:[[]],
 		temp:[],
+		currentSelectedItem:"",
 		Macroprocessgoals:[],
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
         Projects:{}, //All registered projects
@@ -388,6 +492,40 @@
 
           this.getGoals()
         },
+		
+	    loadGoalsUpdate(goal){
+         let me = this;
+          me.currentSelectedItem = goal
+          me.title="Actualizar información del objetivo";
+		  me.update = 1;
+          $('#GoalEditManager').modal('show');
+
+        },
+		
+		updateGoal(){
+		  $('#GoalEditManager').modal('toggle');	
+			
+		},
+		
+		 loadMacroprocessesUpdate(macro){
+         let me = this;
+          me.currentSelectedItem = macro
+          me.title="Actualizar información del objetivo";
+		  me.update = 1;
+          $('#MacroprocessEditManager').modal('show');
+
+        },
+		
+		updateMacroprocess(){
+		  $('#MacroprocessEditManager').modal('toggle');	
+			
+		},
+		
+		exitMacroprocess(){
+		  $('#GoalEditManager').modal('toggle');	
+			
+		},
+		
       CreateMacroprocess(item){
           let me = this;
           me.currentNode = item
@@ -594,6 +732,20 @@
       },
 	  getGoals(){
         $('#RelatedManager').modal('show')
+      },
+	  editGoal(item){
+		   let me =this;
+          me.currentNode = item
+          me.updateNodeControl = 0
+          //this.getGoalName()
+        $('#GoalEdit').modal('show')
+      },
+	 editMacroprocess(item){
+		   let me =this;
+          me.currentNode = item
+          me.updateNodeControl = 0
+          //this.getGoalName()
+        $('#MacroprocessEdit').modal('show')
       },
 	  getGoalName(){
         $('#GoalManager').modal('show')
