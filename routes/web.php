@@ -192,6 +192,9 @@ Route::get('/notificaciones', function () {
 Route::get('/reporte-envio-objetivos', function () {
     return view('reports.reporteObjetivos');
 })->middleware('auth');
+Route::get('/reporte-envio-tareas', function () {
+    return view('reports.reporteTareas');
+})->middleware('auth');
 
 /*
 *EJEMPLO

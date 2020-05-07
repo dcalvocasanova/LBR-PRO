@@ -90,6 +90,7 @@ Vue.component('tasksElements', require('./components/TaskElementsManagerComponen
 
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
+Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
 
 
 

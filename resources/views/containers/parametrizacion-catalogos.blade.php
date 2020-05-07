@@ -115,6 +115,21 @@
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
             @endif
+            @component('components.colorcard')
+              @slot('title') Notificar aprobación de tareas @endslot
+              @slot('type') danger @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') notificar-aprobacion-de-objetivos @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Reporte de aprobación de tareas @endslot
+              @slot('type') danger @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') reporte-envio-tareas @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent
 
         </div>
       </div>
