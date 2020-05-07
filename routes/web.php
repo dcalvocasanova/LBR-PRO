@@ -177,6 +177,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   Route::get('/notificar-aprobacion-de-objetivos', function () {
       return view('admin.aprobarObjetivos');
   });
+  Route::get('/notificar-aprobacion-de-tareas', function () {
+      return view('admin.aprobarTareas');
+  });
 });
 Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
 Route::group(['middleware' => ['permission:R_reports']], function () {});

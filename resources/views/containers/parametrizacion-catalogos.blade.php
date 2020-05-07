@@ -119,7 +119,7 @@
               @slot('title') Notificar aprobación de tareas @endslot
               @slot('type') danger @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') notificar-aprobacion-de-objetivos @endslot
+              @slot('url') notificar-aprobacion-de-tareas @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
 
