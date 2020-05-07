@@ -26,6 +26,7 @@
                   <tr v-for="task in Tasks" :key="task.id">
                     <td v-text="task.name"></td>
                     <td>
+                      ja ja ja ja
                     </td>
                   </tr>
                 </tbody>

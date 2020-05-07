@@ -14,9 +14,9 @@ class TaskDetailController extends Controller
      */
     public function index(Request $request)
     {
-      $taskDetails = TaskDetail::where('task_id',$request->task)->get();
+      $taskDetails = TaskDetail::where('project_id',$request->id)->latest()->paginate(5);
       return $taskDetails;
-    }  
+    }
     /**
      * Store a newly created resource in storage.
      *

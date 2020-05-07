@@ -16,19 +16,14 @@ class CreateTaskDetailsTable extends Migration
         Schema::create('task_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('project_id');
-            $table->bigInteger('task_id');
+            $table->string('task_id');
             $table->string('procedure')->nullable;
             $table->json('PHVA')->nullable;
             $table->string('frecuency')->nullable;
-            $table->string('t-min')->nullable;
-            $table->string('t-avg')->nullable;
-            $table->string('t-max')->nullable;
+            $table->string('t_min')->nullable;
+            $table->string('t_avg')->nullable;
+            $table->string('t_max')->nullable;
             $table->string('laborType')->nullable;
-            $table->string('competence')->nullable;
-            $table->string('effort')->nullable;
-            $table->json('risk')->nullable;
-            $table->json('addedValue')->nullable;
-            $table->json('correlation')->nullable;
             $table->timestamps();
         });
     }

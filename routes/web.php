@@ -192,6 +192,9 @@ Route::get('/notificaciones', function () {
 Route::get('/reporte-envio-objetivos', function () {
     return view('reports.reporteObjetivos');
 })->middleware('auth');
+Route::get('/reporte-envio-tareas', function () {
+    return view('reports.reporteTareas');
+})->middleware('auth');
 
 /*
 *EJEMPLO
@@ -396,7 +399,7 @@ Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
 
-Route::get('/tareas-elementos-asociados/{id}', 'QuestionController@index');
-Route::put('/tareas-elementos-asociados/actualizar', 'QuestionController@update');
-Route::post('/tareas-elementos-asociados/guardar', 'QuestionController@store');
-Route::delete('/tareas-elementos-asociados/borrar/{id}', 'QuestionController@destroy');
+Route::get('/tareas-elementos-asociados/{id}', 'TaskDetailController@index');
+Route::put('/tareas-elementos-asociados/actualizar', 'TaskDetailController@update');
+Route::post('/tareas-elementos-asociados/guardar', 'TaskDetailController@store');
+Route::delete('/tareas-elementos-asociados/borrar/{id}', 'TaskDetailController@destroy');
