@@ -226,7 +226,7 @@
                     <td v-text="goal.name"></td>
                     <td>
                       <button class="btn btn-info" @click="loadGoalsUpdate(goal)"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-danger" @click="deleteTask(goal)"><i class="fas fa-trash-alt"></i></button>
+                      <button class="btn btn-danger" @click="deleteGoal(goal)"><i class="fas fa-trash-alt"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -260,7 +260,7 @@
                     <td v-text="macro.name"></td>
                     <td>
                       <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-danger" @click="deleteTask(goal)"><i class="fas fa-trash-alt"></i></button>
+                      <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -506,8 +506,61 @@
 		  $('#GoalEditManager').modal('toggle');	
 			
 		},
+	deleteGoal(item){
+      let me = this;
+      swal.fire({
+        title: 'Eliminar un objetivo',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un objetivo",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      })
+      .then((result) => {
+        if (result.value) {
+          me.currentNode.goals = me.deleteIndex(me.currentNode.goals,item)
+          swal.fire(
+            'Eliminado',
+            'Objetivo fue eliminado',
+            'success'
+          )
+        }
+      })
+
+    },
+    deleteIndex(arr, index){
+      return arr.filter(function(i){
+        return i!= index
+      });
+    },
 		
-		 loadMacroprocessesUpdate(macro){
+	deleteMacroprocess(item){
+      let me = this;
+      swal.fire({
+        title: 'Eliminar un macroproceso',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un macroproceso",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      })
+      .then((result) => {
+        if (result.value) {
+          me.currentNode.macroprocess = me.deleteIndex(me.currentNode.macroprocess,item)
+          swal.fire(
+            'Eliminado',
+            'macroproceso fue eliminado',
+            'success'
+          )
+        }
+      })
+
+    },
+    
+		
+   loadMacroprocessesUpdate(macro){
          let me = this;
           me.currentSelectedItem = macro
           me.title="Actualizar información del objetivo";
