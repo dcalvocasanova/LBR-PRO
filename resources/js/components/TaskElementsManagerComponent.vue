@@ -28,16 +28,18 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="bmd-label-floating">Por producto</label>
-                      <select v-model="form.laborType" class=" form-control">
-                        <option v-for="f in WorkTypes">{{ f.name }}</option>
+                      <select @change="getTasks" v-model="type" class=" form-control">
+                        <option  value="USER-FUNCTION"> Función de usuario</option>
+                        <option  value="PRODUCT"> Producto</option>
+                        <option  value="SUB-PRODUCT"> Producto de Subproceso</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="bmd-label-floating">Por nivel</label>
-                      <select v-model="form.laborType" class=" form-control">
-                        <option v-for="f in WorkTypes">{{ f.name }}</option>
+                      <select @change="getTasks" v-model="level" class=" form-control">
+                        <option v-for="l in Levels" :value="l">{{ l }}</option>
                       </select>
                     </div>
                   </div>
@@ -90,31 +92,10 @@
   export default {
       data(){
         return{
-          form: new Form ({
-            id:"",
-            procedure:"",
-            PHVA:"",
-            frecuency:"",
-            t_min:"",
-            t_avg:"",
-            t_max:"",
-            quantity:"",
-            laborType:"",
-            competence:"",
-            effort:"",
-            risk:"",
-            addedValue:"",
-            correlation:""
-          }),
           selectingProjectToAddTasks: true,
           tiempos:true,
           mejoramiento:false,
           currentProject:0,
-          showDetails: false,
-          task_id:[],
-          title:"Agregar nuevos elementos a las tarea", //title to show
-          update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-          showVariable:0,
           Projects:{},
           Tasks:{},
           TaskElements:{},
@@ -125,7 +106,10 @@
           Correlation:{},
           Risk:{},
           RiskCondition:{},
-          OrganizationalSkills:{}
+          OrganizationalSkills:{},
+          Levels:{},
+          level:"",
+          type:"",
         }
       },
       methods:{
@@ -138,7 +122,14 @@
         },
         getTasks(page = 1) {
           let me =this;
-          axios.get('/tareas/'+this.currentProject+'?page=' + page)
+          axios.get('/tareas-por-tipo',{
+            params:{
+              level: me.level,
+              type: me.type,
+              id: me.currentProject,
+              page: page
+            }
+          })
           .then(response => {
             me.Tasks = response.data
           });
@@ -147,73 +138,7 @@
           let me = this
           me.selectingProjectToAddTasks=false
           me.getTasks()
-        },
-        saveTask(){
-          let me =this;
-          me.form.project_id=me.currentProject
-          let PHVA = JSON.stringify(me.form.PHVA)
-          me.form.PHVA = PHVA
-          me.form.task_id= me.task_id.toString();
-          me.form.post('/tareas-elementos-asociados/guardar')
-          .then(function (response) {
-              me.clearFields();
-              toast.fire({
-                type: 'success',
-                title: 'Elementos de la tarea guardados con éxito'
-              });
-          });
-        },
-        showTask(task){
-          let me =this;
-          me.form.fill(task);
-          me.task_id = task.task_id.split(",");
-          me.update = task.id
-          me.title="Actualizar información de los elementos de las tareas"
-          $('#TaskCatalogPicker').modal('show')
-        },
-        updateTask(task){
-          let me = this;
-          me.form.task_id= me.task_id.toString();
-          me.form.put('/tareas-elementos-asociados/actualizar')
-          .then(function (response) {
-             toast.fire({
-              type: 'success',
-              title: 'Elementos de la tarea actualizado con éxito'
-             });
-             me.clearFields();
-          })
-        },
-        deleteTask(task){
-          let me =this;
-          swal.fire({
-            title: 'Eliminar configuración',
-            text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#114e7e',
-            cancelButtonColor: '#20c9a6',
-            confirmButtonText: '¡Sí, eliminarlo!'
-          })
-          .then((result) => {
-            if (result.value) {
-              axios.delete('/tareas-elementos-asociados/borrar/'+task.id)
-              .then(function (response) {
-                swal.fire(
-                  'Eliminado',
-                  'Configuración fue eliminada',
-                  'success'
-                )
-              })
-            }
-          })
-        },
-        clearFields(){
-          let me =this;
-          $('#TaskCatalogPicker').modal('toggle')
-          me.title= "Agregar nuevos elementos a las tareas";
-          me.update = 0
-          me.task_id =[]
-          me.form.reset()
+          me.LoadLevelsOfStructure()
         },
         LoadCatalogFrecuency() {
           axios.get('catalogo?id=FRECUENCY')
@@ -267,6 +192,13 @@
           axios.get('catalogo?id=TECNICAL-SKILL-T')
           .then(response => {
                 this.TecnicalSkills = response.data; //get all catalogs from category selected
+          });
+        },
+        LoadLevelsOfStructure() {
+          let me = this
+          axios.get('/estructura/lista-niveles/'+me.currentProject)
+          .then(response => {
+                me.Levels = response.data; //get all catalogs from category selected
           });
         }
       },

@@ -15,7 +15,37 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-      $tasks = Task::where('project_id',$request->id)->latest()->paginate(25);
+      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
+      return $tasks;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTaskAccordingTypeAndLevel(Request $request)
+    {
+      if(isset($request->type) && isset($request->level)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('type',$request->type)
+                      ->where('relatedToLevel',$request->level)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      if(isset($request->type)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('type',$request->type)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      if(isset($request->level)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('relatedToLevel',$request->level)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
       return $tasks;
     }
 

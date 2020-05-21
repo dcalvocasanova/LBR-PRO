@@ -24,7 +24,7 @@
               @slot('title') Gestionar parametrización del análisis psicosocial @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') gestionar-parametros @endslot
+              @slot('url') /gestionador-parametros-analisis-psicosocial @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
 

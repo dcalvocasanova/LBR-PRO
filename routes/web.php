@@ -155,6 +155,9 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionador-parametrizacion-diseno', function () {
       return view('containers.parametrizacion-disegno');
   });
+  Route::get('/gestionador-parametros-analisis-psicosocial', function () {
+      return view('admin.parametros_psicoanalisis');
+  });
 
 
 });
@@ -398,6 +401,21 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
+Route::get('/tareas-por-tipo', 'TaskController@getTaskAccordingTypeAndLevel');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
+
+/*Manage Psychosocial Analysis*/
+Route::get('/psicoanalisis', 'PsychosocialQuestionController@index');
+Route::put('/psicoanalisis/actualizar', 'PsychosocialQuestionController@update');
+Route::post('/psicoanalisis/guardar', 'PsychosocialQuestionController@store');
+Route::delete('/psicoanalisis/borrar/{id}', 'PsychosocialQuestionController@destroy');
+Route::get('/findquestion', 'PsychosocialQuestionController@search');
+
+/*Manage Psychosocial Analysis Variables*/
+Route::get('/psicoanalisis-variables', 'PsychosocialVariableController@index');
+Route::put('/psicoanalisis-variables/actualizar', 'PsychosocialVariableController@update');
+Route::post('/psicoanalisis-variables/guardar', 'PsychosocialVariableController@store');
+Route::delete('/psicoanalisis-variables/borrar/{id}', 'PsychosocialVariableController@destroy');
+Route::get('/findvariable', 'PsychosocialVariableController@search');

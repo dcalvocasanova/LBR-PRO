@@ -70,12 +70,21 @@ Vue.component('macroprocessCatalogs', require('./components/catalogs/Macroproces
 Vue.component('tasksCatalogs', require('./components/catalogs/TasksComponent.vue').default);
 
 
+/*
+* Components related to Macroprocess an Psychosocial questions
+*/
+Vue.component('psychosocialQuestions', require('./components/PsychosocialQuestionComponent.vue').default);
+Vue.component('psychosocialVariables', require('./components/PsychosocialVariableComponent.vue').default);
 
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('questions', require('./components/QuestionComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
+
+
+
+
 
 Vue.component('subprocesos', require('./components/SubprocessComponent.vue').default);
 Vue.component('procesos', require('./components/ProcessComponent.vue').default);
