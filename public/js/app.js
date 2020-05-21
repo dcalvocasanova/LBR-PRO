@@ -4259,6 +4259,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var _methods;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -4714,7 +4718,7 @@ __webpack_require__.r(__webpack_exports__);
       })
     };
   },
-  methods: {
+  methods: (_methods = {
     nodoSeleccionado: function nodoSeleccionado(item) {
       alert("Se hizo click sobre" + item.name);
     },
@@ -4763,6 +4767,45 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateGoal: function updateGoal() {
       $('#GoalEditManager').modal('toggle');
+    },
+    deleteGoal: function deleteGoal(item) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar un objetivo',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un objetivo",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      }).then(function (result) {
+        if (result.value) {
+          me.currentNode.goals = me.deleteIndex(me.currentNode.goals, item);
+          swal.fire('Eliminado', 'Objetivo fue eliminado', 'success');
+        }
+      });
+    },
+    deleteIndex: function deleteIndex(arr, index) {
+      return arr.filter(function (i) {
+        return i != index;
+      });
+    },
+    deleteMacroprocess: function deleteMacroprocess(item) {
+      var me = this;
+      swal.fire({
+        title: 'Eliminar un macroproceso',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un macroproceso",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      }).then(function (result) {
+        if (result.value) {
+          me.currentNode.macroprocess = me.deleteIndex(me.currentNode.macroprocess, item);
+          swal.fire('Eliminado', 'macroproceso fue eliminado', 'success');
+        }
+      });
     },
     loadMacroprocessesUpdate: function loadMacroprocessesUpdate(macro) {
       var me = this;
@@ -4940,77 +4983,64 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         node.parent.children = [];
       }
-    },
-    deleteIndex: function deleteIndex(arr, index) {
-      return arr.filter(function (i) {
-        return i != index;
-      });
-    },
-    salir: function salir() {
-      $('#LevelManager').modal('toggle');
-      this.newName = "";
-    },
-    salirObjetivos: function salirObjetivos() {
-      $('#GoalManager').modal('toggle');
-      this.newName = "";
-    },
-    salirRelacionarObjetivos: function salirRelacionarObjetivos() {
-      $('#InheritedManager').modal('toggle');
-      this.newName = "";
-    },
-    salirMacroprocess: function salirMacroprocess() {
-      $('#MacroprocessManager').modal('toggle');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getMacroprocessData: function getMacroprocessData() {
-      $('#MacroprocessManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-      this.Macroprocessgoals = [];
-    },
-    getNodeName: function getNodeName() {
-      $('#LevelManager').modal('show');
-      this.newName = "";
-      this.newCode = "";
-    },
-    getGoalsInherited: function getGoalsInherited() {
-      $('#InheritedManager').modal('show');
-    },
-    getGoals: function getGoals() {
-      $('#RelatedManager').modal('show');
-    },
-    editGoal: function editGoal(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0; //this.getGoalName()
-
-      $('#GoalEdit').modal('show');
-    },
-    editMacroprocess: function editMacroprocess(item) {
-      var me = this;
-      me.currentNode = item;
-      me.updateNodeControl = 0; //this.getGoalName()
-
-      $('#MacroprocessEdit').modal('show');
-    },
-    getGoalName: function getGoalName() {
-      $('#GoalManager').modal('show');
-    },
-    rndStr: function rndStr(len) {
-      var text = " ";
-      var chars = "abcdefghijklmnopqrstuvwxyz123456789";
-
-      for (var i = 0; i < len; i++) {
-        for (var k = 0; k < 8; k++) {
-          text += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-      }
-
-      return text;
     }
-  },
+  }, _defineProperty(_methods, "deleteIndex", function deleteIndex(arr, index) {
+    return arr.filter(function (i) {
+      return i != index;
+    });
+  }), _defineProperty(_methods, "salir", function salir() {
+    $('#LevelManager').modal('toggle');
+    this.newName = "";
+  }), _defineProperty(_methods, "salirObjetivos", function salirObjetivos() {
+    $('#GoalManager').modal('toggle');
+    this.newName = "";
+  }), _defineProperty(_methods, "salirRelacionarObjetivos", function salirRelacionarObjetivos() {
+    $('#InheritedManager').modal('toggle');
+    this.newName = "";
+  }), _defineProperty(_methods, "salirMacroprocess", function salirMacroprocess() {
+    $('#MacroprocessManager').modal('toggle');
+    this.newName = "";
+    this.newCode = "";
+    this.Macroprocessgoals = [];
+  }), _defineProperty(_methods, "getMacroprocessData", function getMacroprocessData() {
+    $('#MacroprocessManager').modal('show');
+    this.newName = "";
+    this.newCode = "";
+    this.Macroprocessgoals = [];
+  }), _defineProperty(_methods, "getNodeName", function getNodeName() {
+    $('#LevelManager').modal('show');
+    this.newName = "";
+    this.newCode = "";
+  }), _defineProperty(_methods, "getGoalsInherited", function getGoalsInherited() {
+    $('#InheritedManager').modal('show');
+  }), _defineProperty(_methods, "getGoals", function getGoals() {
+    $('#RelatedManager').modal('show');
+  }), _defineProperty(_methods, "editGoal", function editGoal(item) {
+    var me = this;
+    me.currentNode = item;
+    me.updateNodeControl = 0; //this.getGoalName()
+
+    $('#GoalEdit').modal('show');
+  }), _defineProperty(_methods, "editMacroprocess", function editMacroprocess(item) {
+    var me = this;
+    me.currentNode = item;
+    me.updateNodeControl = 0; //this.getGoalName()
+
+    $('#MacroprocessEdit').modal('show');
+  }), _defineProperty(_methods, "getGoalName", function getGoalName() {
+    $('#GoalManager').modal('show');
+  }), _defineProperty(_methods, "rndStr", function rndStr(len) {
+    var text = " ";
+    var chars = "abcdefghijklmnopqrstuvwxyz123456789";
+
+    for (var i = 0; i < len; i++) {
+      for (var k = 0; k < 8; k++) {
+        text += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+    }
+
+    return text;
+  }), _methods),
   created: function created() {
     var _this3 = this;
 
@@ -56457,7 +56487,7 @@ var render = function() {
                                 staticClass: "btn btn-danger",
                                 on: {
                                   click: function($event) {
-                                    return _vm.deleteTask(goal)
+                                    return _vm.deleteGoal(goal)
                                   }
                                 }
                               },
@@ -56533,7 +56563,7 @@ var render = function() {
                                 staticClass: "btn btn-danger",
                                 on: {
                                   click: function($event) {
-                                    return _vm.deleteTask(_vm.goal)
+                                    return _vm.deleteMacroprocess(macro)
                                   }
                                 }
                               },
