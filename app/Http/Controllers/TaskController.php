@@ -15,7 +15,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-      $tasks = Task::where('id_project',$request->id)->latest()->paginate(5);
+      $tasks = Task::where('project_id',$request->id)->latest()->paginate(25);
       return $tasks;
     }
 

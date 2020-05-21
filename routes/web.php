@@ -401,8 +401,3 @@ Route::get('/tareas/{id}', 'TaskController@index');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
-
-Route::get('/tareas-elementos-asociados/{id}', 'TaskDetailController@index');
-Route::put('/tareas-elementos-asociados/actualizar', 'TaskDetailController@update');
-Route::post('/tareas-elementos-asociados/guardar', 'TaskDetailController@store');
-Route::delete('/tareas-elementos-asociados/borrar/{id}', 'TaskDetailController@destroy');

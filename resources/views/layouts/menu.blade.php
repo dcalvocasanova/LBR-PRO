@@ -26,7 +26,8 @@
     Panel de gestión
   </div>
   --}}
-
+  
+  <a class="collapse-item" href="/gestionador-proyectos">Gestionar</a>
 
   {{-- Nav Item - Projects Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_users'))

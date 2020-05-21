@@ -181,8 +181,8 @@
         return{
           form: new Form ({
             id:"",
-            id_project:0,
-            id_product:0,
+            project_id:0,
+            product_id:0,
             relatedToLevel:"",
             allocator:"",
             task:"",
@@ -228,7 +228,7 @@
           me.getProducts()
           me.getTasks()
         },
-        getProjectos(){
+        getProjects(){
           let me =this;
           axios.get('/todos-los-proyectos')
           .then(response => {
@@ -253,22 +253,22 @@
         optionPicker(type){
           let me =this
           if(me.currentTypeTaks =='PRODUCT'){
-            me.form.id_project = type.project_id
-            me.form.id_product = type.id
+            me.form.project_id = type.project_id
+            me.form.product_id = type.id
             me.form.allocator = type.resultProduct
             me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'PRODUCT'
           }
           if(me.currentTypeTaks =='SUB-PRODUCT'){
-            me.form.id_project = type.project_id
-            me.form.id_product = type.id
+            me.form.project_id = type.project_id
+            me.form.product_id = type.id
             me.form.allocator = type.product
             me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'SUB-PRODUCT'
           }
           if(me.currentTypeTaks =='USER-FUNCTION'){
-            me.form.id_project = me.currentProject
-            me.form.id_product = 0
+            me.form.project_id = me.currentProject
+            me.form.product_id = 0
             me.form.allocator = type[0]
             me.form.relatedToLevel = type[2]
             me.form.type = 'USER-FUNCTION'
@@ -344,7 +344,7 @@
         }
       },
       mounted() {
-        this.getProjectos()
+        this.getProjects()
       }
 }
 </script>
