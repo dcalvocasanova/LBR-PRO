@@ -12,7 +12,7 @@
                   <thead class="">
                     <tr>
                       <th> Nombre </th>
-                      <th v-show="showDeleteAndUpdateButton"> Acciones </th>
+                      <th> Acciones </th>
                     </tr>
                   </thead>
                   <tbody>

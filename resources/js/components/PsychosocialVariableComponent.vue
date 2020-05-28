@@ -12,7 +12,7 @@
                   <thead class="">
                     <tr>
                       <th> Nombre </th>
-                      <th v-show="showDeleteAndUpdateButton"> Acciones </th>
+                      <th> Acciones </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -41,7 +41,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Pregunta</label>
+                    <label class="bmd-label-floating">Variable</label>
                     <input v-model="form.variable" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('variable') }">
                     <has-error :form="form" field="variable"></has-error>
                   </div>
@@ -54,21 +54,49 @@
               </div>
             </div>
           </div>
+          <br>
+          <div class="card">
+            <div class="card-header card-header-primary">
+              <h4 class="card-title"> Seleccionar preguntas asociadas</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="">
+                    <tr>
+                      <th> Nombre </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr  v-for="q in Questions.data" :key="q.id">
+                        <input v-model="questionSelected" type="checkbox" :id=q.id :value=q.id> {{q.question}}
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+              <pagination :data="Questions" @pagination-change-page="getQuestions"></pagination>
+            </div>
+          </div>
         </div>
       </div>
   </div>
 </template>
 
 <script>
-export default {  
+export default {
   data(){
     return{
       form: new Form ({
         id:"",
-        variable:""
+        variable:"",
+        related_to_questions:[]
       }),
+      questionSelected:[],
       Variables:{},
-      title:"Registrar nueva pregunta", //title to show
+      Questions:{},
+      title:"Registrar nueva variable ", //title to show
       update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
     }
   },
@@ -82,9 +110,16 @@ export default {
             me.Variables = response.data; //get all projects from page
       });
     },
-
-    saveVariable(){
+    getQuestions(page = 1){
       let me =this;
+      axios.get('/psicoanalisis/?page='+ page)
+      .then(response => {
+            me.Questions = response.data; //get all projects from page
+      });
+    },
+    saveVariable(){
+      let me =this
+      me.form.related_to_questions = me.questionSelected
       me.form.post('/psicoanalisis-variables/guardar')
       .then(function (response) {
           me.clearFields();
@@ -101,6 +136,7 @@ export default {
     },
     updateVariable(){
         let me = this;
+        me.form.related_to_questions = me.questionSelected
         me.form.put('/psicoanalisis-variables/actualizar')
         .then(function (response) {
            toast.fire({
@@ -115,17 +151,18 @@ export default {
         });
     },
     loadFieldsUpdate(variable){
-      let me =this;
-      me.form.fill(variable);
+      let me =this
+      me.form.fill(variable)
       me.update = variable.id
-      me.title="Actualizar pregunta";
+      me.questionSelected= variable.related_to_questions
+      me.title="Actualizar variable"
     },
     deleteVariable(variable){
       let me =this;
       let variable_id = variable.id
       swal.fire({
-        title: 'Eliminar una pregunta',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar una pregunta",
+        title: 'Eliminar una variable ',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una variable ",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#114e7e',
@@ -151,8 +188,9 @@ export default {
     },
     clearFields(){
       let me =this;
-      me.title= "Registrar nueva pregunta";
-      me.update = 0;
+      me.title= "Registrar nueva variable "
+      me.update = 0
+      me.questionSelected=[]
       me.form.reset();
     }
   },
@@ -169,6 +207,7 @@ export default {
   },
   mounted() {
    this.getVariables()
+   this.getQuestions()
   }
 }
 </script>

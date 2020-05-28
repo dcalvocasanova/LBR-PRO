@@ -159,6 +159,10 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
       return view('admin.parametros_psicoanalisis');
   });
 
+  Route::get('/gestionador-variables-analisis-psicosocial', function () {
+      return view('admin.variables_psicoanalisis');
+  });
+
 
 });
 Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {

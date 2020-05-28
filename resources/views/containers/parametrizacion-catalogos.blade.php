@@ -72,7 +72,7 @@
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
 
-			@component('components.colorcard')
+	          @component('components.colorcard')
               @slot('title') Agregar macroprocesos  @endslot
               @slot('type') info @endslot
               @slot('subtitle') ir @endslot

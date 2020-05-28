@@ -113,7 +113,7 @@
                 <tr v-for="a in AddedValue" :key="a.id">
                   <th v-text="a.name"></th>
                   <th>
-                    <input @click="showSave" v-model="addedValueArray" type="checkbox" :value="a.name">
+                    <input @click="showSave" v-model="addedValueArray" type="checkbox" :value=a.name>
                   </th>
                 </tr>
               </tbody>
