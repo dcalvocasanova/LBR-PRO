@@ -65,6 +65,16 @@ Vue.component('notificatorTask', require('./components/TaskNotifierComponent.vue
 */
 Vue.component('projectNavHeader', require('./components/navheaders/ProjectNavHeaderComponent.vue').default);
 
+
+/*
+*Componet to get current Project
+*/
+Vue.component('projectPicker', require('./components/ProjectPickerComponent.vue').default);
+
+/*
+*
+*/
+
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('macroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
 Vue.component('tasksCatalogs', require('./components/catalogs/TasksComponent.vue').default);
@@ -114,11 +124,17 @@ Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue
  const app = new Vue({
     el: '#app',
     data:{
-      search:''
+      search:'',
+      currentProject: ''
     },
     methods:{
       searchit: _.debounce(() => {
             Fire.$emit('searching');
         },900),
+    },
+    created(){
+      Fire.$on('selectedProject',(project) => {
+          this.currentProject= project
+      })
     }
 });

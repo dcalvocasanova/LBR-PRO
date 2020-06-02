@@ -1,76 +1,61 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectToAddUsers === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran los roles de los usuarios</h4>
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card card-plain">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title mt-0"> Lista de usuarios</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Seleccionar </th>
+                    <th> Nombre </th>
+                    <th> Puesto </th>
+                    <th> Role </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr  v-for="user in Users.data" :key="user.id">
+                      <td>
+                        <input v-model="form.users" type="checkbox"
+                        :name="user.id"
+                        :value="user.id">
+                      </td>
+                      <td v-text="user.name"></td>
+                      <td v-text="user.position"></td>
+                      <td v-if="user.roles.length" v-text="user.roles[0].name"></td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer">
+            <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectToAddUsers === false">
-        <div class="col-md-8">
-          <div class="card card-plain">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title mt-0"> Lista de usuarios</h4>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class="">
-                    <tr>
-                      <th> Seleccionar </th>
-                      <th> Nombre </th>
-                      <th> Puesto </th>
-                      <th> Role </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                      <tr  v-for="user in Users.data" :key="user.id">
-                        <td>
-                          <input v-model="form.users" type="checkbox"
-                          :name="user.id"
-                          :value="user.id">
-                        </td>
-                        <td v-text="user.name"></td>
-                        <td v-text="user.position"></td>
-                        <td v-if="user.roles.length" v-text="user.roles[0].name"></td>
-                      </tr>
-                    </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="card-footer">
-              <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
+      <div class="col-md-4">
+        <h2>Seleccionar rol a asignar </h2>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label class="bmd-label-floating">Rol de usuario</label>
+              <br>
+              <select v-model="form.role" class="form-control">
+                <option v-for="r in Roles.data" :value="r">{{ r }}</option>
+                <option value="remove"> Quitar Rol </option>
+              </select>
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <h2>Seleccionar rol a asignar </h2>
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group">
-                <label class="bmd-label-floating">Rol de usuario</label>
-                <br>
-                <select v-model="form.role" class="form-control">
-                  <option v-for="r in Roles.data" :value="r">{{ r }}</option>
-                  <option value="remove"> Quitar Rol </option>
-                </select>
-              </div>
-            </div>
-          </div>
 
-          <div class="container-buttons">
-            <button @click="saveRoleToUser()" class="btn btn-success">Asignar rol</button>
-          </div>
+        <div class="container-buttons">
+          <button @click="saveRoleToUser()" class="btn btn-success">Asignar rol</button>
         </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,32 +71,26 @@ export default {
         users:[],
         role:""
       }),
-      selectingProjectToAddUsers:true,
       currentProject:0,
       Users:{}, //BD content
-      Projects:{},
       Roles:{}
     }
   },
   methods:{
-    setProject(){
-      let me = this
-      me.selectingProjectToAddUsers=false
-      me.getUsuarios()
-      me.loadRoles()
-    },
     getUsuarios(page = 1) {
       let me =this;
-      axios.get('/usuarios-por-proyecto/'+me.currentProject+'?page=' + page)
+      axios.get('/usuarios-por-proyecto/?page=' + page)
       .then(response => {
             me.Users = response.data; //get all projects from page
+            me.getCurrentProject();
       });
     },
-    getProjectos(){
+    getCurrentProject(){
       let me =this;
-      axios.get('/todos-los-proyectos')
+      axios.get('/proyecto/actual')
       .then(response => {
-            me.Projects = response.data; //get all projects from page
+          me.currentProject = response.data.id
+          me.loadRoles()
       });
     },
     loadRoles() {
@@ -157,7 +136,7 @@ export default {
       })
   },
   mounted() {
-   this.getProjectos()
+   this.getUsuarios()
   }
 }
 </script>

@@ -53,19 +53,18 @@
                       <tree-menu
                         class="item" :item="Levels":parent="Levels"
                         :showTreeEditor="showAsStructureEditor" :showGoalEditor="showAsGoalEditor"
-					    :showMacroprocessesEditor="showAsMacroprocessEditor"
+	                      :showMacroprocessesEditor="showAsMacroprocessEditor"
                         @make-parent="makeParent"
                         @edit-node="editNode"
                         @delete-node="deleteNode"
                         @add-item="addChild"
                         @clicked-node="nodoSeleccionado"
                         @assign-goal="asignarObjetivoANodo"
-            			@create-macroprocess="CreateMacroprocess"
-            			@relate-goal="relateGoals"
+            			      @create-macroprocess="CreateMacroprocess"
+            			      @relate-goal="relateGoals"
                         @assign-inhetited-goal="asignarObjetivoHeredado"
-						@edit-goal="editGoal"
-						@edit-macroprocess="editMacroprocess"
-						
+						            @edit-goal="editGoal"
+						            @edit-macroprocess="editMacroprocess"
                       >
                       </tree-menu>
                     </div>
@@ -143,12 +142,12 @@
 												<td><input v-model=Macroprocessgoals type="checkbox" :name="goal.pos" :value="goal.pos"> {{goal.name}}</td>
       										</tr>
     								  </tbody>
-							  
+
     								  <tbody>
       										<tr v-for="(macro, index) in currentNode.macroprocess" :key="macro.pos">
    											 <input v-model="macro.name" :key="index">
   											</tr>
-										  
+
     								  </tbody>
   					        </table>
                     </div>
@@ -202,8 +201,7 @@
         </div>
       </div>
     </div>
-	  
-	<div class="modal fade" id="GoalEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+	 <div class="modal fade" id="GoalEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
@@ -236,8 +234,7 @@
         </div>
       </div>
     </div>
-	  
-	<div class="modal fade" id="MacroprocessEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
+	 <div class="modal fade" id="MacroprocessEdit" tabindex="-3" role="dialog" aria-labelledby="GoalManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
@@ -270,8 +267,7 @@
         </div>
       </div>
     </div>
-	  
-	<div class="modal fade" id="GoalEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
+	 <div class="modal fade" id="GoalEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
@@ -282,7 +278,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-8">	  
+              <div class="col-8">
 			  <input v-model="currentSelectedItem.name" >
             </div>
           </div>
@@ -297,8 +293,7 @@
       </div>
     </div>
     </div>
-	  
-	<div class="modal fade" id="MacroprocessEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
+	 <div class="modal fade" id="MacroprocessEditManager" tabindex="-1" role="dialog" aria labelledby="TaskManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
@@ -309,7 +304,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-8">	  
+              <div class="col-8">
 			  <input v-model="currentSelectedItem.name" >
             </div>
           </div>
@@ -324,7 +319,7 @@
       </div>
     </div>
     </div>
-	  
+
     <div class="modal fade" id="InheritedManager" tabindex="-4" role="dialog" aria-labelledby="InheritedManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -450,7 +445,6 @@
     },
     methods:{
       nodoSeleccionado(item){
-          alert ("Se hizo click sobre"+item.name)
         },
       asignarObjetivoANodo(item){
           let me = this;
@@ -492,7 +486,7 @@
 
           this.getGoals()
         },
-		
+
 	    loadGoalsUpdate(goal){
          let me = this;
           me.currentSelectedItem = goal
@@ -501,10 +495,10 @@
           $('#GoalEditManager').modal('show');
 
         },
-		
+
 		updateGoal(){
-		  $('#GoalEditManager').modal('toggle');	
-			
+		  $('#GoalEditManager').modal('toggle');
+
 		},
 	deleteGoal(item){
       let me = this;
@@ -534,7 +528,7 @@
         return i!= index
       });
     },
-		
+
 	deleteMacroprocess(item){
       let me = this;
       swal.fire({
@@ -558,8 +552,8 @@
       })
 
     },
-    
-		
+
+
    loadMacroprocessesUpdate(macro){
          let me = this;
           me.currentSelectedItem = macro
@@ -568,17 +562,17 @@
           $('#MacroprocessEditManager').modal('show');
 
         },
-		
+
 		updateMacroprocess(){
-		  $('#MacroprocessEditManager').modal('toggle');	
-			
+		  $('#MacroprocessEditManager').modal('toggle');
+
 		},
-		
+
 		exitMacroprocess(){
-		  $('#GoalEditManager').modal('toggle');	
-			
+		  $('#GoalEditManager').modal('toggle');
+
 		},
-		
+
       CreateMacroprocess(item){
           let me = this;
           me.currentNode = item
@@ -632,10 +626,8 @@
           let url = '/estructura?id='+me.project_id;
           axios.get(url).then(function (response) {
               me.Levels = JSON.parse(response.data.levels); //get all structure
-
               me.level.id= response.data.id;
               me.level.project_id=response.data.project_id;
-			 
           })
           .catch(function (error) {
               console.log(error);
@@ -662,6 +654,7 @@
       },
       loadLevelData(project){
           this.project_id = project.id;
+          this.level.project_id= project.id;
           this.getLevels();
       },
       makeParent(item) {

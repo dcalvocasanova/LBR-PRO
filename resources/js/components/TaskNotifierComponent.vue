@@ -19,15 +19,26 @@
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <div class="col-md-8">
-                <h3 class="card-title mt-0"> Lista de tareas</h3>
-            </div>
-            <div class="col-md-4"
-              data-toggle="modal"
-              data-target="#TaskNotificator">
-              <button class="btn btn-primary">
-                <i class="fa fa-plus-circle"></i>
-              </button>
+            <h3 class="card-title mt-0"> Lista de tareas</h3>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Por producto</label>
+                  <select @change="getTasks" v-model="type" class=" form-control">
+                    <option  value="USER-FUNCTION"> Función de usuario</option>
+                    <option  value="PRODUCT"> Producto</option>
+                    <option  value="SUB-PRODUCT"> Producto de Subproceso</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Por nivel</label>
+                  <select @change="getTasks" v-model="level" class=" form-control">
+                    <option v-for="l in Levels" :value="l">{{ l }}</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
           <div class="card-body card-body-fitted ">
@@ -47,9 +58,9 @@
                       </td>
                     </tr>
                   </tbody>
-              </table>
+              </table>                
               <div class="footer">
-                <pagination :data="Tasks" @pagination-change-page="getTasks"></pagination>
+                <pagination :data="Tasks" @pagination-change-page="getTasks()"></pagination>
               </div>
             </div>
           </div>
@@ -109,166 +120,168 @@
 </template>
 
 <script>
-  export default {
-      data(){
-          return{
-              form: new Form ({
-                id:"",
-                project_id:"",
-                task_id:"",
-                procedure:"",
-                PHVA:{},
-                frecuency:"",
-                t_min:"",
-                t_avg:"",
-                t_max:"",
-                laborType:""
-              }),
-              selectingProjectToAddTasks: true,
-              currentProject:0,
-              usersToNotify:[],
-              Users:{},
-              task_id:[],
-              title:"", //title to show
-              update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-              showVariable:0,
-              Projects:{},
-              Tasks:{},
-
-          }
-      },
-      methods:{
-        getProjects(){
-          let me =this;
-          axios.get('/todos-los-proyectos')
-          .then(response => {
-              me.Projects = response.data; //get all projects from page
-          });
-        },
-        getTasks(page = 1) {
-          let me =this;
-          axios.get('/tareas/'+this.currentProject+'?page=' + page)
-          .then(response => {
-            me.Tasks = response.data
-          });
-        },
-        loadNotificator(task){
-          let me =this;
-          me.getUserinLevel(task.relatedToLevel)
-          me.title = task.task
-          $('#TaskNotificator').modal('show')
-        },
-        getUserinLevel(level){
-          axios.get('/usuarios-por-nivel', {
-              params: {
-                project: this.currentProject,
-                level: level
-              }
-          })
-          .then(response => {
-            this.Users = response.data; //get all projects from page
-          });
-        },
-        setProject(){
-          let me = this
-          me.selectingProjectToAddTasks=false
-          me.getTasks()
-          me.getTaskElements()
-        },
-        getTaskElements(page = 1) {
-          let me =this;
-          axios.get('/tareas-elementos-asociados/'+this.currentProject+'?page=' + page)
-          .then(response => {
-            me.TaskElements = response.data
-          });
-        },
-        saveTask(){
-          let me =this;
-          me.form.project_id=me.currentProject
-          let PHVA = JSON.stringify(me.form.PHVA)
-          me.form.PHVA = PHVA
-          me.form.task_id= me.task_id.toString();
-          me.form.post('/tareas-elementos-asociados/guardar')
-          .then(function (response) {
-              me.clearFields();
-              me.getTaskElements();
-              toast.fire({
-                type: 'success',
-                title: 'Elementos de la tarea guardados con éxito'
-              });
-          });
-        },
-        showTask(task){
-          let me =this;
-          me.form.fill(task);
-          me.task_id = task.task_id.split(",");
-          me.update = task.id
-          me.title="Actualizar información de los elementos de las tareas"
-          $('#TaskCatalogPicker').modal('show')
-        },
-        updateTask(task){
-          let me = this;
-          me.form.task_id= me.task_id.toString();
-          me.form.put('/tareas-elementos-asociados/actualizar')
-          .then(function (response) {
-             toast.fire({
-              type: 'success',
-              title: 'Elementos de la tarea actualizado con éxito'
-             });
-             me.getTaskElements();
-             me.clearFields();
-          })
-        },
-        deleteTask(task){
-          let me =this;
-          swal.fire({
-            title: 'Eliminar configuración',
-            text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#114e7e',
-            cancelButtonColor: '#20c9a6',
-            confirmButtonText: '¡Sí, eliminarlo!'
-          })
-          .then((result) => {
-            if (result.value) {
-              axios.delete('/tareas-elementos-asociados/borrar/'+task.id)
-              .then(function (response) {
-                swal.fire(
-                  'Eliminado',
-                  'Configuración fue eliminada',
-                  'success'
-                )
-                me.getTaskElements();
-              })
-            }
-          })
-        },
-        clearFields(){
-          let me =this;
-          $('#TaskNotificator').modal('toggle')
-          me.title= "";
-          me.update = 0
-          me.usersToNotify=[]
-          me.form.reset()
-        },
-        LoadCatalogFrecuency() {
-          axios.get('catalogo?id=FRECUENCY')
-          .then(response => {
-                this.Frecuencies = response.data; //get all catalogs from category selected
-          });
-        },
-        LoadCatalogWorkType() {
-          axios.get('catalogo?id=WORKTYPE')
-          .then(response => {
-                this.WorkTypes = response.data; //get all catalogs from category selected
-          });
+export default {
+  data(){
+      return{
+        form: new Form ({
+          id:"",
+          project_id:"",
+          task_id:"",
+          procedure:"",
+          PHVA:{},
+          frecuency:"",
+          t_min:"",
+          t_avg:"",
+          t_max:"",
+          laborType:""
+        }),
+        selectingProjectToAddTasks: true,
+        currentProject:0,
+        usersToNotify:[],
+        Users:{},
+        task_id:[],
+        title:"", //title to show
+        level:"",
+        type:"",
+        update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
+        showVariable:0,
+        Projects:{},
+        Tasks:{},
+        Levels:{}
+    }
+  },
+  methods:{
+    getProjects(){
+      let me =this;
+      axios.get('/todos-los-proyectos')
+      .then(response => {
+          me.Projects = response.data; //get all projects from page
+      });
+    },
+    getTasks(page = 1) {
+      let me =this;
+      axios.get('/tareas-por-tipo',{
+        params:{
+          level: me.level,
+          type: me.type,
+          id: me.currentProject,
+          page: page
         }
-      },
-      mounted() {
-        this.getProjects()
-        this.LoadCatalogFrecuency();
-        this.LoadCatalogWorkType();
-      }
+      })
+      .then(response => {
+        me.Tasks = response.data
+      });
+    },
+    loadNotificator(task){
+      let me =this;
+      me.getUserinLevel(task.relatedToLevel)
+      me.title = task.task
+      $('#TaskNotificator').modal('show')
+    },
+    getUserinLevel(level){
+      axios.get('/usuarios-por-nivel', {
+          params: {
+            project: this.currentProject,
+            level: level
+          }
+      })
+      .then(response => {
+        this.Users = response.data; //get all projects from page
+      });
+    },
+    setProject(){
+      let me = this
+      me.selectingProjectToAddTasks=false
+      me.getTasks()
+      me.LoadLevelsOfStructure()
+    },
+    getTaskElements(page = 1) {
+      let me =this;
+      axios.get('/tareas-elementos-asociados/'+this.currentProject+'?page=' + page)
+      .then(response => {
+        me.TaskElements = response.data
+      });
+    },
+    saveTask(){
+      let me =this;
+      me.form.project_id=me.currentProject
+      let PHVA = JSON.stringify(me.form.PHVA)
+      me.form.PHVA = PHVA
+      me.form.task_id= me.task_id.toString();
+      me.form.post('/tareas-elementos-asociados/guardar')
+      .then(function (response) {
+          me.clearFields();
+          me.getTaskElements();
+          toast.fire({
+            type: 'success',
+            title: 'Elementos de la tarea guardados con éxito'
+          });
+      });
+    },
+    showTask(task){
+      let me =this;
+      me.form.fill(task);
+      me.task_id = task.task_id.split(",");
+      me.update = task.id
+      me.title="Actualizar información de los elementos de las tareas"
+      $('#TaskCatalogPicker').modal('show')
+    },
+    updateTask(task){
+      let me = this;
+      me.form.task_id= me.task_id.toString();
+      me.form.put('/tareas-elementos-asociados/actualizar')
+      .then(function (response) {
+         toast.fire({
+          type: 'success',
+          title: 'Elementos de la tarea actualizado con éxito'
+         });
+         me.getTaskElements();
+         me.clearFields();
+      })
+    },
+    deleteTask(task){
+      let me =this;
+      swal.fire({
+        title: 'Eliminar configuración',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarlo!'
+      })
+      .then((result) => {
+        if (result.value) {
+          axios.delete('/tareas-elementos-asociados/borrar/'+task.id)
+          .then(function (response) {
+            swal.fire(
+              'Eliminado',
+              'Configuración fue eliminada',
+              'success'
+            )
+            me.getTaskElements();
+          })
+        }
+      })
+    },
+    clearFields(){
+      let me =this;
+      $('#TaskNotificator').modal('toggle')
+      me.title= "";
+      me.update = 0
+      me.usersToNotify=[]
+      me.form.reset()
+    },
+    LoadLevelsOfStructure() {
+      let me = this
+      axios.get('/estructura/lista-niveles/'+me.currentProject)
+      .then(response => {
+            me.Levels = response.data; //get all catalogs from category selected
+      });
+    }
+  },
+  mounted() {
+    this.getProjects()
+  }
 }
 </script>

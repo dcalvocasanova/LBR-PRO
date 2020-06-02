@@ -36,7 +36,7 @@ class TaskRequest extends FormRequest
     {
         return [
             'task' => 'tarea',
-            'allocator' => 'prouctos, sub producto o función de usuario',
+            'allocator' => 'productos, sub producto o función de usuario',
         ];
     }
 }

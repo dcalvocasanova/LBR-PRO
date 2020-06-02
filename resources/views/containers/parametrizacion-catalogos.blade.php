@@ -56,7 +56,6 @@
             @endcomponent
 
             @component('components.colorcard')
-              @slot('title') Determinar Ficha de macroprocesos @endslot
               @slot('title') Gestionar Funciones de Usuarios @endslot
               @slot('type') danger @endslot
               @slot('subtitle') ir @endslot
@@ -65,20 +64,20 @@
             @endcomponent
 
             @component('components.colorcard')
-              @slot('title') Determinar macroprocesos en la estructura de niveles @endslot
-              @slot('type') info @endslot
-              @slot('subtitle') ir @endslot
-              @slot('url') gestionar-macroprocesos @endslot
-              @slot('icon') fas fa-boxes @endslot
-            @endcomponent
-
-	          @component('components.colorcard')
-              @slot('title') Agregar macroprocesos  @endslot
+              @slot('title') Registrar macroprocesos  @endslot
               @slot('type') info @endslot
               @slot('subtitle') ir @endslot
               @slot('url') gestionar-macros @endslot
               @slot('icon') fas fa-boxes @endslot
             @endcomponent
+
+            @component('components.colorcard')
+              @slot('title') Ficha del  macroprocesos @endslot
+              @slot('type') info @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') gestionar-macroprocesos @endslot
+              @slot('icon') fas fa-boxes @endslot
+            @endcomponent	          
 
             @component('components.colorcard')
               @slot('title') Registrar procesos @endslot

@@ -253,6 +253,10 @@ Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
 Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
+Route::get('/proyecto/actual', 'ProjectController@getCurrentProjectSession');
+Route::post('/proyecto/establecer', 'ProjectController@setCurrentProjectSession');
+
+
 /*Manage Catalogs*/
 Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
@@ -277,7 +281,7 @@ Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureContro
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
-Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
+Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
 Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
 Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');

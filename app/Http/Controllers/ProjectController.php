@@ -85,7 +85,7 @@ class ProjectController extends Controller
       $project->latitude = isset($request->latitud)? $request->latitud:"0,0";
       $project->economic_activity = isset($request->actividad_economica)? $request->actividad_economica:"Sin fines de lucro";
       $project->save();
-      //return $project;
+      return $project;
     }
 
     /**
@@ -222,4 +222,31 @@ class ProjectController extends Controller
       $p_subprocess = Subprocess::where('project_id',$request->id)->get();
       return ['process'=> $p_process , 'subprocess'=>$p_subprocess];
     }
+
+    /**
+     * Display a listing of the resource.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getCurrentProjectSession()
+    {
+      $session_project = session('currentProject_id');
+      if (!isset($session_project)) {
+        $project = Project::latest()->first();
+        session()->put('currentProject_id', $project->id);
+      }
+      return ['id'=> session('currentProject_id')];
+    }
+
+    /**
+     * Save session resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function setCurrentProjectSession(Request  $request)
+    {    
+      session()->put('currentProject_id', $request->id);
+      return ['id'=> session('currentProject_id')];
+    }
+
 }

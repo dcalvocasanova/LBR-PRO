@@ -106,7 +106,7 @@
                   </div>
                 </div>
               </div>
-				
+
               <div class="row">
 				 <div class="col-md-4">
                   <div class="form-group">
@@ -153,7 +153,7 @@
               </div>
 <hr/>
               <div class="row">
-               
+
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
@@ -259,7 +259,7 @@ export default {
 			user:"",
 			risk:"",
 			indicator:"",
-			project_id:2 //este valor debe ser el current project
+			project_id:1 //este valor debe ser el current project
 
 
           }),
@@ -268,7 +268,7 @@ export default {
           levels:"",
           project_id:""
         }),
-		  project_id:2,//este valor debe ser el current project
+		  project_id:1,//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -290,7 +290,7 @@ export default {
 		  Indicadores:[],
 		  Actividades: [],
 		  Usuarios:[]
-		
+
 
       }
   },

@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function getUserByProject(Request $request)
     {
-      $users = User::with('roles')->where('relatedProjects',$request->project)->latest()->paginate(5);
+      $users = User::with('roles')->where('relatedProjects',$request->session()->get('currentProject_id'))->latest()->paginate(5);
       return $users;
     }
 
@@ -100,7 +100,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-      $user = User::create($request->all());
+      $user = User::create($request->all());    
       $randomPass = Str::random(8);
       $user->password =Hash::make($randomPass);
       if($user->save()){

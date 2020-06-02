@@ -42,6 +42,9 @@
                 </table>
               </div>
             </div>
+            <div class="footer">
+              <pagination :data="Task" @pagination-change-page="getTasks"></pagination>
+            </div>
           </div>
         </div>
         <div class="col-md-6">

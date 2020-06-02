@@ -13,6 +13,43 @@
       </div>
     </div>
     <div class="row" v-if="showTimeOption">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="bmd-label-floating">Frecuencia</label>
+          <select @change="showSave" v-model="form.frecuency" class=" form-control">
+            <option v-for="f in Frecuencies">{{ f.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="bmd-label-floating">Cantidad</label>
+          <input @click="showSave" type="number" v-model="form.quantity"  class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="showTimeOption">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="bmd-label-floating">Tiempo menor</label>
+          <input @click="showSave" type="number" v-model="form.t_min"  class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="bmd-label-floating">Tiempo normal</label>
+          <input @click="showSave" type="number" v-model="form.t_avg"  class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="bmd-label-floating">Tiempo mayor</label>
+          <input @click="showSave" type="number" v-model="form.t_max"  class="form-control">
+        </div>
+      </div>
+
+    </div>
+    <div class="row" v-if="showImproveOption">
       <div class="col-md-4" @click="showSave">
         <div class="form-group">
           <label class="bmd-label-floating"> </label>
@@ -31,39 +68,13 @@
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <label class="bmd-label-floating">Frecuencia</label>
-          <select @change="showSave" v-model="form.frecuency" class=" form-control">
-            <option v-for="f in Frecuencies">{{ f.name }}</option>
+          <label class="bmd-label-floating">Tipo de Competencia</label>
+          <select @change="showSave" v-model="form.competence" class=" form-control">
+            <option v-for="s in OrganizationalSkills">{{ s.name }}</option>
           </select>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="form-group">
-          <label class="bmd-label-floating">Cantidad</label>
-          <input @click="showSave" type="number" v-model="form.quantity"  class="form-control">
-        </div>
-      </div>
-    </div>
-    <div class="row" v-if="showTimeOption">
-      <div class="col-md-3">
-        <div class="form-group">
-          <label class="bmd-label-floating">Tiempo menor</label>
-          <input @click="showSave" type="number" v-model="form.t_min"  class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label class="bmd-label-floating">Tiempo normal</label>
-          <input @click="showSave" type="number" v-model="form.t_avg"  class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label class="bmd-label-floating">Tiempo mayor</label>
-          <input @click="showSave" type="number" v-model="form.t_max"  class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
         <div class="form-group">
           <label class="bmd-label-floating">Tipo de trabajo</label>
           <select @change="showSave" v-model="form.laborType" class=" form-control">
@@ -73,15 +84,7 @@
       </div>
     </div>
     <div class="row" v-if="showImproveOption">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="bmd-label-floating">Tipo de Competencia</label>
-          <select @change="showSave" v-model="form.competence" class=" form-control">
-            <option v-for="s in OrganizationalSkills">{{ s.name }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="form-group">
           <label class="bmd-label-floating">Tipo de Esfuerzo</label>
           <select @change="showSave" v-model="form.effort" class=" form-control">
@@ -89,7 +92,7 @@
           </select>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="form-group">
           <label class="bmd-label-floating">Tipo de Riesgo</label>
           <select @change="showSave" v-model="form.risk" class=" form-control">

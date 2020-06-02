@@ -110,8 +110,8 @@
                 	</multiselect>
                   </div>
                 </div>
-				
-				
+
+
               </div>
 
               <div class="row">
@@ -277,10 +277,10 @@ export default {
 			phva:"",
 			subclassification:"",
 			indicator:"",
-			project_id:2 //este valor debe ser el current project
+			project_id:1 //este valor debe ser el current project
           }),
           title:"Agregar nueva Ficha", //title to show
-		 project_id:2, //este valor debe ser el current project
+		 project_id:1, //este valor debe ser el current project
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      subprocessFile:"",
           Subprocesos:{}, //BD content
