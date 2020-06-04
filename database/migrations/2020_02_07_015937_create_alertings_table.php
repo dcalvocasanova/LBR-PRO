@@ -15,7 +15,7 @@ class CreateAlertingsTable extends Migration
     {
         Schema::create('alertings', function (Blueprint $table) {
           $table->bigIncrements('id');
-          $table->bigInteger('project_id');
+          $table->string('project_id');
           $table->string('title');
           $table->string('body');
           $table->string('sender');

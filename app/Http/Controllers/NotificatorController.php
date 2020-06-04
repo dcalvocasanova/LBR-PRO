@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Traits\NotificationTraits;
 use Carbon\Carbon;
 use App\Alerting;
 use App\User;
+use App\Services\NotificationServices;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\Notifier;
@@ -23,8 +25,7 @@ class NotificatorController extends Controller
     }
 
     /**
-     * Update a newly created resource in storage.
-     *
+     * Send Goals to notify
      * @param  \Illuminate\Http\Request  $request
      *
      */
@@ -43,6 +44,20 @@ class NotificatorController extends Controller
           $notification->type ='GOALS';
           $notification->save();
       }
+    }
+    /**
+     * Send Goals to notify
+     * @param  \Illuminate\Http\Request  $request
+     *
+     */
+    public function sendTasksNotification(Request $request,  NotificationTraits $notificator)
+    {
+      $users = $request->usersToNotify;
+      foreach ($users as $user) {
+        $notification = $notificator->createAlert($user,'TASK',$request);
+        $relation = $notificator->relatedTaskToUser($user,$request->tasksToNotify);
+      }
+      $mails = $notificator->sendEmailNotificatios($request->usersToNotify,$request->title,$request->body,'GOALS');
     }
 
     /**
@@ -146,27 +161,8 @@ class NotificatorController extends Controller
       $this->sendEmailConfirmation($user,$notification->title,$msg,'REJECTED');
     }
 
-    /**
-     * Mark as correcting.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     */
-    public function markAsCorrecting (Request $request)
-    {
-      $this->saveAlert($request->id,'Correcting'," -En corrección-",'En Corrección');
-    }
 
-    /**
-     * Mark as corrected
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     */
-    public function markAsCorrected (Request $request)
-    {
-      $this->saveAlert($request->id,'Corrected'," -Archivada-",'Tarea terminada');
-    }
+  
 
     /**
     * Update status of notification

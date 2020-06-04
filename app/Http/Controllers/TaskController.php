@@ -24,6 +24,17 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getUserTasks(Request $request)
+    {
+      $userTasks = UserTask::where('user_id',$request->id)->first();
+      return $userTasks;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getTaskAccordingTypeAndLevel(Request $request)
     {
       if(isset($request->allocator)){
@@ -50,7 +61,7 @@ class TaskController extends Controller
                       ->where('relatedToLevel',$request->level)
                       ->latest()->paginate(10);
         return $tasks;
-      }      
+      }
       $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
       return $tasks;
     }

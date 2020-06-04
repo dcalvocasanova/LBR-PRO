@@ -233,6 +233,9 @@ Route::post('/password/reset','ResetPasswordController@reset');
 /*Notification Controller*/
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::post('/notify/task','NotificatorController@sendTasksNotification')->middleware('auth');
+
+
 Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
 Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
 Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');

@@ -100,7 +100,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-      $user = User::create($request->all());    
+      $user = User::create($request->all());
       $randomPass = Str::random(8);
       $user->password =Hash::make($randomPass);
       if($user->save()){

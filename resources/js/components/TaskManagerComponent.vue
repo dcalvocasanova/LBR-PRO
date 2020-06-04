@@ -1,21 +1,6 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran las tareas</h4>
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectToAddTasks === false">
+    <div class="row">
       <div class="col-md-6">
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
           <li class="nav-item">
@@ -306,18 +291,14 @@
           .then(response => {
             me.Tasks = response.data
           });
-        },
-        setProject(){
-          let me = this
-          me.selectingProjectToAddTasks=false
-          me.getUserFunctions()
-          me.getProducts()
-        },
-        getProjects(){
+        },        
+        getCurrentProject(){
           let me =this;
-          axios.get('/todos-los-proyectos')
+          axios.get('/proyecto/actual')
           .then(response => {
-              me.Projects = response.data; //get all projects from page
+              me.currentProject = response.data.id;
+              me.getUserFunctions()
+              me.getProducts()
           });
         },
         loadCatalog(type){
@@ -438,7 +419,7 @@
         }
       },
       mounted() {
-        this.getProjects()
+        this.getCurrentProject()
       }
 }
 </script>

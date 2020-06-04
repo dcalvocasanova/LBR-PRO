@@ -63,7 +63,6 @@
     },
     data(){
       return{
-        sdf:{},
         notify:[],
         notification: new Form ({
           title:"Aprobación de objetivos",

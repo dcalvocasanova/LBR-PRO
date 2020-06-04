@@ -1,69 +1,74 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se notificaran las tareas</h4>
+    <div class="col-md-12">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="pills-products-tab" data-toggle="pill" href="#pills-products" role="tab" aria-controls="pills-products" aria-selected="true">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a  class="nav-link" id="pills-subproducts-tab" data-toggle="pill" href="#pills-subproducts" role="tab" aria-controls="pills-subproducts" aria-selected="false">Productos de subprocesos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="pills-userFunctions-tab" data-toggle="pill" href="#pills-userFunctions" role="tab" aria-controls="pills-userFunctions" aria-selected="false">Funciones de usuario</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-products" role="tabpanel" aria-labelledby="pills-products-tab">
+          <table class="table">
+           <thead>
+              <th class="text-center"> Productos de los procesos registrados </th>
+              <th> Enviar notificación </th>
+            </thead>
+            <tbody>
+                <tr v-for="p in Products.process" :key="p.id" >
+                  <td>
+                    <span v-text="p.file">:</span>
+                    <span v-text="p.resultProduct"></span>
+                  </td>
+                  <td>
+                    <button class="btn btn-info" @click="showRelatedTask(p.resultProduct, p.relatedToLevel)"><i class="fas fa-envelope"></i></button>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
-          </div>
+        <div class="tab-pane fade" id="pills-subproducts" role="tabpanel" aria-labelledby="pills-subproducts-tab">
+          <table class="table">
+           <thead>
+              <th class="text-center">Productos de los sub-procesos registrados </th>
+              <th> Acciones </th>
+            </thead>
+            <tbody>
+              <tr v-for="s in Products.subprocess" :key="s.id" >
+                <td>
+                  <span v-text="s.process"></span>
+                  <span v-text="s.product"></span>
+                </td>
+                <td>
+                  <button class="btn btn-info" @click="showRelatedTask(s.product, s.relatedToLevel)"><i class="fas fa-envelope"></i></button>
+                </td>
+                </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectToAddTasks === false">
-      <div class="col-md-12">
-        <div class="card card-plain">
-          <div class="card-header card-header-primary">
-            <h3 class="card-title mt-0"> Lista de tareas</h3>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="bmd-label-floating">Por producto</label>
-                  <select @change="getTasks" v-model="type" class=" form-control">
-                    <option  value="USER-FUNCTION"> Función de usuario</option>
-                    <option  value="PRODUCT"> Producto</option>
-                    <option  value="SUB-PRODUCT"> Producto de Subproceso</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="bmd-label-floating">Por nivel</label>
-                  <select @change="getTasks" v-model="level" class=" form-control">
-                    <option v-for="l in Levels" :value="l">{{ l }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body card-body-fitted ">
-            <div class="col-md-12">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th> Tarea </th>
-                    <th> enviar notificación </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="task in Tasks.data" :key="task.id">
-                      <td v-text="task.task"></td>
-                      <td>
-                        <button class="btn btn-info" @click="loadNotificator(task)"><i class="fas fa-edit"></i></button>
-                      </td>
-                    </tr>
-                  </tbody>
-              </table>                
-              <div class="footer">
-                <pagination :data="Tasks" @pagination-change-page="getTasks()"></pagination>
-              </div>
-            </div>
-          </div>
+        <div class="tab-pane fade" id="pills-userFunctions" role="tabpanel" aria-labelledby="pills-userFunctions-tab">
+          <table class="table">
+           <thead>
+              <th class="text-center"> Funciones de usuario registrados </th>
+              <th> Acciones </th>
+            </thead>
+            <tbody>
+              <tr v-for="f in UserFunctions" :key="f[0]">
+                <td>
+                  <span v-text="f[2]"></span>
+                  <span v-text="f[0]"></span>
+                </td>
+                <td>
+                  <button class="btn btn-info" @click="showRelatedTask(f[0],f[3])"><i class="fas fa-envelope"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -71,20 +76,42 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="TaskNotificator"> Enviar notificación de aprobación de tarea: {{title}}</h5>
+            <h5 class="modal-title" id="TaskNotificator"> Enviar notificación de aprobación de tareas </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-8">
+              <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
                     <div class="form-group">
                       <table class="table table-hover">
                        <thead>
-                          <tr><th>Seleccione el usuario a notificar la tarea</th></tr>
+                          <tr><th>Seleccionar de la lista de tarea</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="task in Tasks.data" :key="task.id" >
+                            <td>
+                              <input v-model="tasksToNotify" type="checkbox"
+                                :value="task.id">
+                                  {{task.task}}
+                              </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <table class="table table-hover">
+                       <thead>
+                          <tr><th>Seleccionar de la lista de usuarios a notificar</th></tr>
                         </thead>
                         <tbody>
                           <tr v-for="user in Users" :key="user.id" >
@@ -100,13 +127,15 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="container-buttons">
-                      <button  @click="saveTask()" class="btn btn-success">Enviar</button>
-                      <button @click="clearFields()" class="btn btn-secondary">Salir</button>
-                    </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="col-6">
+              <div class="card">
+                <div class="card-body">
+                  <div class="container-buttons">
+                    <button  @click="sendNotification()" class="btn btn-success">Enviar</button>
+                    <button @click="exit()" class="btn btn-secondary">Salir</button>
                   </div>
                 </div>
               </div>
@@ -124,61 +153,72 @@ export default {
   data(){
       return{
         form: new Form ({
-          id:"",
-          project_id:"",
-          task_id:"",
-          procedure:"",
-          PHVA:{},
-          frecuency:"",
-          t_min:"",
-          t_avg:"",
-          t_max:"",
-          laborType:""
+          title:"Aprobación de tareas",
+          body:'Un pequeño',
+          project_id: '',
+          relatedToLevel:'',
+          usersToNotify:[],
+          tasksToNotify:[]
         }),
-        selectingProjectToAddTasks: true,
         currentProject:0,
+        relatedToLevel:'',
         usersToNotify:[],
+        tasksToNotify:[],
         Users:{},
-        task_id:[],
-        title:"", //title to show
-        level:"",
-        type:"",
-        update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-        showVariable:0,
-        Projects:{},
-        Tasks:{},
-        Levels:{}
-    }
+        UserFunctions:{},
+        Products:{},
+        allocator:"",
+        Tasks:{}
+      }
   },
   methods:{
-    getProjects(){
+    getCurrentProject(){
       let me =this;
-      axios.get('/todos-los-proyectos')
+      axios.get('/proyecto/actual')
       .then(response => {
-          me.Projects = response.data; //get all projects from page
+          me.currentProject = response.data.id
+          me.form.project_id = me.currentProject
+          me.getUserFunctions()
+          me.getProducts()
       });
+    },
+    getUserFunctions() {
+      axios.get('/estructura/lista-funciones-de-usuario/'+this.currentProject)
+      .then(response => {
+          this.UserFunctions = response.data; //get all projects from page.
+      });
+    },
+    getProducts() {
+      axios.get('/proyecto/productos/'+this.currentProject)
+      .then(response => {
+          this.Products = response.data; //get all projects from page.
+      });
+    },
+    showRelatedTask(allocator, level){
+      this.allocator = allocator
+      this.relatedToLevel = level
+      this.getTasks()
     },
     getTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-tipo',{
         params:{
-          level: me.level,
           type: me.type,
+          allocator: me.allocator,
           id: me.currentProject,
           page: page
         }
       })
       .then(response => {
         me.Tasks = response.data
+        me.getUsersInLevel(me.Tasks.data[0].relatedToLevel)
       });
     },
     loadNotificator(task){
       let me =this;
-      me.getUserinLevel(task.relatedToLevel)
-      me.title = task.task
       $('#TaskNotificator').modal('show')
     },
-    getUserinLevel(level){
+    getUsersInLevel(level){
       axios.get('/usuarios-por-nivel', {
           params: {
             project: this.currentProject,
@@ -187,101 +227,44 @@ export default {
       })
       .then(response => {
         this.Users = response.data; //get all projects from page
+        $('#TaskNotificator').modal('show');
       });
     },
-    setProject(){
+    sendNotification(){
       let me = this
-      me.selectingProjectToAddTasks=false
-      me.getTasks()
-      me.LoadLevelsOfStructure()
-    },
-    getTaskElements(page = 1) {
-      let me =this;
-      axios.get('/tareas-elementos-asociados/'+this.currentProject+'?page=' + page)
-      .then(response => {
-        me.TaskElements = response.data
-      });
-    },
-    saveTask(){
-      let me =this;
-      me.form.project_id=me.currentProject
-      let PHVA = JSON.stringify(me.form.PHVA)
-      me.form.PHVA = PHVA
-      me.form.task_id= me.task_id.toString();
-      me.form.post('/tareas-elementos-asociados/guardar')
-      .then(function (response) {
-          me.clearFields();
-          me.getTaskElements();
+      if(me.usersToNotify.length > 0 &&  me.tasksToNotify.length > 0){
+        me.form.usersToNotify = me.usersToNotify
+        me.form.tasksToNotify = me.tasksToNotify.join()
+        me.form.body = "Hola"
+        me.form.relatedToLevel = me.relatedToLevel
+        me.form.project_id = me.currentProject
+        me.form.post('/notify/task')
+        .then(function (response) {
           toast.fire({
-            type: 'success',
-            title: 'Elementos de la tarea guardados con éxito'
+           type: 'success',
+           title: 'Notificación enviada con éxito'
           });
-      });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        me.exit()
+      }
+      else
+      {
+        swal.fire('Error','Debe seleccionar usuarios y tareas a notificar','error')
+      }
     },
-    showTask(task){
-      let me =this;
-      me.form.fill(task);
-      me.task_id = task.task_id.split(",");
-      me.update = task.id
-      me.title="Actualizar información de los elementos de las tareas"
-      $('#TaskCatalogPicker').modal('show')
-    },
-    updateTask(task){
-      let me = this;
-      me.form.task_id= me.task_id.toString();
-      me.form.put('/tareas-elementos-asociados/actualizar')
-      .then(function (response) {
-         toast.fire({
-          type: 'success',
-          title: 'Elementos de la tarea actualizado con éxito'
-         });
-         me.getTaskElements();
-         me.clearFields();
-      })
-    },
-    deleteTask(task){
-      let me =this;
-      swal.fire({
-        title: 'Eliminar configuración',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#114e7e',
-        cancelButtonColor: '#20c9a6',
-        confirmButtonText: '¡Sí, eliminarlo!'
-      })
-      .then((result) => {
-        if (result.value) {
-          axios.delete('/tareas-elementos-asociados/borrar/'+task.id)
-          .then(function (response) {
-            swal.fire(
-              'Eliminado',
-              'Configuración fue eliminada',
-              'success'
-            )
-            me.getTaskElements();
-          })
-        }
-      })
-    },
-    clearFields(){
-      let me =this;
-      $('#TaskNotificator').modal('toggle')
-      me.title= "";
-      me.update = 0
-      me.usersToNotify=[]
-      me.form.reset()
-    },
-    LoadLevelsOfStructure() {
-      let me = this
-      axios.get('/estructura/lista-niveles/'+me.currentProject)
-      .then(response => {
-            me.Levels = response.data; //get all catalogs from category selected
-      });
+    exit(){
+        $('#TaskNotificator').modal('toggle');
+        this.form.reset()
+        this.usersToNotify =[]
+        this.tasksToNotify =[]
+
     }
   },
   mounted() {
-    this.getProjects()
+    this.getCurrentProject()
   }
 }
 </script>

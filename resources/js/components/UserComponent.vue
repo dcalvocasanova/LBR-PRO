@@ -225,8 +225,7 @@
 <script>
 export default {
   props: {
-     showDeleteAndUpdateButton: Number,
-     currentProject: String
+     showDeleteAndUpdateButton: Number
   },
   data(){
     return{

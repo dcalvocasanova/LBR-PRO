@@ -11229,21 +11229,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -11314,16 +11299,12 @@ __webpack_require__.r(__webpack_exports__);
         me.Tasks = response.data;
       });
     },
-    setProject: function setProject() {
+    getCurrentProject: function getCurrentProject() {
       var me = this;
-      me.selectingProjectToAddTasks = false;
-      me.getUserFunctions();
-      me.getProducts();
-    },
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/todos-los-proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects from page
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.getUserFunctions();
+        me.getProducts();
       });
     },
     loadCatalog: function loadCatalog(type) {
@@ -11439,7 +11420,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
   }
 });
 
@@ -11575,67 +11556,107 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({
-        id: "",
-        project_id: "",
-        task_id: "",
-        procedure: "",
-        PHVA: {},
-        frecuency: "",
-        t_min: "",
-        t_avg: "",
-        t_max: "",
-        laborType: ""
+        title: "Aprobación de tareas",
+        body: 'Un pequeño',
+        project_id: '',
+        relatedToLevel: '',
+        usersToNotify: [],
+        tasksToNotify: []
       }),
-      selectingProjectToAddTasks: true,
       currentProject: 0,
+      relatedToLevel: '',
       usersToNotify: [],
+      tasksToNotify: [],
       Users: {},
-      task_id: [],
-      title: "",
-      //title to show
-      level: "",
-      type: "",
-      update: 0,
-      // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-      showVariable: 0,
-      Projects: {},
-      Tasks: {},
-      Levels: {}
+      UserFunctions: {},
+      Products: {},
+      allocator: "",
+      Tasks: {}
     };
   },
   methods: {
-    getProjects: function getProjects() {
+    getCurrentProject: function getCurrentProject() {
       var me = this;
-      axios.get('/todos-los-proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects from page
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.form.project_id = me.currentProject;
+        me.getUserFunctions();
+        me.getProducts();
       });
+    },
+    getUserFunctions: function getUserFunctions() {
+      var _this = this;
+
+      axios.get('/estructura/lista-funciones-de-usuario/' + this.currentProject).then(function (response) {
+        _this.UserFunctions = response.data; //get all projects from page.
+      });
+    },
+    getProducts: function getProducts() {
+      var _this2 = this;
+
+      axios.get('/proyecto/productos/' + this.currentProject).then(function (response) {
+        _this2.Products = response.data; //get all projects from page.
+      });
+    },
+    showRelatedTask: function showRelatedTask(allocator, level) {
+      this.allocator = allocator;
+      this.relatedToLevel = level;
+      this.getTasks();
     },
     getTasks: function getTasks() {
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var me = this;
       axios.get('/tareas-por-tipo', {
         params: {
-          level: me.level,
           type: me.type,
+          allocator: me.allocator,
           id: me.currentProject,
           page: page
         }
       }).then(function (response) {
         me.Tasks = response.data;
+        me.getUsersInLevel(me.Tasks.data[0].relatedToLevel);
       });
     },
     loadNotificator: function loadNotificator(task) {
       var me = this;
-      me.getUserinLevel(task.relatedToLevel);
-      me.title = task.task;
       $('#TaskNotificator').modal('show');
     },
-    getUserinLevel: function getUserinLevel(level) {
-      var _this = this;
+    getUsersInLevel: function getUsersInLevel(level) {
+      var _this3 = this;
 
       axios.get('/usuarios-por-nivel', {
         params: {
@@ -11643,93 +11664,42 @@ __webpack_require__.r(__webpack_exports__);
           level: level
         }
       }).then(function (response) {
-        _this.Users = response.data; //get all projects from page
+        _this3.Users = response.data; //get all projects from page
+
+        $('#TaskNotificator').modal('show');
       });
     },
-    setProject: function setProject() {
+    sendNotification: function sendNotification() {
       var me = this;
-      me.selectingProjectToAddTasks = false;
-      me.getTasks();
-      me.LoadLevelsOfStructure();
-    },
-    getTaskElements: function getTaskElements() {
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      var me = this;
-      axios.get('/tareas-elementos-asociados/' + this.currentProject + '?page=' + page).then(function (response) {
-        me.TaskElements = response.data;
-      });
-    },
-    saveTask: function saveTask() {
-      var me = this;
-      me.form.project_id = me.currentProject;
-      var PHVA = JSON.stringify(me.form.PHVA);
-      me.form.PHVA = PHVA;
-      me.form.task_id = me.task_id.toString();
-      me.form.post('/tareas-elementos-asociados/guardar').then(function (response) {
-        me.clearFields();
-        me.getTaskElements();
-        toast.fire({
-          type: 'success',
-          title: 'Elementos de la tarea guardados con éxito'
-        });
-      });
-    },
-    showTask: function showTask(task) {
-      var me = this;
-      me.form.fill(task);
-      me.task_id = task.task_id.split(",");
-      me.update = task.id;
-      me.title = "Actualizar información de los elementos de las tareas";
-      $('#TaskCatalogPicker').modal('show');
-    },
-    updateTask: function updateTask(task) {
-      var me = this;
-      me.form.task_id = me.task_id.toString();
-      me.form.put('/tareas-elementos-asociados/actualizar').then(function (response) {
-        toast.fire({
-          type: 'success',
-          title: 'Elementos de la tarea actualizado con éxito'
-        });
-        me.getTaskElements();
-        me.clearFields();
-      });
-    },
-    deleteTask: function deleteTask(task) {
-      var me = this;
-      swal.fire({
-        title: 'Eliminar configuración',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar elementos de tareas",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#114e7e',
-        cancelButtonColor: '#20c9a6',
-        confirmButtonText: '¡Sí, eliminarlo!'
-      }).then(function (result) {
-        if (result.value) {
-          axios["delete"]('/tareas-elementos-asociados/borrar/' + task.id).then(function (response) {
-            swal.fire('Eliminado', 'Configuración fue eliminada', 'success');
-            me.getTaskElements();
+
+      if (me.usersToNotify.length > 0 && me.tasksToNotify.length > 0) {
+        me.form.usersToNotify = me.usersToNotify;
+        me.form.tasksToNotify = me.tasksToNotify.join();
+        me.form.body = "Hola";
+        me.form.relatedToLevel = me.relatedToLevel;
+        me.form.project_id = me.currentProject;
+        me.form.post('/notify/task').then(function (response) {
+          toast.fire({
+            type: 'success',
+            title: 'Notificación enviada con éxito'
           });
-        }
-      });
+        })["catch"](function (error) {
+          console.log(error);
+        });
+        me.exit();
+      } else {
+        swal.fire('Error', 'Debe seleccionar usuarios y tareas a notificar', 'error');
+      }
     },
-    clearFields: function clearFields() {
-      var me = this;
+    exit: function exit() {
       $('#TaskNotificator').modal('toggle');
-      me.title = "";
-      me.update = 0;
-      me.usersToNotify = [];
-      me.form.reset();
-    },
-    LoadLevelsOfStructure: function LoadLevelsOfStructure() {
-      var me = this;
-      axios.get('/estructura/lista-niveles/' + me.currentProject).then(function (response) {
-        me.Levels = response.data; //get all catalogs from category selected
-      });
+      this.form.reset();
+      this.usersToNotify = [];
+      this.tasksToNotify = [];
     }
   },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
   }
 });
 
@@ -12260,8 +12230,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    showDeleteAndUpdateButton: Number,
-    currentProject: String
+    showDeleteAndUpdateButton: Number
   },
   data: function data() {
     return {
@@ -12961,7 +12930,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      sdf: {},
       notify: [],
       notification: new Form({
         title: "Aprobación de objetivos",
@@ -66216,137 +66184,150 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    this.selectingProjectToAddTasks === true
-      ? _c("div", { staticClass: "row h-100" }, [
-          _c("div", { staticClass: "card card-plain col-12" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("br"),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.currentProject,
-                        expression: "currentProject"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.currentProject = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.setProject()
-                        }
-                      ]
-                    }
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c(
+          "ul",
+          {
+            staticClass: "nav nav-pills mb-3",
+            attrs: { id: "pills-tab", role: "tablist" }
+          },
+          [
+            _c("li", { staticClass: "nav-item" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link active",
+                  attrs: {
+                    id: "pills-products-tab",
+                    "data-toggle": "pill",
+                    href: "#pills-products",
+                    role: "tab",
+                    "aria-controls": "pills-products",
+                    "aria-selected": "true"
                   },
-                  _vm._l(_vm.Projects, function(p) {
-                    return _c("option", { domProps: { value: p.id } }, [
-                      _vm._v(_vm._s(p.name))
-                    ])
-                  }),
-                  0
-                )
-              ])
+                  on: {
+                    click: function($event) {
+                      return _vm.showTask("PRODUCT")
+                    }
+                  }
+                },
+                [_vm._v("Productos")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("li", { staticClass: "nav-item" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  attrs: {
+                    id: "pills-subproducts-tab",
+                    "data-toggle": "pill",
+                    href: "#pills-subproducts",
+                    role: "tab",
+                    "aria-controls": "pills-subproducts",
+                    "aria-selected": "false"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.showTask("SUB-PRODUCT")
+                    }
+                  }
+                },
+                [_vm._v("Productos de subprocesos")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("li", { staticClass: "nav-item" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "nav-link",
+                  attrs: {
+                    id: "pills-userFunctions-tab",
+                    "data-toggle": "pill",
+                    href: "#pills-userFunctions",
+                    role: "tab",
+                    "aria-controls": "pills-userFunctions",
+                    "aria-selected": "false"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.showTask("USER-FUNCTION")
+                    }
+                  }
+                },
+                [_vm._v("Funciones de usuario")]
+              )
             ])
-          ])
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    this.selectingProjectToAddTasks === false
-      ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-6" }, [
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "tab-content", attrs: { id: "pills-tabContent" } },
+          [
             _c(
-              "ul",
+              "div",
               {
-                staticClass: "nav nav-pills mb-3",
-                attrs: { id: "pills-tab", role: "tablist" }
+                staticClass: "tab-pane fade show active",
+                attrs: {
+                  id: "pills-products",
+                  role: "tabpanel",
+                  "aria-labelledby": "pills-products-tab"
+                }
               },
               [
-                _c("li", { staticClass: "nav-item" }, [
+                _c("table", { staticClass: "table" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
                   _c(
-                    "a",
-                    {
-                      staticClass: "nav-link active",
-                      attrs: {
-                        id: "pills-products-tab",
-                        "data-toggle": "pill",
-                        href: "#pills-products",
-                        role: "tab",
-                        "aria-controls": "pills-products",
-                        "aria-selected": "true"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.showTask("PRODUCT")
-                        }
-                      }
-                    },
-                    [_vm._v("Productos")]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", { staticClass: "nav-item" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "nav-link",
-                      attrs: {
-                        id: "pills-subproducts-tab",
-                        "data-toggle": "pill",
-                        href: "#pills-subproducts",
-                        role: "tab",
-                        "aria-controls": "pills-subproducts",
-                        "aria-selected": "false"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.showTask("SUB-PRODUCT")
-                        }
-                      }
-                    },
-                    [_vm._v("Productos de subprocesos")]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", { staticClass: "nav-item" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "nav-link",
-                      attrs: {
-                        id: "pills-userFunctions-tab",
-                        "data-toggle": "pill",
-                        href: "#pills-userFunctions",
-                        role: "tab",
-                        "aria-controls": "pills-userFunctions",
-                        "aria-selected": "false"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.showTask("USER-FUNCTION")
-                        }
-                      }
-                    },
-                    [_vm._v("Funciones de usuario")]
+                    "tbody",
+                    _vm._l(_vm.Products.process, function(p) {
+                      return _c("tr", { key: p.id }, [
+                        _c("td", [
+                          _c(
+                            "span",
+                            { domProps: { textContent: _vm._s(p.file) } },
+                            [_vm._v(":")]
+                          ),
+                          _vm._v(" "),
+                          _c("span", {
+                            domProps: { textContent: _vm._s(p.resultProduct) }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              on: {
+                                click: function($event) {
+                                  return _vm.showRelatedTask(p.resultProduct)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "far fa-eye" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              on: {
+                                click: function($event) {
+                                  return _vm.optionAddTask(p)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fa fa-plus-circle" })]
+                          )
+                        ])
+                      ])
+                    }),
+                    0
                   )
                 ])
               ]
@@ -66354,288 +66335,214 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "tab-content", attrs: { id: "pills-tabContent" } },
+              {
+                staticClass: "tab-pane fade",
+                attrs: {
+                  id: "pills-subproducts",
+                  role: "tabpanel",
+                  "aria-labelledby": "pills-subproducts-tab"
+                }
+              },
               [
-                _c(
-                  "div",
-                  {
-                    staticClass: "tab-pane fade show active",
-                    attrs: {
-                      id: "pills-products",
-                      role: "tabpanel",
-                      "aria-labelledby": "pills-products-tab"
-                    }
-                  },
-                  [
-                    _c("table", { staticClass: "table" }, [
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.Products.process, function(p) {
-                          return _c("tr", { key: p.id }, [
-                            _c("td", [
-                              _c(
-                                "span",
-                                { domProps: { textContent: _vm._s(p.file) } },
-                                [_vm._v(":")]
-                              ),
-                              _vm._v(" "),
-                              _c("span", {
-                                domProps: {
-                                  textContent: _vm._s(p.resultProduct)
+                _c("table", { staticClass: "table" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.Products.subprocess, function(s) {
+                      return _c("tr", { key: s.id }, [
+                        _c("td", [
+                          _c("span", {
+                            domProps: { textContent: _vm._s(s.process) }
+                          }),
+                          _vm._v(" "),
+                          _c("span", {
+                            domProps: { textContent: _vm._s(s.product) }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              on: {
+                                click: function($event) {
+                                  return _vm.showRelatedTask(s.product)
                                 }
-                              })
-                            ]),
+                              }
+                            },
+                            [_c("i", { staticClass: "far fa-eye" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              on: {
+                                click: function($event) {
+                                  return _vm.optionAddTask(s)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fa fa-plus-circle" })]
+                          )
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "tab-pane fade",
+                attrs: {
+                  id: "pills-userFunctions",
+                  role: "tabpanel",
+                  "aria-labelledby": "pills-userFunctions-tab"
+                }
+              },
+              [
+                _c("table", { staticClass: "table" }, [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.UserFunctions, function(f) {
+                      return _c("tr", { key: f[0] }, [
+                        _c(
+                          "td",
+                          {
+                            attrs: { colspan: "12" },
+                            on: {
+                              click: function($event) {
+                                return _vm.optionPicker(f)
+                              }
+                            }
+                          },
+                          [
+                            _c("span", {
+                              domProps: { textContent: _vm._s(f[2]) }
+                            }),
                             _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.showRelatedTask(
-                                        p.resultProduct
-                                      )
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "far fa-eye" })]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.optionAddTask(p)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-plus-circle" })]
-                              )
-                            ])
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "tab-pane fade",
-                    attrs: {
-                      id: "pills-subproducts",
-                      role: "tabpanel",
-                      "aria-labelledby": "pills-subproducts-tab"
-                    }
-                  },
-                  [
-                    _c("table", { staticClass: "table" }, [
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.Products.subprocess, function(s) {
-                          return _c("tr", { key: s.id }, [
-                            _c("td", [
-                              _c("span", {
-                                domProps: { textContent: _vm._s(s.process) }
-                              }),
-                              _vm._v(" "),
-                              _c("span", {
-                                domProps: { textContent: _vm._s(s.product) }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.showRelatedTask(s.product)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "far fa-eye" })]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.optionAddTask(s)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-plus-circle" })]
-                              )
-                            ])
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "tab-pane fade",
-                    attrs: {
-                      id: "pills-userFunctions",
-                      role: "tabpanel",
-                      "aria-labelledby": "pills-userFunctions-tab"
-                    }
-                  },
-                  [
-                    _c("table", { staticClass: "table" }, [
-                      _vm._m(3),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.UserFunctions, function(f) {
-                          return _c("tr", { key: f[0] }, [
+                            _c("span", {
+                              domProps: { textContent: _vm._s(f[0]) }
+                            })
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              on: {
+                                click: function($event) {
+                                  return _vm.showRelatedTask(f[0])
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "far fa-eye" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              on: {
+                                click: function($event) {
+                                  return _vm.optionAddTask(f)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fa fa-plus-circle" })]
+                          )
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                ])
+              ]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _vm.showTaskList
+        ? _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "card card-plain" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-body card-body-fitted " }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(4),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.Tasks.data, function(t) {
+                        return _c("tr", { key: t.id }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(t.task) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
                             _c(
-                              "td",
+                              "button",
                               {
-                                attrs: { colspan: "12" },
+                                staticClass: "btn btn-info",
                                 on: {
                                   click: function($event) {
-                                    return _vm.optionPicker(f)
+                                    return _vm.loadFieldsUpdate(t)
                                   }
                                 }
                               },
-                              [
-                                _c("span", {
-                                  domProps: { textContent: _vm._s(f[2]) }
-                                }),
-                                _vm._v(" "),
-                                _c("span", {
-                                  domProps: { textContent: _vm._s(f[0]) }
-                                })
-                              ]
+                              [_c("i", { staticClass: "fas fa-edit" })]
                             ),
                             _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.showRelatedTask(f[0])
-                                    }
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteTask(t)
                                   }
-                                },
-                                [_c("i", { staticClass: "far fa-eye" })]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.optionAddTask(f)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-plus-circle" })]
-                              )
-                            ])
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-trash-alt" })]
+                            )
                           ])
-                        }),
-                        0
-                      )
-                    ])
-                  ]
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _vm.showTaskList
-            ? _c("div", { staticClass: "col-md-6" }, [
-                _c("div", { staticClass: "card card-plain" }, [
-                  _vm._m(4),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-body card-body-fitted " }, [
-                    _c("div", { staticClass: "col-12" }, [
-                      _c("table", { staticClass: "table table-hover" }, [
-                        _vm._m(5),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(_vm.Tasks.data, function(t) {
-                            return _c("tr", { key: t.id }, [
-                              _c("td", {
-                                domProps: { textContent: _vm._s(t.task) }
-                              }),
-                              _vm._v(" "),
-                              _c("td", [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-info",
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.loadFieldsUpdate(t)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "fas fa-edit" })]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-danger",
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.deleteTask(t)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "fas fa-trash-alt" })]
-                                )
-                              ])
-                            ])
-                          }),
-                          0
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "footer" },
-                          [
-                            _c("pagination", {
-                              attrs: { data: _vm.Tasks },
-                              on: { "pagination-change-page": _vm.getTasks }
-                            })
-                          ],
-                          1
-                        )
-                      ])
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-footer" })
+                        ])
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "footer" },
+                      [
+                        _c("pagination", {
+                          attrs: { data: _vm.Tasks },
+                          on: { "pagination-change-page": _vm.getTasks }
+                        })
+                      ],
+                      1
+                    )
+                  ])
                 ])
-              ])
-            : _vm._e()
-        ])
-      : _vm._e(),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-footer" })
+            ])
+          ])
+        : _vm._e()
+    ]),
     _vm._v(" "),
     _c(
       "div",
@@ -66666,7 +66573,7 @@ var render = function() {
                   [_vm._v(" " + _vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(6)
+                _vm._m(5)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -66943,7 +66850,7 @@ var render = function() {
                                 "table",
                                 { staticClass: "table table-hover" },
                                 [
-                                  _vm._m(7),
+                                  _vm._m(6),
                                   _vm._v(" "),
                                   _c("tbody", [
                                     _vm.currentTypeTaks == "PRODUCT"
@@ -67103,16 +67010,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary " }, [
-      _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(" Seleccione el proyecto donde se gestionaran las tareas")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("th", { staticClass: "text-center" }, [
         _vm._v(" Productos de los procesos registrados ")
@@ -67211,228 +67108,169 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    this.selectingProjectToAddTasks === true
-      ? _c("div", { staticClass: "row h-100" }, [
-          _c("div", { staticClass: "card card-plain col-12" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("br"),
+    _c("div", { staticClass: "col-md-12" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "tab-content", attrs: { id: "pills-tabContent" } },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "tab-pane fade show active",
+              attrs: {
+                id: "pills-products",
+                role: "tabpanel",
+                "aria-labelledby": "pills-products-tab"
+              }
+            },
+            [
+              _c("table", { staticClass: "table" }, [
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.currentProject,
-                        expression: "currentProject"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.currentProject = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.setProject()
-                        }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.Projects, function(p) {
-                    return _c("option", { domProps: { value: p.id } }, [
-                      _vm._v(_vm._s(p.name))
+                  "tbody",
+                  _vm._l(_vm.Products.process, function(p) {
+                    return _c("tr", { key: p.id }, [
+                      _c("td", [
+                        _c(
+                          "span",
+                          { domProps: { textContent: _vm._s(p.file) } },
+                          [_vm._v(":")]
+                        ),
+                        _vm._v(" "),
+                        _c("span", {
+                          domProps: { textContent: _vm._s(p.resultProduct) }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.showRelatedTask(
+                                  p.resultProduct,
+                                  p.relatedToLevel
+                                )
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-envelope" })]
+                        )
+                      ])
                     ])
                   }),
                   0
                 )
               ])
-            ])
-          ])
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    this.selectingProjectToAddTasks === false
-      ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-12" }, [
-            _c("div", { staticClass: "card card-plain" }, [
-              _c("div", { staticClass: "card-header card-header-primary" }, [
-                _c("h3", { staticClass: "card-title mt-0" }, [
-                  _vm._v(" Lista de tareas")
-                ]),
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-pane fade",
+              attrs: {
+                id: "pills-subproducts",
+                role: "tabpanel",
+                "aria-labelledby": "pills-subproducts-tab"
+              }
+            },
+            [
+              _c("table", { staticClass: "table" }, [
+                _vm._m(2),
                 _vm._v(" "),
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-md-6" }, [
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", { staticClass: "bmd-label-floating" }, [
-                        _vm._v("Por producto")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.type,
-                              expression: "type"
-                            }
-                          ],
-                          staticClass: " form-control",
-                          on: {
-                            change: [
-                              function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.type = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              },
-                              _vm.getTasks
-                            ]
-                          }
-                        },
-                        [
-                          _c("option", { attrs: { value: "USER-FUNCTION" } }, [
-                            _vm._v(" Función de usuario")
-                          ]),
-                          _vm._v(" "),
-                          _c("option", { attrs: { value: "PRODUCT" } }, [
-                            _vm._v(" Producto")
-                          ]),
-                          _vm._v(" "),
-                          _c("option", { attrs: { value: "SUB-PRODUCT" } }, [
-                            _vm._v(" Producto de Subproceso")
-                          ])
-                        ]
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-6" }, [
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", { staticClass: "bmd-label-floating" }, [
-                        _vm._v("Por nivel")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.level,
-                              expression: "level"
-                            }
-                          ],
-                          staticClass: " form-control",
-                          on: {
-                            change: [
-                              function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.level = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              },
-                              _vm.getTasks
-                            ]
-                          }
-                        },
-                        _vm._l(_vm.Levels, function(l) {
-                          return _c("option", { domProps: { value: l } }, [
-                            _vm._v(_vm._s(l))
-                          ])
+                _c(
+                  "tbody",
+                  _vm._l(_vm.Products.subprocess, function(s) {
+                    return _c("tr", { key: s.id }, [
+                      _c("td", [
+                        _c("span", {
+                          domProps: { textContent: _vm._s(s.process) }
                         }),
-                        0
-                      )
+                        _vm._v(" "),
+                        _c("span", {
+                          domProps: { textContent: _vm._s(s.product) }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.showRelatedTask(
+                                  s.product,
+                                  s.relatedToLevel
+                                )
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-envelope" })]
+                        )
+                      ])
                     ])
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-body card-body-fitted " }, [
-                _c("div", { staticClass: "col-md-12" }, [
-                  _c("table", { staticClass: "table table-hover" }, [
-                    _vm._m(1),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.Tasks.data, function(task) {
-                        return _c("tr", { key: task.id }, [
-                          _c("td", {
-                            domProps: { textContent: _vm._s(task.task) }
-                          }),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-info",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.loadNotificator(task)
-                                  }
-                                }
-                              },
-                              [_c("i", { staticClass: "fas fa-edit" })]
-                            )
-                          ])
-                        ])
-                      }),
-                      0
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "footer" },
-                    [
-                      _c("pagination", {
-                        attrs: { data: _vm.Tasks },
-                        on: {
-                          "pagination-change-page": function($event) {
-                            return _vm.getTasks()
-                          }
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ])
+                  }),
+                  0
+                )
               ])
-            ])
-          ])
-        ])
-      : _vm._e(),
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-pane fade",
+              attrs: {
+                id: "pills-userFunctions",
+                role: "tabpanel",
+                "aria-labelledby": "pills-userFunctions-tab"
+              }
+            },
+            [
+              _c("table", { staticClass: "table" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.UserFunctions, function(f) {
+                    return _c("tr", { key: f[0] }, [
+                      _c("td", [
+                        _c("span", { domProps: { textContent: _vm._s(f[2]) } }),
+                        _vm._v(" "),
+                        _c("span", { domProps: { textContent: _vm._s(f[0]) } })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.showRelatedTask(f[0], f[3])
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-envelope" })]
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ]
+          )
+        ]
+      )
+    ]),
     _vm._v(" "),
     _c(
       "div",
@@ -67456,32 +67294,88 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header border-bottom-0" }, [
-                _c(
-                  "h5",
-                  {
-                    staticClass: "modal-title",
-                    attrs: { id: "TaskNotificator" }
-                  },
-                  [
-                    _vm._v(
-                      " Enviar notificación de aprobación de tarea: " +
-                        _vm._s(_vm.title)
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _vm._m(2)
-              ]),
+              _vm._m(4),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-md-8" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
                     _c("div", { staticClass: "card" }, [
                       _c("div", { staticClass: "card-body" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("table", { staticClass: "table table-hover" }, [
-                            _vm._m(3),
+                            _vm._m(5),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.Tasks.data, function(task) {
+                                return _c("tr", { key: task.id }, [
+                                  _c("td", [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.tasksToNotify,
+                                          expression: "tasksToNotify"
+                                        }
+                                      ],
+                                      attrs: { type: "checkbox" },
+                                      domProps: {
+                                        value: task.id,
+                                        checked: Array.isArray(
+                                          _vm.tasksToNotify
+                                        )
+                                          ? _vm._i(_vm.tasksToNotify, task.id) >
+                                            -1
+                                          : _vm.tasksToNotify
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.tasksToNotify,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = task.id,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.tasksToNotify = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.tasksToNotify = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.tasksToNotify = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(task.task) +
+                                        "\n                            "
+                                    )
+                                  ])
+                                ])
+                              }),
+                              0
+                            )
+                          ])
+                        ])
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(6),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -67546,38 +67440,40 @@ var render = function() {
                         ])
                       ])
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-4" }, [
-                    _c("div", { staticClass: "card" }, [
-                      _c("div", { staticClass: "card-body" }, [
-                        _c("div", { staticClass: "container-buttons" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success",
-                              on: {
-                                click: function($event) {
-                                  return _vm.saveTask()
-                                }
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c("div", { staticClass: "col-6" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "container-buttons" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            on: {
+                              click: function($event) {
+                                return _vm.sendNotification()
                               }
-                            },
-                            [_vm._v("Enviar")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-secondary",
-                              on: {
-                                click: function($event) {
-                                  return _vm.clearFields()
-                                }
+                            }
+                          },
+                          [_vm._v("Enviar")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: {
+                              click: function($event) {
+                                return _vm.exit()
                               }
-                            },
-                            [_vm._v("Salir")]
-                          )
-                        ])
+                            }
+                          },
+                          [_vm._v("Salir")]
+                        )
                       ])
                     ])
                   ])
@@ -67595,39 +67491,67 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary " }, [
-      _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(" Seleccione el proyecto donde se notificaran las tareas")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v(" Tarea ")]),
-        _vm._v(" "),
-        _c("th", [_vm._v(" enviar notificación ")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c(
-      "button",
+      "ul",
       {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
+        staticClass: "nav nav-pills mb-3",
+        attrs: { id: "pills-tab", role: "tablist" }
       },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      [
+        _c("li", { staticClass: "nav-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link active",
+              attrs: {
+                id: "pills-products-tab",
+                "data-toggle": "pill",
+                href: "#pills-products",
+                role: "tab",
+                "aria-controls": "pills-products",
+                "aria-selected": "true"
+              }
+            },
+            [_vm._v("Productos")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "nav-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              attrs: {
+                id: "pills-subproducts-tab",
+                "data-toggle": "pill",
+                href: "#pills-subproducts",
+                role: "tab",
+                "aria-controls": "pills-subproducts",
+                "aria-selected": "false"
+              }
+            },
+            [_vm._v("Productos de subprocesos")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "nav-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              attrs: {
+                id: "pills-userFunctions-tab",
+                "data-toggle": "pill",
+                href: "#pills-userFunctions",
+                role: "tab",
+                "aria-controls": "pills-userFunctions",
+                "aria-selected": "false"
+              }
+            },
+            [_vm._v("Funciones de usuario")]
+          )
+        ])
+      ]
     )
   },
   function() {
@@ -67635,8 +67559,77 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [
+      _c("th", { staticClass: "text-center" }, [
+        _vm._v(" Productos de los procesos registrados ")
+      ]),
+      _vm._v(" "),
+      _c("th", [_vm._v(" Enviar notificación ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("th", { staticClass: "text-center" }, [
+        _vm._v("Productos de los sub-procesos registrados ")
+      ]),
+      _vm._v(" "),
+      _c("th", [_vm._v(" Acciones ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("th", { staticClass: "text-center" }, [
+        _vm._v(" Funciones de usuario registrados ")
+      ]),
+      _vm._v(" "),
+      _c("th", [_vm._v(" Acciones ")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header border-bottom-0" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "TaskNotificator" } },
+        [_vm._v(" Enviar notificación de aprobación de tareas ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [_c("th", [_vm._v("Seleccionar de la lista de tarea")])])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("Seleccione el usuario a notificar la tarea")])
+        _c("th", [_vm._v("Seleccionar de la lista de usuarios a notificar")])
       ])
     ])
   }
