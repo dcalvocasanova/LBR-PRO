@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Traits\NotificationTraits;
-use Carbon\Carbon;
 use App\Alerting;
-use App\User;
-use App\Services\NotificationServices;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\Notifier;
+use App\Traits\NotificationTraits;
 
 class NotificatorController extends Controller
 {
@@ -29,21 +24,13 @@ class NotificatorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-    public function sendGoalsNotification(Request $request)
+    public function sendGoalsNotification(Request $request,  NotificationTraits $notificator)
     {
       $users = $request->usersToNotify;
-      $this->sendEmailConfirmation($users,$request->title,$request->body,'GOALS');
       foreach ($users as $user) {
-          $notification = new Alerting();
-          $notification->title =$request->title;
-          $notification->project_id =$request->project_id;
-          $notification->relatedToLevel =$request->relatedToLevel;
-          $notification->body =$request->body;
-          $notification->receiver= $user;
-          $notification->sender =Auth::user()->id;
-          $notification->type ='GOALS';
-          $notification->save();
+        $notification = $notificator->createAlert($user,'GOALS',$request);
       }
+      $mails = $notificator->sendEmailNotificatios($request->usersToNotify,$request->title,$request->body,'GOALS');
     }
     /**
      * Send Goals to notify
@@ -142,9 +129,13 @@ class NotificatorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-    public function markAsOk(Request $request)
+    public function markAsOk(Request $request,  NotificationTraits $notificator)
     {
-      $this->saveAlert($request->id ,"Acepted"," -Aceptada-","Aceptada");
+      $notification = $notificator->changeTaskStatus($request->id ,"Acepted"," -Aceptada-","Aceptada");
+      $notificator->sendEmailNotifications($notification->sender,
+                                            "Notificación aceptada",
+                                            "La notificación:".$notification->body." FUE ACEPTADA " ,
+                                            " Aceptada");
     }
     /**
      * Mark as rejected
@@ -152,45 +143,12 @@ class NotificatorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      */
-    public function markAsRejected (Request $request)
+    public function markAsRejected (Request $request,  NotificationTraits $notificator)
     {
-      $this->saveAlert($request->id,'Rejected'," -Rechazada-",$request->reasons);
-      $notification = Alerting::findOrFail($request->id);
-      $user[0] = $notification->sender;
-      $msg = "En la notificación:".$notification->body." RECHAZADA POR:".$request->reasons;
-      $this->sendEmailConfirmation($user,$notification->title,$msg,'REJECTED');
-    }
-
-
-  
-
-    /**
-    * Update status of notification
-    */
-    function saveAlert (string $id, string $type, string $title, string $reason){
-      $notification = Alerting::findOrFail($id);
-      $notification->status = $type;
-      $notification->title .= $title;
-      $notification->reasons = $reason;
-      $notification->read_at = Carbon::now();
-      $notification->save();
-    }
-
-    /**
-    * Send Email confirmation to users
-    */
-    function sendEmailConfirmation($notificator, string $title, string $msj, string $type){
-      $users = User::find($notificator);
-      $details = [
-          'greeting' => 'Un saludo cordial',
-          'title' => $title,
-          'body' =>  $msj,
-          'sender' => Auth::user()->id,
-          'type'=> $type,
-          'thanks' => 'Visita la plataforma para mayor información',
-          'actionText' => 'Ir al sitio web',
-          'actionURL' => url('/notificaciones'),
-      ];
-      Notification::send($users, new Notifier($details)); //send several UserSystemComponent
+      $notification= $notificator->changeTaskStatus($request->id ,'Rejected'," -Rechazada-", $request->reasons);
+      $notificator->sendEmailNotifications($notification->sender,
+                                            "Notificación rechazada",
+                                            "La notificación:".$notification->body." RECHAZADA POR:".$notification->reasons,
+                                            " Rechazada");
     }
 }

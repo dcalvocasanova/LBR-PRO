@@ -232,7 +232,7 @@ Route::post('/password/reset','ResetPasswordController@reset');
 
 /*Notification Controller*/
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
-Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::post('/notify/goal','NotificatorController@sendGoalsNotification')->middleware('auth');
 Route::post('/notify/task','NotificatorController@sendTasksNotification')->middleware('auth');
 
 

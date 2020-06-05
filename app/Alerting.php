@@ -16,6 +16,14 @@ class Alerting extends Model
   ];
 
   /**
+   * The attributes that are take them as JSON
+   *
+   * @var array
+   */
+  protected $casts = [
+      'body' => 'array'
+  ];
+  /**
    * The "booting" method of the model.
    *
    * @return void

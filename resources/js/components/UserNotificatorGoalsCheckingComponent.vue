@@ -75,10 +75,9 @@
     },
     computed: {
       getGoalInformation: function () {
-        let msg = "En el proyecto: "+ this.Project.name +" en el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
-        msg +='<br>'
+        let msg = "En el proyecto: "+ this.Project.name +" en el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados:"
         for(let goal in this.Item.goals){
-          msg += "- código: "+ this.Item.goals[goal].code +" objetivo: "+this.Item.goals[goal].name+"<br>"
+          msg += "  * objetivo: "+this.Item.goals[goal].name
         }
         return msg
       }
@@ -91,7 +90,7 @@
           me.notification.body = me.getGoalInformation
           me.notification.relatedToLevel = this.Item.name
           me.notification.project_id = me.Project.id
-          me.notification.post('/sender')
+          me.notification.post('/notify/goal')
           .then(function (response) {
             toast.fire({
              type: 'success',

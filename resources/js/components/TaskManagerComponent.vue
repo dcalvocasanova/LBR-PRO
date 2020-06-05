@@ -1,8 +1,8 @@
 <template>
   <div class="container container-project">
     <div class="row">
-      <div class="col-md-6">
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <div class="col-md-7">
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
           <li class="nav-item">
             <a @click="showTask('PRODUCT')" class="nav-link active" id="pills-products-tab" data-toggle="pill" href="#pills-products" role="tab" aria-controls="pills-products" aria-selected="true">Productos</a>
           </li>
@@ -76,7 +76,7 @@
           </div>
         </div>
       </div>
-      <div v-if="showTaskList" class="col-md-6">
+      <div v-if="showTaskList" class="col-md-5">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
             <h3 class="card-title mt-0"> Lista de tareas</h3>
@@ -291,7 +291,7 @@
           .then(response => {
             me.Tasks = response.data
           });
-        },        
+        },
         getCurrentProject(){
           let me =this;
           axios.get('/proyecto/actual')

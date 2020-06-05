@@ -6268,15 +6268,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     nodoSeleccionado: function nodoSeleccionado(item) {
-      if (item.notificated) {
-        swal.fire('Información', 'Ya el nivel de la estructura fue notificado, para más información dirijase al panel de notificaciones', 'info');
-      } else {
-        this.getUsers(item);
+      this.getUsers(item);
 
-        if (this.justShowTree) {
-          $('#NotificatorManager').modal('show');
-          this.currentNode = item;
-        }
+      if (this.justShowTree) {
+        $('#NotificatorManager').modal('show');
+        this.currentNode = item;
       }
     },
     getUsers: function getUsers(item) {
@@ -11581,16 +11577,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({
         title: "Aprobación de tareas",
-        body: 'Un pequeño',
+        body: '',
         project_id: '',
         relatedToLevel: '',
         usersToNotify: [],
@@ -11600,6 +11592,7 @@ __webpack_require__.r(__webpack_exports__);
       relatedToLevel: '',
       usersToNotify: [],
       tasksToNotify: [],
+      msg: [],
       Users: {},
       UserFunctions: {},
       Products: {},
@@ -11675,7 +11668,7 @@ __webpack_require__.r(__webpack_exports__);
       if (me.usersToNotify.length > 0 && me.tasksToNotify.length > 0) {
         me.form.usersToNotify = me.usersToNotify;
         me.form.tasksToNotify = me.tasksToNotify.join();
-        me.form.body = "Hola";
+        me.form.body = me.msg.join();
         me.form.relatedToLevel = me.relatedToLevel;
         me.form.project_id = me.currentProject;
         me.form.post('/notify/task').then(function (response) {
@@ -11691,9 +11684,13 @@ __webpack_require__.r(__webpack_exports__);
         swal.fire('Error', 'Debe seleccionar usuarios y tareas a notificar', 'error');
       }
     },
+    tasksToMail: function tasksToMail(task) {
+      this.msg.push(task.task);
+    },
     exit: function exit() {
       $('#TaskNotificator').modal('toggle');
       this.form.reset();
+      this.msg = [];
       this.usersToNotify = [];
       this.tasksToNotify = [];
     }
@@ -12616,6 +12613,7 @@ __webpack_require__.r(__webpack_exports__);
       });
       this.showInboxNotification = false;
       this.getUserNotifications();
+      Fire.$emit('updateNotifications');
     },
     openNotification: function openNotification(notification) {
       var me = this;
@@ -12743,115 +12741,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
+  created: function created() {
+    var _this = this;
+
+    Fire.$on('updateNotifications', function () {
+      _this.getUserNotifications();
+    });
+  },
   mounted: function mounted() {
     this.getUserNotifications();
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      users: {},
-      notify: [],
-      notification: new Form({
-        title: "",
-        usersToNotify: [],
-        body: ""
-      })
-    };
-  },
-  methods: {
-    getUsers: function getUsers() {
-      var me = this;
-      axios.get('/usuarios').then(function (response) {
-        me.users = response.data; //get current user
-      });
-    },
-    sendNotification: function sendNotification() {
-      var me = this;
-
-      if (me.notify.length > 0) {
-        me.notification.usersToNotify = me.notify;
-        me.notification.post('/sender').then(function (response) {
-          toast.fire({
-            type: 'success',
-            title: 'Mensaje con éxito'
-          });
-          me.notification.reset();
-        })["catch"](function (error) {
-          console.log(error);
-        });
-        me.notification.reset();
-        me.notify = [];
-      } else {
-        swal.fire('Error', 'Debe seleccionar un usuario a notificar', 'error');
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.getUsers();
   }
 });
 
@@ -12942,11 +12840,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     getGoalInformation: function getGoalInformation() {
-      var msg = "En el proyecto: " + this.Project.name + " en el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados <br>";
-      msg += '<br>';
+      var msg = "En el proyecto: " + this.Project.name + " en el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados:";
 
       for (var goal in this.Item.goals) {
-        msg += "- código: " + this.Item.goals[goal].code + " objetivo: " + this.Item.goals[goal].name + "<br>";
+        msg += "  * objetivo: " + this.Item.goals[goal].name;
       }
 
       return msg;
@@ -12961,7 +12858,7 @@ __webpack_require__.r(__webpack_exports__);
         me.notification.body = me.getGoalInformation;
         me.notification.relatedToLevel = this.Item.name;
         me.notification.project_id = me.Project.id;
-        me.notification.post('/sender').then(function (response) {
+        me.notification.post('/notify/goal').then(function (response) {
           toast.fire({
             type: 'success',
             title: 'Notificación enviada con éxito'
@@ -66185,11 +66082,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { staticClass: "col-md-7" }, [
         _c(
           "ul",
           {
-            staticClass: "nav nav-pills mb-3",
+            staticClass: "nav nav-pills",
             attrs: { id: "pills-tab", role: "tablist" }
           },
           [
@@ -66474,7 +66371,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm.showTaskList
-        ? _c("div", { staticClass: "col-md-6" }, [
+        ? _c("div", { staticClass: "col-md-5" }, [
             _c("div", { staticClass: "card card-plain" }, [
               _vm._m(3),
               _vm._v(" "),
@@ -67330,6 +67227,9 @@ var render = function() {
                                           : _vm.tasksToNotify
                                       },
                                       on: {
+                                        click: function($event) {
+                                          return _vm.tasksToMail(task)
+                                        },
                                         change: function($event) {
                                           var $$a = _vm.tasksToNotify,
                                             $$el = $event.target,
@@ -67445,37 +67345,33 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
-                _c("div", { staticClass: "col-6" }, [
-                  _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "container-buttons" }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-success",
-                            on: {
-                              click: function($event) {
-                                return _vm.sendNotification()
-                              }
-                            }
-                          },
-                          [_vm._v("Enviar")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-secondary",
-                            on: {
-                              click: function($event) {
-                                return _vm.exit()
-                              }
-                            }
-                          },
-                          [_vm._v("Salir")]
-                        )
-                      ])
-                    ])
+                _c("div", { staticClass: "card-body" }, [
+                  _c("div", { staticClass: "container-buttons" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success",
+                        on: {
+                          click: function($event) {
+                            return _vm.sendNotification()
+                          }
+                        }
+                      },
+                      [_vm._v("Enviar")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        on: {
+                          click: function($event) {
+                            return _vm.exit()
+                          }
+                        }
+                      },
+                      [_vm._v("Salir")]
+                    )
                   ])
                 ])
               ])
@@ -69741,234 +69637,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "icon-circle bg-primary" }, [
         _c("i", { staticClass: "fas fa-file-alt text-white" })
       ])
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&":
-/*!***************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413& ***!
-  \***************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-lg-4 col-md-5" }, [
-      _c(
-        "div",
-        { staticClass: "ibox", attrs: { id: "inbox-notification-container" } },
-        [
-          _c("div", { staticClass: "inbox-notification clf" }, [
-            _c(
-              "table",
-              {
-                staticClass: "table table-hover table-inbox",
-                attrs: { id: "table-inbox" }
-              },
-              _vm._l(_vm.users.data, function(user) {
-                return _c(
-                  "tbody",
-                  {
-                    key: user.id,
-                    staticClass: "rowlinkx",
-                    attrs: { "data-link": "row" }
-                  },
-                  [
-                    _c("tr", { staticClass: "users-to-notify" }, [
-                      _c("td", [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.notify,
-                              expression: "notify"
-                            }
-                          ],
-                          attrs: { type: "checkbox", name: user.id },
-                          domProps: {
-                            value: user.id,
-                            checked: Array.isArray(_vm.notify)
-                              ? _vm._i(_vm.notify, user.id) > -1
-                              : _vm.notify
-                          },
-                          on: {
-                            change: function($event) {
-                              var $$a = _vm.notify,
-                                $$el = $event.target,
-                                $$c = $$el.checked ? true : false
-                              if (Array.isArray($$a)) {
-                                var $$v = user.id,
-                                  $$i = _vm._i($$a, $$v)
-                                if ($$el.checked) {
-                                  $$i < 0 && (_vm.notify = $$a.concat([$$v]))
-                                } else {
-                                  $$i > -1 &&
-                                    (_vm.notify = $$a
-                                      .slice(0, $$i)
-                                      .concat($$a.slice($$i + 1)))
-                                }
-                              } else {
-                                _vm.notify = $$c
-                              }
-                            }
-                          }
-                        }),
-                        _vm._v(" " + _vm._s(user.name))
-                      ])
-                    ])
-                  ]
-                )
-              }),
-              0
-            )
-          ])
-        ]
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-lg-8 col-md-7" }, [
-      _c("div", { staticClass: "card" }, [
-        _vm._m(1),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-7" }, [
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("label", { staticClass: "bmd-label-floating" }, [
-                    _vm._v("Titulo")
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.notification.title,
-                        expression: "notification.title"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    class: {
-                      "is-invalid": _vm.notification.errors.has("title")
-                    },
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.notification.title },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.notification, "title", $event.target.value)
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("has-error", {
-                    attrs: { form: _vm.notification, field: "title" }
-                  })
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-5" }, [
-              _c(
-                "div",
-                { staticClass: "form-group" },
-                [
-                  _c("label", { staticClass: "bmd-label-floating" }, [
-                    _vm._v("Detalle")
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.notification.body,
-                        expression: "notification.body"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    class: {
-                      "is-invalid": _vm.notification.errors.has("body")
-                    },
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.notification.body },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(_vm.notification, "body", $event.target.value)
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("has-error", {
-                    attrs: { form: _vm.notification, field: "body" }
-                  })
-                ],
-                1
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "container-buttons" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-success",
-                on: {
-                  click: function($event) {
-                    return _vm.sendNotification()
-                  }
-                }
-              },
-              [_vm._v("Enviar")]
-            )
-          ])
-        ])
-      ])
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-12" }, [
-      _c("h3", { staticClass: "card-title mt-0" }, [
-        _vm._v(" Enviar notificación")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary" }, [
-      _c("h4", { staticClass: "card-title" }, [_vm._v("Notificar")])
     ])
   }
 ]
@@ -95513,7 +95181,6 @@ Vue.component('userFunctions', __webpack_require__(/*! ./components/users/UserFu
 * All Components related to notifications
 */
 
-Vue.component('notificatorExample', __webpack_require__(/*! ./components/UserNotificatorComponent.vue */ "./resources/js/components/UserNotificatorComponent.vue")["default"]);
 Vue.component('notificatorGoalsCheking', __webpack_require__(/*! ./components/UserNotificatorGoalsCheckingComponent.vue */ "./resources/js/components/UserNotificatorGoalsCheckingComponent.vue")["default"]);
 Vue.component('notificatorProjectStructure', __webpack_require__(/*! ./components/GoalsCheckingManagerComponent.vue */ "./resources/js/components/GoalsCheckingManagerComponent.vue")["default"]);
 Vue.component('notificatorTask', __webpack_require__(/*! ./components/TaskNotifierComponent.vue */ "./resources/js/components/TaskNotifierComponent.vue")["default"]);
@@ -97145,75 +96812,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationsComponent_vue_vue_type_template_id_dde73d6a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificationsComponent_vue_vue_type_template_id_dde73d6a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/UserNotificatorComponent.vue":
-/*!**************************************************************!*\
-  !*** ./resources/js/components/UserNotificatorComponent.vue ***!
-  \**************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserNotificatorComponent.vue?vue&type=template&id=282a4413& */ "./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&");
-/* harmony import */ var _UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserNotificatorComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/UserNotificatorComponent.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************!*\
-  !*** ./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificatorComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413& ***!
-  \*********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserNotificatorComponent.vue?vue&type=template&id=282a4413& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserNotificatorComponent.vue?vue&type=template&id=282a4413&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserNotificatorComponent_vue_vue_type_template_id_282a4413___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

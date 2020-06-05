@@ -94,7 +94,7 @@
                         <tbody>
                           <tr v-for="task in Tasks.data" :key="task.id" >
                             <td>
-                              <input v-model="tasksToNotify" type="checkbox"
+                              <input v-model="tasksToNotify" @click="tasksToMail(task)" type="checkbox"
                                 :value="task.id">
                                   {{task.task}}
                               </td>
@@ -130,16 +130,12 @@
             </div>
           </div>
           <div class="modal-footer">
-            <div class="col-6">
-              <div class="card">
-                <div class="card-body">
-                  <div class="container-buttons">
-                    <button  @click="sendNotification()" class="btn btn-success">Enviar</button>
-                    <button @click="exit()" class="btn btn-secondary">Salir</button>
-                  </div>
+            <div class="card-body">
+                <div class="container-buttons">
+                  <button  @click="sendNotification()" class="btn btn-success">Enviar</button>
+                  <button @click="exit()" class="btn btn-secondary">Salir</button>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
@@ -154,7 +150,7 @@ export default {
       return{
         form: new Form ({
           title:"Aprobación de tareas",
-          body:'Un pequeño',
+          body:'',
           project_id: '',
           relatedToLevel:'',
           usersToNotify:[],
@@ -164,6 +160,7 @@ export default {
         relatedToLevel:'',
         usersToNotify:[],
         tasksToNotify:[],
+        msg:[],
         Users:{},
         UserFunctions:{},
         Products:{},
@@ -235,7 +232,7 @@ export default {
       if(me.usersToNotify.length > 0 &&  me.tasksToNotify.length > 0){
         me.form.usersToNotify = me.usersToNotify
         me.form.tasksToNotify = me.tasksToNotify.join()
-        me.form.body = "Hola"
+        me.form.body = me.msg.join()
         me.form.relatedToLevel = me.relatedToLevel
         me.form.project_id = me.currentProject
         me.form.post('/notify/task')
@@ -247,7 +244,7 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        });        
         me.exit()
       }
       else
@@ -255,12 +252,15 @@ export default {
         swal.fire('Error','Debe seleccionar usuarios y tareas a notificar','error')
       }
     },
+    tasksToMail(task){
+      this.msg.push(task.task);
+    },
     exit(){
         $('#TaskNotificator').modal('toggle');
         this.form.reset()
+        this.msg =[]
         this.usersToNotify =[]
         this.tasksToNotify =[]
-
     }
   },
   mounted() {

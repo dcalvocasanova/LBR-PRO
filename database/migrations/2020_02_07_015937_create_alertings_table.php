@@ -17,7 +17,7 @@ class CreateAlertingsTable extends Migration
           $table->bigIncrements('id');
           $table->string('project_id');
           $table->string('title');
-          $table->string('body');
+          $table->json('body');
           $table->string('sender');
           $table->string('type');
           $table->string('status');

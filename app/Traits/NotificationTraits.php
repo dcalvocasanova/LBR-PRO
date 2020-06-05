@@ -5,6 +5,8 @@ namespace App\Traits;
 use App\User;
 use App\Alerting;
 use App\UserTask;
+use Carbon\Carbon;
+
 use App\Notifications\Notifier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -21,6 +23,7 @@ class NotificationTraits
     $notification->receiver= $user;
     $notification->sender = Auth::user()->id;
     $notification->type = $type;
+    $notification->status = 'Pending';
     $notification->save();
     return  $notification;
   }
@@ -32,9 +35,18 @@ class NotificationTraits
     $relation->save();
     return  $relation;
   }
-  public function sendEmailNotificatios($users, $title, $msj, $type )
+  public function changeTaskStatus (string $id, string $type, string $title, string $reason){
+    $notification = Alerting::findOrFail($id);
+    $notification->status = $type;
+    $notification->title .= $title;
+    $notification->reasons = $reason;
+    $notification->read_at = Carbon::now();
+    $notification->save();
+    return $notification;
+  }
+  public function sendEmailNotifications($users, $title, $msj, $type )
   {
-    $users = User::find($notificator);
+    $users = User::find($users);
     $details = [
         'greeting' => 'Un saludo cordial',
         'title' => $title,
@@ -45,6 +57,6 @@ class NotificationTraits
         'actionText' => 'Ir al sitio web',
         'actionURL' => url('/notificaciones'),
     ];
-    Notification::send($users, new Notifier($details)); //send several UserSystemComponent
+    Notification::send($users,new Notifier($details));
   }
 }

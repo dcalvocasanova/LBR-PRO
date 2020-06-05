@@ -132,17 +132,11 @@
     },
     methods:{
       nodoSeleccionado(item){
-        if (item.notificated) {
-          swal.fire(
-            'Información','Ya el nivel de la estructura fue notificado, para más información dirijase al panel de notificaciones','info'
-          )
-        }else{
-          this.getUsers(item)
-          if(this.justShowTree){
-            $('#NotificatorManager').modal('show')
-            this.currentNode = item
-          }
-        }
+        this.getUsers(item)
+        if(this.justShowTree){
+          $('#NotificatorManager').modal('show')
+          this.currentNode = item
+        }        
       },
       getUsers(item){
         axios.get('/usuarios-jefes-por-nivel',{
