@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function getUserByProject(Request $request)
     {
-      $users = User::with('roles')->where('relatedProjects',$request->project)->latest()->paginate(5);
+      $users = User::with('roles')->where('relatedProjects',$request->session()->get('currentProject_id'))->latest()->paginate(5);
       return $users;
     }
 

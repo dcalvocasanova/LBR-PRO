@@ -1,52 +1,52 @@
 <template>
   <div class="container container-project">
-    <div class="row">
-      <div class="col-12">
-        <div class="card card-plain">
-          <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0"> Usuarios en la plataforma</h4>
-          </div>
-            <div class="card-body">
-            <div class="col-12">
-              <div class="form-group">
-                <label class="bmd-label-floating">Proyecto base</label>
-                <select @change="getUsuarios()" v-model="currentProject" class=" form-control">
-                  <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th> Nombre </th>
-                    <th> Puesto </th>
-                    <th> Agregar o moficar funciones </th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr  v-for="user in Users.data" :key="user.id">
-                      <td v-text="user.name"></td>
-                      <td v-text="user.job"></td>
-                      <td>
-                        <button class="btn btn-info"
-                          @click="loadUserFunctions(user)"
-                          data-toggle="modal"
-                          data-target="#UserFunctionsManager">
-                          <i class="fa fa-tasks"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>
-            <div class="card-footer">
-            <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
+
+
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0"> Usuarios en la plataforma</h4>
+      </div>
+      <div class="card-body">
+        <div class="col-12">
+          <div class="form-group">
+            <label class="bmd-label-floating">Proyecto base</label>
+            <select @change="getUsuarios()" v-model="currentProject" class=" form-control">
+              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+            </select>
           </div>
         </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="">
+              <tr>
+                <th> Nombre </th>
+                <th> Puesto </th>
+                <th> Agregar o moficar funciones </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  v-for="user in Users.data" :key="user.id">
+                <td v-text="user.name"></td>
+                <td v-text="user.job"></td>
+                <td>
+                  <button class="btn btn-info"
+                  @click="loadUserFunctions(user)"
+                  data-toggle="modal"
+                  data-target="#UserFunctionsManager">
+                  <i class="fa fa-tasks"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+      <div class="card-footer">
+        <pagination :data="Users" @pagination-change-page="getUsuarios"></pagination>
       </div>
     </div>
+
+
     <div class="modal fade" id="UserFunctionsManager" tabindex="1" role="dialog" aria-labelledby="UserFunctionsManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -108,7 +108,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal fade" id="UserFunctionEditor" tabindex="2" role="dialog" aria-labelledby="UserFunctionEditor-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -176,6 +175,15 @@ export default {
             me.Users = response.data; //get all projects from page
       });
     },
+    getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.currentProject = response.data.id
+        me.getUsuarios()
+      });
+    },
+
     getProjectos(){
       let me =this;
       me.clearFields();

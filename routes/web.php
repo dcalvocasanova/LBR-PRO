@@ -155,6 +155,13 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionador-parametrizacion-diseno', function () {
       return view('containers.parametrizacion-disegno');
   });
+  Route::get('/gestionador-parametros-analisis-psicosocial', function () {
+      return view('admin.parametros_psicoanalisis');
+  });
+
+  Route::get('/gestionador-variables-analisis-psicosocial', function () {
+      return view('admin.variables_psicoanalisis');
+  });
 
 
 });
@@ -176,6 +183,9 @@ Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
   });
   Route::get('/notificar-aprobacion-de-objetivos', function () {
       return view('admin.aprobarObjetivos');
+  });
+  Route::get('/notificar-aprobacion-de-tareas', function () {
+      return view('admin.aprobarTareas');
   });
 });
 Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
@@ -222,12 +232,15 @@ Route::post('/password/reset','ResetPasswordController@reset');
 
 /*Notification Controller*/
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
-Route::post('sender','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::post('/notify/goal','NotificatorController@sendGoalsNotification')->middleware('auth');
+Route::post('/notify/task','NotificatorController@sendTasksNotification')->middleware('auth');
+
+
 Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
 Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
 Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
 Route::get('/notificaciones/objetivos-por-nivel','NotificatorController@getGoalsByLevelNotifications')->middleware('auth');
-Route::get('/notificaciones/tareas','NotificatorController@getTasksNotifications')->middleware('auth');
+Route::get('/notificaciones/tareas/{id}','NotificatorController@getTasksNotifications')->middleware('auth');
 Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
@@ -243,6 +256,10 @@ Route::delete('/proyectos/borrar/{id}', 'ProjectController@destroy');
 Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
 Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
+Route::get('/proyecto/actual', 'ProjectController@getCurrentProjectSession');
+Route::post('/proyecto/establecer', 'ProjectController@setCurrentProjectSession');
+
+
 /*Manage Catalogs*/
 Route::get('/catalogo', 'CatalogController@getListCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
@@ -267,7 +284,7 @@ Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureContro
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
-Route::get('/usuarios-por-proyecto/{project}', 'UserController@getUserByProject');
+Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
 Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
 Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
@@ -395,11 +412,22 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
+Route::get('/tareas-por-tipo', 'TaskController@getTaskAccordingTypeAndLevel');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
+Route::post('/tareas/notificadas', 'TaskController@changeTaskStatus');
 
-Route::get('/tareas-elementos-asociados/{id}', 'TaskDetailController@index');
-Route::put('/tareas-elementos-asociados/actualizar', 'TaskDetailController@update');
-Route::post('/tareas-elementos-asociados/guardar', 'TaskDetailController@store');
-Route::delete('/tareas-elementos-asociados/borrar/{id}', 'TaskDetailController@destroy');
+/*Manage Psychosocial Analysis*/
+Route::get('/psicoanalisis', 'PsychosocialQuestionController@index');
+Route::put('/psicoanalisis/actualizar', 'PsychosocialQuestionController@update');
+Route::post('/psicoanalisis/guardar', 'PsychosocialQuestionController@store');
+Route::delete('/psicoanalisis/borrar/{id}', 'PsychosocialQuestionController@destroy');
+Route::get('/findquestion', 'PsychosocialQuestionController@search');
+
+/*Manage Psychosocial Analysis Variables*/
+Route::get('/psicoanalisis-variables', 'PsychosocialVariableController@index');
+Route::put('/psicoanalisis-variables/actualizar', 'PsychosocialVariableController@update');
+Route::post('/psicoanalisis-variables/guardar', 'PsychosocialVariableController@store');
+Route::delete('/psicoanalisis-variables/borrar/{id}', 'PsychosocialVariableController@destroy');
+Route::get('/findvariable', 'PsychosocialVariableController@search');

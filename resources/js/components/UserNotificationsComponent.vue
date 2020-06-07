@@ -57,6 +57,11 @@
         });
       }
     },
+    created(){
+      Fire.$on('updateNotifications',() => {
+          this.getUserNotifications()
+      })
+    },
     mounted() {
       this.getUserNotifications()
     }

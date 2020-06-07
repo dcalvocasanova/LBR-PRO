@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 
@@ -15,7 +16,54 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-      $tasks = Task::where('id_project',$request->id)->latest()->paginate(5);
+      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
+      return $tasks;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserTasks(Request $request)
+    {
+      $userTasks = UserTask::where('user_id',$request->id)->first();
+      return $userTasks;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTaskAccordingTypeAndLevel(Request $request)
+    {
+      if(isset($request->allocator)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('allocator',$request->allocator)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      if(isset($request->type) && isset($request->level)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('type',$request->type)
+                      ->where('relatedToLevel',$request->level)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      if(isset($request->type)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('type',$request->type)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      if(isset($request->level)){
+        $tasks = Task::where('project_id',$request->id)
+                      ->where('relatedToLevel',$request->level)
+                      ->latest()->paginate(10);
+        return $tasks;
+      }
+      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
       return $tasks;
     }
 
@@ -52,6 +100,23 @@ class TaskController extends Controller
     {
       $Task = Task::findOrFail($request->id);
       $Task->update($request->all());
+    }
+
+    /**
+     * Change status as Read.
+     *
+     * @param  TaskRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function changeTaskStatus(Request $request)
+    {
+      $readAt = Carbon::now();
+      $tasks = Task::find($request->tasks);
+      foreach ($tasks as $task) {
+         $task->notified ='true';
+         $task->send_at =$readAt;
+         $task->save();
+      }
     }
 
     /**

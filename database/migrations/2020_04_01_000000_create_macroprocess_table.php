@@ -15,10 +15,10 @@ class CreateMacroprocessTable extends Migration
     {
         Schema::create('macroprocesses', function (Blueprint $table) {
             $table->bigIncrements('id');
-			$table->string('relatedToLevel');
+			      $table->string('relatedToLevel');
             $table->string('macroprocess');
-            $table->string('input',100);
-            $table->string('provider',15);
+            $table->string('input');
+            $table->string('provider');
             $table->string('activity');
             $table->string('responsible');
             $table->string('process');

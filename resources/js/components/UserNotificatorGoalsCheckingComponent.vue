@@ -59,11 +59,10 @@
     props:{
         Item: Object,
         Users: Array,
-        Project: Object,
+        Project: Number,
     },
     data(){
       return{
-        sdf:{},
         notify:[],
         notification: new Form ({
           title:"Aprobación de objetivos",
@@ -76,10 +75,9 @@
     },
     computed: {
       getGoalInformation: function () {
-        let msg = "En el proyecto: "+ this.Project.name +" en el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados <br>"
-        msg +='<br>'
+        let msg = "En el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados:"
         for(let goal in this.Item.goals){
-          msg += "- código: "+ this.Item.goals[goal].code +" objetivo: "+this.Item.goals[goal].name+"<br>"
+          msg += "  * objetivo: "+this.Item.goals[goal].name
         }
         return msg
       }
@@ -91,8 +89,8 @@
           me.notification.usersToNotify = me.notify
           me.notification.body = me.getGoalInformation
           me.notification.relatedToLevel = this.Item.name
-          me.notification.project_id = me.Project.id
-          me.notification.post('/sender')
+          me.notification.project_id = me.Project
+          me.notification.post('/notify/goal')
           .then(function (response) {
             toast.fire({
              type: 'success',

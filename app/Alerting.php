@@ -12,9 +12,17 @@ class Alerting extends Model
    * @var array
    */
   protected $fillable = [
-      'title', 'body','sender','type','status','receiver','reasons','read_at'
+      'project_id','title','body','sender','type','status','receiver','reasons','relatedToLevel','read_at'
   ];
 
+  /**
+   * The attributes that are take them as JSON
+   *
+   * @var array
+   */
+  protected $casts = [
+      'body' => 'array'
+  ];
   /**
    * The "booting" method of the model.
    *
