@@ -319,7 +319,7 @@ export default {
           Risks:[],
 		  Indicators:[],
 		  PHVA:[],
-		  Actiities:[],
+		  Activities:[],
 		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],

@@ -128,10 +128,11 @@
                 <div class="card-body">
                   <div class="col-md-12">
                     <div class="form-group">
-	                    <label class="bmd-label-floating">Nombre</label>
-                      <input  v-model="newName" type="text" class="form-control">
-                      <label class="bmd-label-floating">Código</label>
+	                    <label class="bmd-label-floating">Código</label>
                       <input  v-model="newCode" type="text" class="form-control">
+						<label class="bmd-label-floating">Nombre</label>
+                      <input  v-model="newName" type="text" class="form-control">
+                      
 		                  <table class="table table-hover">
                        <thead class="">
       										<tr>
@@ -142,13 +143,6 @@
       										<tr v-for="goal in currentNode.goals" :key="goal.pos" >
 												<td><input v-model=Macroprocessgoals type="checkbox" :name="goal.pos" :value="goal.pos"> {{goal.name}}</td>
       										</tr>
-    								  </tbody>
-							  
-    								  <tbody>
-      										<tr v-for="(macro, index) in currentNode.macroprocess" :key="macro.pos">
-   											 <input v-model="macro.name" :key="index">
-  											</tr>
-										  
     								  </tbody>
   					        </table>
                     </div>
@@ -182,10 +176,10 @@
                 <div class="card-body">
                   <div class="col-md-10">
                     <div class="form-group">
+					  <label class="bmd-label-floating">Objetivo</label>
+                      <input  v-model="newName" type="text" class="form-control">
                       <label class="bmd-label-floating">Código</label>
                       <input  v-model="newCode" type="text" class="form-control">
-                      <label class="bmd-label-floating">Objetivo</label>
-                      <input  v-model="newName" type="text" class="form-control">
                     </div>
                   </div>
                   <div class="card-footer">
@@ -259,6 +253,8 @@
                   <tr v-for="macro in currentNode.macroprocess" :key="macro.pos">
                     <td v-text="macro.name"></td>
                     <td>
+						
+						
                       <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
                       <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
                     </td>
@@ -311,6 +307,7 @@
             <div class="row">
               <div class="col-8">	  
 			  <input v-model="currentSelectedItem.name" >
+			  <td><input v-model=currentSelectedItem.Macroprocessgoals type="checkbox"> {{currentSelectedItem}}</td>
             </div>
           </div>
         </div>
@@ -705,25 +702,42 @@
       },
       addGoal() {
         let me = this;
-	    me.currentNode.numGoals += 1
-        me.currentNode.goals.push({
-	      code: me.newCode,
-          name: me.newName,
-          pos:me.currentNode.numGoals, // definir contador para objetivos
-		  objectCode:me.rndStr(7)
-        })
-		me.title= "Agregar Objetivo"
-        me.salirObjetivos()
+		if(me.newCode.trim()!="" && me.newName.trim()!=""){
+				me.currentNode.numGoals += 1
+				me.currentNode.goals.push({
+				  code: me.newCode,
+				  name: me.newName,
+				  pos:me.currentNode.numGoals, // definir contador para objetivos
+				  objectCode:me.rndStr(7)
+				})
+				me.title= "Agregar Objetivo"
+				me.salirObjetivos()
+	     }else{
+				swal.fire(
+				  'Datos incompletos',
+				  'Es necesario seleccionar código y un nombre para registrar el objetivo',
+				  'warning'
+        )
+      }
       },
 	    addMacroprocess() {
-        let me = this;
-        me.currentNode.macroprocess.push({
-	      code: me.newCode,
-          name: me.newName,
-          goals: me.Macroprocessgoals // definir contador para objetivos
-        })
-        me.salirMacroprocess()
-      },
+        	let me = this;
+			if(me.newCode.trim()!="" && me.newName.trim()!=""){
+				me.currentNode.macroprocess.push({
+				  code: me.newCode,
+				  name: me.newName,
+				  goals: me.Macroprocessgoals // definir contador para objetivos
+				})
+        		me.salirMacroprocess()
+				
+			}else{
+				swal.fire(
+				  'Datos incompletos',
+				  'Es necesario seleccionar objetivos, codigo y un nombre para registrar el macroproceso',
+				  'warning'
+   			     )
+     		 }
+      	},
 	    RelacionarObjetivos(){
         let me = this
         me.currentNode.inheritedGoals.push({
@@ -758,6 +772,7 @@
       salirObjetivos(){
         $('#GoalManager').modal('toggle');
         this.newName = ""
+		this.newCode = ""
       },
       salirRelacionarObjetivos(){
         $('#InheritedManager').modal('toggle');

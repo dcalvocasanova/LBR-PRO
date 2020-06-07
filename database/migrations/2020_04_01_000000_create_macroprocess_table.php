@@ -17,15 +17,15 @@ class CreateMacroprocessTable extends Migration
             $table->bigIncrements('id');
 			$table->string('relatedToLevel');
             $table->string('macroprocess');
-            $table->string('input',100);
-            $table->string('provider',15);
+            $table->string('input');
+            $table->string('provider');
             $table->string('activity');
             $table->string('responsible');
             $table->string('process');
             $table->string('user');
             $table->string('risk');
             $table->string('indicator');
-			      $table->string('project_id');
+			$table->string('project_id');
             $table->timestamps();
         });
     }

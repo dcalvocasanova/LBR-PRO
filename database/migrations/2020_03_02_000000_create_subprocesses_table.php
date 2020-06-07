@@ -20,8 +20,8 @@ class CreateSubprocessesTable extends Migration
             $table->string('provider',100);
             $table->string('activity');
             $table->string('responsible');
-			 $table->string('product');
-			 $table->string('process');
+			$table->string('product');
+			$table->string('process');
             $table->string('user');
             $table->string('risk');
 			$table->string('phva');

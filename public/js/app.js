@@ -3394,7 +3394,7 @@ __webpack_require__.r(__webpack_exports__);
       Risks: [],
       Indicators: [],
       PHVA: [],
-      Actiities: [],
+      Activities: [],
       Users: [],
       //arreglos temporales
       Entradas: [],
@@ -4676,9 +4676,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -4941,26 +4938,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     addGoal: function addGoal() {
       var me = this;
-      me.currentNode.numGoals += 1;
-      me.currentNode.goals.push({
-        code: me.newCode,
-        name: me.newName,
-        pos: me.currentNode.numGoals,
-        // definir contador para objetivos
-        objectCode: me.rndStr(7)
-      });
-      me.title = "Agregar Objetivo";
-      me.salirObjetivos();
+
+      if (me.newCode.trim() != "" && me.newName.trim() != "") {
+        me.currentNode.numGoals += 1;
+        me.currentNode.goals.push({
+          code: me.newCode,
+          name: me.newName,
+          pos: me.currentNode.numGoals,
+          // definir contador para objetivos
+          objectCode: me.rndStr(7)
+        });
+        me.title = "Agregar Objetivo";
+        me.salirObjetivos();
+      } else {
+        swal.fire('Datos incompletos', 'Es necesario seleccionar código y un nombre para registrar el objetivo', 'warning');
+      }
     },
     addMacroprocess: function addMacroprocess() {
       var me = this;
-      me.currentNode.macroprocess.push({
-        code: me.newCode,
-        name: me.newName,
-        goals: me.Macroprocessgoals // definir contador para objetivos
 
-      });
-      me.salirMacroprocess();
+      if (me.newCode.trim() != "" && me.newName.trim() != "") {
+        me.currentNode.macroprocess.push({
+          code: me.newCode,
+          name: me.newName,
+          goals: me.Macroprocessgoals // definir contador para objetivos
+
+        });
+        me.salirMacroprocess();
+      } else {
+        swal.fire('Datos incompletos', 'Es necesario seleccionar objetivos, codigo y un nombre para registrar el macroproceso', 'warning');
+      }
     },
     RelacionarObjetivos: function RelacionarObjetivos() {
       var me = this;
@@ -4994,6 +5001,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }), _defineProperty(_methods, "salirObjetivos", function salirObjetivos() {
     $('#GoalManager').modal('toggle');
     this.newName = "";
+    this.newCode = "";
   }), _defineProperty(_methods, "salirRelacionarObjetivos", function salirRelacionarObjetivos() {
     $('#InheritedManager').modal('toggle');
     this.newName = "";
@@ -16242,7 +16250,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 160px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -16261,7 +16269,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 210px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -16280,7 +16288,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.table-inbox tr.unread {\r\n  font-weight: 600;\n}\r\n", ""]);
+exports.push([module.i, "\n.table-inbox tr.unread {\n  font-weight: 600;\n}\n", ""]);
 
 // exports
 
@@ -16318,7 +16326,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\n  margin-right: 10px;\n}\nul[data-v-38264846]{\n    list-style-type: none;\n    display: block;\n    -webkit-margin-before: 1em;\n            margin-block-start: 1em;\n    -webkit-margin-after: 1em;\n            margin-block-end: 1em;\n    -webkit-margin-start: 0px;\n            margin-inline-start: 0px;\n    -webkit-margin-end: 0px;\n            margin-inline-end: 0px;\n    -webkit-padding-start: 40px;\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\n  display: list-item;\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\n    position: relative;\n    padding-left: 1em;\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\n    padding: .2em .2em .2em .6em;\n    cursor: pointer;\n    border-top-left-radius: 4px;\n    border-bottom-left-radius: 4px;\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\n  position: absolute;\n  left: 2px;\n  display: block;\n  width: 6px;\n  height: 100%;\n  content: \"\";\n  background-color: #808070;\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\n  width: 100%\n}\n.control[data-v-38264846]{\n\tdisplay: none;\n  position: absolute;\n\ttop: 1;\n\tleft: 10%;\n\tbackground: #black;\n\tz-index: 2;\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\n\tdisplay: block;\n}\n\n", ""]);
 
 // exports
 
@@ -16337,7 +16345,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 80px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\n    max-height: calc(100vh - 80px);\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -56082,32 +56090,6 @@ var render = function() {
                       _c("div", { staticClass: "col-md-12" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Nombre")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newName,
-                                expression: "newName"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newName },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newName = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("label", { staticClass: "bmd-label-floating" }, [
                             _vm._v("Código")
                           ]),
                           _vm._v(" "),
@@ -56129,6 +56111,32 @@ var render = function() {
                                   return
                                 }
                                 _vm.newCode = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Nombre")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newName,
+                                expression: "newName"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newName },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newName = $event.target.value
                               }
                             }
                           }),
@@ -56192,42 +56200,6 @@ var render = function() {
                                     }),
                                     _vm._v(" " + _vm._s(goal.name))
                                   ])
-                                ])
-                              }),
-                              0
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "tbody",
-                              _vm._l(_vm.currentNode.macroprocess, function(
-                                macro,
-                                index
-                              ) {
-                                return _c("tr", { key: macro.pos }, [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: macro.name,
-                                        expression: "macro.name"
-                                      }
-                                    ],
-                                    key: index,
-                                    domProps: { value: macro.name },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          macro,
-                                          "name",
-                                          $event.target.value
-                                        )
-                                      }
-                                    }
-                                  })
                                 ])
                               }),
                               0
@@ -56322,32 +56294,6 @@ var render = function() {
                       _c("div", { staticClass: "col-md-10" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { staticClass: "bmd-label-floating" }, [
-                            _vm._v("Código")
-                          ]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.newCode,
-                                expression: "newCode"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.newCode },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.newCode = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("label", { staticClass: "bmd-label-floating" }, [
                             _vm._v("Objetivo")
                           ]),
                           _vm._v(" "),
@@ -56369,6 +56315,32 @@ var render = function() {
                                   return
                                 }
                                 _vm.newName = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("label", { staticClass: "bmd-label-floating" }, [
+                            _vm._v("Código")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newCode,
+                                expression: "newCode"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.newCode },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newCode = $event.target.value
                               }
                             }
                           })
@@ -56756,7 +56728,64 @@ var render = function() {
                           )
                         }
                       }
-                    })
+                    }),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.currentSelectedItem.Macroprocessgoals,
+                            expression: "currentSelectedItem.Macroprocessgoals"
+                          }
+                        ],
+                        attrs: { type: "checkbox" },
+                        domProps: {
+                          checked: Array.isArray(
+                            _vm.currentSelectedItem.Macroprocessgoals
+                          )
+                            ? _vm._i(
+                                _vm.currentSelectedItem.Macroprocessgoals,
+                                null
+                              ) > -1
+                            : _vm.currentSelectedItem.Macroprocessgoals
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.currentSelectedItem.Macroprocessgoals,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  _vm.$set(
+                                    _vm.currentSelectedItem,
+                                    "Macroprocessgoals",
+                                    $$a.concat([$$v])
+                                  )
+                              } else {
+                                $$i > -1 &&
+                                  _vm.$set(
+                                    _vm.currentSelectedItem,
+                                    "Macroprocessgoals",
+                                    $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                  )
+                              }
+                            } else {
+                              _vm.$set(
+                                _vm.currentSelectedItem,
+                                "Macroprocessgoals",
+                                $$c
+                              )
+                            }
+                          }
+                        }
+                      }),
+                      _vm._v(" " + _vm._s(_vm.currentSelectedItem))
+                    ])
                   ])
                 ])
               ]),
@@ -90124,8 +90153,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Deivid\Desktop\DEV-PROJECTS\PROCAME\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /workspace/LBR2/LBR-PRO/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
