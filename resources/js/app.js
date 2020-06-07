@@ -55,26 +55,45 @@ Vue.component('userFunctions', require('./components/users/UserFunctionsStructur
 /*
 * All Components related to notifications
 */
-Vue.component('notificatorExample', require('./components/UserNotificatorComponent.vue').default);
 Vue.component('notificatorGoalsCheking', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
 Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
+Vue.component('notificatorTask', require('./components/TaskNotifierComponent.vue').default);
 
 /*
 *Components realted to Navigation headers
 */
 Vue.component('projectNavHeader', require('./components/navheaders/ProjectNavHeaderComponent.vue').default);
 
+
+/*
+*Componet to get current Project
+*/
+Vue.component('projectPicker', require('./components/ProjectPickerComponent.vue').default);
+
+/*
+*
+*/
+
 Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
 Vue.component('macroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
 Vue.component('tasksCatalogs', require('./components/catalogs/TasksComponent.vue').default);
 
 
+/*
+* Components related to Macroprocess an Psychosocial questions
+*/
+Vue.component('psychosocialQuestions', require('./components/PsychosocialQuestionComponent.vue').default);
+Vue.component('psychosocialVariables', require('./components/PsychosocialVariableComponent.vue').default);
 
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
 Vue.component('questions', require('./components/QuestionComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
+
+
+
+
 
 Vue.component('subprocesos', require('./components/SubprocessComponent.vue').default);
 Vue.component('procesos', require('./components/ProcessComponent.vue').default);
@@ -87,6 +106,7 @@ Vue.component('projectStructure', require('./components/ProjectStructureComponen
 Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 Vue.component('tasksElements', require('./components/TaskElementsManagerComponent.vue').default);
+Vue.component('tasksUnit', require('./components/TaskUnitElementComponent.vue').default);
 
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
@@ -100,14 +120,20 @@ Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
+ const app = new Vue({
     el: '#app',
     data:{
-      search:''
+      search:'',
+      currentProject: ''
     },
     methods:{
       searchit: _.debounce(() => {
             Fire.$emit('searching');
         },900),
+    },
+    created(){
+      Fire.$on('selectedProject',(project) => {
+          this.currentProject= project
+      })
     }
 });

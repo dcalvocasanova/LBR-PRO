@@ -1,35 +1,85 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran las tareas</h4>
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
+    <div class="row">
+      <div class="col-md-7">
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a @click="showTask('PRODUCT')" class="nav-link active" id="pills-products-tab" data-toggle="pill" href="#pills-products" role="tab" aria-controls="pills-products" aria-selected="true">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a @click="showTask('SUB-PRODUCT')" class="nav-link" id="pills-subproducts-tab" data-toggle="pill" href="#pills-subproducts" role="tab" aria-controls="pills-subproducts" aria-selected="false">Productos de subprocesos</a>
+          </li>
+          <li class="nav-item">
+            <a @click="showTask('USER-FUNCTION')" class="nav-link" id="pills-userFunctions-tab" data-toggle="pill" href="#pills-userFunctions" role="tab" aria-controls="pills-userFunctions" aria-selected="false">Funciones de usuario</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+          <div class="tab-pane fade show active" id="pills-products" role="tabpanel" aria-labelledby="pills-products-tab">
+            <table class="table">
+             <thead>
+                <th class="text-center"> Productos de los procesos registrados </th>
+                <th> Acciones </th>
+              </thead>
+              <tbody>
+                  <tr v-for="p in Products.process" :key="p.id" >
+                    <td>
+                      <span v-text="p.file">:</span>
+                      <span v-text="p.resultProduct"></span>
+                    </td>
+                    <td>
+                      <button class="btn btn-info" @click="showRelatedTask(p.resultProduct)"><i class="far fa-eye"></i></button>
+                      <button class="btn btn-danger" @click="optionAddTask(p)"><i class="fa fa-plus-circle"></i></button>
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade" id="pills-subproducts" role="tabpanel" aria-labelledby="pills-subproducts-tab">
+            <table class="table">
+             <thead>
+                <th class="text-center">Productos de los sub-procesos registrados </th>
+                <th> Acciones </th>
+              </thead>
+              <tbody>
+                <tr v-for="s in Products.subprocess" :key="s.id" >
+                  <td>
+                    <span v-text="s.process"></span>
+                    <span v-text="s.product"></span>
+                  </td>
+                  <td>
+                    <button class="btn btn-info" @click="showRelatedTask(s.product)"><i class="far fa-eye"></i></button>
+                    <button class="btn btn-danger" @click="optionAddTask(s)"><i class="fa fa-plus-circle"></i></button>
+                  </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade" id="pills-userFunctions" role="tabpanel" aria-labelledby="pills-userFunctions-tab">
+            <table class="table">
+             <thead>
+                <th class="text-center"> Funciones de usuario registrados </th>
+                <th> Acciones </th>
+              </thead>
+              <tbody>
+                <tr v-for="f in UserFunctions" :key="f[0]">
+                  <td colspan="12" @click="optionPicker(f)" >
+                    <span v-text="f[2]"></span>
+                    <span v-text="f[0]"></span>
+                  </td>
+                  <td>
+                    <button class="btn btn-info" @click="showRelatedTask(f[0])"><i class="far fa-eye"></i></button>
+                    <button class="btn btn-danger" @click="optionAddTask(f)"><i class="fa fa-plus-circle"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectToAddTasks === false">
-      <div class="col-md-12">
+      <div v-if="showTaskList" class="col-md-5">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <div class="col-md-8">
-                <h3 class="card-title mt-0"> Lista de tareas</h3>
-            </div>
-            <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
-              <button class="btn btn-primary"
-              data-toggle="modal"
-              data-target="#TaskManager"
-              >
-                <i class="fa fa-plus-circle"></i>
-              </button>
-            </div>
+            <h3 class="card-title mt-0"> Lista de tareas</h3>
           </div>
           <div class="card-body card-body-fitted ">
             <div class="col-12">
@@ -72,7 +122,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-4">
+              <div v-if ="update != 0" class="col-4">
                 <button class="btn btn-primary btn-block"
                   @click="loadCatalog('PRODUCT')">
                   Productos
@@ -121,58 +171,58 @@
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
             <h5 class="modal-title" id="TaskCatalogPicker"> Opciones disponibles</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" @click="exitPicker()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="col-12">
-                      <div class="row">
-                        <div class="users-and-goals">
-                          <table class="table table-hover">
-                           <thead>
-                              <th>Funciones de usuario a emplear</th>
-                            </thead>
-                            <tbody>
-                              <span style="width:100%" class="process" v-if="currentTypeTaks=='PRODUCT'">
-                                <tr v-for="p in Products.process" :key="p.id" >
-                                  <td @click="optionPicker(p)">
-                                    <span v-text="p.file">:</span>
-                                    <span v-text="p.resultProduct"></span>
-                                  </td>
-                                </tr>
-                              </span>
-                              <span class="sub-process" v-if="currentTypeTaks=='SUB-PRODUCT'">
-                                <tr v-for="s in Products.subprocess" :key="s.id" >
-                                  <td colspan="12" @click="optionPicker(s)" >
-                                    <span v-text="s.process"></span>
-                                    <span v-text="s.product"></span>
-                                  </td>
-                                </tr>
-                              </span>
-                              <span class="funcions" v-if="currentTypeTaks=='USER-FUNCTION'">
-                                <tr v-for="f in UserFunctions" :key="f[0]">
-                                  <td colspan="12" @click="optionPicker(f)" >
-                                    <span v-text="f[2]"></span>
-                                    <span v-text="f[0]"></span>
-                                  </td>
-                                </tr>
-                              </span>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="users-and-goals">
+                      <table class="table table-hover">
+                       <thead>
+                          <th>Funciones de usuario a emplear</th>
+                        </thead>
+                        <tbody>
+                          <span style="width:100%" class="process" v-if="currentTypeTaks=='PRODUCT'">
+                            <tr v-for="p in Products.process" :key="p.id" >
+                              <td @click="optionPickerShowModal(p)">
+                                <span v-text="p.file">:</span>
+                                <span v-text="p.resultProduct"></span>
+                              </td>
+                            </tr>
+                          </span>
+                          <span class="sub-process" v-if="currentTypeTaks=='SUB-PRODUCT'">
+                            <tr v-for="s in Products.subprocess" :key="s.id" >
+                              <td colspan="12" @click="optionPickerShowModal(s)" >
+                                <span v-text="s.process"></span>
+                                <span v-text="s.product"></span>
+                              </td>
+                            </tr>
+                          </span>
+                          <span class="funcions" v-if="currentTypeTaks=='USER-FUNCTION'">
+                            <tr v-for="f in UserFunctions" :key="f[0]">
+                              <td colspan="12" @click="optionPickerShowModal(f)" >
+                                <span v-text="f[2]"></span>
+                                <span v-text="f[0]"></span>
+                              </td>
+                            </tr>
+                          </span>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -181,16 +231,19 @@
         return{
           form: new Form ({
             id:"",
-            id_project:0,
-            id_product:0,
+            project_id:0,
+            product_id:0,
             relatedToLevel:"",
             allocator:"",
             task:"",
             type:""
           }),
           currentProject:0,
-          currentTypeTaks:"",
+          type:"",
+          allocator:"",
+          currentTypeTaks:"PRODUCT",
           currentSelectedItem:"",
+          showTaskList:false,
           selectingProjectToAddTasks: true,
           title:"Agregar nueva tarea ", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -213,33 +266,45 @@
               this.Products = response.data; //get all projects from page.
           });
         },
+        showTask(type){
+          this.currentTypeTaks = type
+          this.type = type
+          this.allocator =''
+          this.showTaskList= true
+          this.getTasks()
+        },
+        showRelatedTask(allocator){
+          this.allocator = allocator
+          this.showTaskList= true
+          this.getTasks()
+        },
         getTasks(page = 1) {
           let me =this;
-          me.clearFields();
-          axios.get('/tareas/'+this.currentProject+'?page=' + page)
+          axios.get('/tareas-por-tipo',{
+            params:{
+              type: me.type,
+              allocator: me.allocator,
+              id: me.currentProject,
+              page: page
+            }
+          })
           .then(response => {
             me.Tasks = response.data
           });
         },
-        setProject(){
-          let me = this
-          me.selectingProjectToAddTasks=false
-          me.getUserFunctions()
-          me.getProducts()
-          me.getTasks()
-        },
-        getProjectos(){
+        getCurrentProject(){
           let me =this;
-          axios.get('/todos-los-proyectos')
+          axios.get('/proyecto/actual')
           .then(response => {
-              me.Projects = response.data; //get all projects from page
+              me.currentProject = response.data.id;
+              me.getUserFunctions()
+              me.getProducts()
           });
         },
         loadCatalog(type){
           let me =this
           me.currentTypeTaks = type
           $('#TaskCatalogPicker').modal('show');
-
         },
         loadFieldsUpdate(task){
           let me =this;
@@ -253,27 +318,34 @@
         optionPicker(type){
           let me =this
           if(me.currentTypeTaks =='PRODUCT'){
-            me.form.id_project = type.project_id
-            me.form.id_product = type.id
+            me.form.project_id = type.project_id
+            me.form.product_id = type.id
             me.form.allocator = type.resultProduct
             me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'PRODUCT'
           }
           if(me.currentTypeTaks =='SUB-PRODUCT'){
-            me.form.id_project = type.project_id
-            me.form.id_product = type.id
+            me.form.project_id = type.project_id
+            me.form.product_id = type.id
             me.form.allocator = type.product
             me.form.relatedToLevel = type.relatedToLevel
             me.form.type = 'SUB-PRODUCT'
           }
           if(me.currentTypeTaks =='USER-FUNCTION'){
-            me.form.id_project = me.currentProject
-            me.form.id_product = 0
+            me.form.project_id = me.currentProject
+            me.form.product_id = 0
             me.form.allocator = type[0]
             me.form.relatedToLevel = type[2]
             me.form.type = 'USER-FUNCTION'
           }
+        },
+        optionPickerShowModal(type){
+          this.optionPicker(type)
           $('#TaskCatalogPicker').modal('toggle');
+        },
+        optionAddTask(type){
+          this.optionPicker(type)
+          $('#TaskManager').modal('show');
         },
         saveTask(){
           let me =this;
@@ -341,10 +413,13 @@
         exit(){
           this.clearFields()
           $('#TaskManager').modal('toggle');
+        },
+        exitPicker(){
+          $('#TaskCatalogPicker').modal('toggle');
         }
       },
       mounted() {
-        this.getProjectos()
+        this.getCurrentProject()
       }
 }
 </script>

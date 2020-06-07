@@ -51,44 +51,8 @@ class Notifier extends Notification
         return (new MailMessage)
           ->greeting($this->details['greeting'])
           ->line($this->details['title'])
-          ->line(Str::replaceArray('<br>', ['      ','      ','    ', '   ',''], $body))
+          ->line(Str::replaceArray('<br>', ['      ','      ','    ', '   ','  '], $body))
           ->action($this->details['actionText'], $this->details['actionURL'])
           ->line($this->details['thanks']);
     }
-    /**
-     * Get the database representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array[]
-     *//*
-    public function toDatabase($notifiable)
-    {
-        return [
-          'message'=> $this->details['msg'],
-          'body'=> $this->details['body'],
-          'sender'=> $this->details['sender'],
-        ];
-    }*/
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-/*
-    public function toArray($notifiable)
-    {
-        return [
-          'title'=> $this->details['title'],
-          'body'=> $this->details['body'],
-          'sender'=> $this->details['sender'],
-          'type'=> $this->details['type'],
-          'action'=>"pending",
-          'comments'=>'pending..'
-        ];
-    }
-    */
-
-
 }

@@ -115,7 +115,7 @@
               </div>
 
 			  <div class="row">
-                  
+
 				  <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Actividades sustantivas</label>
@@ -130,7 +130,7 @@
                 	</multiselect>
                   </div>
                   </div>
-				  
+
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Responsable</label>
@@ -158,8 +158,8 @@
                     <has-error :form="form" field="resultProduct"></has-error>
                   </div>
                 </div>
-				
-				  
+
+
 				<div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Usuarios</label>
@@ -173,9 +173,9 @@
 						  @tag="addTagUser" >
                 	</multiselect>
                   </div>
-                </div> 
-				  
-				
+                </div>
+
+
 				  <div class="col-md-4">
 				 <div class="form-group">
                     <label class="bmd-label-floating">Subclasificación</label>
@@ -292,7 +292,7 @@ export default {
           form: new Form ({
             id:"",//Macroprocesfile ID
 			relatedToLevel:"",
-            project_id:2,//este valor debe ser el current project
+            project_id:1,//este valor debe ser el current project
 			file:"",
             input:"",
             provider:"",
@@ -307,7 +307,7 @@ export default {
 			indicator:""
 
           }),
-		  project_id:2,//este valor debe ser el current project
+		  project_id:1,//este valor debe ser el current project
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      processFile:"",
@@ -440,7 +440,7 @@ export default {
 	  me.form.relatedToLevel = myResult[0];
 	  me.form.file = myResult[1];
 	  me.form.input = JSON.stringify(me.Entradas)
-	
+
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.phva = JSON.stringify(me.PHVAs)

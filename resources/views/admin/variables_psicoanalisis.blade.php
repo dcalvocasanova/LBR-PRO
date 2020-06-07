@@ -8,7 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-        <notificator-task></notificator-task>
+        <psychosocial-variables></psychosocial-variables>
       </div>
     </div>
     {{-- Adding footer --}}

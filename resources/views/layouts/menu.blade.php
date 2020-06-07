@@ -26,19 +26,18 @@
     Panel de gestión
   </div>
   --}}
-
-
   {{-- Nav Item - Projects Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_users'))
+
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralData" aria-expanded="true" aria-controls="collapseTwo">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralConfig" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-folder-open"></i>
       <span>Configuración general</span>
     </a>
-    <div id="collapseGeneralData" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    <div id="collapseGeneralConfig" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header"> Tareas </h6>
-        <a class="collapse-item" href="/gestionar-variables-del-sistema">Gestionar </a>
+        <h6 class="collapse-header"> Variables </h6>
+        <a class="collapse-item" href="/gestionar-variables-del-sistema">Gestionar</a>
       </div>
     </div>
   </li>

@@ -143,6 +143,7 @@
         });
         this.showInboxNotification = false
         this.getUserNotifications()
+        Fire.$emit('updateNotifications')
       },
       openNotification(notification){
         let me = this;

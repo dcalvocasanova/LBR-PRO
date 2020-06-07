@@ -12,7 +12,9 @@ class Task extends Model
    * @var array
    */
   protected $fillable = [
-      'task','id_project','id_product','task','relatedToLevel','allocator','type'
+      'task','project_id','product_id','task','relatedToLevel','relatedToUsers',
+      'allocator','type','procedure','PHVA','frecuency','t_min', 't_avg','t_max',
+      'quantity','competence','laborType','effort','risk','addedValue','correlation'
   ];
 
   /**
@@ -27,4 +29,18 @@ class Task extends Model
         $query->relatedToLevel = $query->relatedToLevel ?? 'default';
     });
   }
+
+  /**
+   * The attributes that are take them as JSON
+   *
+   * @var array
+   */
+  protected $casts = [
+      'relatedToUsers' => 'array',
+      'effort' => 'array',
+      'risk' => 'array',
+      'addedValue' => 'array',
+      'correlation' => 'array',
+      'PHVA' => 'array'
+  ];
 }

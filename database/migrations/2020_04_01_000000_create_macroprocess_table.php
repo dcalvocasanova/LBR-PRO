@@ -15,7 +15,7 @@ class CreateMacroprocessTable extends Migration
     {
         Schema::create('macroprocesses', function (Blueprint $table) {
             $table->bigIncrements('id');
-			$table->string('relatedToLevel');
+			      $table->string('relatedToLevel');
             $table->string('macroprocess');
             $table->string('input');
             $table->string('provider');
