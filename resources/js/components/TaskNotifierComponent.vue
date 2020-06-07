@@ -156,6 +156,9 @@ export default {
           usersToNotify:[],
           tasksToNotify:[]
         }),
+        tasks: new Form({
+          tasks:[]
+        }),
         currentProject:0,
         relatedToLevel:'',
         usersToNotify:[],
@@ -237,20 +240,28 @@ export default {
         me.form.project_id = me.currentProject
         me.form.post('/notify/task')
         .then(function (response) {
+          me.changeTaskStatus()
           toast.fire({
            type: 'success',
            title: 'Notificación enviada con éxito'
           });
         })
-        .catch(function (error) {
-          console.log(error);
-        });        
         me.exit()
       }
       else
       {
         swal.fire('Error','Debe seleccionar usuarios y tareas a notificar','error')
       }
+    },
+    changeTaskStatus(){
+      let me = this
+      me.tasks.tasks = me.tasksToNotify
+      console.log(me.tasks.tasks)
+      me.tasks.post('/tareas/notificadas')
+      .then(function (response) {
+        console.log(response.data)
+        me.tasksToNotify = []
+      })
     },
     tasksToMail(task){
       this.msg.push(task.task);
@@ -260,7 +271,6 @@ export default {
         this.form.reset()
         this.msg =[]
         this.usersToNotify =[]
-        this.tasksToNotify =[]
     }
   },
   mounted() {

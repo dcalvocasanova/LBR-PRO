@@ -59,7 +59,7 @@
     props:{
         Item: Object,
         Users: Array,
-        Project: Object,
+        Project: Number,
     },
     data(){
       return{
@@ -75,7 +75,7 @@
     },
     computed: {
       getGoalInformation: function () {
-        let msg = "En el proyecto: "+ this.Project.name +" en el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados:"
+        let msg = "En el nivel "+ this.Item.name +", existe "+ this.Item.numGoals+" objetivos que deben ser aprobados:"
         for(let goal in this.Item.goals){
           msg += "  * objetivo: "+this.Item.goals[goal].name
         }
@@ -89,7 +89,7 @@
           me.notification.usersToNotify = me.notify
           me.notification.body = me.getGoalInformation
           me.notification.relatedToLevel = this.Item.name
-          me.notification.project_id = me.Project.id
+          me.notification.project_id = me.Project
           me.notification.post('/notify/goal')
           .then(function (response) {
             toast.fire({

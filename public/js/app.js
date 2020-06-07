@@ -6191,55 +6191,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -6248,12 +6199,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      Projects: {},
-      //All registered projects
       Levels: {},
       // All levels from organization
-      currentProject: {},
-      //Current
+      currentProject: 0,
       Users: [],
       Lista: [],
       currentNode: {},
@@ -6280,41 +6228,21 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/usuarios-jefes-por-nivel', {
         params: {
-          project: this.currentProject.id,
+          project: this.currentProject,
           level: item.name
         }
       }).then(function (response) {
         _this.Users = response.data; //get current user
       });
     },
-    getProjectsPaginator: function getProjectsPaginator() {
-      var _this2 = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/proyectos?page=' + page).then(function (response) {
-        _this2.Projects = response.data; //get all projects from page
-      });
-    },
-    getLogo: function getLogo(project) {
-      var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
-      return logo;
-    },
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
     getLevels: function getLevels() {
       var me = this;
-      var url = '/estructura?id=' + me.currentProject.id;
+      var url = '/estructura?id=' + me.currentProject;
       axios.get(url).then(function (response) {
         me.Levels = JSON.parse(response.data.levels); //get all structure
 
         me.level.id = response.data.id;
-        me.level.project_id = me.currentProject.id;
+        me.level.project_id = me.currentProject;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -6341,20 +6269,17 @@ __webpack_require__.r(__webpack_exports__);
     salirYNotificar: function salirYNotificar() {
       this.saveLevel();
       $('#NotificatorManager').modal('toggle');
+    },
+    getCurrentProject: function getCurrentProject() {
+      var me = this;
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.getLevels();
+      });
     }
   },
-  created: function created() {
-    var _this3 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this3.$parent.search;
-      axios.get('/findproject?q=' + query).then(function (response) {
-        _this3.Projects = response.data;
-      })["catch"](function () {});
-    });
-  },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
   }
 });
 
@@ -8897,55 +8822,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsStructureEditor: Boolean,
@@ -8997,7 +8873,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var me = this;
       me.currentNode = nodo.item;
       me.parentNode = nodo.parent;
-      me.updateNodeControl = 0; // Empty two random cells per row
+      me.updateNodeControl = 0;
 
       for (var i = 0; i < me.parentNode.goals.length; ++i) {
         var temp1 = [];
@@ -9007,8 +8883,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         for (var k = 0; k < me.parentNode.goals.length; ++k) {
           me.relatedGoals[i].push(me.currentNode.goals[k]);
         }
-      } // Empty two random cells per row
-
+      }
 
       for (var i = 0; i < me.relatedGoals.length; ++i) {
         for (var k = 0; k < me.relatedGoals[i].length; ++k) {
@@ -9106,32 +8981,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         node.parent.children = [];
       }
     },
-    getProjectsPaginator: function getProjectsPaginator() {
+    getResultLevel: function getResultLevel() {
       var _this = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/proyectos?page=' + page).then(function (response) {
-        _this.Projects = response.data; //get all projects from page
-      });
-    },
-    getLogo: function getLogo(project) {
-      var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
-      return logo;
-    },
-    getProjects: function getProjects() {
-      var me = this;
-      axios.get('/proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getResultLevel: function getResultLevel() {
-      var _this2 = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       axios.get('/estructura?page=' + page).then(function (response) {
-        _this2.Levels = response.data; //get all projects from page
+        _this.Levels = response.data; //get all projects from page
       });
     },
     getLevels: function getLevels() {
@@ -9162,11 +9017,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (error) {
         console.log(error);
       });
-    },
-    loadLevelData: function loadLevelData(project) {
-      this.project_id = project.id;
-      this.level.project_id = project.id;
-      this.getLevels();
     },
     makeParent: function makeParent(item) {
       var me = this;
@@ -9306,19 +9156,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
 
     return text;
+  }), _defineProperty(_methods, "getCurrentProject", function getCurrentProject() {
+    var me = this;
+    axios.get('/proyecto/actual').then(function (response) {
+      me.project_id = response.data.id;
+      me.level.project_id = response.data.id;
+      me.getLevels();
+    });
   }), _methods),
   created: function created() {
-    var _this3 = this;
+    var _this2 = this;
 
     Fire.$on('searching', function () {
-      var query = _this3.$parent.search;
+      var query = _this2.$parent.search;
       axios.get('/findproject?q=' + query).then(function (response) {
-        _this3.Projects = response.data;
+        _this2.Projects = response.data;
       })["catch"](function () {});
     });
   },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
   }
 });
 
@@ -10856,7 +10713,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      selectingProjectToAddTasks: true,
+      selectingProjectToAddTasks: false,
       tiempos: true,
       mejoramiento: false,
       currentProject: 0,
@@ -10881,6 +10738,14 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       axios.get('/todos-los-proyectos').then(function (response) {
         me.Projects = response.data; //get all projects from page
+      });
+    },
+    getCurrentProject: function getCurrentProject() {
+      var me = this;
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.getTasks();
+        me.LoadLevelsOfStructure();
       });
     },
     getTasks: function getTasks() {
@@ -10974,7 +10839,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
     this.LoadCatalogFrecuency();
     this.LoadCatalogWorkType();
     this.LoadCatalogAddedValued();
@@ -11588,6 +11453,9 @@ __webpack_require__.r(__webpack_exports__);
         usersToNotify: [],
         tasksToNotify: []
       }),
+      tasks: new Form({
+        tasks: []
+      }),
       currentProject: 0,
       relatedToLevel: '',
       usersToNotify: [],
@@ -11672,17 +11540,25 @@ __webpack_require__.r(__webpack_exports__);
         me.form.relatedToLevel = me.relatedToLevel;
         me.form.project_id = me.currentProject;
         me.form.post('/notify/task').then(function (response) {
+          me.changeTaskStatus();
           toast.fire({
             type: 'success',
             title: 'Notificación enviada con éxito'
           });
-        })["catch"](function (error) {
-          console.log(error);
         });
         me.exit();
       } else {
         swal.fire('Error', 'Debe seleccionar usuarios y tareas a notificar', 'error');
       }
+    },
+    changeTaskStatus: function changeTaskStatus() {
+      var me = this;
+      me.tasks.tasks = me.tasksToNotify;
+      console.log(me.tasks.tasks);
+      me.tasks.post('/tareas/notificadas').then(function (response) {
+        console.log(response.data);
+        me.tasksToNotify = [];
+      });
     },
     tasksToMail: function tasksToMail(task) {
       this.msg.push(task.task);
@@ -11692,7 +11568,6 @@ __webpack_require__.r(__webpack_exports__);
       this.form.reset();
       this.msg = [];
       this.usersToNotify = [];
-      this.tasksToNotify = [];
     }
   },
   mounted: function mounted() {
@@ -12824,7 +12699,7 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     Item: Object,
     Users: Array,
-    Project: Object
+    Project: Number
   },
   data: function data() {
     return {
@@ -12840,7 +12715,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     getGoalInformation: function getGoalInformation() {
-      var msg = "En el proyecto: " + this.Project.name + " en el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados:";
+      var msg = "En el nivel " + this.Item.name + ", existe " + this.Item.numGoals + " objetivos que deben ser aprobados:";
 
       for (var goal in this.Item.goals) {
         msg += "  * objetivo: " + this.Item.goals[goal].name;
@@ -12857,7 +12732,7 @@ __webpack_require__.r(__webpack_exports__);
         me.notification.usersToNotify = me.notify;
         me.notification.body = me.getGoalInformation;
         me.notification.relatedToLevel = this.Item.name;
-        me.notification.project_id = me.Project.id;
+        me.notification.project_id = me.Project;
         me.notification.post('/notify/goal').then(function (response) {
           toast.fire({
             type: 'success',
@@ -15273,24 +15148,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -15298,7 +15155,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      selectingProjectBeforeReport: true,
+      selectingProjectBeforeReport: false,
       currentProject: 0,
       currentAlert: {},
       Projects: {},
@@ -15332,6 +15189,14 @@ __webpack_require__.r(__webpack_exports__);
       me.selectingProjectBeforeReport = false;
       me.LoadNotificationGoals();
       me.LoadGoals();
+    },
+    getCurrentProject: function getCurrentProject() {
+      var me = this;
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.LoadNotificationGoals();
+        me.LoadGoals();
+      });
     },
     getStatus: function getStatus(status) {
       if (status === "Pending") {
@@ -15373,7 +15238,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getProjectos();
+    this.getCurrentProject();
   }
 });
 
@@ -15486,24 +15351,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -15511,21 +15358,28 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      selectingProjectBeforeReport: true,
+      selectingProjectBeforeReport: false,
       currentProject: 0,
       currentAlert: {},
-      Projects: {},
       Goals: [],
       Task: {},
       user: {},
-      GoalsNotified: []
+      TasksNotified: []
     };
   },
   methods: {
-    LoadNotificationGoals: function LoadNotificationGoals() {
+    getCurrentProject: function getCurrentProject() {
       var me = this;
-      axios.get('/notificaciones/objetivos/' + me.currentProject).then(function (response) {
-        me.GoalsNotified = response.data; //get all catalogs from category selected
+      axios.get('/proyecto/actual').then(function (response) {
+        me.currentProject = response.data.id;
+        me.getTasks();
+        me.LoadNotificationTasks();
+      });
+    },
+    LoadNotificationTasks: function LoadNotificationTasks() {
+      var me = this;
+      axios.get('/notificaciones/tareas/' + me.currentProject).then(function (response) {
+        me.TasksNotified = response.data;
       });
     },
     getTasks: function getTasks() {
@@ -15541,19 +15395,6 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         return '<i class="fa fa-times" aria-hidden="true"></i>';
       }
-    },
-    LoadGoals: function LoadGoals() {
-      var me = this;
-      axios.get('/estructura/lista-objetivos/' + me.currentProject).then(function (response) {
-        me.Goals = response.data; //get all catalogs from category selected
-      });
-    },
-    setProject: function setProject() {
-      var me = this;
-      me.selectingProjectBeforeReport = false;
-      me.getTasks();
-      me.LoadNotificationGoals();
-      me.LoadGoals();
     },
     getStatus: function getStatus(status) {
       if (status === "Pending") {
@@ -15586,16 +15427,10 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/usuarios/buscar/' + id).then(function (response) {
         me.user = response.data; //get all projects from page
       });
-    },
-    getProjectos: function getProjectos() {
-      var me = this;
-      axios.get('/todos-los-proyectos').then(function (response) {
-        me.Projects = response.data; //get all projects from page
-      });
     }
   },
   mounted: function mounted() {
-    this.getProjectos();
+    this.getCurrentProject();
   }
 });
 
@@ -16259,13 +16094,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'tree-menu',
   props: {
@@ -16441,62 +16269,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     showAsUserFunctionsEditor: Boolean
@@ -16531,21 +16303,12 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getProjects: function getProjects() {
-      var _this = this;
-
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('/proyectos?page=' + page).then(function (response) {
-        _this.Projects = response.data; //get all projects from page
+    getCurrentProject: function getCurrentProject() {
+      var me = this;
+      axios.get('/proyecto/actual').then(function (response) {
+        me.project_id = response.data.id;
+        me.getLevels();
       });
-    },
-    getLogo: function getLogo(project) {
-      var logo = project.logo_project.length > 200 ? project.logo_project : "/img/profile-prj/" + project.logo_project;
-      return logo;
-    },
-    loadLevelData: function loadLevelData(project) {
-      this.project_id = project.id;
-      this.getLevels();
     },
     getLevels: function getLevels() {
       var me = this;
@@ -16612,7 +16375,7 @@ __webpack_require__.r(__webpack_exports__);
       $('#ModifyUserFunctionsManager').modal('show');
     },
     getUserinLevel: function getUserinLevel(level) {
-      var _this2 = this;
+      var _this = this;
 
       axios.get('/usuarios-por-nivel', {
         params: {
@@ -16620,7 +16383,7 @@ __webpack_require__.r(__webpack_exports__);
           level: level
         }
       }).then(function (response) {
-        _this2.Users = response.data; //get all projects from page
+        _this.Users = response.data; //get all projects from page
       });
     },
     addUserFunction: function addUserFunction() {
@@ -16695,17 +16458,17 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this2 = this;
 
     Fire.$on('searching', function () {
-      var query = _this3.$parent.search;
+      var query = _this2.$parent.search;
       axios.get('/findproject?q=' + query).then(function (response) {
-        _this3.Projects = response.data;
+        _this2.Projects = response.data;
       })["catch"](function () {});
     });
   },
   mounted: function mounted() {
-    this.getProjects();
+    this.getCurrentProject();
   }
 });
 
@@ -21311,7 +21074,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 160px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n  max-height: calc(100vh - 160px);\r\n  overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -21330,7 +21093,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-body {\r\n    max-height: calc(100vh - 210px);\r\n    overflow-y: auto;\n}\r\n", ""]);
+exports.push([module.i, "\n.modal-body {\r\n  max-height: calc(100vh - 210px);\r\n  overflow-y: auto;\n}\r\n", ""]);
 
 // exports
 
@@ -21387,7 +21150,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n    list-style-type: none;\r\n    display: block;\r\n    -webkit-margin-before: 1em;\r\n            margin-block-start: 1em;\r\n    -webkit-margin-after: 1em;\r\n            margin-block-end: 1em;\r\n    -webkit-margin-start: 0px;\r\n            margin-inline-start: 0px;\r\n    -webkit-margin-end: 0px;\r\n            margin-inline-end: 0px;\r\n    -webkit-padding-start: 40px;\r\n            padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n    position: relative;\r\n    padding-left: 1em;\r\n    list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n    padding: .2em .2em .2em .6em;\r\n    cursor: pointer;\r\n    border-top-left-radius: 4px;\r\n    border-bottom-left-radius: 4px;\r\n    transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n\tdisplay: none;\r\n  position: absolute;\r\n\ttop: 1;\r\n\tleft: 10%;\r\n\tbackground: #black;\r\n\tz-index: 2;\r\n\tpadding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n\tdisplay: block;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.type[data-v-38264846] {\r\n  margin-right: 10px;\n}\nul[data-v-38264846]{\r\n  list-style-type: none;\r\n  display: block;\r\n  -webkit-margin-before: 1em;\r\n          margin-block-start: 1em;\r\n  -webkit-margin-after: 1em;\r\n          margin-block-end: 1em;\r\n  -webkit-margin-start: 0px;\r\n          margin-inline-start: 0px;\r\n  -webkit-margin-end: 0px;\r\n          margin-inline-end: 0px;\r\n  -webkit-padding-start: 40px;\r\n          padding-inline-start: 40px;\n}\nli[data-v-38264846]{\r\n  display: list-item;\r\n  text-align: -webkit-match-parent;\n}\n.treeview-list ul[data-v-38264846] {\r\n  position: relative;\r\n  padding-left: 1em;\r\n  list-style: none;\n}\n.treeview-item[data-v-38264846]{\r\n  padding: .2em .2em .2em .6em;\r\n  cursor: pointer;\r\n  border-top-left-radius: 4px;\r\n  border-bottom-left-radius: 4px;\r\n  transition: all .1s linear;\n}\n.nested-list[data-v-38264846]::before{\r\n  position: absolute;\r\n  left: 2px;\r\n  display: block;\r\n  width: 6px;\r\n  height: 100%;\r\n  content: \"\";\r\n  background-color: #808070;\r\n  box-sizing: border-box;\n}\n.item[data-v-38264846]{\r\n  width: 100%\n}\n.control[data-v-38264846]{\r\n  display: none;\r\n  position: absolute;\r\n  top: 1;\r\n  left: 10%;\r\n  background: #black;\r\n  z-index: 2;\r\n  padding: 6px 10px 6px 6px;\n}\n.main:hover .control[data-v-38264846]{\r\n  display: block;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -58828,169 +58591,48 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-plain" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "table-responsive" }, [
-              _c("table", { staticClass: "table table-hover" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.Projects.data, function(project) {
-                    return _c("tr", { key: project.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(project.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", { staticStyle: { width: "80px" } }, [
-                        _c("img", {
-                          staticClass: "img-profile-pic rounded-circle",
-                          attrs: {
-                            src: _vm.getLogo(project),
-                            alt: "Project logo"
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: {
-                              "data-toggle": "modal",
-                              "data-target": "#addLevels"
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.loadLevelData(project)
-                              }
-                            }
-                          },
-                          [
-                            _c("i", { staticClass: "fas fa-swatchbook" }, [
-                              _vm._v("Niveles de estructura")
-                            ])
-                          ]
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-footer" },
-            [
-              _c("pagination", {
-                attrs: { data: _vm.Projects },
-                on: { "pagination-change-page": _vm.getProjectsPaginator }
-              })
-            ],
-            1
-          )
-        ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "addLevels",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "LevelModalOptions-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
+    _c("div", { staticClass: "card card-plain" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _vm._m(1),
+        _vm._v(" "),
         _c(
           "div",
-          {
-            staticClass: "modal-dialog modal-xl modal-dialog-centered",
-            attrs: { role: "document" }
-          },
+          { staticClass: "row" },
           [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header border-bottom-0" }, [
-                _c(
-                  "h2",
-                  {
-                    staticClass: "modal-title",
-                    attrs: { id: "LevelModalOptions" },
-                    on: {
-                      click: function($event) {
-                        return _vm.saveLevel()
-                      }
-                    }
-                  },
-                  [_vm._v("Niveles de estructura del proyecto")]
-                ),
-                _vm._v(" "),
-                _vm._m(2)
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "card" }, [
-                  _vm._m(3),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "row" }, [
-                      _c("div", { staticClass: "tree-menu" }, [
-                        _c(
-                          "div",
-                          { staticClass: "tree-viewer" },
-                          [
-                            _c("tree-menu", {
-                              staticClass: "item",
-                              attrs: {
-                                item: _vm.Levels,
-                                parent: _vm.Levels,
-                                showTreeEditor: _vm.showAsStructureEditor,
-                                showGoalEditor: _vm.showAsGoalEditor,
-                                justShowTree: _vm.justShowTree
-                              },
-                              on: { "clicked-node": _vm.nodoSeleccionado }
-                            })
-                          ],
-                          1
-                        )
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-footer" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { "data-dismiss": "modal", "aria-label": "Close" },
-                      on: {
-                        click: function($event) {
-                          return _vm.saveLevel()
-                        }
-                      }
-                    },
-                    [_vm._v("Salir")]
-                  )
-                ])
-              ])
-            ])
-          ]
+            _c("tree-menu", {
+              staticClass: "item",
+              attrs: {
+                item: _vm.Levels,
+                parent: _vm.Levels,
+                showTreeEditor: _vm.showAsStructureEditor,
+                showGoalEditor: _vm.showAsGoalEditor,
+                justShowTree: _vm.justShowTree
+              },
+              on: { "clicked-node": _vm.nodoSeleccionado }
+            })
+          ],
+          1
         )
-      ]
-    ),
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-footer" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+            on: {
+              click: function($event) {
+                return _vm.saveLevel()
+              }
+            }
+          },
+          [_vm._v("Salir")]
+        )
+      ])
+    ]),
     _vm._v(" "),
     _c(
       "div",
@@ -59013,7 +58655,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(4),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -59065,7 +58707,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
       _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v("Proyecto a notificar")
+        _vm._v("Niveles de estructura del proyecto")
       ])
     ])
   },
@@ -59073,41 +58715,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v("Nombre")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Logo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Niveles de estructura")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-title" }, [
+    return _c("div", { staticClass: "row" }, [
       _c("p", [
         _vm._v(
-          "\n                A continuación se muestran los niveles de estructura del proyecto,\n                para enviar la solicitud de aprobación de los objetivos sólo de clic en el\n                área o departamento a notificar\n              "
+          "\n          A continuación se muestran los niveles de estructura del proyecto,\n          para enviar la solicitud de aprobación de los objetivos sólo de clic en el\n          área o departamento a notificar\n        "
         )
       ])
     ])
@@ -62140,184 +61751,60 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-plain" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "table-responsive" }, [
-              _c("table", { staticClass: "table table-hover" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.Projects.data, function(project) {
-                    return _c("tr", { key: project.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(project.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", { staticStyle: { width: "80px" } }, [
-                        _c("img", {
-                          staticClass: "img-profile-pic rounded-circle",
-                          attrs: {
-                            src: _vm.getLogo(project),
-                            alt: "Project logo"
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: {
-                              "data-toggle": "modal",
-                              "data-target": "#addLevels"
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.loadLevelData(project)
-                              }
-                            }
-                          },
-                          [
-                            _c("i", { staticClass: "fas fa-swatchbook" }, [
-                              _vm._v("Niveles de estructura")
-                            ])
-                          ]
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
+    _c("div", { staticClass: "card card-plain" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "tree-menu" }, [
           _c(
             "div",
-            { staticClass: "card-footer" },
+            { staticClass: "tree-viewer" },
             [
-              _c("pagination", {
-                attrs: { data: _vm.Projects },
-                on: { "pagination-change-page": _vm.getProjectsPaginator }
+              _c("tree-menu", {
+                staticClass: "item",
+                attrs: {
+                  item: _vm.Levels,
+                  parent: _vm.Levels,
+                  showTreeEditor: _vm.showAsStructureEditor,
+                  showGoalEditor: _vm.showAsGoalEditor,
+                  showMacroprocessesEditor: _vm.showAsMacroprocessEditor
+                },
+                on: {
+                  "make-parent": _vm.makeParent,
+                  "edit-node": _vm.editNode,
+                  "delete-node": _vm.deleteNode,
+                  "add-item": _vm.addChild,
+                  "clicked-node": _vm.nodoSeleccionado,
+                  "assign-goal": _vm.asignarObjetivoANodo,
+                  "create-macroprocess": _vm.CreateMacroprocess,
+                  "relate-goal": _vm.relateGoals,
+                  "assign-inhetited-goal": _vm.asignarObjetivoHeredado,
+                  "edit-goal": _vm.editGoal,
+                  "edit-macroprocess": _vm.editMacroprocess
+                }
               })
             ],
             1
           )
         ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-footer" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+            on: {
+              click: function($event) {
+                return _vm.saveLevel()
+              }
+            }
+          },
+          [_vm._v("Guardar estructura")]
+        )
       ])
     ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "addLevels",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "LevelModalOptions-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-xl modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header border-bottom-0" }, [
-                _c(
-                  "h5",
-                  {
-                    staticClass: "modal-title",
-                    attrs: { id: "LevelModalOptions" },
-                    on: {
-                      click: function($event) {
-                        return _vm.saveLevel()
-                      }
-                    }
-                  },
-                  [_vm._v("Niveles de estructura")]
-                ),
-                _vm._v(" "),
-                _vm._m(2)
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("br"),
-                _c("br"),
-                _vm._v(" "),
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "row" }, [
-                      _c("div", { staticClass: "tree-menu" }, [
-                        _c(
-                          "div",
-                          { staticClass: "tree-viewer" },
-                          [
-                            _c("tree-menu", {
-                              staticClass: "item",
-                              attrs: {
-                                item: _vm.Levels,
-                                parent: _vm.Levels,
-                                showTreeEditor: _vm.showAsStructureEditor,
-                                showGoalEditor: _vm.showAsGoalEditor,
-                                showMacroprocessesEditor:
-                                  _vm.showAsMacroprocessEditor
-                              },
-                              on: {
-                                "make-parent": _vm.makeParent,
-                                "edit-node": _vm.editNode,
-                                "delete-node": _vm.deleteNode,
-                                "add-item": _vm.addChild,
-                                "clicked-node": _vm.nodoSeleccionado,
-                                "assign-goal": _vm.asignarObjetivoANodo,
-                                "create-macroprocess": _vm.CreateMacroprocess,
-                                "relate-goal": _vm.relateGoals,
-                                "assign-inhetited-goal":
-                                  _vm.asignarObjetivoHeredado,
-                                "edit-goal": _vm.editGoal,
-                                "edit-macroprocess": _vm.editMacroprocess
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-footer" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { "data-dismiss": "modal", "aria-label": "Close" },
-                      on: {
-                        click: function($event) {
-                          return _vm.saveLevel()
-                        }
-                      }
-                    },
-                    [_vm._v("Guardar estructura")]
-                  )
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
     _vm._v(" "),
     _c(
       "div",
@@ -62347,7 +61834,7 @@ var render = function() {
                   [_vm._v(" " + _vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(1)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -62469,7 +61956,7 @@ var render = function() {
                   [_vm._v(_vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(2)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -62531,7 +62018,7 @@ var render = function() {
                           }),
                           _vm._v(" "),
                           _c("table", { staticClass: "table table-hover" }, [
-                            _vm._m(5),
+                            _vm._m(3),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -62710,7 +62197,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(6),
+              _vm._m(4),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "col-md-12" }, [
@@ -62849,12 +62336,12 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(7),
+              _vm._m(5),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "col-12" }, [
                   _c("table", { staticClass: "table table-hover" }, [
-                    _vm._m(8),
+                    _vm._m(6),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -62925,12 +62412,12 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(9),
+              _vm._m(7),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "col-12" }, [
                   _c("table", { staticClass: "table table-hover" }, [
-                    _vm._m(10),
+                    _vm._m(8),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -63009,7 +62496,7 @@ var render = function() {
                   [_vm._v(" " + _vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(11)
+                _vm._m(9)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -63125,7 +62612,7 @@ var render = function() {
                   [_vm._v(" " + _vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(12)
+                _vm._m(10)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -63233,7 +62720,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(13),
+              _vm._m(11),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -63241,7 +62728,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(14),
+                          _vm._m(12),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -63361,7 +62848,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(15),
+              _vm._m(13),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "card" }, [
@@ -63369,7 +62856,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-8" }, [
                       _c("div", { staticClass: "form-group" }, [
                         _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(16),
+                          _vm._m(14),
                           _vm._v(" "),
                           _c(
                             "tbody",
@@ -63430,9 +62917,9 @@ var render = function() {
                                       }
                                     }),
                                     _vm._v(
-                                      "\n                              " +
+                                      "\n                          " +
                                         _vm._s(goal.name) +
-                                        "\n                          "
+                                        "\n                        "
                                     )
                                   ])
                                 }),
@@ -63478,40 +62965,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
       _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v("Lista de proyectos")
+        _vm._v("Niveles de estructura")
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v("Nombre")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Logo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Niveles de estructura")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
   },
   function() {
     var _vm = this
@@ -73961,51 +73417,33 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    this.selectingProjectBeforeReport === true
-      ? _c("div", { staticClass: "row h-100" }, [
-          _c("div", { staticClass: "card card-plain col-12" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("br"),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.currentProject,
-                        expression: "currentProject"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.currentProject = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.setProject()
+                  "tbody",
+                  _vm._l(_vm.Goals, function(goal) {
+                    return _c("tr", { key: goal.name }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(goal.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(goal.goals) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          innerHTML: _vm._s(_vm.getIcon(goal.notified))
                         }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.Projects, function(p) {
-                    return _c("option", { domProps: { value: p.id } }, [
-                      _vm._v(_vm._s(p.name))
+                      })
                     ])
                   }),
                   0
@@ -74014,98 +73452,55 @@ var render = function() {
             ])
           ])
         ])
-      : _vm._e(),
-    _vm._v(" "),
-    this.selectingProjectBeforeReport === false
-      ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "card card-plain" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "table-responsive" }, [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.Goals, function(goal) {
-                          return _c("tr", { key: goal.name }, [
-                            _c("td", {
-                              domProps: { textContent: _vm._s(goal.name) }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: { textContent: _vm._s(goal.goals) }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                innerHTML: _vm._s(_vm.getIcon(goal.notified))
-                              }
-                            })
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  ])
-                ])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "card card-plain" }, [
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
                 _vm._m(3),
                 _vm._v(" "),
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "table-responsive" }, [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _vm._m(4),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.GoalsNotified, function(gn) {
+                    return _c("tr", { key: gn.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(gn.relatedToLevel) }
+                      }),
                       _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.GoalsNotified, function(gn) {
-                          return _c("tr", { key: gn.id }, [
-                            _c("td", {
-                              domProps: {
-                                textContent: _vm._s(gn.relatedToLevel)
+                      _c("td", {
+                        domProps: {
+                          innerHTML: _vm._s(_vm.getStatus(gn.status))
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.getInformation(gn)
                               }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                innerHTML: _vm._s(_vm.getStatus(gn.status))
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.getInformation(gn)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-info" })]
-                              )
-                            ])
-                          ])
-                        }),
-                        0
-                      )
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-info" })]
+                        )
+                      ])
                     ])
-                  ])
-                ])
+                  }),
+                  0
+                )
               ])
             ])
           ])
         ])
-      : _vm._e(),
+      ])
+    ]),
     _vm._v(" "),
     _c(
       "div",
@@ -74128,7 +73523,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(5),
+              _vm._m(4),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "jumbotron jumbotron-fluid" }, [
@@ -74185,18 +73580,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary " }, [
-      _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(
-          " Seleccione el proyecto donde se mostrará el reporte de objetivos comunicados"
-        )
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -74293,51 +73676,92 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    this.selectingProjectBeforeReport === true
-      ? _c("div", { staticClass: "row h-100" }, [
-          _c("div", { staticClass: "card card-plain col-12" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("br"),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.currentProject,
-                        expression: "currentProject"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.currentProject = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.setProject()
+                  "tbody",
+                  _vm._l(_vm.Task.data, function(task) {
+                    return _c("tr", { key: task.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(task.relatedToLevel) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(task.task) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          innerHTML: _vm._s(_vm.getIcon(task.notified))
                         }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.Projects, function(p) {
-                    return _c("option", { domProps: { value: p.id } }, [
-                      _vm._v(_vm._s(p.name))
+                      })
+                    ])
+                  }),
+                  0
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.Task },
+                on: { "pagination-change-page": _vm.getTasks }
+              })
+            ],
+            1
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card card-plain" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.TasksNotified, function(gn) {
+                    return _c("tr", { key: gn.id }, [
+                      _c("td", {
+                        domProps: { textContent: _vm._s(gn.relatedToLevel) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          innerHTML: _vm._s(_vm.getStatus(gn.status))
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info",
+                            on: {
+                              click: function($event) {
+                                return _vm.getInformation(gn)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-info" })]
+                        )
+                      ])
                     ])
                   }),
                   0
@@ -74346,112 +73770,8 @@ var render = function() {
             ])
           ])
         ])
-      : _vm._e(),
-    _vm._v(" "),
-    this.selectingProjectBeforeReport === false
-      ? _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "card card-plain" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "table-responsive" }, [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.Task.data, function(task) {
-                          return _c("tr", { key: task.id }, [
-                            _c("td", {
-                              domProps: {
-                                textContent: _vm._s(task.relatedToLevel)
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: { textContent: _vm._s(task.task) }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                innerHTML: _vm._s(_vm.getIcon(task.notified))
-                              }
-                            })
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "footer" },
-                  [
-                    _c("pagination", {
-                      attrs: { data: _vm.Task },
-                      on: { "pagination-change-page": _vm.getTasks }
-                    })
-                  ],
-                  1
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "card card-plain" }, [
-                _vm._m(3),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "table-responsive" }, [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _vm._m(4),
-                      _vm._v(" "),
-                      _c(
-                        "tbody",
-                        _vm._l(_vm.GoalsNotified, function(gn) {
-                          return _c("tr", { key: gn.id }, [
-                            _c("td", {
-                              domProps: {
-                                textContent: _vm._s(gn.relatedToLevel)
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                innerHTML: _vm._s(_vm.getStatus(gn.status))
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.getInformation(gn)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-info" })]
-                              )
-                            ])
-                          ])
-                        }),
-                        0
-                      )
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
-      : _vm._e(),
+      ])
+    ]),
     _vm._v(" "),
     _c(
       "div",
@@ -74474,7 +73794,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(5),
+              _vm._m(4),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c("div", { staticClass: "jumbotron jumbotron-fluid" }, [
@@ -74531,18 +73851,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header card-header-primary " }, [
-      _c("h4", { staticClass: "card-title mt-0 " }, [
-        _vm._v(
-          " Seleccione el proyecto donde se mostrará el reporte de tareas comunicadas"
-        )
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -75509,259 +74817,253 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("ul", { staticClass: "treeview-list" }, [
     _c("li", { staticClass: "treeview-item" }, [
-      _c(
-        "div",
-        {
-          staticClass: "main",
-          class: { bold: _vm.isParent },
-          on: { doubleclick: _vm.toggle }
-        },
-        [
-          _c("h4", [
-            _vm.isParent
-              ? _c("span", [_vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("clicked-node", _vm.item)
-                  }
+      _c("div", { staticClass: "main", class: { bold: _vm.isParent } }, [
+        _c("h4", [
+          _vm.isParent
+            ? _c("span", { on: { click: _vm.toggle } }, [
+                _vm._v("[" + _vm._s(_vm.isOpen ? "-" : "+") + "]")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.$emit("clicked-node", _vm.item)
                 }
-              },
-              [_vm._v(_vm._s(_vm.item.name))]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showTreeEditor,
-                    expression: "showTreeEditor"
+              }
+            },
+            [_vm._v(_vm._s(_vm.item.name))]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showTreeEditor,
+                  expression: "showTreeEditor"
+                }
+              ],
+              staticClass: "controls-tree-edit"
+            },
+            [
+              !_vm.isParent
+                ? _c("span", { on: { click: _vm.makeParent } }, [
+                    _c("i", { staticClass: "fas fa-project-diagram" })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("edit-node", _vm.item)
+                    }
                   }
-                ],
-                staticClass: "controls-tree-edit"
-              },
-              [
-                !_vm.isParent
-                  ? _c("span", { on: { click: _vm.makeParent } }, [
-                      _c("i", { staticClass: "fas fa-project-diagram" })
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("edit-node", _vm.item)
-                      }
+                },
+                [_c("i", { staticClass: "fas fa-edit" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("delete-node", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-edit" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("delete-node", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-trash-alt" })]
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showGoalEditor,
-                    expression: "showGoalEditor"
                   }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("assign-goal", _vm.item)
-                      }
+                },
+                [_c("i", { staticClass: "fas fa-trash-alt" })]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showGoalEditor,
+                  expression: "showGoalEditor"
+                }
+              ],
+              staticClass: "controls-gol-edit"
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("assign-goal", _vm.item)
                     }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-columns" }, [
-                      _vm._v("Asignar objetivo")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("relate-goal", {
-                          item: _vm.item,
-                          parent: _vm.parent
-                        })
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-columns" }, [
-                      _vm._v("Relacionar objetivos")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("edit-goal", _vm.item)
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-edit" }, [
-                      _vm._v("Editar objetivos")
-                    ])
-                  ]
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showUserFunctionsEditor,
-                    expression: "showUserFunctionsEditor"
                   }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva función"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("create-user-function", _vm.item)
-                      }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-columns" }, [
+                    _vm._v("Asignar objetivo")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("relate-goal", {
+                        item: _vm.item,
+                        parent: _vm.parent
+                      })
                     }
-                  },
-                  [_c("i", { staticClass: "fas fa-plus-circle" })]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: {
-                      "data-toggle": "tooltip",
-                      "data-placement": "top",
-                      title: "Agregar nueva funciรณn"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("modify-user-function", _vm.item)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fas fa-edit" })]
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showMacroprocessesEditor,
-                    expression: "showMacroprocessesEditor"
                   }
-                ],
-                staticClass: "controls-gol-edit"
-              },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("create-macroprocess", _vm.item)
-                      }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-columns" }, [
+                    _vm._v("Relacionar objetivos")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("edit-goal", _vm.item)
                     }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-edit" }, [
+                    _vm._v("Editar objetivos")
+                  ])
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showUserFunctionsEditor,
+                  expression: "showUserFunctionsEditor"
+                }
+              ],
+              staticClass: "controls-gol-edit"
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: {
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    title: "Agregar nueva función"
                   },
-                  [
-                    _c("i", { staticClass: "fas fa-connectdevelop" }, [
-                      _vm._v("Crear Macroproceso")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { "data-toggle": "tooltip" },
-                    on: {
-                      click: function($event) {
-                        return _vm.$emit("edit-macroprocess", _vm.item)
-                      }
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("create-user-function", _vm.item)
                     }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-plus-circle" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: {
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    title: "Ver o Modificar funciones de usuario"
                   },
-                  [
-                    _c("i", { staticClass: "fas fa-edit" }, [
-                      _vm._v("Editar macroprocesos")
-                    ])
-                  ]
-                )
-              ]
-            )
-          ])
-        ]
-      ),
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("modify-user-function", _vm.item)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-edit" })]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showMacroprocessesEditor,
+                  expression: "showMacroprocessesEditor"
+                }
+              ],
+              staticClass: "controls-gol-edit"
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("create-macroprocess", _vm.item)
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-connectdevelop" }, [
+                    _vm._v("Crear Macroproceso")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { "data-toggle": "tooltip" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("edit-macroprocess", _vm.item)
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-edit" }, [
+                    _vm._v("Editar macroprocesos")
+                  ])
+                ]
+              )
+            ]
+          )
+        ])
+      ]),
       _vm._v(" "),
       _vm.isParent
         ? _c(
@@ -75885,182 +75187,45 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container container-project" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-plain" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("p"),
-            _c("h4", [
-              _vm._v(
-                "A continuación se desplega la estructura de niveles de los proyectos para crear las funciones de usuarios"
-              )
-            ]),
-            _vm._v(" "),
-            _c("p"),
-            _vm._v(" "),
-            _c("div", { staticClass: "table-responsive" }, [
-              _c("table", { staticClass: "table table-hover" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.Projects.data, function(project) {
-                    return _c("tr", { key: project.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(project.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", { staticStyle: { width: "80px" } }, [
-                        _c("img", {
-                          staticClass: "img-profile-pic rounded-circle",
-                          attrs: {
-                            src: _vm.getLogo(project),
-                            alt: "Project logo"
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: {
-                              "data-toggle": "modal",
-                              "data-target": "#addLevels"
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.loadLevelData(project)
-                              }
-                            }
-                          },
-                          [
-                            _c("i", { staticClass: "fas fa-swatchbook" }, [
-                              _vm._v("Niveles de estructura")
-                            ])
-                          ]
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-footer" },
-            [
-              _c("pagination", {
-                attrs: { data: _vm.Projects },
-                on: { "pagination-change-page": _vm.getProjects }
-              })
-            ],
-            1
-          )
-        ])
+    _c("div", { staticClass: "card card-plain" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "card-body" },
+        [
+          _c("tree-menu", {
+            staticClass: "item",
+            attrs: {
+              item: _vm.Levels,
+              parent: _vm.Levels,
+              showUserFunctionsEditor: _vm.showAsUserFunctionsEditor
+            },
+            on: {
+              "create-user-function": _vm.createUserFunction,
+              "modify-user-function": _vm.showUserFunctions
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-footer" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-dismiss": "modal", "aria-label": "Close" },
+            on: {
+              click: function($event) {
+                return _vm.saveLevel()
+              }
+            }
+          },
+          [_vm._v("Guardar cambios")]
+        )
       ])
     ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "addLevels",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "LevelModalOptions-lg",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-xl modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header border-bottom-0" }, [
-                _c(
-                  "h2",
-                  {
-                    staticClass: "modal-title",
-                    attrs: { id: "LevelModalOptions" },
-                    on: {
-                      click: function($event) {
-                        return _vm.saveLevel()
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "Seleccione el nivel para agregar funciones a los usuarios"
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _vm._m(2)
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("div", { staticClass: "row" }, [
-                      _c("div", { staticClass: "tree-menu" }, [
-                        _c(
-                          "div",
-                          { staticClass: "tree-viewer" },
-                          [
-                            _c("tree-menu", {
-                              staticClass: "item",
-                              attrs: {
-                                item: _vm.Levels,
-                                parent: _vm.Levels,
-                                showUserFunctionsEditor:
-                                  _vm.showAsUserFunctionsEditor
-                              },
-                              on: {
-                                "create-user-function": _vm.createUserFunction,
-                                "modify-user-function": _vm.showUserFunctions
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-footer" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { "data-dismiss": "modal", "aria-label": "Close" },
-                      on: {
-                        click: function($event) {
-                          return _vm.saveLevel()
-                        }
-                      }
-                    },
-                    [_vm._v("Guardar cambios")]
-                  )
-                ])
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
     _vm._v(" "),
     _c(
       "div",
@@ -76091,7 +75256,7 @@ var render = function() {
                   [_vm._v(_vm._s(_vm.title))]
                 ),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(1)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -76108,7 +75273,7 @@ var render = function() {
                                 "table",
                                 { staticClass: "table table-hover" },
                                 [
-                                  _vm._m(4),
+                                  _vm._m(2),
                                   _vm._v(" "),
                                   _c(
                                     "tbody",
@@ -76197,7 +75362,7 @@ var render = function() {
                                   "table",
                                   { staticClass: "table table-hover" },
                                   [
-                                    _vm._m(5),
+                                    _vm._m(3),
                                     _vm._v(" "),
                                     _c(
                                       "tbody",
@@ -76395,7 +75560,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(6)
+                _vm._m(4)
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
@@ -76403,7 +75568,7 @@ var render = function() {
                   _c("div", { staticClass: "card" }, [
                     _c("div", { staticClass: "card-body" }, [
                       _c("table", { staticClass: "table table-hover" }, [
-                        _vm._m(7),
+                        _vm._m(5),
                         _vm._v(" "),
                         _c(
                           "tbody",
@@ -76488,40 +75653,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header card-header-primary" }, [
       _c("h4", { staticClass: "card-title mt-0" }, [
-        _vm._v("Lista de proyectos")
+        _vm._v("Seleccione el nivel para agregar funciones a los usuarios")
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", {}, [
-      _c("tr", [
-        _c("th", [_vm._v("Nombre")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Logo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Niveles de estructura")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
   },
   function() {
     var _vm = this

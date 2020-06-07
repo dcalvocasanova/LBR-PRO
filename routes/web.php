@@ -240,7 +240,7 @@ Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middlewa
 Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
 Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
 Route::get('/notificaciones/objetivos-por-nivel','NotificatorController@getGoalsByLevelNotifications')->middleware('auth');
-Route::get('/notificaciones/tareas','NotificatorController@getTasksNotifications')->middleware('auth');
+Route::get('/notificaciones/tareas/{id}','NotificatorController@getTasksNotifications')->middleware('auth');
 Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
@@ -416,6 +416,7 @@ Route::get('/tareas-por-tipo', 'TaskController@getTaskAccordingTypeAndLevel');
 Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
+Route::post('/tareas/notificadas', 'TaskController@changeTaskStatus');
 
 /*Manage Psychosocial Analysis*/
 Route::get('/psicoanalisis', 'PsychosocialQuestionController@index');

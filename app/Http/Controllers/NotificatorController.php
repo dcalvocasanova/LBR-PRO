@@ -30,7 +30,7 @@ class NotificatorController extends Controller
       foreach ($users as $user) {
         $notification = $notificator->createAlert($user,'GOALS',$request);
       }
-      $mails = $notificator->sendEmailNotificatios($request->usersToNotify,$request->title,$request->body,'GOALS');
+      $mails = $notificator->sendEmailNotifications($request->usersToNotify,$request->title,$request->body,'GOALS');
     }
     /**
      * Send Goals to notify
@@ -41,10 +41,11 @@ class NotificatorController extends Controller
     {
       $users = $request->usersToNotify;
       foreach ($users as $user) {
-        $notification = $notificator->createAlert($user,'TASK',$request);
+        $notification = $notificator->createAlert($user,'TASKS',$request);
         $relation = $notificator->relatedTaskToUser($user,$request->tasksToNotify);
       }
-      $mails = $notificator->sendEmailNotificatios($request->usersToNotify,$request->title,$request->body,'GOALS');
+      $mails = $notificator->sendEmailNotifications($request->usersToNotify,$request->title,$request->body,'TASKS');
+      return $relation;
     }
 
     /**

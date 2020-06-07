@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 
@@ -99,6 +100,23 @@ class TaskController extends Controller
     {
       $Task = Task::findOrFail($request->id);
       $Task->update($request->all());
+    }
+
+    /**
+     * Change status as Read.
+     *
+     * @param  TaskRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function changeTaskStatus(Request $request)
+    {
+      $readAt = Carbon::now();
+      $tasks = Task::find($request->tasks);
+      foreach ($tasks as $task) {
+         $task->notified ='true';
+         $task->send_at =$readAt;
+         $task->save();
+      }
     }
 
     /**

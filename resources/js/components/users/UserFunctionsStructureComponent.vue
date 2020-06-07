@@ -1,79 +1,23 @@
 <template>
   <div class="container container-project">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-plain">
-          <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0">Lista de proyectos</h4>
-          </div>
-          <div class="card-body">
-            <p>
-              <h4>A continuación se desplega la estructura de niveles de los proyectos para crear las funciones de usuarios</h4>
-            </p>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Logo</th>
-                    <th>Niveles de estructura</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="project in Projects.data" :key="project.id" >
-                    <td v-text="project.name"></td>
-                    <td style="width: 80px;"> <img  class="img-profile-pic rounded-circle" :src="getLogo(project)" alt="Project logo"/> </td>
-                    <td>
-                      <button class="btn btn-primary"
-                        @click="loadLevelData(project)"
-                        data-toggle="modal" data-target="#addLevels">
-                        <i class="fas fa-swatchbook">Niveles de estructura</i></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
-            <pagination :data="Projects" @pagination-change-page="getProjects"></pagination>
-          </div>
-        </div>
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0">Seleccione el nivel para agregar funciones a los usuarios</h4>
+      </div>
+      <div class="card-body">
+        <tree-menu
+          class="item" :item="Levels":parent="Levels"
+          :showUserFunctionsEditor="showAsUserFunctionsEditor"
+          @create-user-function="createUserFunction"
+          @modify-user-function="showUserFunctions"
+        >
+        </tree-menu>
+      </div>
+      <div class="card-footer">
+        <button @click="saveLevel()" class="btn btn-success" data-dismiss="modal" aria-label="Close">Guardar cambios</button>
       </div>
     </div>
-    <div class="modal fade" id="addLevels" tabindex="-1" role="dialog" aria-labelledby="LevelModalOptions-lg" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header border-bottom-0">
-            <h2 class="modal-title" @click="saveLevel()" id="LevelModalOptions">Seleccione el nivel para agregar funciones a los usuarios</h2>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="tree-menu">
-                    <div class="tree-viewer">
-                      <tree-menu
-                        class="item" :item="Levels":parent="Levels"
-                        :showUserFunctionsEditor="showAsUserFunctionsEditor"
-            						@create-user-function="createUserFunction"
-            						@modify-user-function="showUserFunctions"
-                      >
-                      </tree-menu>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer">
-              <button @click="saveLevel()" class="btn btn-success" data-dismiss="modal" aria-label="Close">Guardar cambios</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
     <div class="modal fade" id="UserFunctionsManager" tabindex="-2" role="dialog" aria labelledby="UserFunctionsManager-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -214,19 +158,13 @@
     }
    },
    methods:{
-    getProjects(page = 1) {
-     axios.get('/proyectos?page=' + page)
-     .then(response => {
-           this.Projects = response.data; //get all projects from page
-     });
-    },
-    getLogo(project){
-      let logo = (project.logo_project.length > 200) ? project.logo_project : "/img/profile-prj/"+ project.logo_project ;
-      return logo;
-    },
-    loadLevelData(project){
-      this.project_id = project.id;
-      this.getLevels();
+    getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.project_id = response.data.id
+        me.getLevels()
+      });
     },
     getLevels(){
       let me =this;
@@ -399,7 +337,7 @@
     })
   },
   mounted() {
-   this.getProjects();
+   this.getCurrentProject();
   }
 }
 </script>

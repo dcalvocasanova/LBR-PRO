@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\User;
+use App\Task;
 use App\Alerting;
 use App\UserTask;
 use Carbon\Carbon;
@@ -32,7 +33,7 @@ class NotificationTraits
     $relation = UserTask::firstOrNew(['user_id' => $user]);
     $relation->user_id = $user;
     $relation->tasks_id = $tasks;
-    $relation->save();
+    $relation->save();  
     return  $relation;
   }
   public function changeTaskStatus (string $id, string $type, string $title, string $reason){

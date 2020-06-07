@@ -1,81 +1,63 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectBeforeReport === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se mostrará el reporte de objetivos comunicados</h4>
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-plain">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title mt-0"> Objetivos registrados en la estructura de niveles</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Nombre del nivel </th>
+                    <th> Cantidad de objetivos </th>
+                    <th> Se envió a notificar </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr  v-for="goal in Goals" :key="goal.name">
+                    <td v-text="goal.name"></td>
+                    <td v-text="goal.goals"></td>
+                    <td v-html="getIcon(goal.notified)"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectBeforeReport === false">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card card-plain">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title mt-0"> Objetivos registrados en la estructura de niveles</h4>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class="">
-                    <tr>
-                      <th> Nombre del nivel </th>
-                      <th> Cantidad de objetivos </th>
-                      <th> Se envió a notificar </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                      <tr  v-for="goal in Goals" :key="goal.name">
-                        <td v-text="goal.name"></td>
-                        <td v-text="goal.goals"></td>
-                        <td v-html="getIcon(goal.notified)"></td>
-                      </tr>
-                    </tbody>
-                </table>
-              </div>
-            </div>
+      <div class="col-md-6">
+        <div class="card card-plain">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title mt-0"> Registro de aprobación</h4>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card card-plain">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title mt-0"> Registro de aprobación</h4>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class="">
-                    <tr>
-                      <th> Nombre del nivel </th>
-                      <th> Estado </th>
-                      <th> Detalles </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                      <tr  v-for="gn in GoalsNotified" :key="gn.id">
-                        <td v-text="gn.relatedToLevel"></td>
-                        <td v-html="getStatus(gn.status)"></td>
-                        <td>
-                          <button class="btn btn-info" @click="getInformation(gn)"><i class="fas fa-info"></i></button>
-                        </td>
-                      </tr>
-                    </tbody>
-                </table>
-              </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="">
+                  <tr>
+                    <th> Nombre del nivel </th>
+                    <th> Estado </th>
+                    <th> Detalles </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr  v-for="gn in GoalsNotified" :key="gn.id">
+                    <td v-text="gn.relatedToLevel"></td>
+                    <td v-html="getStatus(gn.status)"></td>
+                    <td>
+                      <button class="btn btn-info" @click="getInformation(gn)"><i class="fas fa-info"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
-
     <div class="modal fade" id="notificationDetails" tabindex="-1" role="dialog" aria-labelledby="notificationDetails-lg" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -118,7 +100,7 @@ export default {
   },
   data(){
     return{
-      selectingProjectBeforeReport:true,
+      selectingProjectBeforeReport:false,
       currentProject:0,
       currentAlert:{},
       Projects:{},
@@ -155,6 +137,15 @@ export default {
       me.LoadNotificationGoals()
       me.LoadGoals()
     },
+    getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.currentProject = response.data.id
+        me.LoadNotificationGoals()
+        me.LoadGoals()
+      });
+    },
     getStatus(status){
       if (status === "Pending"){return "Notificación pendiente de aprobación"}
       if (status === "Acepted"){return "Notificación aceptada"}
@@ -183,7 +174,7 @@ export default {
     }
   },
   mounted() {
-   this.getProjectos()
+   this.getCurrentProject()
   }
 }
 </script>
