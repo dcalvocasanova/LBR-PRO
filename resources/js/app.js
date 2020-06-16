@@ -87,18 +87,18 @@ Vue.component('psychosocialVariables', require('./components/PsychosocialVariabl
 
 Vue.component('parameters', require('./components/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
-Vue.component('questions', require('./components/QuestionComponent.vue').default);
+Vue.component('questions', require('./components/CriteriaQuestionComponent.vue').default);
 Vue.component('variables', require('./components/VariableComponent.vue').default);
 Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
-
-
-
-
 
 Vue.component('subprocesos', require('./components/SubprocessComponent.vue').default);
 Vue.component('procesos', require('./components/ProcessComponent.vue').default);
 Vue.component('macroprocesos', require('./components/MacroprocessComponent.vue').default);
+
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+Vue.component('psychosocialTemplates', require('./components/templates/TemplatesPychioSocialParametersComponent.vue').default);
+
+
 Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
 
@@ -111,6 +111,8 @@ Vue.component('tasksUnit', require('./components/TaskUnitElementComponent.vue').
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
+Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
+Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
 
 
 

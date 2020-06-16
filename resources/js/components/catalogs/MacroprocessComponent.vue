@@ -84,8 +84,6 @@
               </div>
             </div>
           </div>
-          <div class="card-footer">
-          </div>
         </div>
       </div>
     </div>
@@ -143,11 +141,13 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="container-buttons">
-                        <button v-if="updateCatalogo == 0" @click="saveCatalog()" class="btn btn-success">Añadir</button>
-                        <button v-if="updateCatalogo != 0" @click="updateCatalog()" class="btn btn-info">Actualizar</button>
-                        <button v-if="updateCatalogo != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
+                    <div class="card-footer">
+                      <div class="row">
+                        <div class="container-buttons">
+                          <button v-if="updateCatalogo == 0" @click="saveCatalog()" class="btn btn-success">Añadir</button>
+                          <button v-if="updateCatalogo != 0" @click="updateCatalog()" class="btn btn-info">Actualizar</button>
+                          <button v-if="updateCatalogo != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -188,7 +188,7 @@
             if (code === "INDICATOR"){this.catalog="Indicadores"}
       			if (code === "PHVA"){this.catalog="PHVA"}
       			if (code === "FRECUENCY"){this.catalog="Frecuencias"}
-      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}      			
+      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected

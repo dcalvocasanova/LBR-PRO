@@ -268,8 +268,12 @@
   created(){
     let me = this
     this.form.fill(this.task)
-    me.addedValueArray=me.task.addedValue
-    me.correlationArray=me.task.correlation
+    if(me.task.addedValue !== null){
+        me.addedValueArray=me.task.addedValue
+    }
+    if(me.task.correlation !== null){
+        me.correlationArray=me.task.correlation
+    }
   }
 }
 </script>

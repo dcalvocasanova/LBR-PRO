@@ -138,6 +138,12 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-plantillas-parametros', function () {
       return view('admin.parametrosplantilla');
   });
+  Route::get('/gestionar-plantillas-analisis-psicosicial', function () {
+      return view('admin.parametrosPlantillaPsicosocial');
+  });
+
+
+
   Route::get('/gestionar-estructura-proyecto', function () {
       return view('admin.estructuraproyecto');
   });
@@ -335,10 +341,11 @@ Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByTyp
 Route::get('/plantillas/buscar', 'TemplateController@show');
 
 /*Manage Parameters*/
-Route::get('/criterios-evaluacion', 'QuestionController@index');
-Route::put('/criterios-evaluacion/actualizar', 'QuestionController@update');
-Route::post('/criterios-evaluacion/guardar', 'QuestionController@store');
-Route::delete('/criterios-evaluacion/borrar/{id}', 'QuestionController@destroy');
+Route::get('/criterios-evaluacion', 'CriteriaController@index');
+Route::get('/criterios-evaluacion-all', 'CriteriaController@getAll');
+Route::put('/criterios-evaluacion/actualizar', 'CriteriaController@update');
+Route::post('/criterios-evaluacion/guardar', 'CriteriaController@store');
+Route::delete('/criterios-evaluacion/borrar/{id}', 'CriteriaController@destroy');
 
 
 /*Manage Macroprocess*/

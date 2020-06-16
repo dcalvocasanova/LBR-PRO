@@ -99,11 +99,13 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="container-buttons">
-                        <button v-if="updateCatalogo == 0" @click="saveCatalog()" class="btn btn-success">Añadir</button>
-                        <button v-if="updateCatalogo != 0" @click="updateCatalog()" class="btn btn-info">Actualizar</button>
-                        <button v-if="updateCatalogo != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
+                    <div class="card-footer">
+                      <div class="row">
+                        <div class="container-buttons">
+                          <button v-if="updateCatalogo == 0" @click="saveCatalog()" class="btn btn-success">Añadir</button>
+                          <button v-if="updateCatalogo != 0" @click="updateCatalog()" class="btn btn-info">Actualizar</button>
+                          <button v-if="updateCatalogo != 0" @click="clearFields()" class="btn btn-secondary">Atrás</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -114,8 +116,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 
