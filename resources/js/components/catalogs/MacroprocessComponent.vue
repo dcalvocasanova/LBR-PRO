@@ -61,27 +61,6 @@
                   </i>
                 </button>
               </div>
-
-              <div class="col-md-3">
-                <button class="btn btn-primary"
-                  @click="LoadCatalog('FRECUENCY')"
-                  data-toggle="modal"
-                  data-target="#addCatalogs">
-                  <i class="fas fa-swatchbook">
-                    Catálogo: Frecuencias
-                  </i>
-                </button>
-              </div>
-              <div class="col-md-3">
-                <button class="btn btn-primary"
-                  @click="LoadCatalog('WORKTYPE')"
-                  data-toggle="modal"
-                  data-target="#addCatalogs">
-                  <i class="fas fa-swatchbook">
-                    Catálogo: Tipo de trabajo
-                  </i>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -186,9 +165,7 @@
             if (code === "PROVIDER"){this.catalog="Proveedores"}
             if (code === "RISK"){this.catalog="Riesgos"}
             if (code === "INDICATOR"){this.catalog="Indicadores"}
-      			if (code === "PHVA"){this.catalog="PHVA"}
-      			if (code === "FRECUENCY"){this.catalog="Frecuencias"}
-      			if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}
+      			if (code === "PHVA"){this.catalog="PHVA"}      			
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected

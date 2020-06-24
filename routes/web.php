@@ -268,6 +268,9 @@ Route::post('/proyecto/establecer', 'ProjectController@setCurrentProjectSession'
 
 /*Manage Catalogs*/
 Route::get('/catalogo', 'CatalogController@getListCatalog');
+Route::get('/catalogo/phva', 'CatalogController@getPHVACatalog');
+Route::get('/catalogo/competencias', 'CatalogController@getSkillTaskCatalog');
+Route::get('/catalogo/riesgos', 'CatalogController@getRiskCatalog');
 Route::post('/catalogo/guardar', 'CatalogController@storeItem');
 Route::put('/catalogo/actualizar', 'CatalogController@updateItem');
 Route::delete('/catalogo/borrar/{id}', 'CatalogController@deleteItem');

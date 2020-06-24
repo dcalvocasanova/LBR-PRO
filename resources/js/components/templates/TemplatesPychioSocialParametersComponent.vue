@@ -84,8 +84,8 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label class="bmd-label-floating">Criterio de evaluación</label>
-                    <select v-model="form.description" class=" form-control">
-                      <option v-for="c in Criterias" :key="c.id">{{ c.name }}</option>
+                    <select v-model="currentCriteria" class=" form-control">
+                      <option v-for="c in Criterias" :value="c.id"> {{ c.name }} </option>
                     </select>
                     <has-error :form="form" field="sex"></has-error>
                   </div>
@@ -183,8 +183,7 @@ export default {
         description:"",
         stencil:"",
       }),
-      showParameters:false,
-      showSubParameters:false,
+      currentCriteria:"",
       showItems:false,
       showStencil:false,
       showCreateOrUpdate:false,
@@ -240,7 +239,6 @@ export default {
       let me =this;
       me.title = "Actualizar instrumento"
       me.showCreateOrUpdate=true;
-      me.showParameters=true;
       me.updateTemplateValidator=1;
       me.Stencils = JSON.parse(template.stencil);
       me.form.fill(template);
@@ -251,6 +249,7 @@ export default {
       let me =this;
       if (Object.keys(me.Stencils).length !== 0) {
         me.form.stencil = JSON.stringify(me.Stencils);
+        me.form.description = me.currentCriteria.toString()
         this.form.put('/plantillas/actualizar')
         .then(function (response) {
           me.cancelar();
@@ -335,6 +334,7 @@ export default {
       me.form.type="psychosocial";
       if (Object.keys(me.Stencils).length !== 0) {
         me.form.stencil = JSON.stringify(me.Stencils);
+        me.form.description = me.currentCriteria.toString()
         me.form.post('plantillas/guardar')
         .then(function (response) {
           toast.fire({
@@ -363,9 +363,10 @@ export default {
     },
     cancelar(){
       let me =this;
-      me.showCreateOrUpdate = false;
-      me.showStencil=false;
-      me.showItems=false;
+      me.showCreateOrUpdate = false
+      me.showStencil=false
+      me.showItems=false
+      me.currentCriteria=""
       me.form.reset();
     },
     addCriteriaToStencil(item){

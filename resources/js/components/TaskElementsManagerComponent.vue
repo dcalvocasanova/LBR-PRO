@@ -51,11 +51,12 @@
                   :showImproveOption="mejoramiento"
                   :Frecuencies="Frecuencies"
                   :WorkTypes="WorkTypes"
+                  :PHVA="PHVA"
                   :Correlation="Correlation"
                   :AddedValue="AddedValue"
                   :Risk="Risk"
-                  :RiskCondition="RiskCondition"
-                  :OrganizationalSkills="OrganizationalSkills"
+                  :Effort="Effort"
+                  :Skills="Skills"
                   >
                 </tasks-unit>
               </tr>
@@ -88,8 +89,8 @@ export default {
       AddedValue:{},
       Correlation:{},
       Risk:{},
-      RiskCondition:{},
-      OrganizationalSkills:{},
+      Effort:{},
+      Skills:{},
       Levels:{},
       level:"",
       type:"",
@@ -150,34 +151,28 @@ export default {
         this.Correlation = response.data; //get all catalogs from category selected
       });
     },
+    LoadCatalogEfforts() {
+      axios.get('catalogo?id=EFFORT-T')
+      .then(response => {
+        this.Effort = response.data; //get all catalogs from category selected
+      });
+    },
+    LoadCatalogPHVA() {
+      axios.get('/catalogo/phva')
+      .then(response => {
+        this.PHVA = response.data; 
+      });
+    },
+    LoadCatalogSkills() {
+      axios.get('catalogo/competencias')
+      .then(response => {
+        this.Skills = response.data;
+      });
+    },
     LoadCatalogRisk() {
-      axios.get('catalogo?id=RISK-T')
+      axios.get('catalogo/riesgos')
       .then(response => {
-        this.Risk = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogRiskCondition() {
-      axios.get('catalogo?id=RISK-CONDITION-T')
-      .then(response => {
-        this.RiskCondition = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogOrganizationalSkills() {
-      axios.get('catalogo?id=ORGANIZATIONAL-SKILL-T')
-      .then(response => {
-        this.OrganizationalSkills = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogSpecificSkills() {
-      axios.get('catalogo?id=SPECIFIC-SKILL-T')
-      .then(response => {
-        this.SpecificSkills = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogTecnicalSkills() {
-      axios.get('catalogo?id=TECNICAL-SKILL-T')
-      .then(response => {
-        this.TecnicalSkills = response.data; //get all catalogs from category selected
+        this.Risk = response.data;
       });
     },
     LoadLevelsOfStructure() {
@@ -191,14 +186,13 @@ export default {
   mounted() {
     this.getCurrentProject()
     this.LoadCatalogFrecuency();
+    this.LoadCatalogPHVA();
     this.LoadCatalogWorkType();
     this.LoadCatalogAddedValued()
     this.LoadCatalogCorrelation()
     this.LoadCatalogRisk()
-    this.LoadCatalogRiskCondition()
-    this.LoadCatalogOrganizationalSkills()
-    this.LoadCatalogSpecificSkills()
-    this.LoadCatalogTecnicalSkills()
+    this.LoadCatalogSkills()
+    this.LoadCatalogEfforts()
   }
 }
 </script>
