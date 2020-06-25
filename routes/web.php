@@ -130,6 +130,13 @@ Route::get('/gestionar-tareas-con-variables-asociadas', function () {
     return view('taskManager.tareas-variables-asociadas');
 })->middleware('permission:CRUD_tasks');
 
+/*
+* Grant access only for users with CRUD_task
+*/
+Route::get('/gestionar-tareas-con-variables-medicion', function () {
+    return view('taskManager.tareas-variables-medicion');
+})->middleware('permission:CRUD_tasks');
+
 
 Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-parametros', function () {
@@ -409,6 +416,7 @@ Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 
+Route::put('/measures/actualizar', 'MeasureController@update');
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
@@ -417,6 +425,7 @@ Route::put('/tareas/actualizar', 'TaskController@update');
 Route::post('/tareas/guardar', 'TaskController@store');
 Route::delete('/tareas/borrar/{id}', 'TaskController@destroy');
 Route::post('/tareas/notificadas', 'TaskController@changeTaskStatus');
+Route::get('tareas-por-usuario','TaskController@getUserTasks');
 
 /*Manage Psychosocial Analysis*/
 Route::get('/psicoanalisis', 'PsychosocialQuestionController@index');

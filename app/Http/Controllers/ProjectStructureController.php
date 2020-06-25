@@ -21,6 +21,7 @@ class ProjectStructureController extends Controller
 	//obtiene el nombre de los macroprocesos
 	public function getMacroprocessProject(Request $request)
     {
+		
       $levels = ProjectStructure::where('project_id', $request->id)->first();
   		$obj = json_decode($levels->levels,true);
   		$macroprocesos = array();

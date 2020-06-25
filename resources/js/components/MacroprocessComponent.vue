@@ -259,16 +259,16 @@ export default {
 			user:"",
 			risk:"",
 			indicator:"",
-			project_id:1 //este valor debe ser el current project
+			project_id:0 //este valor debe ser el current project
 
 
           }),
 		  level: new Form({
           id:"", //level projectID
           levels:"",
-          project_id:""
+          project_id:0
         }),
-		  project_id:1,//este valor debe ser el current project
+		  project_id:0,//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -295,6 +295,18 @@ export default {
       }
   },
   methods:{
+	getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.project_id = response.data.id
+       me.form.project_id = response.data.id
+		 me.level.project_id = response.data.id
+		 this.getLevels();
+       this.getMacroprocesos();
+      });
+	
+    },
 		loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.macroprocessFile = event.target.files[0];
@@ -512,6 +524,7 @@ export default {
               console.log(error);
           });
 	},
+	  
   },
   created(){
     Fire.$on('searching',() => {
@@ -526,15 +539,12 @@ export default {
 
   },
   mounted() {
-	   this.getLevels();
-       this.getMacroprocesos();
+	   this.getCurrentProject();
+	   
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogIndicator();
-
-
-
 
   }
 }

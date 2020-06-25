@@ -107,6 +107,8 @@ Vue.component('help', require('./components/HelpComponent.vue').default);
 Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
 Vue.component('tasksElements', require('./components/TaskElementsManagerComponent.vue').default);
 Vue.component('tasksUnit', require('./components/TaskUnitElementComponent.vue').default);
+Vue.component('tasksMeasures', require('./components/TaskMeasuresManagerComponent.vue').default);
+Vue.component('tasksMeasure', require('./components/TaskUnitMeasureComponent.vue').default);
 
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);

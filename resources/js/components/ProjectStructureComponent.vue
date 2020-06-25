@@ -133,10 +133,10 @@
                 <div class="card-body">
                   <div class="col-md-10">
                     <div class="form-group">
-					  <label class="bmd-label-floating">Objetivo</label>
-                      <input  v-model="newName" type="text" class="form-control">
                       <label class="bmd-label-floating">Código</label>
                       <input  v-model="newCode" type="text" class="form-control">
+                      <label class="bmd-label-floating">Objetivo</label>
+                      <input  v-model="newName" type="text" class="form-control">
                     </div>
                   </div>
                   <div class="card-footer">
@@ -208,8 +208,6 @@
                   <tr v-for="macro in currentNode.macroprocess" :key="macro.pos">
                     <td v-text="macro.name"></td>
                     <td>
-						
-						
                       <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
                       <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
                     </td>
@@ -258,11 +256,6 @@
           </div>
           <div class="modal-body">
             <div class="row">
-
-              <div class="col-8">	  
-			  <input v-model="currentSelectedItem.name" >
-			  <td><input v-model=currentSelectedItem.Macroprocessgoals type="checkbox"> {{currentSelectedItem}}</td>
-
               <div class="col-8">
                 <input v-model="currentSelectedItem.name" >
               </div>
@@ -402,7 +395,6 @@ export default {
   },
   methods:{
     nodoSeleccionado(item){
-      
     },
     asignarObjetivoANodo(item){
       let me = this;
@@ -412,6 +404,8 @@ export default {
     },
     relateGoals(nodo){
       let me = this;
+	  me.itemsCopy = [];
+	  me.relatedGoals =[];
       me.currentNode = nodo.item
       me.parentNode = nodo.parent
       me.updateNodeControl = 0
@@ -715,148 +709,13 @@ export default {
     rndStr(len) {
       let text = " "
       let chars = "abcdefghijklmnopqrstuvwxyz123456789"
-      },
-      addNode() {
-        let me = this
-        me.currentNode.children.push({
-          name: me.newName,
-          level:me.currentNode.level + 1,
-    		  numGoals:0,
-			    featherNode:true,
-    		  goals:[],
-    		  inheritedGoals:[],
-			    macroprocess:[],
-          userFunctions:[]
-        })
-        me.salir()
-      },
-      addGoal() {
-        let me = this;
-		if(me.newCode.trim()!="" && me.newName.trim()!=""){
-				me.currentNode.numGoals += 1
-				me.currentNode.goals.push({
-				  code: me.newCode,
-				  name: me.newName,
-				  pos:me.currentNode.numGoals, // definir contador para objetivos
-				  objectCode:me.rndStr(7)
-				})
-				me.title= "Agregar Objetivo"
-				me.salirObjetivos()
-	     }else{
-				swal.fire(
-				  'Datos incompletos',
-				  'Es necesario seleccionar código y un nombre para registrar el objetivo',
-				  'warning'
-        )
-      }
-      },
-	    addMacroprocess() {
-        	let me = this;
-			if(me.newCode.trim()!="" && me.newName.trim()!=""){
-				me.currentNode.macroprocess.push({
-				  code: me.newCode,
-				  name: me.newName,
-				  goals: me.Macroprocessgoals // definir contador para objetivos
-				})
-        		me.salirMacroprocess()
-				
-			}else{
-				swal.fire(
-				  'Datos incompletos',
-				  'Es necesario seleccionar objetivos, codigo y un nombre para registrar el macroproceso',
-				  'warning'
-   			     )
-     		 }
-      	},
-	    RelacionarObjetivos(){
-        let me = this
-        me.currentNode.inheritedGoals.push({
-	        goals: me.goalsInherited
-        })
-	    me.title= "Relacionar objetivos"
-        me.salirRelacionarObjetivos()
-      },
-      updateNode() {
-        let me = this
-        me.currentNode.name = me.newName
-        me.salir()
-      },
-      deleteNode(node){
-        let me = this;
-        if (node.parent !==node.item){
-          node.parent.children= me.deleteIndex(node.parent.children,node.item)
-        }
-        else{
-          node.parent.children = []
-        }
-      },
-      deleteIndex(arr, index){
-        return arr.filter(function(i){
-          return i!= index
-        });
-      },
-      salir(){
-        $('#LevelManager').modal('toggle');
-        this.newName = ""
-      },
-      salirObjetivos(){
-        $('#GoalManager').modal('toggle');
-        this.newName = ""
-		this.newCode = ""
-      },
-      salirRelacionarObjetivos(){
-        $('#InheritedManager').modal('toggle');
-        this.newName = ""
-      },
-	    salirMacroprocess(){
-        $('#MacroprocessManager').modal('toggle');
-        this.newName = ""
-        this.newCode = ""
-	      this.Macroprocessgoals = []
-      },
-      getMacroprocessData(){
-        $('#MacroprocessManager').modal('show')
-        this.newName = ""
-        this.newCode = ""
-		    this.Macroprocessgoals = []
-      },
-	    getNodeName(){
-        $('#LevelManager').modal('show')
-        this.newName = ""
-        this.newCode = ""
-      },
-      getGoalsInherited(){
-        $('#InheritedManager').modal('show')
-      },
-	  getGoals(){
-        $('#RelatedManager').modal('show')
-      },
-	  editGoal(item){
-		   let me =this;
-          me.currentNode = item
-          me.updateNodeControl = 0
-          //this.getGoalName()
-        $('#GoalEdit').modal('show')
-      },
-	 editMacroprocess(item){
-		   let me =this;
-          me.currentNode = item
-          me.updateNodeControl = 0
-          //this.getGoalName()
-        $('#MacroprocessEdit').modal('show')
-      },
-	  getGoalName(){
-        $('#GoalManager').modal('show')
-      },
-	  rndStr(len) {
-    	let text = " "
-    	let chars = "abcdefghijklmnopqrstuvwxyz123456789"
 
-     	 for( let i=0; i < len; i++ ) {
-			 for(let k=0; k < 8; k++ ){
-				text += chars.charAt(Math.floor(Math.random() * chars.length))
-		     }
-      	}
+      for( let i=0; i < len; i++ ) {
+        for(let k=0; k < 8; k++ ){
+          text += chars.charAt(Math.floor(Math.random() * chars.length))
+        }
+      }
+
       return text
     },
     getCurrentProject(){
