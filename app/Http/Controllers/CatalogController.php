@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Catalog;
+use App\RiskParameter;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
@@ -172,6 +173,16 @@ class CatalogController extends Controller
     $rol = Role::findOrFail($request->id);
     $rol->revokePermissionTo(Permission::all());
     $rol->givePermissionTo($request->roles);
+  }
+  /**
+   * Get the all permissions from a role .
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function saveRiskEvents(Request $request)
+  {
+    $catalog = RiskParameter::create($request->all());
   }
 
   function getPHVACatalogHelper()
