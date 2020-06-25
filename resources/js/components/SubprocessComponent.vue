@@ -277,10 +277,10 @@ export default {
 			phva:"",
 			subclassification:"",
 			indicator:"",
-			project_id:1 //este valor debe ser el current project
+			project_id:"" //este valor debe ser el current project
           }),
           title:"Agregar nueva Ficha", //title to show
-		 project_id:1, //este valor debe ser el current project
+		  project_id:"", //este valor debe ser el current project
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      subprocessFile:"",
           Subprocesos:{}, //BD content
@@ -299,19 +299,26 @@ export default {
 		  PHVAs:[],
 		  Actividades: [],
 		  Usuarios:[]
-
       }
   },
   methods:{
-		loadfile(event){
+	  getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.project_id = response.data.id
+        me.form.project_id = response.data.id
+      });
+    },
+	loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.subprocessFile = event.target.files[0];
 			alert(files[0]);
 			axios.post('/subprocesos/loadsubprocess',{subprocess:this.subprocessFile})
 				.then(function(response){console.log(response)})
 				.catch(function(response){console.log(response)})
-			;
-		},
+			
+	},
 		EventSubir(f){
           let me =this;
           me.subprocessFile = f.target.files[0];
@@ -371,7 +378,7 @@ export default {
     getSubprocesos(page = 1) {
       let me =this;
       me.clearFields();
-      axios.get('/subprocesos?page=' + page)
+      axios.get('/subprocesos?page=' + me.project_id)
       .then(response => {
             me.Subprocesos = response.data; //get all projects from page
       });
@@ -540,6 +547,7 @@ export default {
       })
   },
   mounted() {
+	  this.getCurrentProject();
        this.getSubprocesos();
        this.LoadCatalogInput();
        this.LoadCatalogProvider();

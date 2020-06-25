@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Task;
-use App\UserTask;
+use App\Measure;
+use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Requests\TaskRequest;
+use App\Http\Requests\MeasureRequest;
 
-class TaskController extends Controller
+class MeasureController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
-      return $tasks;
+      $measures = Measure::where('project_id',$request->id)->latest()->paginate(10);
+      return $measures;
     }
 
     /**
@@ -26,10 +26,10 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getUserTasks(Request $request)
+    public function getUserMeasures(Request $request)
     {
-      $userTasks = UserTask::where('user_id',$request->id)->first();
-      return $userTasks;
+      $userMeasures = UserMeasure::where('user_id',$request->user_id);
+      return $userMeasures;
     }
 
     /**
@@ -37,46 +37,46 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getTaskAccordingTypeAndLevel(Request $request)
+    public function getMeasureAccordingTypeAndLevel(Request $request)
     {
       if(isset($request->allocator)){
-        $tasks = Task::where('project_id',$request->id)
+        $measures = Measure::where('project_id',$request->id)
                       ->where('allocator',$request->allocator)
                       ->latest()->paginate(10);
-        return $tasks;
+        return $measures;
       }
       if(isset($request->type) && isset($request->level)){
-        $tasks = Task::where('project_id',$request->id)
+        $measures = Measure::where('project_id',$request->id)
                       ->where('type',$request->type)
                       ->where('relatedToLevel',$request->level)
                       ->latest()->paginate(10);
-        return $tasks;
+        return $measures;
       }
       if(isset($request->type)){
-        $tasks = Task::where('project_id',$request->id)
+        $measures = Measure::where('project_id',$request->id)
                       ->where('type',$request->type)
                       ->latest()->paginate(10);
-        return $tasks;
+        return $measures;
       }
       if(isset($request->level)){
-        $tasks = Task::where('project_id',$request->id)
+        $measures = Measure::where('project_id',$request->id)
                       ->where('relatedToLevel',$request->level)
                       ->latest()->paginate(10);
-        return $tasks;
+        return $measures;
       }
-      $tasks = Task::where('project_id',$request->id)->latest()->paginate(10);
-      return $tasks;
+      $measures = Measure::where('project_id',$request->id)->latest()->paginate(10);
+      return $measures;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  TaskRequest
+     * @param  MeasureRequest
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskRequest $request)
+    public function store(MeasureRequest $request)
     {
-        $Task = Task::create($request->all());
+        $Measure = Measure::create($request->all());
     }
 
     /**
@@ -87,36 +87,40 @@ class TaskController extends Controller
      */
     public function show(Request $request)
     {
-      $Task = Task::findOrFail($request->id);
-      return $Task;
+      $Measure = Measure::findOrFail($request->id);
+      return $Measure;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  TaskRequest
+     * @param  MeasureRequest
      * @return \Illuminate\Http\Response
      */
-    public function update(TaskRequest $request)
+    public function update(MeasureRequest $request)
     {
-      $Task = Task::findOrFail($request->id);
-      $Task->update($request->all());
+      $Measure = Measure::firstOrNew(['id' => $request->id]);
+	  $Measure->project_id = $request->project_id;
+	  $Measure->user_id = $request->user_id;//$this->User->getCurrentUser();
+	  $Measure->task_id = $request->task_id;
+	  $Measure->measure = $request->measure;
+      $Measure->save();
     }
 
     /**
      * Change status as Read.
      *
-     * @param  TaskRequest
+     * @param  MeasureRequest
      * @return \Illuminate\Http\Response
      */
-    public function changeTaskStatus(Request $request)
+    public function changeMeasureStatus(Request $request)
     {
       $readAt = Carbon::now();
-      $tasks = Task::find($request->tasks);
-      foreach ($tasks as $task) {
-         $task->notified ='true';
-         $task->send_at =$readAt;
-         $task->save();
+      $measures = Measure::find($request->measures);
+      foreach ($measures as $measure) {
+         $measure->notified ='true';
+         $measure->send_at =$readAt;
+         $measure->save();
       }
     }
 
@@ -128,6 +132,6 @@ class TaskController extends Controller
      */
     public function destroy(Request $request)
     {
-        $Task = Task::destroy($request->id);
+        $Measure = Measure::destroy($request->id);
     }
 }

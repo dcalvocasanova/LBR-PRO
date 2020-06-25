@@ -395,7 +395,6 @@ export default {
   },
   methods:{
     nodoSeleccionado(item){
-      
     },
     asignarObjetivoANodo(item){
       let me = this;
@@ -405,6 +404,8 @@ export default {
     },
     relateGoals(nodo){
       let me = this;
+	  me.itemsCopy = [];
+	  me.relatedGoals =[];
       me.currentNode = nodo.item
       me.parentNode = nodo.parent
       me.updateNodeControl = 0

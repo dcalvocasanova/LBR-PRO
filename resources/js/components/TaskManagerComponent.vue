@@ -231,14 +231,14 @@
         return{
           form: new Form ({
             id:"",
-            project_id:0,
-            product_id:0,
+            project_id:2,
+            product_id:2,
             relatedToLevel:"",
             allocator:"",
             task:"",
             type:""
           }),
-          currentProject:0,
+          currentProject:2,
           type:"",
           allocator:"",
           currentTypeTaks:"PRODUCT",

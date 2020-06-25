@@ -292,7 +292,7 @@ export default {
           form: new Form ({
             id:"",//Macroprocesfile ID
 			relatedToLevel:"",
-            project_id:1,//este valor debe ser el current project
+            project_id:"",//este valor debe ser el current project
 			file:"",
             input:"",
             provider:"",
@@ -307,7 +307,7 @@ export default {
 			indicator:""
 
           }),
-		  project_id:1,//este valor debe ser el current project
+		  project_id:"",//este valor debe ser el current project
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      processFile:"",
@@ -319,7 +319,7 @@ export default {
           Risks:[],
 		  Indicators:[],
 		  PHVA:[],
-		  Actiities:[],
+		  Activities:[],
 		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],
@@ -333,6 +333,14 @@ export default {
       }
   },
   methods:{
+	 getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.project_id = response.data.id
+       me.form.project_id = response.data.id
+      });
+    },
 		loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.processFile = event.target.files[0];
@@ -582,6 +590,7 @@ export default {
       })
   },
   mounted() {
+	  this.getCurrentProject();
        this.getProcesos();
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
