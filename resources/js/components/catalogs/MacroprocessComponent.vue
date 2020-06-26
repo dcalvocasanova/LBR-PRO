@@ -95,7 +95,7 @@
             <div class="row mb-2">
               <div class="col-md-6">
                 <button class="btn btn-primary"
-                  @click="LoadCatalogRisk('RISK-CATEGORY')"
+                  @click="LoadCatalog('RISK')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
@@ -138,9 +138,6 @@
                             <td v-text="cat.name"></td>
                             <td>
                               <button class="btn btn-info" @click="loadCatalogoUpdate(cat)"><i class="fas fa-edit"></i></button>
-                              <button v-if="showEvents"
-                                class="btn btn-primary" ><i class="fa fa-plus"></i>
-                              </button>
                               <button class="btn btn-danger" @click="deleteCatalog(cat)"><i class="fas fa-trash-alt"></i></button>
                             </td>
                           </tr>
@@ -302,15 +299,10 @@ export default {
       if (code === "RISK"){this.catalog="Riesgos"}
       if (code === "INDICATOR"){this.catalog="Indicadores"}
       if (code === "PHVA"){this.catalog="PHVA"}
-      axios.get('catalogo?id=' + code)
-      .then(response => {
-        this.Catalog = response.data; //get all catalogs from category selected
-      });
-    },
-    LoadCatalogRisk(code) {
-      this.type = code;
-      this.catalog="Riesgos"
-      this.showEvents = true
+      if (code === "RISK-FRECUENCY"){this.catalog="Frecuencia del riesgo"}
+      if (code === "RISK-CONSECUENCE"){this.catalog="Consecuencia del riesgo"}
+      if (code === "RISK-MATURITY"){this.catalog="Nivel de madurez en relación con el riesgo"}
+      if (code === "RISK-LEVEL"){this.catalog="Niveles de riesgo"}
       axios.get('catalogo?id=' + code)
       .then(response => {
         this.Catalog = response.data; //get all catalogs from category selected
