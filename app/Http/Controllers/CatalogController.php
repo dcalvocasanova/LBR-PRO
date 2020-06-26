@@ -51,6 +51,15 @@ class CatalogController extends Controller
   }
 
   /**
+  * Get Skills catalog
+  */
+  public function getWorkTypeCatalog()
+  {
+      $catalogs = $this->getWorkTypeCatalogHelper();
+    return $catalogs;
+  }
+
+  /**
  * Store a newly created an item  in storage.
  *
  * @param  CatalogRequest  $request
@@ -226,6 +235,21 @@ class CatalogController extends Controller
         array_push($itemList,array('id'=> $c->id,'label'=>$c->name));
       }
       array_push($catalogList, array('id'=>$s->id, 'label'=>$s->name,'children'=>$itemList));
+      $itemList=[];
+    }
+    return  $catalogList;
+  }
+  function getWorkTypeCatalogHelper()
+  {
+    $catalogList = Array();
+    $itemList = Array();
+    $workTypes = Catalog::select('id','name')->where('type', 'WORKTYPE')->get();
+    foreach ($workTypes as $wt) {
+      $categories = Catalog::select('id','name')->where('type', $wt->id."-T")->get();
+      foreach ($categories as $c) {
+        array_push($itemList,array('id'=> $c->id,'label'=>$c->name));
+      }
+      array_push($catalogList, array('id'=>$wt->id, 'label'=>$wt->name,'children'=>$itemList));
       $itemList=[];
     }
     return  $catalogList;

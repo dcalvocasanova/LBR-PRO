@@ -40,7 +40,7 @@
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="loadCatalog('WORKTYPE')"
+                  @click="loadDoubleCatalog('WORKTYPE')"
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">

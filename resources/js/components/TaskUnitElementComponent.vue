@@ -83,12 +83,21 @@
             />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating">Tipo de trabajo</label>
-          <select @change="showSave" v-model="form.laborType" class=" form-control">
-            <option v-for="s in WorkTypes">{{ s.name }}</option>
-          </select>
+          <label class="bmd-label-floating"> </label>
+          <treeselect
+            :clearable="true"
+            :searchable="true"
+            :options="WorkTypes"
+            :limit="3"
+            :max-height="300"
+            placeholder="Tipo de trabajo"
+            noResultsText="No existe registro"
+            noChildrenText="Sin categorías"
+            clearValueText="Eliminar"
+            v-model="form.laborType"
+            />
         </div>
       </div>
     </div>
@@ -134,7 +143,11 @@
                 <tr v-for="a in AddedValue" :key="a.id">
                   <th v-text="a.name"></th>
                   <th>
-                    <input @click="showSave" v-model="addedValueArray" type="checkbox" :value=a.name>
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="1"> 1
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="2"> 2
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="3"> 3
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="4"> 4
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="5"> 5
                   </th>
                 </tr>
               </tbody>
@@ -148,7 +161,7 @@
               <thead>
                 <tr>
                   <th> Aspecto </th>
-                  <th> Valoración </th>
+                  <th> Valoración (marcar para sí, dejar en blanco para no)  </th>
                 </tr>
               </thead>
               <tbody>

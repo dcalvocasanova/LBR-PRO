@@ -133,12 +133,6 @@ export default {
         this.Frecuencies = response.data; //get all catalogs from category selected
       });
     },
-    LoadCatalogWorkType() {
-      axios.get('catalogo?id=WORKTYPE')
-      .then(response => {
-        this.WorkTypes = response.data; //get all catalogs from category selected
-      });
-    },
     LoadCatalogAddedValued() {
       axios.get('catalogo?id=ADDED-VALUED-T')
       .then(response => {
@@ -160,13 +154,19 @@ export default {
     LoadCatalogPHVA() {
       axios.get('/catalogo/phva')
       .then(response => {
-        this.PHVA = response.data; 
+        this.PHVA = response.data;
       });
     },
     LoadCatalogSkills() {
       axios.get('catalogo/competencias')
       .then(response => {
         this.Skills = response.data;
+      });
+    },
+    LoadCatalogWorkType() {
+      axios.get('/catalogo/trabajos')
+      .then(response => {
+        this.WorkTypes = response.data; //get all catalogs from category selected
       });
     },
     LoadCatalogRisk() {
