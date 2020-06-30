@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Question extends Model
+class Criteria extends Model
 {
   /**
    * The attributes that are take them as JSON

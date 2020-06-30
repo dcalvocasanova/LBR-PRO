@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Question;
+use App\Criteria;
 use Illuminate\Http\Request;
-use App\Http\Requests\QuestionRequest;
+use App\Http\Requests\CriteriaRequest;
 
-class QuestionController extends Controller
+class CriteriaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +15,29 @@ class QuestionController extends Controller
      */
     public function index()
     {
-      $questions = Question::latest()->paginate(5);
-      return $questions;
+      $criterias = criteria::latest()->paginate(5);
+      return $criterias;
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAll()
+    {
+      $criterias = criteria::latest()->get();
+      return $criterias;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  QuestionRequest $request
+     * @param  criteriaRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(QuestionRequest $request)
+    public function store(criteriaRequest $request)
     {
-      $question = Question::create($request->all());
+      $question = criteria::create($request->all());
     }
 
     /**
@@ -38,19 +48,19 @@ class QuestionController extends Controller
      */
     public function show(Request $request)
     {
-      $question = Question::findOrFail($request->id);
+      $question = criteria::findOrFail($request->id);
       return $question;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  QuestionRequest  $request
+     * @param  criteriaRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(QuestionRequest $request)
+    public function update(criteriaRequest $request)
     {
-      $question = Question::findOrFail($request->id);
+      $question = criteria::findOrFail($request->id);
       $question->update($request->all());
     }
 
@@ -62,6 +72,6 @@ class QuestionController extends Controller
      */
     public function destroy(Request $request)
     {
-        $question = Question::destroy($request->id);
+        $question = criteria::destroy($request->id);
     }
 }

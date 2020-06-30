@@ -8,10 +8,9 @@
               <div class="col-10">
                   <h3 class="card-title mt-0"> Criterios de evaluación</h3>
               </div>
-              <div class="col-2" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo criterio">
+              <div class="col-2" @click="addNewCriteria()" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo criterio">
                 <button class="btn btn-primary"
-                data-toggle="modal"
-                data-target="#addQuestion">
+                data-toggle="modal">
                   <i class="fa fa-plus-circle"></i>
                 </button>
               </div>
@@ -27,17 +26,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="question in Questions.data" :key="question.id">
-                      <td v-text="question.name"></td>
+                    <tr v-for="criteria in Criterias.data" :key="criteria.id">
+                      <td v-text="criteria.name"></td>
                       <td>
                         <button class="btn-icon btn btn-info"
-                          @click="loadFieldsUpdate(question)"
+                          @click="loadFieldsUpdate(criteria)"
                           data-toggle="modal"
                           data-target="#addQuestion">
                             <i class="fas fa-edit"></i>
                         </button>
+                        <button class="btn-icon btn btn-info"
+                          @click="loadCriteria(criteria)"
+                          data-toggle="modal"
+                          data-target="#addValueScale">
+                            <i class="fas fa-sort-numeric-down"></i>
+                        </button>
                         <button class="btn-icon btn btn-danger"
-                         @click="deleteQuestion(question)">
+                         @click="deleteQuestion(criteria)">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>
@@ -47,7 +52,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <pagination :data="Questions" @pagination-change-page="getResults"></pagination>
+            <pagination :data="Criterias" @pagination-change-page="getResults"></pagination>
           </div>
         </div>
       </div>
@@ -70,29 +75,30 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <div class="col-md-8">
+                      <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Nombre</label>
                           <input v-model="form.name" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('name') }">
                           <has-error :form="form" field="name"></has-error>
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Criterios</label>
                           <multiselect
                             v-model="Categories"
+                            noOptions="Escriba el nuevo criterio"
                             tag-placeholder="Agregar categoría"
                             placeholder=""
                             label="name"
                             track-by="code"
-                            noOptions='Escriba el nuevo criterio'
                             selectedLabel=''
                             deselectLabel='presione enter para eliminar'
                             :options="Categories"
                             :multiple="true"
                             :taggable="true"
                             :class="{ 'is-invalid': form.errors.has('categories')}"
+                            @input="addDefaltValue"
                             @tag="addTag">
                           </multiselect>
 
@@ -104,12 +110,58 @@
                       <div class="container-buttons">
                         <button v-if="update== 0" @click="saveQuestion()" class="btn btn-success">Añadir</button>
                         <button v-if="update!= 0" @click="updateQuestion()" class="btn btn-info">Actualizar</button>
-                        <button v-if="update!= 0" @click="salir()" class="btn btn-secondary">Atrás</button>
+                        <button v-if="update!= 0" @click="exit()" class="btn btn-secondary">Atrás</button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="addValueScale" tabindex="10" role="dialog" aria-labelledby="ParamatersModalLabel-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="QuestionModalLabel">Escala númerica para los criterios de evaluación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div clasvs="card">
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Criterios</label>
+                    <multiselect
+                      noOptions="sin criterios"
+                      tag-placeholder="selecionar"
+                      placeholder="Seleccionar criterio para asignar valor numérico"
+                      label="name"
+                      track-by="code"
+                      select-label="selecionar"
+                      openDirection="below"
+                      :options="Categories"
+                      :multiple="false"
+  			              :close-on-select="true"
+                      :custom-label="customLabel"
+                      @input="addDefaltValue"
+                    >
+                    </multiselect>
+                </div>
+                <div class="form-group" v-if="showFormRegistration">
+                  <label for="newValue"> {{ this.currentCriteria.name}}</label>
+                  <input v-model="currentCriteria.value" type="number" :placeholder="currentCriteria.value">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="container-buttons">
+              <button  v-if="showFormRegistration" @click="uploadBackground()" class="btn btn-info">Guardar</button>
+              <button @click="exitScale()" class="btn btn-secondary">Atrás</button>
             </div>
           </div>
         </div>
@@ -132,34 +184,40 @@ export default {
       }),
       title:"Agregar nuevo criterio", //title to show
       update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
-      Questions:{}, //BD content
+      Criterias:{},
       Categories: [],
+      showFormRegistration: false,
+      currentCriteria:{}
     }
   },
   methods:{
     getResults(page = 1) {
-        axios.get('/criterios-evaluacion?page=' + page)
-        .then(response => {
-              this.Questions = response.data; //get all projects from page
-        });
+      axios.get('/criterios-evaluacion?page=' + page)
+      .then(response => {
+            this.Criterias = response.data; //get all projects from page
+      });
     },
-    getPreguntas(){
+    getPreguntas(page = 1){
       let me =this;
-      me.clearFields();
-      axios.get('/criterios-evaluacion').then(function (response) {
-          me.Questions = response.data; //get all Questions
+      me.clearFields()
+      axios.get('/criterios-evaluacion?page=' + page).then(function (response) {
+          me.Criterias = response.data; //get all Criterias
       })
       .catch(function (error) {
           console.log(error);
       });
+    },
+    addNewCriteria(){
+      this.clearFields()
+      $('#addQuestion').modal('show');
     },
     saveQuestion(){
       let me =this;
       me.form.categories = JSON.stringify(me.Categories)
       me.form.post('/criterios-evaluacion/guardar')
       .then(function (response) {
-          me.salir();
-          me.getPreguntas();// show all users
+          me.exit();
+          me.getPreguntas();// show all categorys
           toast.fire({
             type: 'success',
             title: 'Criterio registrado con éxito'
@@ -178,22 +236,50 @@ export default {
           type: 'success',
           title: 'Criterio actualizado con éxito'
          });
-         $('#addQuestion').modal('toggle');
          me.getPreguntas();
-         me.salir();
+         me.exit();
       })
       .catch(function (error) {
           console.log(error);
       });
     },
-    loadFieldsUpdate(question ){
-      let me =this;
-      me.update = question.id
-      me.title="Actualizar información del criterio de evaluación";
-      me.form.fill(question)
-      me.Categories =JSON.parse(question.categories)
+    uploadBackground(){
+      let me = this
+      if(me.validateAsNumber(me.currentCriteria.value)){
+        me.form.categories = JSON.stringify(me.Categories)
+        me.form.put('/criterios-evaluacion/actualizar')
+        .then(function (response) {
+          me.showFormRegistration = false
+        })
+      }else{
+        toast.fire({
+          type: 'error',
+          title: 'El criterio debe ser numérico'
+        });
+      }
+
     },
-    deleteQuestion(question){
+    validateAsNumber(input)
+    {
+     let letters = /^[A-Za-z]+$/
+     if (input.match(letters))
+        return false
+      return true
+    },
+    loadCriteria(criteria){
+      let me =this
+      me.form.id = criteria.id
+      me.form.name = criteria.name
+      me.Categories = JSON.parse(criteria.categories)
+    },
+    loadFieldsUpdate(criteria ){
+      let me =this
+      me.update = criteria.id
+      me.title="Actualizar información del criterio de evaluación";
+      me.form.fill(criteria)
+      me.Categories =JSON.parse(criteria.categories)
+    },
+    deleteQuestion(criteria){
       let me =this;
       swal.fire({
         title: 'Eliminar un criterio de evaluación',
@@ -206,7 +292,7 @@ export default {
       })
       .then((result) => {
         if (result.value) {
-          axios.delete('/criterios-evaluacion/borrar/'+question.id)
+          axios.delete('/criterios-evaluacion/borrar/'+criteria.id)
           .then(function (response) {
             swal.fire(
               'Eliminado',
@@ -228,13 +314,25 @@ export default {
       me.Categories= [];
       me.form.reset();
     },
-    salir(){
+    exit(){
       this.clearFields();
       $('#addQuestion').modal('toggle');
+    },
+    exitScale(){
+      this.showFormRegistration = false
+      $('#addValueScale').modal('toggle');
+    },
+    addDefaltValue(currentValue){
+      this.showFormRegistration = true
+      this.currentCriteria = currentValue
+    },
+    customLabel(option){
+      return option.name +' con valor asignado de: '+ option.value
     },
     addTag (newTag) {
       const tag = {
         name: newTag,
+        value: newTag,
         code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
       }
       this.Categories.push(tag)
@@ -245,3 +343,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+</style>
