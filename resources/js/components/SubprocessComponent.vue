@@ -308,6 +308,7 @@ export default {
       .then(response => {
         me.project_id = response.data.id
         me.form.project_id = response.data.id
+		this.getprocessFile();
       });
     },
 	loadfile(event){
@@ -399,6 +400,7 @@ export default {
           let url = '/procesos/file?id='+me.project_id;
           axios.get(url).then(function (response) {
 			 me.Processfile = response.data;
+			 
           })
           .catch(function (error) {
               console.log(error);
@@ -554,7 +556,7 @@ export default {
        this.LoadCatalogRisk();
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
-	   this.getprocessFile();
+	  
   }
 }
 </script>

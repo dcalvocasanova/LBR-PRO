@@ -17,8 +17,11 @@
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
 					  <th> Proceso </th>
-					  <th> Usiarios de los reultados </th>
-					  <th> Riesgos Asociados </th>
+					  <th> Usuarios de los reultados </th>
+					  <th> Frecuencia del riesgo</th>
+					  <th> Consecuencia del riesgo </th>
+					  <th> Nivel de Madurez asociado </th>
+					  <th> Niveles de riesgo </th>
 					  <th> Indicadores </th>
 					  <th style ="withd:120px"> Acciones </th>
 
@@ -33,7 +36,10 @@
 						<td v-text="macroproceso.responsible"></td>
 						<td v-text="macroproceso.process"></td>
 						<td v-text="macroproceso.user"></td>
-						<td v-text="macroproceso.risk"></td>
+						<td v-text="macroproceso.riskFrecuency"></td>
+						<td v-text="macroproceso.riskConsecuency"></td>
+						<td v-text="macroproceso.riskMaturity"></td>
+						<td v-text="macroproceso.riskLevel"></td>
 						<td v-text="macroproceso.indicator"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(macroproceso)"><i class="fas fa-edit"></i></button>
@@ -154,9 +160,9 @@
 <hr/>
               <div class="row">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Riesgos Asociados</label>
+                    <label class="bmd-label-floating">Frecuencia del riesgo</label>
                     <multiselect
                  		 v-model="Riesgos"
                  		 placeholder="Seleccione o escriba una opción"
@@ -168,6 +174,53 @@
                 	</multiselect>
                   </div>
                 </div>
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Consecencia del riesgo</label>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div> 
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nivel de madurez asociado</label>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Niveles del riesgo</label>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>
+			</div>	
+			<div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Indicadores</label>
@@ -257,7 +310,10 @@ export default {
             responsible:"",
             process:"",
 			user:"",
-			risk:"",
+			riskFrecuency:"",
+			riskMaturity:"",
+			riskConsecuency:"",
+			riskLevel:"",
 			indicator:"",
 			project_id:0 //este valor debe ser el current project
 
@@ -277,16 +333,22 @@ export default {
 		  Levels: {},
 		 //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
 		  Macroprocesses:[],
-           Inputs:[],
+          Inputs:[],
           Providers:[],
-          Risks:[],
+          RisksFrecuency:[],
+		  RisksConsecuency:[],
+		  RisksMaturity:[],
+		  RisksLevel:[],
 		  Indicators:[],
-		 Activities:[],
+		  Activities:[],
 		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],
           Proveedores:[],
-          Riesgos:[],
+          RiesgosFrecuencia:[],
+		  RiesgosConsecuencia:[],
+		  RiesgosMadurez:[],
+		  RiesgosNivel:[],
 		  Indicadores:[],
 		  Actividades: [],
 		  Usuarios:[]
@@ -400,7 +462,7 @@ export default {
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
-		  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.activity = JSON.stringify(me.Actividades)
       this.form.post('/macroprocesos/guardar')
       .then(function (response) {
@@ -434,8 +496,15 @@ export default {
     },
     loadFieldsUpdate(macroprocess){
       let me =this;
-      this.form.fill(macroprocess);
-      me.update = macroprocess.id
+      
+	  //me.form.relatedToLevel = macroprocess.relatedToLevel
+	  me.form.macroprocess = macroprocess.macroprocess
+	  me.form.input = macroprocess.input//JSON.stringify(me.Entradas)
+	  me.form.provider = macroprocess.provider //JSON.stringify(me.Proveedores)
+	  me.form.risk = macroprocess.risk //JSON.stringify(me.Riesgos)
+	  me.form.indicator = macroprocess.indicator //JSON.stringify(me.Indicadores)
+	  me.form.user = macroprocess.user //JSON.stringify(me.Usuarios)
+	  me.form.activity = macroprocess.activity // JSON.stringify(me.Actividades)
       me.title="Actualizar información de la Ficha";
     },
     deleteMacroproceso(macroprocess){
@@ -540,7 +609,6 @@ export default {
   },
   mounted() {
 	   this.getCurrentProject();
-	   
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();

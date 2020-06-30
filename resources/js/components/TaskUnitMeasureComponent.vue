@@ -117,8 +117,8 @@
   created(){
     let me = this
     this.form.fill(this.task)
-    me.addedValueArray=me.task.addedValue
-    me.correlationArray=me.task.correlation
+   // me.addedValueArray=me.task.addedValue
+   // me.correlationArray=me.task.correlation
 	me.getCurrentUser()
   }
 }

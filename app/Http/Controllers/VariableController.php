@@ -44,20 +44,18 @@ class VariableController extends Controller
       $this->validate($request,[
             'nombre' => 'required|string|max:500',
             'identificador' => 'required|string|max:50',
-            'tipo' => 'required|string|max:500'
+            //'tipo' => 'required|string|max:500'
       ]);
       $variable = new Variable();
       $variable->name = $request->nombre;
       $variable->identificator = $request->identificador;
-      $variable->type = $request->tipo;
+    
       if (isset($request->esVAT)){
         $variable->subparameter_id = '0';
       }else{
         $variable->subparameter_id = $request->session()->get('subparameter_id');
       }
-      $variable->value = isset($request->valor)? $request->valor:"0";
-      $variable->measure = isset($request->medida)? $request->medida:"NA";
-      $variable->rule = isset($request->regla)? $request->regla:"NA";
+     
       $variable->save();
     }
 
@@ -84,21 +82,18 @@ class VariableController extends Controller
       $this->validate($request,[
             'nombre' => 'required|string|max:500',
             'identificador' => 'required|string|max:50',
-            'tipo' => 'required|string|max:500'
+           // 'tipo' => 'required|string|max:500'
       ]);
 
       $variable = Variable::findOrFail($request->id);
       $variable->name = $request->nombre;
       $variable->identificator = $request->identificador;
-      $variable->type = $request->tipo;
+     // $variable->type = $request->tipo;
       if (isset($request->esVAT)){
         $variable->subparameter_id = '0';
       }else{
         $variable->subparameter_id = $request->session()->get('subparameter_id');
       }
-      $variable->value = isset($request->valor)? $request->valor:"0";
-      $variable->measure = isset($request->medida)? $request->medida:"NA";
-      $variable->rule = isset($request->regla)? $request->regla:"NA";
       $variable->save();
     }
 

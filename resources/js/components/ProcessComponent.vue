@@ -339,6 +339,8 @@ export default {
       .then(response => {
         me.project_id = response.data.id
        me.form.project_id = response.data.id
+	    this.getProcesos();
+		this.getMacroprocessFile();
       });
     },
 		loadfile(event){
@@ -591,13 +593,13 @@ export default {
   },
   mounted() {
 	  this.getCurrentProject();
-       this.getProcesos();
+      
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
-	   this.getMacroprocessFile();
+	   
   }
 }
 </script>

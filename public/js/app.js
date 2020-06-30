@@ -6655,6 +6655,59 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Multiselect: Multiselect
@@ -6850,9 +6903,21 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     loadFieldsUpdate: function loadFieldsUpdate(macroprocess) {
-      var me = this;
-      this.form.fill(macroprocess);
-      me.update = macroprocess.id;
+      var me = this; //me.form.relatedToLevel = macroprocess.relatedToLevel
+
+      me.form.macroprocess = macroprocess.macroprocess;
+      me.form.input = macroprocess.input; //JSON.stringify(me.Entradas)
+
+      me.form.provider = macroprocess.provider; //JSON.stringify(me.Proveedores)
+
+      me.form.risk = macroprocess.risk; //JSON.stringify(me.Riesgos)
+
+      me.form.indicator = macroprocess.indicator; //JSON.stringify(me.Indicadores)
+
+      me.form.user = macroprocess.user; //JSON.stringify(me.Usuarios)
+
+      me.form.activity = macroprocess.activity; // JSON.stringify(me.Actividades)
+
       me.title = "Actualizar información de la Ficha";
     },
     deleteMacroproceso: function deleteMacroproceso(macroprocess) {
@@ -7564,10 +7629,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     getCurrentProject: function getCurrentProject() {
+      var _this = this;
+
       var me = this;
       axios.get('/proyecto/actual').then(function (response) {
         me.project_id = response.data.id;
         me.form.project_id = response.data.id;
+
+        _this.getProcesos();
+
+        _this.getMacroprocessFile();
       });
     },
     loadfile: function loadfile(event) {
@@ -7736,81 +7807,79 @@ __webpack_require__.r(__webpack_exports__);
       me.form.reset();
     },
     LoadCatalogInput: function LoadCatalogInput() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('catalogo?id=INPUT').then(function (response) {
         //this.Inputs = response.data; //get all catalogs from category selected
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this.Inputs.push(inputs[i].name);
+          _this2.Inputs.push(inputs[i].name);
         }
       });
     },
     LoadCatalogProvider: function LoadCatalogProvider() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('catalogo?id=PROVIDER').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this2.Providers.push(inputs[i].name);
+          _this3.Providers.push(inputs[i].name);
         }
       });
     },
     LoadCatalogRisk: function LoadCatalogRisk() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('catalogo?id=RISK').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this3.Risks.push(inputs[i].name);
+          _this4.Risks.push(inputs[i].name);
         }
       });
     },
     LoadCatalogIndicator: function LoadCatalogIndicator() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get('catalogo?id=INDICATOR').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this4.Indicators.push(inputs[i].name);
+          _this5.Indicators.push(inputs[i].name);
         }
       });
     },
     LoadCatalogPHVA: function LoadCatalogPHVA() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get('catalogo?id=PHVA').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this5.PHVA.push(inputs[i].name);
+          _this6.PHVA.push(inputs[i].name);
         }
       });
     }
   },
   created: function created() {
-    var _this6 = this;
+    var _this7 = this;
 
     Fire.$on('searching', function () {
-      var query = _this6.$parent.search;
+      var query = _this7.$parent.search;
       axios.get('/findprocess?q=' + query).then(function (response) {
-        _this6.Procesos = response.data;
+        _this7.Procesos = response.data;
       })["catch"](function () {});
     });
   },
   mounted: function mounted() {
     this.getCurrentProject();
-    this.getProcesos();
     this.LoadCatalogInput();
     this.LoadCatalogProvider();
     this.LoadCatalogRisk();
     this.LoadCatalogPHVA();
     this.LoadCatalogIndicator();
-    this.getMacroprocessFile();
   }
 });
 
@@ -10391,10 +10460,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     getCurrentProject: function getCurrentProject() {
+      var _this = this;
+
       var me = this;
       axios.get('/proyecto/actual').then(function (response) {
         me.project_id = response.data.id;
         me.form.project_id = response.data.id;
+
+        _this.getprocessFile();
       });
     },
     loadfile: function loadfile(event) {
@@ -10563,68 +10636,68 @@ __webpack_require__.r(__webpack_exports__);
       me.form.reset();
     },
     LoadCatalogInput: function LoadCatalogInput() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('catalogo?id=INPUT').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this.Inputs.push(inputs[i].name);
+          _this2.Inputs.push(inputs[i].name);
         }
       });
     },
     LoadCatalogProvider: function LoadCatalogProvider() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('catalogo?id=PROVIDER').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this2.Providers.push(inputs[i].name);
+          _this3.Providers.push(inputs[i].name);
         }
       });
     },
     LoadCatalogRisk: function LoadCatalogRisk() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('catalogo?id=RISK').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this3.Risks.push(inputs[i].name);
+          _this4.Risks.push(inputs[i].name);
         }
       });
     },
     LoadCatalogIndicator: function LoadCatalogIndicator() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get('catalogo?id=INDICATOR').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this4.Indicators.push(inputs[i].name);
+          _this5.Indicators.push(inputs[i].name);
         }
       });
     },
     LoadCatalogPHVA: function LoadCatalogPHVA() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get('catalogo?id=PHVA').then(function (response) {
         var inputs = response.data;
 
         for (var i = 0; i < inputs.length; i++) {
-          _this5.PHVA.push(inputs[i].name);
+          _this6.PHVA.push(inputs[i].name);
         }
       });
     }
   },
   created: function created() {
-    var _this6 = this;
+    var _this7 = this;
 
     Fire.$on('searching', function () {
-      var query = _this6.$parent.search;
+      var query = _this7.$parent.search;
       axios.get('/findsubprocess?q=' + query).then(function (response) {
-        _this6.Subprocesos = response.data;
+        _this7.Subprocesos = response.data;
       })["catch"](function () {});
     });
   },
@@ -10636,7 +10709,6 @@ __webpack_require__.r(__webpack_exports__);
     this.LoadCatalogRisk();
     this.LoadCatalogPHVA();
     this.LoadCatalogIndicator();
-    this.getprocessFile();
   }
 });
 
@@ -11417,8 +11489,7 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       axios.get('/proyecto/actual').then(function (response) {
         me.currentProject = response.data.id;
-        me.getUserTasks();
-        me.LoadLevelsOfStructure();
+        me.getUserTasks(); // me.LoadLevelsOfStructure()
       });
     },
     getCurrentUser: function getCurrentUser() {
@@ -11455,8 +11526,7 @@ __webpack_require__.r(__webpack_exports__);
     setProject: function setProject() {
       var me = this;
       me.selectingProjectToAddTasks = false;
-      me.getTasks();
-      me.LoadLevelsOfStructure();
+      me.getTasks(); // me.LoadLevelsOfStructure()
     }
   },
   mounted: function mounted() {
@@ -12174,9 +12244,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     var me = this;
-    this.form.fill(this.task);
-    me.addedValueArray = me.task.addedValue;
-    me.correlationArray = me.task.correlation;
+    this.form.fill(this.task); // me.addedValueArray=me.task.addedValue
+    // me.correlationArray=me.task.correlation
+
     me.getCurrentUser();
   }
 });
@@ -13624,46 +13694,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -13671,11 +13701,7 @@ __webpack_require__.r(__webpack_exports__);
         id: "",
         //User ID
         nombre: "",
-        identificador: "",
-        tipo: "",
-        valor: "",
-        medida: "",
-        regla: ""
+        identificador: ""
       }),
       showDetails: false,
       title: "Agregar nueva categoría de parámetro ",
@@ -13760,15 +13786,7 @@ __webpack_require__.r(__webpack_exports__);
       me.title = "Actualizar información de la variable";
       me.form.nombre = variable.name;
       me.form.identificador = variable.identificator;
-      me.form.tipo = variable.type;
-      me.form.valor = variable.value;
-      me.form.medida = variable.measure;
-      me.form.regla = variable.rule;
       me.form.id = variable.id;
-
-      if (me.form.tipo == "number") {
-        this.showDetails = true;
-      }
     },
     deleteVariable: function deleteVariable(variable) {
       var me = this;
@@ -59003,7 +59021,27 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("td", {
-                        domProps: { textContent: _vm._s(macroproceso.risk) }
+                        domProps: {
+                          textContent: _vm._s(macroproceso.riskFrecuency)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(macroproceso.riskConsecuency)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(macroproceso.riskMaturity)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(macroproceso.riskLevel)
+                        }
                       }),
                       _vm._v(" "),
                       _c("td", {
@@ -59343,13 +59381,13 @@ var render = function() {
             _c("hr"),
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "col-md-3" }, [
                 _c(
                   "div",
                   { staticClass: "form-group" },
                   [
                     _c("label", { staticClass: "bmd-label-floating" }, [
-                      _vm._v("Riesgos Asociados")
+                      _vm._v("Frecuencia del riesgo")
                     ]),
                     _vm._v(" "),
                     _c("multiselect", {
@@ -59374,6 +59412,101 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Consecencia del riesgo")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Nivel de madurez asociado")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c(
+                  "div",
+                  { staticClass: "form-group" },
+                  [
+                    _c("label", { staticClass: "bmd-label-floating" }, [
+                      _vm._v("Niveles del riesgo")
+                    ]),
+                    _vm._v(" "),
+                    _c("multiselect", {
+                      attrs: {
+                        placeholder: "Seleccione o escriba una opción",
+                        options: _vm.Risks,
+                        multiple: true,
+                        taggable: true,
+                        "show-labels": false
+                      },
+                      on: { tag: _vm.addTagRisk },
+                      model: {
+                        value: _vm.Riesgos,
+                        callback: function($$v) {
+                          _vm.Riesgos = $$v
+                        },
+                        expression: "Riesgos"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-4" }, [
                 _c(
                   "div",
@@ -59565,9 +59698,15 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v(" Proceso ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Usiarios de los reultados ")]),
+        _c("th", [_vm._v(" Usuarios de los reultados ")]),
         _vm._v(" "),
-        _c("th", [_vm._v(" Riesgos Asociados ")]),
+        _c("th", [_vm._v(" Frecuencia del riesgo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Consecuencia del riesgo ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Nivel de Madurez asociado ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" Niveles de riesgo ")]),
         _vm._v(" "),
         _c("th", [_vm._v(" Indicadores ")]),
         _vm._v(" "),
@@ -70538,306 +70677,8 @@ var render = function() {
                               ],
                               1
                             )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-3" }, [
-                            _c(
-                              "div",
-                              { staticClass: "form-group" },
-                              [
-                                _c(
-                                  "label",
-                                  { staticClass: "bmd-label-floating" },
-                                  [_vm._v("Tipo")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "select",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.tipo,
-                                        expression: "form.tipo"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has("tipo")
-                                    },
-                                    on: {
-                                      change: [
-                                        function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.$set(
-                                            _vm.form,
-                                            "tipo",
-                                            $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
-                                          )
-                                        },
-                                        function($event) {
-                                          return _vm.showExtraValidations()
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  [
-                                    _c(
-                                      "option",
-                                      { attrs: { value: "number" } },
-                                      [_vm._v("Númerico")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "option",
-                                      { attrs: { value: "string" } },
-                                      [_vm._v("Texto")]
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("has-error", {
-                                  attrs: { form: _vm.form, field: "tipo" }
-                                })
-                              ],
-                              1
-                            )
                           ])
                         ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: this.showDetails === true,
-                                expression: "this.showDetails === true"
-                              }
-                            ],
-                            staticClass: "row"
-                          },
-                          [
-                            _c("div", { staticClass: "col-md-4" }, [
-                              _c(
-                                "div",
-                                { staticClass: "form-group" },
-                                [
-                                  _c(
-                                    "label",
-                                    { staticClass: "bmd-label-floating" },
-                                    [_vm._v("Valor por defecto")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.valor,
-                                        expression: "form.valor"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has("value")
-                                    },
-                                    attrs: { type: "text" },
-                                    domProps: { value: _vm.form.valor },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "valor",
-                                          $event.target.value
-                                        )
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "valor" }
-                                  })
-                                ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "col-md-4" }, [
-                              _c(
-                                "div",
-                                { staticClass: "form-group" },
-                                [
-                                  _c(
-                                    "label",
-                                    { staticClass: "bmd-label-floating" },
-                                    [_vm._v("Medida")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "select",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.medida,
-                                          expression: "form.medida"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "medida"
-                                        )
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.$set(
-                                            _vm.form,
-                                            "medida",
-                                            $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("option", { attrs: { value: "d" } }, [
-                                        _vm._v("Días")
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("option", { attrs: { value: "h" } }, [
-                                        _vm._v("Horas")
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("option", { attrs: { value: "m" } }, [
-                                        _vm._v("Minutos")
-                                      ])
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "medida" }
-                                  })
-                                ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "col-md-4" }, [
-                              _c(
-                                "div",
-                                { staticClass: "form-group" },
-                                [
-                                  _c(
-                                    "label",
-                                    { staticClass: "bmd-label-floating" },
-                                    [_vm._v("Regla")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "select",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.regla,
-                                          expression: "form.regla"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "regla"
-                                        )
-                                      },
-                                      on: {
-                                        change: function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.$set(
-                                            _vm.form,
-                                            "regla",
-                                            $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "divisible" } },
-                                        [_vm._v("No puede ser cero")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "positivo" } },
-                                        [_vm._v("Número positivo")]
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "regla" }
-                                  })
-                                ],
-                                1
-                              )
-                            ])
-                          ]
-                        ),
                         _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
                           _c("div", { staticClass: "container-buttons" }, [
