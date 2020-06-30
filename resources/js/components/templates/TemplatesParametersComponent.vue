@@ -1,22 +1,6 @@
 <template>
   <div class="container container-project">
-    <div class="row" v-if="this.startUpCategorySelection === true">
-      <div class="col-md-6">
-        <div class="text-center" @click="loadCategory(0)">
-          <img src="/img/site/workload.png" style="height:30%;width:50%;"class="avatar img-circle img-thumbnail" alt="avatar">
-          <br>
-          <label class="bmd-label-floating">Generar estudio de cargas de trabajo</label>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="text-center" @click="loadCategory(1)">
-          <img src="/img/site/psychosocial.png" style="height:30%;width:50%;" class="avatar img-circle img-thumbnail" alt="avatar">
-          <br>
-          <label class="bmd-label-floating">Generar análisis psicosocial</label>
-        </div>
-      </div>
-    </div>
-    <div class="row" v-if="this.startUpCategorySelection === false">
+    <div class="row" >
       <div class="col-12">
         <div class="row col-12">
           <div class="col-md-6">
@@ -264,9 +248,6 @@
                     </table>
                   </div>
                 </div>
-                <div class="card-footer">
-
-                </div>
               </div>
             </div>
           </div>
@@ -276,276 +257,271 @@
 </template>
 
 <script>
-    export default {
-        data(){
-            return{
-              form: new Form ({
-                id:"",//template ID
-                name:"",
-                type:"",
-                description:"",
-                stencil:"",
-              }),
-              startUpCategorySelection:true,
-              showTemplates:false,
-              showParameters:false,
-              showSubParameters:false,
-              showItems:false,
-              showStencil:false,
-              showCreateOrUpdate:false,
-              parameter:{},
-              category:{},
-              typeOfStudy:0,
-              updateList:0,
-              updateTemplateValidator:0,
-              title:"",
-              Templates:{}, //BD content
-              Parameters:{},
-              SubParameters:{},
-              Items:{},
-              Stencils:{}
-          }
-        },
-        methods:{
-            loadCategory(param){
-              let me =this;
-              if (param === 0){me.typeOfStudy=0;}
-              else{me.typeOfStudy=1;}
-              me.startUpCategorySelection = false;
-              me.getTemplates();
-              me.getMainParameters();
-            },
-            getTemplates(page = 1){
-              let me =this;
-              var url = '/plantillas/buscarxtipo/workload';
-              if(me.typeOfStudy === 1){
-                url ='/plantillas/buscarxtipo/psychosocial';
-              }
-              axios.get(url + '?page=' + page)
-              .then(response => {
-                  me.Templates = response.data; //get all parameters in DB
-                  //me.showParameters = true; //Show parameters
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-            },
-            CreateTemplate(){
-              let me =this;
-              me.updateTemplateValidator=0;
-              me.title="Agregar nueva plantilla";
-              me.showCreateOrUpdate = true;
-            },
-            showUpdateTemplate(template){
-              let me =this;
-              me.title = "Actualizar instrumento"
-              me.showCreateOrUpdate=true;
-              me.showParameters=true;
-              me.updateTemplateValidator=1;
-              me.Stencils = JSON.parse(template.stencil);
-              me.form.fill(template);
-              me.showStencil = true; //show items
-              me.updateList += 1;
-            },
-            updateTemplate(){
-              let me =this;
-              if (Object.keys(me.Stencils).length !== 0) {
-                me.form.stencil = JSON.stringify(me.Stencils);
-                this.form.put('/plantillas/actualizar')
-                .then(function (response) {
-                    me.cancelar();
-                    me.getTemplates();
-                    toast.fire({
-                      type: 'success',
-                      title: 'Instrumento actualizado con éxito'
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-              }else{
-                swal.fire({
-                  title: 'Datos incompletos',
-                  text: "Es necesario agregar las variables a evaluar en el intrumento",
-                  type: 'warning',
-                  confirmButtonColor: '#114e7e',
-                  cancelButtonColor: '#20c9a6',
-                  confirmButtonText: '¡Entendido!'
-                });
-              }
-            },
-            deleteTemplate(template){
-              let me =this;
-              swal.fire({
-                title: 'Eliminar una plantilla',
-                text: "Esta acción no se puede revertir, Está a punto de eliminar una plantilla",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#114e7e',
-                cancelButtonColor: '#20c9a6',
-                confirmButtonText: '¡Sí, eliminarla!'
-              })
-              .then((result) => {
-                if (result.value) {
-                  axios.delete('/plantillas/borrar/'+template.id)
-                  .then(function (response) {
-                    swal.fire(
-                      'Eliminado',
-                      'La plantilla fue eliminada',
-                      'success'
-                    )
-                    me.getTemplates();
-                  })
-                  .catch(function (error) {
-                      console.log(error);
-                  });
-                }
-              })
-            },
-            duplicateTemplate(template){
-              let me =this;
-              me.form.fill(template);
-              me.form.name+="*Copia";
-              me.form.post('plantillas/guardar')
-              .then(function (response) {
-                  toast.fire({
-                    type: 'success',
-                    title: 'Plantilla duplicada con éxito'
-                  });
-                  me.getTemplates();
-                  me.showCreateOrUpdate = false;
-                  me.showStencil=false;
-                  me.showItems=false;
-                  me.form.reset();
-              })
-              .catch(function (error) {
-                  console.log(error);
-              });
-            },
-            showTemplate(template){
-              let me =this;
-              me.showCreateOrUpdate=false;
-              me.Stencils = JSON.parse(template.stencil);
-              me.showStencil = true; //show items
-              me.showItems=false;
-              me.updateList += 1;
-            },
-            saveTemplate(){
-              let me =this;
-              me.form.type= me.parameter.type;
-              if (Object.keys(me.Stencils).length !== 0) {
-                me.form.stencil = JSON.stringify(me.Stencils);
-                me.form.post('plantillas/guardar')
-                .then(function (response) {
-                    toast.fire({
-                      type: 'success',
-                      title: 'Plantilla registrado con éxito'
-                    });
-                    me.getTemplates();
-                    me.showCreateOrUpdate = false;
-                    me.showStencil=false;
-                    me.showItems=false;
-                    me.form.reset();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-              }else{
-                swal.fire({
-                  title: 'Datos incompletos',
-                  text: "Es necesario agregar las variables a evaluar en el intrumento",
-                  type: 'warning',
-                  confirmButtonColor: '#114e7e',
-                  cancelButtonColor: '#20c9a6',
-                  confirmButtonText: '¡Entendido!'
-                });
-              }
-            },
-            cancelar(){
-              let me =this;
-              me.showCreateOrUpdate = false;
-              me.showStencil=false;
-              me.showItems=false;
-              me.form.reset();
-            },
-            getMainParameters(page = 1) {
-              let me =this;
-              var url = '/parametros/cargatrabajo';
-              if(me.typeOfStudy === 1){
-                url='/parametros/psicosocial';
-              }
-              axios.get(url + '?page=' + page)
-              .then(response => {
-                  me.Parameters = response.data; //get all parameters in DB
-                  me.showParameters = true; //Show parameters
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-            },
-            loadSubParameter(parameter){
-              let me =this;
-              me.parameter = parameter; //Get id of the chosen paramater
-              this.showSubParameters = true  // show list of subparameters
-              this.showParameters = false; //stop showing parameters
-              this.getSubParameters();
-            },
-            getSubParameters(page = 1){
-              let me =this;
-              axios.get('/subparametros/buscarxid/'+me.parameter.id+'?page='+ page)
-              .then(function (response) {
-                me.SubParameters = response.data; //get all subparamaters
-              })
-              .catch(function (error) {
-                alert('error');
-                console.log(error);
-              });
-
-            },
-            loadItems(subparameter){
-              let me =this;
-              me.showItems = true; //Show items
-              me.category =subparameter; //Get id of the chosen subparamater
-              me.showSubParameters =false; //stop showing lis of SubParameters
-              me.getItems();
-            },
-            getItems(page = 1){
-              let me =this;
-              axios.get('/variable/buscarxid/'+me.category.id+'?page='+ page)
-              .then(function (response) {
-                me.Items = response.data; //get all variables
-              })
-              .catch(function (error) {
-                alert('error');
-                console.log(error);
-              });
-            },
-            addStencil(item){
-              let me =this;
-              me.showStencil = true; //show items
-            //  me.item = item;
-              me.Stencils[item.id] = item; // add current item
-              me.Stencils[item.id].category = me.category.name;
-              me.updateList += 1;
-            },
-            showStencilDetails(item){
-              swal.fire(item);
-            },
-            deleteStencil(item){
-              let me =this;
-              delete me.Stencils[item.id];
-              me.updateList += 1;
-            },
-            goBackCategories(){
-              let me =this;
-              me.showItems=false;
-              me.showSubParameters=true;
-            },
-            goBackParameters(){
-              let me =this;
-              me.showSubParameters=false;
-              me.showParameters=true;
-            }
-        }
+export default {
+  data(){
+    return{
+      form: new Form ({
+        id:"",//template ID
+        name:"",
+        type:"",
+        description:"",
+        stencil:"",
+      }),
+      startUpCategorySelection:true,
+      showTemplates:false,
+      showParameters:false,
+      showSubParameters:false,
+      showItems:false,
+      showStencil:false,
+      showCreateOrUpdate:false,
+      parameter:{},
+      category:{},
+      typeOfStudy:0,
+      updateList:0,
+      updateTemplateValidator:0,
+      title:"",
+      Templates:{}, //BD content
+      Parameters:{},
+      SubParameters:{},
+      Items:{},
+      Stencils:{}
     }
+  },
+  methods:{
+    loadCategory(param){
+      let me =this;
+      me.getTemplates();
+      me.getMainParameters();
+    },
+    getTemplates(page = 1){
+      let me =this;
+      var url = '/plantillas/buscarxtipo/workload';
+      axios.get(url + '?page=' + page)
+      .then(response => {
+        me.Templates = response.data; //get all parameters in DB
+        //me.showParameters = true; //Show parameters
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    CreateTemplate(){
+      let me =this;
+      me.updateTemplateValidator=0;
+      me.title="Agregar nueva plantilla";
+      me.showCreateOrUpdate = true;
+    },
+    showUpdateTemplate(template){
+      let me =this;
+      me.title = "Actualizar instrumento"
+      me.showCreateOrUpdate=true;
+      me.showParameters=true;
+      me.updateTemplateValidator=1;
+      me.Stencils = JSON.parse(template.stencil);
+      me.form.fill(template);
+      me.showStencil = true; //show items
+      me.updateList += 1;
+    },
+    updateTemplate(){
+      let me =this;
+      if (Object.keys(me.Stencils).length !== 0) {
+        me.form.stencil = JSON.stringify(me.Stencils);
+        this.form.put('/plantillas/actualizar')
+        .then(function (response) {
+          me.cancelar();
+          me.getTemplates();
+          toast.fire({
+            type: 'success',
+            title: 'Instrumento actualizado con éxito'
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }else{
+        swal.fire({
+          title: 'Datos incompletos',
+          text: "Es necesario agregar las variables a evaluar en el intrumento",
+          type: 'warning',
+          confirmButtonColor: '#114e7e',
+          cancelButtonColor: '#20c9a6',
+          confirmButtonText: '¡Entendido!'
+        });
+      }
+    },
+    deleteTemplate(template){
+      let me =this;
+      swal.fire({
+        title: 'Eliminar una plantilla',
+        text: "Esta acción no se puede revertir, Está a punto de eliminar una plantilla",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#114e7e',
+        cancelButtonColor: '#20c9a6',
+        confirmButtonText: '¡Sí, eliminarla!'
+      })
+      .then((result) => {
+        if (result.value) {
+          axios.delete('/plantillas/borrar/'+template.id)
+          .then(function (response) {
+            swal.fire(
+              'Eliminado',
+              'La plantilla fue eliminada',
+              'success'
+            )
+            me.getTemplates();
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+      })
+    },
+    duplicateTemplate(template){
+      let me =this;
+      me.form.fill(template);
+      me.form.name+="*Copia";
+      me.form.post('plantillas/guardar')
+      .then(function (response) {
+        toast.fire({
+          type: 'success',
+          title: 'Plantilla duplicada con éxito'
+        });
+        me.getTemplates();
+        me.showCreateOrUpdate = false;
+        me.showStencil=false;
+        me.showItems=false;
+        me.form.reset();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    showTemplate(template){
+      let me =this;
+      me.showCreateOrUpdate=false;
+      me.Stencils = JSON.parse(template.stencil);
+      me.showStencil = true; //show items
+      me.showItems=false;
+      me.updateList += 1;
+    },
+    saveTemplate(){
+      let me =this;
+      me.form.type= me.parameter.type;
+      if (Object.keys(me.Stencils).length !== 0) {
+        me.form.stencil = JSON.stringify(me.Stencils);
+        me.form.post('plantillas/guardar')
+        .then(function (response) {
+          toast.fire({
+            type: 'success',
+            title: 'Plantilla registrado con éxito'
+          });
+          me.getTemplates();
+          me.showCreateOrUpdate = false;
+          me.showStencil=false;
+          me.showItems=false;
+          me.form.reset();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }else{
+        swal.fire({
+          title: 'Datos incompletos',
+          text: "Es necesario agregar las variables a evaluar en el intrumento",
+          type: 'warning',
+          confirmButtonColor: '#114e7e',
+          cancelButtonColor: '#20c9a6',
+          confirmButtonText: '¡Entendido!'
+        });
+      }
+    },
+    cancelar(){
+      let me =this;
+      me.showCreateOrUpdate = false;
+      me.showStencil=false;
+      me.showItems=false;
+      me.form.reset();
+    },
+    getMainParameters(page = 1) {
+      let me =this;
+      var url = '/parametros/cargatrabajo';
+      axios.get(url + '?page=' + page)
+      .then(response => {
+        me.Parameters = response.data; //get all parameters in DB
+        me.showParameters = true; //Show parameters
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    loadSubParameter(parameter){
+      let me =this;
+      me.parameter = parameter; //Get id of the chosen paramater
+      this.showSubParameters = true  // show list of subparameters
+      this.showParameters = false; //stop showing parameters
+      this.getSubParameters();
+    },
+    getSubParameters(page = 1){
+      let me =this;
+      axios.get('/subparametros/buscarxid/'+me.parameter.id+'?page='+ page)
+      .then(function (response) {
+        me.SubParameters = response.data; //get all subparamaters
+      })
+      .catch(function (error) {
+        alert('error');
+        console.log(error);
+      });
+
+    },
+    loadItems(subparameter){
+      let me =this;
+      me.showItems = true; //Show items
+      me.category =subparameter; //Get id of the chosen subparamater
+      me.showSubParameters =false; //stop showing lis of SubParameters
+      me.getItems();
+    },
+    getItems(page = 1){
+      let me =this;
+      axios.get('/variable/buscarxid/'+me.category.id+'?page='+ page)
+      .then(function (response) {
+        me.Items = response.data; //get all variables
+      })
+      .catch(function (error) {
+        alert('error');
+        console.log(error);
+      });
+    },
+    addStencil(item){
+      let me =this;
+      me.showStencil = true; //show items
+      //  me.item = item;
+      me.Stencils[item.id] = item; // add current item
+      me.Stencils[item.id].category = me.category.name;
+      me.updateList += 1;
+    },
+    showStencilDetails(item){
+      swal.fire(item);
+    },
+    deleteStencil(item){
+      let me =this;
+      delete me.Stencils[item.id];
+      me.updateList += 1;
+    },
+    goBackCategories(){
+      let me =this;
+      me.showItems=false;
+      me.showSubParameters=true;
+    },
+    goBackParameters(){
+      let me =this;
+      me.showSubParameters=false;
+      me.showParameters=true;
+    }
+  },
+  created() {
+    this.getTemplates()
+    this.getMainParameters()    
+  }
+}
 </script>

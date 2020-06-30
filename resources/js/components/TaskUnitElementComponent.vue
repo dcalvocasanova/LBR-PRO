@@ -56,9 +56,9 @@
           <treeselect
             :clearable="true"
             :searchable="true"
-            :options="options"
-            :limit="3"
-            :max-height="200"
+            :options="PHVA"
+            :limit="8"
+            :max-height="300"
             placeholder="PHVA"
             noResultsText="No existe registro"
             clearValueText="Eliminar"
@@ -66,20 +66,38 @@
             />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating">Tipo de Competencia</label>
-          <select @change="showSave" v-model="form.competence" class=" form-control">
-            <option v-for="s in OrganizationalSkills">{{ s.name }}</option>
-          </select>
+          <label class="bmd-label-floating"> </label>
+          <treeselect
+            :clearable="true"
+            :searchable="true"
+            :options="Skills"
+            :limit="3"
+            :max-height="300"
+            placeholder="Competencias de trabajo"
+            noResultsText="No existe registro"
+            noChildrenText="Sin categorías"
+            clearValueText="Eliminar"
+            v-model="form.competence"
+            />
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating">Tipo de trabajo</label>
-          <select @change="showSave" v-model="form.laborType" class=" form-control">
-            <option v-for="s in WorkTypes">{{ s.name }}</option>
-          </select>
+          <label class="bmd-label-floating"> </label>
+          <treeselect
+            :clearable="true"
+            :searchable="true"
+            :options="WorkTypes"
+            :limit="3"
+            :max-height="300"
+            placeholder="Tipo de trabajo"
+            noResultsText="No existe registro"
+            noChildrenText="Sin categorías"
+            clearValueText="Eliminar"
+            v-model="form.laborType"
+            />
         </div>
       </div>
     </div>
@@ -88,16 +106,25 @@
         <div class="form-group">
           <label class="bmd-label-floating">Tipo de Esfuerzo</label>
           <select @change="showSave" v-model="form.effort" class=" form-control">
-            <option v-for="s in OrganizationalSkills">{{ s.name }}</option>
+            <option v-for="s in Effort">{{ s.name }}</option>
           </select>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating">Tipo de Riesgo</label>
-          <select @change="showSave" v-model="form.risk" class=" form-control">
-            <option v-for="s in Risk">{{ s.name }}</option>
-          </select>
+          <label class="bmd-label-floating"> </label>
+          <treeselect
+            :clearable="true"
+            :searchable="true"
+            :options="Risk"
+            :limit="8"
+            :max-height="300"
+            placeholder="Riesgos de trabajo"
+            noResultsText="No existe registro"
+            noChildrenText="Sin categorías"
+            clearValueText="Eliminar"
+            v-model="form.risk"
+            />
         </div>
       </div>
     </div>
@@ -116,7 +143,11 @@
                 <tr v-for="a in AddedValue" :key="a.id">
                   <th v-text="a.name"></th>
                   <th>
-                    <input @click="showSave" v-model="addedValueArray" type="checkbox" :value=a.name>
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="1"> 1
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="2"> 2
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="3"> 3
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="4"> 4
+                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="5"> 5
                   </th>
                 </tr>
               </tbody>
@@ -130,7 +161,7 @@
               <thead>
                 <tr>
                   <th> Aspecto </th>
-                  <th> Valoración </th>
+                  <th> Valoración (marcar para sí, dejar en blanco para no)  </th>
                 </tr>
               </thead>
               <tbody>
@@ -165,12 +196,13 @@
     showTimeOption: Boolean,
     showImproveOption: Boolean,
     WorkTypes: Array,
+    PHVA: Array,
     Frecuencies: Array,
     Correlation: Array,
     AddedValue: Array,
     Risk: Array,
-    RiskCondition: Array,
-    OrganizationalSkills: Array
+    Effort: Array,
+    Skills: Array
   },
   data(){
     return{
@@ -196,48 +228,7 @@
       showSaveButton:false,
       details:"",
       correlationArray: [],
-      addedValueArray: [],
-      options: [ {
-         id: 'p',
-         label: 'PLANEAR',
-         children: [ {
-           id: 'p1',
-           label: 'Estrategia',
-          }, {
-           id: 'p2',
-           label: 'Gestión',
-         } ],
-       }, {
-         id: 'h',
-         label: 'HACER',
-         children: [ {
-           id: 'h1',
-           label: 'Archivar',
-          }, {
-           id: 'h2',
-           label: 'Preparar documentos',
-         } ],
-       }, {
-         id: 'v',
-         label: 'VERIFICAR',
-         children: [ {
-           id: 'v1',
-           label: 'Revisar',
-          }, {
-           id: 'v2',
-           label: 'Validar',
-         } ],
-       }, {
-         id: 'a',
-         label: 'ACTUAR',
-         children: [ {
-           id: 'a1',
-           label: 'Medición',
-          }, {
-           id: 'a2',
-           label: 'Seguimiento',
-         } ],
-       } ]
+      addedValueArray: []
     }
   },
   methods:{
@@ -268,8 +259,12 @@
   created(){
     let me = this
     this.form.fill(this.task)
-    me.addedValueArray=me.task.addedValue
-    me.correlationArray=me.task.correlation
+    if(me.task.addedValue !== null){
+        me.addedValueArray=me.task.addedValue
+    }
+    if(me.task.correlation !== null){
+        me.correlationArray=me.task.correlation
+    }
   }
 }
 </script>

@@ -29,7 +29,6 @@
                     <tasks-measure
                     :task="t"
                     :showTimeOption="tiempos"
-                    :showImproveOption="mejoramiento"
                     :Frecuencies="Frecuencies"
                     :WorkTypes="WorkTypes"
                     :Correlation="Correlation"
@@ -45,7 +44,7 @@
           </div>
         </div>
         <div class="card-footer">
-          <pagination :data="Tasks" @pagination-change-page="getUserTasks"></pagination>
+          <pagination :data="Tasks" @pagination-change-page="getTasks"></pagination>
         </div>
       </div>
     </div>
@@ -91,8 +90,8 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.currentProject = response.data.id
-        me.getUserTasks()
-        me.LoadLevelsOfStructure()
+        me.getTasks()
+        //me.LoadLevelsOfStructure()
       });
     },
 	getCurrentUser(){
@@ -107,14 +106,14 @@ export default {
       axios.get('/tareas-por-usuario',{
         params:{
           id: me.getCurrentUser(),
-     
+
         }
       })
       .then(response => {
         me.Tasks = response.data
       });
     },
-	  
+
     getTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-tipo',{
@@ -135,7 +134,7 @@ export default {
       me.getTasks()
       me.LoadLevelsOfStructure()
     },
-   
+
   },
   mounted() {
     this.getCurrentProject()

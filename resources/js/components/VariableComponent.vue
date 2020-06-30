@@ -5,7 +5,7 @@
         <div class="card card-plain">
           <div class="card-header card-header-primary">
             <div class="col-md-8">
-                <h3 class="card-title mt-0"> Lista de variables</h3>
+                <h3 class="card-title mt-0"> Lista de preguntas</h3>
             </div>
             <div class="col-md-4" data-toggle="tooltip" data-placement="bottom" title="Agregar nueva variable">
               <button class="btn btn-primary"
