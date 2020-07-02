@@ -30,13 +30,13 @@ class TaskController extends Controller
     public function getUserTasks(Request $request)
     {
       //$userTasks = Task::where('user_id',$request->id)->latest()->paginate(10);
-      
+      //return $request->id;
 		$userTasks = DB::table('tasks')
         ->join('user_tasks', function ($join) use ($request){
-            $join->on('tasks.id', '=', 'user_tasks.tasks_id')
-           ->where('user_tasks.user_id', '=', $request->id);     
-        })
-        ->get();
+            $join->on('tasks.id', '=', 'user_tasks.tasks_id');
+           //->where('user_tasks.user_id', '=', $request->id);     
+        })->where('user_tasks.user_id', '=', $request->id)
+        ->paginate(10);
 		
       return $userTasks;
     }

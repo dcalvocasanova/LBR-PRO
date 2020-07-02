@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="card-footer">
-          <pagination :data="Tasks" @pagination-change-page="getUserTasks"></pagination>
+          <pagination :data="Tasks" @pagination-change-page="getTasks"></pagination>
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.currentProject = response.data.id
-        me.getUserTasks()
+        me.getCurrentUser()
        // me.LoadLevelsOfStructure()
 
       });
@@ -99,14 +99,15 @@ export default {
       let me =this;
       axios.get('/usuario')
       .then(response => {
-        me.currentUser = response.data.id
+      me.currentUser = response.data.id
+	   me.getUserTasks();
       });
     },
 	getUserTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-usuario',{
         params:{
-          id: me.getCurrentUser(),
+          id: me.currentUser
 
         }
       })

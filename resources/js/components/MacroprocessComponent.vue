@@ -12,35 +12,20 @@
                   <thead class="">
                     <tr>
                       <th> Macroproceso </th>
-                      <th> Entradas </th>
-                      <th> Provedores </th>
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
 					  <th> Proceso </th>
-					  <th> Usuarios de los reultados </th>
-					  <th> Frecuencia del riesgo</th>
-					  <th> Consecuencia del riesgo </th>
-					  <th> Nivel de Madurez asociado </th>
-					  <th> Niveles de riesgo </th>
-					  <th> Indicadores </th>
+				
+					  
 					  <th style ="withd:120px"> Acciones </th>
-
                     </tr>
                   </thead>
                   <tbody>
                       <tr  v-for="macroproceso in Macroprocesos.data" :key="macroproceso.id">
                         <td v-text="macroproceso.macroprocess"></td>
-                        <td v-text="macroproceso.input"></td>
-						<td v-text="macroproceso.provider"></td>
-						<td v-text="macroproceso.activity"></td>
+                        <td v-text="macroproceso.activity"></td>
 						<td v-text="macroproceso.responsible"></td>
 						<td v-text="macroproceso.process"></td>
-						<td v-text="macroproceso.user"></td>
-						<td v-text="macroproceso.riskFrecuency"></td>
-						<td v-text="macroproceso.riskConsecuency"></td>
-						<td v-text="macroproceso.riskMaturity"></td>
-						<td v-text="macroproceso.riskLevel"></td>
-						<td v-text="macroproceso.indicator"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(macroproceso)"><i class="fas fa-edit"></i></button>
                           <button class="btn btn-danger" @click="deleteUser(macroproceso)"><i class="fas fa-trash-alt"></i></button>
@@ -317,7 +302,6 @@ export default {
 			indicator:"",
 			project_id:0 //este valor debe ser el current project
 
-
           }),
 		  level: new Form({
           id:"", //level projectID
@@ -335,6 +319,7 @@ export default {
 		  Macroprocesses:[],
           Inputs:[],
           Providers:[],
+		  Risks:[], //borrar
           RisksFrecuency:[],
 		  RisksConsecuency:[],
 		  RisksMaturity:[],
@@ -345,6 +330,7 @@ export default {
 		  //arreglos temporales
 		  Entradas:[],
           Proveedores:[],
+		  Riesgos:[],   //eliminar
           RiesgosFrecuencia:[],
 		  RiesgosConsecuencia:[],
 		  RiesgosMadurez:[],
@@ -568,19 +554,38 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
 				 this.Risks.push(inputs[i].name);
 			}
+      });
+    },
+	 LoadCatalogRisk_Frecuency() {
+      axios.get('catalogo?id=RISK-FRECUENCY')
+      .then(response => {
+            this.Risks = response.data;
+      });
+    },
+	LoadCatalogRisk_CONSECUENCES() {
+      axios.get('catalogo?id=RISK-CONSECUENCES')
+      .then(response => {
+            this.Risks = response.data;
+      });
+    },
+	LoadCatalogRisk_MATURITY() {
+      axios.get('catalogo?id=RISK-MATURITY')
+      .then(response => {
+            this.Risks = response.data;
+      });
+    },
+	LoadCatalogRisk_Frecuency_LEVEL() {
+      axios.get('catalogo?id=RISK-LEVEL')
+      .then(response => {
+            this.Risks = response.data;
       });
     },
 	LoadCatalogIndicator() {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
-            let inputs = response.data;
-		    for (let i =0; i<inputs.length;i++){
-
-				 this.Indicators.push(inputs[i].name);
-			}
+            this.Indicators = response.data;    
       });
     },
 	getLevels(){

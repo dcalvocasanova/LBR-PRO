@@ -115,7 +115,7 @@ Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
-
+//Vue.component('treeselect', VueTreeselect.Treeselect);
 
 
 /**
