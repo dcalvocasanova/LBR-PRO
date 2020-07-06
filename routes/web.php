@@ -160,6 +160,9 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   Route::get('/gestionar-tree', function () {
       return view('admin.tree');
   });
+  Route::get('/psicoanalisis-parametrizar', function () {
+      return view('containers.psicoanalisis-disegno');
+  });
 
   Route::get('/gestionador-parametrizacion-catalogos', function () {
       return view('containers.parametrizacion-catalogos');

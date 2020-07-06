@@ -81,6 +81,24 @@
     </div>
   </li>
   @endif
+
+  {{-- Nav Item - Users Collapse Menu--}}
+  @if(@Auth::user()->hasAnyPermission('CRUD_parameters'))
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePsyco" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span> Análisis psicosocial</span>
+    </a>
+    <div id="collapsePsyco" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header">Parametrizar </h6>
+        <a class="collapse-item" href="/psicoanalisis-parametrizar">Gestionar</a>
+      </div>
+    </div>
+  </li>
+  @endif
+
+
   {{-- Nav Item - Users Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
   <li class="nav-item">
@@ -94,11 +112,6 @@
           <h6 class="collapse-header">Medición: Análisis </h6>
           <a class="collapse-item" href="/medicion-analisis">Gestionar</a>
         @endif
-        @if(@Auth::user()->can('CRUD_tasks'))
-          <h6 class="collapse-header">Medición: Instrumentos </h6>
-          <a class="collapse-item" href="#">Gestionar</a>
-        @endif
-
       </div>
     </div>
   </li>
@@ -110,7 +123,6 @@
       <i class="fas fa-fw fa-wrench"></i>
       <span> Reportes</span>
     </a>
-
   </li>
 
   @endif
