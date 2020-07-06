@@ -7,6 +7,7 @@ use App\UserTask;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -28,7 +29,15 @@ class TaskController extends Controller
      */
     public function getUserTasks(Request $request)
     {
-      $userTasks = UserTask::where('user_id',$request->id)->first();
+      //$userTasks = Task::where('user_id',$request->id)->latest()->paginate(10);
+      //return $request->id;
+		$userTasks = DB::table('tasks')
+        ->join('user_tasks', function ($join) use ($request){
+            $join->on('tasks.id', '=', 'user_tasks.tasks_id');
+           //->where('user_tasks.user_id', '=', $request->id);     
+        })->where('user_tasks.user_id', '=', $request->id)
+        ->paginate(10);
+		
       return $userTasks;
     }
 

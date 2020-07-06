@@ -27,6 +27,7 @@ class ProjectStructureController extends Controller
   		$macroprocesos = array();
   		$this->hasChildren($obj,$macroprocesos);
   		return ($macroprocesos);
+		//return "1";
     }
 
 		function hasChildren($children,&$macroprocesos)

@@ -12,36 +12,18 @@
                   <thead class="">
                     <tr>
                       <th> Ficha </th>
-                      <th> Entradas </th>
-                      <th> Provedores </th>
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
 					  <th> Subproceso o producto </th>
 					  <th> Resultado o producto </th>
-					  <th> Usuarios  </th>
-					  <th> Riesgos Asociados </th>
-					  <th> PHVA </th>
-					  <th> Subclasificacion </th>
-					  <th> Indicadores </th>
-					  <th> Acciones </th>
-
                     </tr>
                   </thead>
                   <tbody>
                       <tr  v-for="proceso in Procesos.data" :key="proceso.id">
-
 						<td v-text="proceso.file"></td>
-                        <td v-text="proceso.input"></td>
-						<td v-text="proceso.provider"></td>
 						<td v-text="proceso.activity"></td>
 						 <td v-text="proceso.responsible"></td>
 						 <td v-text="proceso.subprocessProduct"></td>
-						  <td v-text="proceso.resultProduct"></td>
-						  <td v-text="proceso.user"></td>
-						  <td v-text="proceso.risk"></td>
-						  <td v-text="proceso.phva"></td>
-						  <td v-text="proceso.subclassification"></td>
-						  <td v-text="proceso.indicator"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(proceso)"><i class="fas fa-edit"></i></button>
                           <button class="btn btn-danger" @click="deleteUser(proceso)"><i class="fas fa-trash-alt"></i></button>
@@ -55,16 +37,6 @@
               <pagination :data="Procesos" @pagination-change-page="getProcesos"></pagination>
             </div>
           </div>
-        <!--
-          <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#loadProcesos">
-              Cargar usuario usando un archivo
-              <i class="fa fa-plus-circle"></i>
-            </button>
-          </div>
-        -->
         </div>
 	</div>
 	<div class="row">
@@ -84,6 +56,7 @@
                     <has-error :form="form" field="file"></has-error>
                   </div>
                 </div>
+				  
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Entradas</label>
@@ -186,20 +159,24 @@
               </div>
 <hr/>
               <div class="row">
-			    <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">PHVA</label>
-                    <multiselect
-                 		 v-model="PHVAs"
-                 		 placeholder="Seleccione o escriba una opción"
-						  :options="PHVA"
-						  :multiple="true"
-						  :taggable="true"
-						  :show-labels="false"
-						  @tag="addTagPHVA" >
-                	</multiselect>
-                  </div>
-                </div>
+			 
+        <div class="col-md-4">
+        <div class="form-group">
+          <label class="bmd-label-floating"> </label>
+          <treeselect
+            :clearable="true"
+            :searchable="true"
+            :options="PHVAs"
+            :limit="8"
+            :max-height="300"
+            placeholder="PHVA"
+            noResultsText="No existe registro"
+            clearValueText="Eliminar"
+            v-model="form.phva"
+            />
+        </div>
+     		 	</div>
+			  
 				 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
@@ -228,7 +205,6 @@
                 	</multiselect>
                   </div>
                 </div>
-
               </div>
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveMacroproceso()" class="btn btn-success">Añadir</button>
@@ -278,14 +254,17 @@
       </div>
     </div>
 </template>
-
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
    components: {
-      Multiselect
+      Multiselect,
+	  Treeselect
     },
   props: {
      showDeleteAndUpdateButton: Number,
+	 
   },
   data(){
     return{
@@ -318,7 +297,7 @@ export default {
           Providers:[],
           Risks:[],
 		  Indicators:[],
-		  PHVA:[],
+		  PHVAs:[],
 		  Activities:[],
 		  Users:[],
 		  //arreglos temporales
@@ -339,6 +318,8 @@ export default {
       .then(response => {
         me.project_id = response.data.id
        me.form.project_id = response.data.id
+	    this.getProcesos();
+		this.getMacroprocessFile();
       });
     },
 		loadfile(event){
@@ -365,11 +346,7 @@ export default {
 
       this.Riesgos.push(tag)
     },
-	addTagPHVA (newTag) {
-      const tag = newTag
-
-      this.PHVAs.push(tag)
-    },
+	
 	addTagIndicator (newTag) {
       const tag = newTag
 
@@ -444,17 +421,17 @@ export default {
     saveMacroproceso(){
       let me =this;
 	  let myResult = [];
+	  me.form.project_id = me.project_id
 	  myResult = me.form.file.split("-");
 	  me.form.relatedToLevel = myResult[0];
 	  me.form.file = myResult[1];
 	  me.form.input = JSON.stringify(me.Entradas)
-
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
-	  me.form.phva = JSON.stringify(me.PHVAs)
+	  //me.form.PHVA = me.PHVAs
 	  me.form.indicator = JSON.stringify(me.Indicadores)
-      me.form.user = JSON.stringify(me.Entradas)
-	  me.form.activity = JSON.stringify(me.Entradas)
+      me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
       this.form.post('/procesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -529,7 +506,6 @@ export default {
     LoadCatalogInput() {
       axios.get('catalogo?id=INPUT')
       .then(response => {
-            //this.Inputs = response.data; //get all catalogs from category selected
 		    let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
 
@@ -568,13 +544,9 @@ export default {
       });
     },
 	LoadCatalogPHVA() {
-      axios.get('catalogo?id=PHVA')
+      axios.get('/catalogo/phva')
       .then(response => {
-            let inputs = response.data;
-		    for (let i =0; i<inputs.length;i++){
-
-				 this.PHVA.push(inputs[i].name);
-			}
+        this.PHVAs = response.data;
       });
     },
   },
@@ -591,13 +563,11 @@ export default {
   },
   mounted() {
 	  this.getCurrentProject();
-       this.getProcesos();
        this.LoadCatalogInput();
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
-	   this.getMacroprocessFile();
   }
 }
 </script>

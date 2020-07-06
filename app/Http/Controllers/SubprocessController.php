@@ -85,9 +85,9 @@ class SubprocessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getCurrentSubprocess()
+    public function getCurrentSubprocess(Request $request)
     {
-      $subprocess = Subprocess::findOrFail($request->id);
+      $subprocess = Subprocess::where('project_id',$request->id )->get();
       return $subprocess;
     }
 

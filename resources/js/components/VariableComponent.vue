@@ -80,47 +80,7 @@
                           <input v-model="form.nombre" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('nombre') }">
                           <has-error :form="form" field="nombre"></has-error>
                         </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Tipo</label>
-                          <select @change="showExtraValidations()" v-model="form.tipo" class="form-control" :class="{ 'is-invalid': form.errors.has('tipo') }">
-                            <option value="number">Númerico</option>
-                            <option value="string">Texto</option>
-                          </select>
-                          <has-error :form="form" field="tipo"></has-error>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-show="this.showDetails === true" class="row">
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Valor por defecto</label>
-                          <input v-model="form.valor" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('value') }">
-                          <has-error :form="form" field="valor"></has-error>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Medida</label>
-                          <select v-model="form.medida" class="form-control" :class="{ 'is-invalid': form.errors.has('medida') }">
-                            <option value="d">Días</option>
-                            <option value="h">Horas</option>
-                            <option value="m">Minutos</option>
-                          </select>
-                          <has-error :form="form" field="medida"></has-error>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Regla</label>
-                          <select v-model="form.regla" class="form-control" :class="{ 'is-invalid': form.errors.has('regla') }">
-                            <option value="divisible">No puede ser cero</option>
-                            <option value="positivo">Número positivo</option>
-                          </select>
-                          <has-error :form="form" field="regla"></has-error>
-                        </div>
-                      </div>
+                      </div>  
                     </div>
                     <div class="row">
                       <div class="container-buttons">
@@ -148,10 +108,6 @@
                   id:"",//User ID
                   nombre:"",
                   identificador:"",
-                  tipo:"",
-                  valor:"",
-                  medida:"",
-                  regla:""
                 }),
                 showDetails: false,
                 title:"Agregar nueva categoría de parámetro ", //title to show
@@ -239,12 +195,7 @@
               me.title="Actualizar información de la variable";
               me.form.nombre = variable.name;
               me.form.identificador = variable.identificator;
-              me.form.tipo = variable.type;
-              me.form.valor=variable.value;
-              me.form.medida=variable.measure;
-              me.form.regla=variable.rule;
               me.form.id = variable.id;
-              if (me.form.tipo =="number"){this.showDetails= true;}
             },
             deleteVariable(variable){
               let me =this;

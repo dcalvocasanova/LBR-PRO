@@ -70,9 +70,30 @@ class TemplateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function getTeplatesByType(Request $request)
+    public function getTemplatesByType(Request $request)
     {
       $template = Template::where('type',$request->type)->latest()->paginate(5);
       return $template;
     }
+	
+	public function getTemplatesByUser(Request $request)
+    {
+		
+		//return "1";
+   //   $template = Template::where('user_id',$request->id)->get();
+      //$template = Template::where('user_id',1)->first();
+	   $template = Template::first();
+	  //$levels = ProjectStructure::where('project_id', $request->id)->first();
+  	  $obj = json_decode($template->stencil,true);
+  	  $catalogos = array();
+  	 // $this->hasChildren($obj,$catalogos);
+		
+	  for ( $i = 1; $i< count($obj); $i++){
+			array_push($catalogos,array("id" =>$i ,"category"=>$obj[$i]['category'],"variable"=>$obj[$i]['name']));
+		  
+	  }   
+  	  return ($catalogos);
+		
+    }
+
 }

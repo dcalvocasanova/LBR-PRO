@@ -93,7 +93,7 @@ class ProcessController extends Controller
      */
     public function getCurrentProcess()
     {
-      $process = Process::findOrFail($request->id);
+      $process = Process::where('project_id',$request->id )->get();
       return $process;
     }
 

@@ -90,22 +90,24 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.currentProject = response.data.id
-        me.getTasks()
-        //me.LoadLevelsOfStructure()
+        me.getCurrentUser()
+       // me.LoadLevelsOfStructure()
+
       });
     },
 	getCurrentUser(){
       let me =this;
       axios.get('/usuario')
       .then(response => {
-        me.currentUser = response.data.id
+      me.currentUser = response.data.id
+	   me.getUserTasks();
       });
     },
 	getUserTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-usuario',{
         params:{
-          id: me.getCurrentUser(),
+          id: me.currentUser
 
         }
       })
@@ -132,7 +134,7 @@ export default {
       let me = this
       me.selectingProjectToAddTasks=false
       me.getTasks()
-      me.LoadLevelsOfStructure()
+     // me.LoadLevelsOfStructure()
     },
 
   },
