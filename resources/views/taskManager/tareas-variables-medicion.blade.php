@@ -9,6 +9,7 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <tasks-measures></tasks-measures>
+		<parameters-measures></parameters-measures>
       </div>
     </div>
     {{-- Adding footer --}}

@@ -348,7 +348,8 @@ Route::get('/plantillas', 'TemplateController@index');
 Route::put('/plantillas/actualizar', 'TemplateController@update');
 Route::post('/plantillas/guardar', 'TemplateController@store');
 Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
-Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTeplatesByType');
+Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTemplatesByType');
+Route::get('/plantillas/porusuario/','TemplateController@getTemplatesByUser');
 Route::get('/plantillas/buscar', 'TemplateController@show');
 
 /*Manage Parameters*/
