@@ -150,6 +150,9 @@ Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
   });
 
 
+  Route::get('/ejemplos', function () {
+      return view('reports.reporteEjemplo');
+  });
 
   Route::get('/gestionar-estructura-proyecto', function () {
       return view('admin.estructuraproyecto');

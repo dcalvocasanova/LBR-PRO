@@ -98,8 +98,6 @@ Vue.component('macroprocesos', require('./components/MacroprocessComponent.vue')
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 Vue.component('psychosocialTemplates', require('./components/templates/TemplatesPychioSocialParametersComponent.vue').default);
 
-
-Vue.component('calendar', require('./components/calendar/CalendarComponent.vue').default);
 Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
 
 Vue.component('projectStructure', require('./components/ProjectStructureComponent.vue').default);
@@ -117,6 +115,7 @@ Vue.component('parameterMeasure', require('./components/ParameterUnitMeasureComp
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
+
 Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
 //Vue.component('treeselect', VueTreeselect.Treeselect);
 
