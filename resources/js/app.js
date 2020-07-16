@@ -110,8 +110,10 @@ Vue.component('tasksUnit', require('./components/TaskUnitElementComponent.vue').
 Vue.component('tasksMeasures', require('./components/TaskMeasuresManagerComponent.vue').default);
 Vue.component('tasksMeasure', require('./components/TaskUnitMeasureComponent.vue').default);
 //Templates
+Vue.component('categoriesParameters',require('./components/CategoriesComponent.vue').default);
 Vue.component('parametersMeasures',require('./components/ParametersMeasureManagerComponent.vue').default);
-Vue.component('parameterMeasure', require('./components/ParameterUnitMeasureComponent.vue').default);
+Vue.component('parameterMeasure', require('./components/ParameterAccordionMeasureComponent.vue').default);
+Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasureComponent.vue').default);
 
 /*Reports*/
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);

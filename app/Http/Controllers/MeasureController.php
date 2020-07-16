@@ -99,11 +99,15 @@ class MeasureController extends Controller
      */
     public function update(MeasureRequest $request)
     {
-      $Measure = Measure::firstOrNew(['id' => $request->id]);
+      $now = Carbon::now()->format('Y-m-d');
+		
+	  $Measure = Measure::firstOrNew(['user_id' =>$request->user_id,'task_id' => $request->task_id,'fecha' =>$now ]);	
+		
 	  $Measure->project_id = $request->project_id;
 	  $Measure->user_id = $request->user_id;//$this->User->getCurrentUser();
 	  $Measure->task_id = $request->task_id;
 	  $Measure->measure = $request->measure;
+	  $Measure->fecha     = $now;   
       $Measure->save();
     }
 

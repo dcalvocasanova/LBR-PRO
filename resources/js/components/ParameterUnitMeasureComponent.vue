@@ -1,54 +1,68 @@
 <template>
   <div class="container-elements mp-1 mp-1">
-    <div class="row">
-      <div class="col-md-8 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>{{template.variable}}</button>
-      </div>
-      <br>
-   <div class="col-md-4">
-        <div class="form-group">
-          <label class="bmd-label-floating">Tiempo en minutos</label>
-          <input @click="showSave" type="number" v-model="form.measure"  class="form-control">
-        </div>
-      </div>
-    </div>
-    
-    <br>
-    <div class="row mb-2">
-      <div class="col-12 text-center">
-        <button v-if="showSaveButton" @click="saveTask()" class="btn btn-success"> Guardar</button>
-      </div>
-    </div>
+	  <div class="card-body">
+		
+		<div class="row">
+		  <div class="col-md-8 text-center">
+			<button type="button" class="btn btn-outline-info btn-lg " disabled>{{category.variable}}</button>
+		  </div>
+		  <br>
+		  <div class="col-md-4">
+			<div class="form-group">
+			  <label class="bmd-label-floating">Tiempo en minutos</label>
+			  <input @click="showSave" type="number" v-model="form.measure"  class="form-control">
+			</div>
+		  </div>
+		</div>
+		<br>
+		<div class="row mb-2">
+		  <div class="col-12 text-center">
+			<button v-if="showSaveButton" @click="saveCategory(category)" class="btn btn-success"> Guardar</button>
+		  </div>
+		</div>
+	  </div>    
   </div>
 </template>
-
 <script>
  export default {
   name: 'parameters-measure',
   props: {
-    template: Object
+    category: Object
 	  
   },
   data(){
     return{
       form: new Form ({
         id:"",
-		category:"",
+		category_id:"",
 		variable:"",
-		measure:""
+		measure:"",
+	    project_id:"",
+		user_id:""
         
       }),
       showSaveButton:false,
-	  currentUser:""
+	  currentUser:"",
+	  currentProject:""
     }
   },
   methods:{
     showSave(){
       this.showSaveButton=true
     },
-    saveTask(){
+    saveCategory(category){
       this.showSaveButton=false
-      this.updateTask()
+      this.updateMeasure(category)
+    },
+	getCurrentProject(){
+      let me =this;
+      axios.get('/proyecto/actual')
+      .then(response => {
+        me.currentProject = response.data.id
+        me.getCurrentUser()
+       // me.LoadLevelsOfStructure()
+
+      });
     },
 	 getCurrentUser(){
       let me =this;
@@ -57,16 +71,13 @@
         me.currentUser = response.data.id
       });
     },
-    updateTask(){
+    updateMeasure(category){
       let me = this
-      me.form.task_id= me.task.id
-      //me.form.task= me.task.task
-      //me.form.allocator= me.task.allocator
-      me.form.project_id= me.task.project_id
+      me.form.category_id= category.id
+	  me.form.variable= category.variable
+      me.form.project_id= me.currentProject
 	  me.form.user_id= me.currentUser
-      //me.form.addedValue=me.addedValueArray
-      //me.form.correlation=me.correlationArray
-      me.form.put('/measures/actualizar')
+      me.form.put('/parameters_measures/actualizar')
       .then(function (response) {
          toast.fire({
           type: 'success',
@@ -77,10 +88,8 @@
   },
   created(){
     let me = this
-    this.form.fill(this.template)
-   // me.addedValueArray=me.task.addedValue
-   // me.correlationArray=me.task.correlation
-	//me.getCurrentUser()
+    //this.form.fill(this.template)
+	me.getCurrentProject()
   }
 }
 </script>

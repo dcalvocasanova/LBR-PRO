@@ -25,12 +25,12 @@
                   <tr><th> Categoría </th></tr>
                 </thead>
                 <tbody>
-                  <tr v-for="t in Templates" :key="t.id">
+                  
                     <parameter-measure
-                    :template="t"
+                    :template="Templates"
                     >
-                  </parameter-measure>
-                </tr>
+                   </parameter-measure>
+            
               </tbody>
             </table>
           </div>

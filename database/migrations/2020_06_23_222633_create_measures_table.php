@@ -18,6 +18,7 @@ class CreateMeasuresTable extends Migration
 			$table->bigInteger('project_id');
             $table->bigInteger('user_id');
 			$table->bigInteger('task_id');
+			$table->date('fecha');
             $table->string('measure')->nullable();
             $table->timestamps();
         });
