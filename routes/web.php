@@ -1,254 +1,259 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes - VIEWS ROUTES
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
+| Routes related to render views according to each section of the web site.
 */
 
+/*CONFIGURACIÓN Y SEGURIDAD RUTAS PARA REGISTRO*/
+Auth::routes(
+  ['login' => true,'logout' => true,'register' => false,'verify'=>false]
+);
+
+/*PAGINA DE INICIO : LOGIN*/
 Route::get('/', function () {
     return view('welcome');
 });
 
-/*
-* Grant access only for users with CRUD_users permission
-*/
+/*PERFIL DEL USUARIO*/
+Route::get('/perfil-usuario', function () {
+    return view('user.profile');
+})->middleware('auth');
+
+/*DASHBOARD*/
+Route::get('/home', 'HomeController@index')->name('home');
+
+/*--------------------------------------------------------------------------
+| CONFIGURACIÓN DEL SISTEMA
+|--------------------------------------------------------------------------*/
+
+//PAGINA DE INICIO
 Route::get('/gestionar-variables-del-sistema', function () {
     return view('containers.organizadorTareasDelSistema');
 })->middleware('permission:CRUD_users|CRUD_catalogs');
-/*
-* Grant access only for users with CRUD_users permission
-*/
-Route::get('/medicion-analisis', function () {
-    return view('containers.medicion-analisis');
-})->middleware('permission:CRUD_tasks|CRUD_catalogs');
 
-/*
-* Grant access only for users with CRUD_users permission
-*/
+//USUARIOS DEL SISTEMA
+Route::get('/gestionar-usuarios-del-sistema', function () {
+    return view('admin.usuarios_sistema');
+})->middleware('permission:CRUD_catalogs');
+
+//CATALOGOS DEL SISTEMA
+Route::get('/gestionar-catalogos', function () {
+    return view('admin.catalogos');
+})->middleware('permission:CRUD_catalogs');
+
+/*--------------------------------------------------------------------------
+| PROYECTOS
+|--------------------------------------------------------------------------*/
+
+//PAGINA DE INICIO
 Route::get('/gestionador-proyectos', function () {
     return view('containers.organizadorDeProyectos');
 })->middleware('permission:CRUD_users|CR_users|CRUD_projects|CR_projects');
 
+// GESTIONAR PROYECTOS
+Route::get('/gestionar-proyectos', function () {
+    return view('admin.proyectos');
+})->middleware('permission:CRUD_projects|CR_projects');
 
-/*
-* Grant access only for users with CRUD_parameters
-*/
-Route::get('/gestionador-parametrizacion', function () {
-    return view('containers.organizadorParametrizacionGeneral');
-})->middleware('permission:CRUD_parameters');
+//GESTIONAR NIVELES
+Route::get('/gestionar-estructura-proyecto', function () {
+    return view('admin.estructuraproyecto');
+})->middleware('permission:CRUD_projects');
 
-/*
-* Grant access only for users with CRUD_parameters
-*/
-Route::get('/parametrizar-tiempos-ajuste', function () {
-    return view('admin.tiempo-ajuste');
-})->middleware('permission:CRUD_parameters');
-
-/*
-* Grant access only for users with CRUD_parameters
-*/
-Route::get('/parametrizar-criterios-evaluacion', function () {
-    return view('admin.criterios_evaluacion');
-})->middleware('permission:CRUD_parameters');
-
-/*
-* Grant access only for users with CRUD_parameters
-*/
-Route::get('/gestionador-macroprocesos', function () {
-    return view('containers.organizadorParametrizacionDeProyectos');
-})->middleware('permission:CRUD_macroprocess');
-
-/*
-* Grant access only for users with CRUD_users permission
-*/
+//GESTIONAR USUARIOS
 Route::get('/gestionar-usuarios', function () {
     return view('admin.usuarios');
 })->middleware('permission:CRUD_users|CR_users');
 
-Route::get('/gestionar-funciones-usuarios', function () {
-    return view('admin.usuariosFunciones');
-})->middleware('permission:CRUD_users|CR_users');
-
+//GESTIONAR ROLES DE LOS USUARIOS
 Route::get('/gestionar-roles-usuarios', function () {
     return view('user.usersRoleSelector');
 })->middleware('permission:CRUD_users|CR_users');
 
-/*
-* Grant access only for users with CRUD_users permission
-*/
-Route::get('/gestionar-usuarios-del-sistema', function () {
-    return view('admin.usuarios_sistema');
+/*--------------------------------------------------------------------------
+| Parametrizacion
+|--------------------------------------------------------------------------*/
+
+ /** CATÁLOGOS **/
+//PAGINA DE INICIO
+Route::get('/gestionador-parametrizacion-catalogos', function () {
+    return view('containers.parametrizacion-catalogos');
 })->middleware('permission:CRUD_catalogs');
-/*
-* Grant access only for users with CRUD_projects permission
-*/
-Route::get('/gestionar-proyectos', function () {
-    return view('admin.proyectos');
-})->middleware('permission:CRUD_projects|CR_projects');
-/*
-* Grant access only for users with CRUD_catalogs permission
-*/
-Route::get('/gestionar-catalogos', function () {
-    return view('admin.catalogos');
-})->middleware('permission:CRUD_catalogs');
-/*
-* Grant access only for users with CRUD_catalogs permission
-*/
+
+// CATÁLOGO DE ACCIONES PARA REGISTRO DE CONDICIONES DE TRABAJO
 Route::get('/gestionar-catalogos-macroprocesos', function () {
     return view('admin.catalogos_macroprocesos');
 })->middleware('permission:CRUD_catalogs');
-/*
-* Grant access only for users with CRUD_catalogs permission
-*/
+
+// CATÁLOGO DE ACCIONES PARA REGISTRO DE TAREAS
 Route::get('/gestionar-catalogos-tareas', function () {
     return view('admin.catalogos_tareas');
 })->middleware('permission:CRUD_catalogs');
 
-/*
-* Grant access only for users with CRUD_task
-*/
+//PAGINA DE INICIO
+Route::get('/gestionador-parametrizacion-diseno', function () {
+    return view('containers.parametrizacion-disegno');
+})->middleware('permission:CRUD_catalogs');
+
+//GESTIONAR PARAMETRIZACIÓN DEL ANÁLISIS DE CARGAS DE TRABAJO
+Route::get('/gestionar-parametros', function () {
+    return view('admin.parametros');
+})->middleware('permission:CRUD_parameters');
+
+//PLANTILLAS
+Route::get('/gestionar-plantillas-parametros', function () {
+    return view('admin.parametrosplantilla');
+})->middleware('permission:CRUD_parameters');
+
+//GESTIONAR PARAMETRIZACIÓN DEL ANÁLISIS PSICOSOCIAL
+Route::get('/gestionador-parametros-analisis-psicosocial', function () {
+    return view('admin.parametros_psicoanalisis');
+})->middleware('permission:CRUD_parameters');
+
+//GESTIONAR CRITERIOS DE EVALUACIÓN
+Route::get('/parametrizar-criterios-evaluacion', function () {
+    return view('admin.criterios_evaluacion');
+})->middleware('permission:CRUD_parameters');
+
+//GESTIONAR VARIABLES ANÁLISIS PSICOSOCIAL
+Route::get('/gestionador-variables-analisis-psicosocial', function () {
+    return view('admin.variables_psicoanalisis');
+})->middleware('permission:CRUD_parameters');
+
+// PLANTILLAS
+Route::get('/gestionar-plantillas-analisis-psicosicial', function () {
+    return view('admin.parametrosPlantillaPsicosocial');
+})->middleware('permission:CRUD_parameters');
+
+ /** OBJETIVOS **/
+
+//GESTIONAR OBJETIVOS DE LOS NIVELES
+Route::get('/gestionar-objetivos', function () {
+    return view('admin.objetivos_estructura_proyecto');
+})->middleware('permission:CRUD_macroprocess');
+
+//NOTIFICAR APROBACIÓN DE OBJETIVOS
+Route::get('/notificar-aprobacion-de-objetivos', function () {
+    return view('admin.aprobarObjetivos');
+})->middleware('permission:CRUD_macroprocess');
+
+//REPORTE DE APROBACIÓN DE OBJETIVOS
+Route::get('/reporte-envio-objetivos', function () {
+    return view('reports.reporteObjetivos');
+})->middleware('permission:CRUD_macroprocess');
+
+ /** MACROPORCESOS / PROCESOS /SUBPROCESOS **/
+
+//REGISTRAR MACROPROCESOS
+Route::get('/gestionar-macros', function () {
+    return view('admin.macroprocesos_estructura_proyecto');
+})->middleware('permission:CRUD_macroprocess');
+
+//FICHA DEL MACROPROCESOS
+Route::get('/gestionar-macroprocesos', function () {
+    return view('admin.macroprocesos');
+})->middleware('permission:CRUD_macroprocess');
+
+//REGISTRAR PROCESOS
+Route::get('/gestionar-procesos', function () {
+    return view('admin.procesos');
+})->middleware('permission:CRUD_macroprocess');
+
+//SUBPROCESOS
+Route::get('/gestionar-subprocesos', function () {
+    return view('admin.subprocesos');
+})->middleware('permission:CRUD_macroprocess');
+
+ /** FUNCIONES DE USUARIO **/
+
+//FUNCIONES DE LOS USUARIOS
+Route::get('/gestionar-funciones-usuarios', function () {
+    return view('admin.usuariosFunciones');
+})->middleware('permission:CRUD_users|CR_users|CRUD_macroprocess');
+
+ /** TAREAS **/
+
+//GESTIÓN DE TAREAS
 Route::get('/gestionar-tareas', function () {
     return view('taskManager.tareas');
 })->middleware('permission:CRUD_tasks');
-/*
-* Grant access only for users with CRUD_task
+
+//NOTIFICAR APROBACIÓN DE TAREAS
+Route::get('/notificar-aprobacion-de-tareas', function () {
+    return view('admin.aprobarTareas');
+})->middleware('permission:CRUD_tasks');
+
+//REPORTE DE APROBACIÓN DE TAREAS
+Route::get('/reporte-envio-tareas', function () {
+    return view('reports.reporteTareas');
+})->middleware('permission:CRUD_tasks');
+
+/*--------------------------------------------------------------------------
+| ANÁLISIS PSICOSOCIAL
+|--------------------------------------------------------------------------
+ ES IGUAL AL QUE SALE EN PARAMETRIZACIÓN: DISEÑO DE INSTRUMENTOS, SE COLOCÓ ESTE ENLACE A PETICIÓN DEL CLIENTE
 */
+//PAGINA DE INICIO
+Route::get('/psicoanalisis-parametrizar', function () {
+    return view('containers.psicoanalisis-disegno');
+})->middleware('permission:CRUD_catalogs');
+
+/*--------------------------------------------------------------------------
+| MEDICIÓN
+|--------------------------------------------------------------------------*/
+
+//PÁGINA DE INICIO
+Route::get('/medicion-analisis', function () {
+    return view('containers.medicion-analisis');
+})->middleware('permission:CRUD_tasks');
+
+//GESTIONAR ELEMENTOS ASOCIADOS A TAREAS
 Route::get('/gestionar-tareas-variables-adicionales', function () {
     return view('taskManager.tareas-variables-asociadas');
 })->middleware('permission:CRUD_tasks');
 
-/*
-* Grant access only for users with CRUD_task
-*/
-Route::get('/gestionar-tareas-con-variables-asociadas', function () {
-    return view('taskManager.tareas-variables-asociadas');
-})->middleware('permission:CRUD_tasks');
-
-/*
-* Grant access only for users with CRUD_task
-*/
+//GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
 })->middleware('permission:CRUD_tasks');
 
 
-Route::group(['middleware' => ['permission:CRUD_parameters']], function () {
-  Route::get('/gestionar-parametros', function () {
-      return view('admin.parametros');
-  });
-  Route::get('/gestionar-plantillas-parametros', function () {
-      return view('admin.parametrosplantilla');
-  });
-  Route::get('/gestionar-plantillas-analisis-psicosicial', function () {
-      return view('admin.parametrosPlantillaPsicosocial');
-  });
+/*--------------------------------------------------------------------------
+| REPORTES
+|--------------------------------------------------------------------------*/
 
+//POR EL MOMENTO
 
-
-  Route::get('/gestionar-estructura-proyecto', function () {
-      return view('admin.estructuraproyecto');
-  });
-  Route::get('/gestionar-calendario', function () {
-      return view('admin.calendarios');
-  });
-  Route::get('/gestionar-tree', function () {
-      return view('admin.tree');
-  });
-
-  Route::get('/gestionador-parametrizacion-catalogos', function () {
-      return view('containers.parametrizacion-catalogos');
-  });
-
-  Route::get('/gestionador-parametrizacion-diseno', function () {
-      return view('containers.parametrizacion-disegno');
-  });
-  Route::get('/gestionador-parametros-analisis-psicosocial', function () {
-      return view('admin.parametros_psicoanalisis');
-  });
-
-  Route::get('/gestionador-variables-analisis-psicosocial', function () {
-      return view('admin.variables_psicoanalisis');
-  });
-
-
+Route::get('/ejemplos', function () {
+    return view('reports.reporteEjemplo');
 });
-Route::group(['middleware' => ['permission:CRUD_macroprocess']], function () {
-  Route::get('/gestionar-macroprocesos', function () {
-      return view('admin.macroprocesos');
-  });
-  Route::get('/gestionar-procesos', function () {
-      return view('admin.procesos');
-  });
-  Route::get('/gestionar-subprocesos', function () {
-      return view('admin.subprocesos');
-  });
-  Route::get('/gestionar-objetivos', function () {
-      return view('admin.objetivos_estructura_proyecto');
-  });
-  Route::get('/gestionar-macros', function () {
-      return view('admin.macroprocesos_estructura_proyecto');
-  });
-  Route::get('/notificar-aprobacion-de-objetivos', function () {
-      return view('admin.aprobarObjetivos');
-  });
-  Route::get('/notificar-aprobacion-de-tareas', function () {
-      return view('admin.aprobarTareas');
-  });
-});
-Route::group(['middleware' => ['permission:CRUD_tasks']], function () {});
-Route::group(['middleware' => ['permission:R_reports']], function () {});
 
+//PENDIENTE DE REVISIÓN
+Route::get('/parametrizar-tiempos-ajuste', function () {
+    return view('admin.tiempo-ajuste');
+})->middleware('permission:CRUD_parameters');
+//
+Route::get('/gestionar-tareas-con-variables-medicion', function () {
+    return view('taskManager.tareas-variables-medicion');
+})->middleware('permission:CRUD_tasks');
+//
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
 })->middleware('auth');
 
-Route::get('/notificaciones', function () {
-    return view('admin.usuariosNotificaciones');
-})->middleware('auth');
-
-Route::get('/reporte-envio-objetivos', function () {
-    return view('reports.reporteObjetivos');
-})->middleware('auth');
-Route::get('/reporte-envio-tareas', function () {
-    return view('reports.reporteTareas');
-})->middleware('auth');
-
 /*
-*EJEMPLO
+|--------------------------------------------------------------------------
+| Web Routes - CONTROLLER ROUTES
+|--------------------------------------------------------------------------
+| Routes related to access BACK-END
 */
-
-Route::get('/notificador', function () {
-    return view('admin.ejemploNotificacion');
-})->middleware('auth');
-
-Route::get('/perfil-usuario', function () {
-    return view('user.profile');
-})->middleware('auth');
-
-//Auth::routes();
-Auth::routes([
-  'login' => true,
-  'logout' => true,
-  'register' => false,
-  'verify'=>false]);
-
-/*Authentication*//*
-Route::post ('/login','Auth\LoginController@login');
-Route::post('/password/email','ForgotPasswordController@sendResetLinkEmail');
-Route::post('/password/reset','ResetPasswordController@reset');
 
 /*Notification Controller*/
 Route::get('send', 'HomeController@sendNotification')->middleware('auth');
 Route::post('/notify/goal','NotificatorController@sendGoalsNotification')->middleware('auth');
 Route::post('/notify/task','NotificatorController@sendTasksNotification')->middleware('auth');
-
-
 Route::put('/notificaciones/aceptar','NotificatorController@markAsOk')->middleware('auth');
 Route::put('/notificaciones/rechazar','NotificatorController@markAsRejected')->middleware('auth');
 Route::get('/notificaciones/tareas-por-nivel','NotificatorController@getTasksByLevelNotifications')->middleware('auth');
@@ -258,8 +263,6 @@ Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotif
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
 
-/*Home page*/
-Route::get('/home', 'HomeController@index')->name('home');
 /*Manage Projects*/
 Route::get('/proyectos', 'ProjectController@index');
 Route::get('/todos-los-proyectos', 'ProjectController@getAllProjects');
@@ -289,6 +292,7 @@ Route::put('/catalogo/actualizar-rol', 'CatalogController@updateRole');
 Route::delete('/catalogo/borrar-rol/{id}', 'CatalogController@deleteRole');
 Route::get('/catalogo/permisos-del-rol/{id}', 'CatalogController@getAllPermisssionsFromRole');
 Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisssionsFromRole');
+
 /*Manage Project Levels Structure*/
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
 Route::get('/estructura/macroprocesos', 'ProjectStructureController@getMacroprocessProject');
@@ -299,6 +303,7 @@ Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
 Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureController@getListOfUserFunctions');
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
+
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
@@ -318,6 +323,7 @@ Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
 Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
+
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
 Route::put('/parametros/actualizar', 'ParameterController@update');
@@ -327,6 +333,7 @@ Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
 Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
 Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
+
 /*Manage SubParameters*/
 Route::get('/subparametros', 'SubparameterController@index');
 Route::put('/subparametros/actualizar', 'SubparameterController@update');
@@ -335,6 +342,7 @@ Route::delete('/subparametros/borrar/{id}', 'SubparameterController@destroy');
 Route::get('/subparametros/buscar', 'SubparameterController@show');
 Route::get('/subparametros/buscarxid/{id}','SubparameterController@getSubParametersByParameterId');
 Route::post('/subparametros/setsession', 'SubparameterController@session');
+
 /*Manage Variables*/
 Route::get('/variables', 'VariableController@index');
 Route::get('/variables-tiempos-ajuste', 'VariableController@var_related_time');
@@ -343,6 +351,7 @@ Route::post('/variables/guardar', 'VariableController@store');
 Route::delete('/variables/borrar/{id}', 'VariableController@destroy');
 Route::get('/variable/buscarxid/{id}','VariableController@getVariablesBySubParameterId');
 Route::get('/variables/buscar', 'VariableController@show');
+
 /*Manage Template*/
 Route::get('/plantillas', 'TemplateController@index');
 Route::put('/plantillas/actualizar', 'TemplateController@update');
@@ -367,6 +376,7 @@ Route::post('/macroprocesos/guardar', 'MacroprocessController@store');
 Route::delete('/macroprocesos/borrar/{id}', 'MacroprocessController@destroy');
 Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
 Route::post('/macroprocesos/setsession', 'MacroprocessController@session');
+
 /*Manage Levels*/
 Route::get('/niveles', 'LevelController@index');
 Route::put('/niveles/actualizar', 'LevelController@update');
@@ -374,12 +384,14 @@ Route::post('/niveles/guardar', 'LevelController@store');
 Route::delete('/niveles/borrar/{id}', 'LevelController@destroy');
 Route::get('/niveles/buscar', 'LevelController@show');
 Route::post('/niveles/setsession', 'LevelController@session');
+
 /*Manage Objectives*/
 Route::get('/objetivos', 'ObjectiveController@index');
 Route::put('/objetivos/actualizar', 'ObjectiveController@update');
 Route::post('/objetivos/guardar', 'ObjectiveController@store');
 Route::delete('/objetivos/borrar/{id}', 'ObjectiveController@destroy');
 Route::get('/objetivos/buscar', 'ObjectiveController@show');
+
 /*Manage Macroprocess*/
 Route::get('/macroprocesos', 'MacroprocessController@index');
 Route::get('/macroproceso', 'MacroprocessController@getCurrentMacroprocess');
@@ -394,6 +406,7 @@ Route::get('/macroprocesos/buscar', 'MacroprocessController@show');
 Route::get('/macroprocesos/file', 'MacroprocessController@getMacroprocessFile');
 Route::get('/findmacroprocess', 'MacroprocessController@search');
 Route::post('/uploadfile', 'MacroprocessController@loadFiles');
+
 /*Manage Process*/
 Route::get('/procesos', 'ProcessController@index');
 Route::get('/proceso', 'ProcessController@getCurrentProcess');
@@ -408,6 +421,7 @@ Route::get('/procesos/buscar', 'ProcessController@show');
 Route::get('/procesos/file', 'ProcessController@getProcessFile');
 Route::get('/findmacroprocess', 'ProcessController@search');
 Route::post('/uploadfile', 'ProcessController@loadFiles');
+
 /*Manage Subprocess*/
 Route::get('/subprocesos', 'SubprocessController@index');
 Route::get('/subproceso', 'SubprocessController@getCurrentSubprocess');
@@ -427,12 +441,11 @@ Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
-
-
+/* Measures*/
 
 Route::put('/measures/actualizar', 'MeasureController@update');
-
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
+
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
 Route::get('/tareas-por-tipo', 'TaskController@getTaskAccordingTypeAndLevel');

@@ -29,7 +29,7 @@ export default {
     getCurrentProject(){
       let me =this;
       axios.get('/proyecto/actual')
-      .then(response => {        
+      .then(response => {
           me.form.id = response.data.id;
       });
     },

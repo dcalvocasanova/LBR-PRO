@@ -2,13 +2,10 @@
   <footer class="sticky-footer bg-white">
     <div class="container my-auto">
       <div class="copyright text-center my-auto">
-        <span>Copyright &copy; PROCAME 2019</span>
+        <span>Copyright &copy; PROCAME   {{ now()->year }} </span>
       </div>
     </div>
   </footer>
-
-  {{-- Scroll to Top Button --}}
-  <a class="scroll-to-top rounded" href="#page-top">  <i class="fas fa-angle-up"></i>  </a>
 
   {{--  Logout Modal --}}
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
