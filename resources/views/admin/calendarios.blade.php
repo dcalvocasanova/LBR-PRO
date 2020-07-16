@@ -8,7 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
-        <calendar></calendar>
+      
       </div>
     </div>
     {{-- Adding footer --}}
