@@ -37,109 +37,88 @@ window.Fire =  new Vue(); //using global comunication
  * components and automatically register them with their "basename".
 **/
 
+/*---------------------------------------------------------
+| Components by functionality
+------------------------------------------------------------*/
+//Catalogs
+Vue.component('catalogs', require('./components/catalog/CatalogsComponent.vue').default);
+Vue.component('macroprocessCatalogs', require('./components/catalog/MacroprocessComponent.vue').default);
+Vue.component('tasksCatalogs', require('./components/catalog/TasksComponent.vue').default);
+Vue.component('userRoles', require('./components/catalog/UserRolesComponent.vue').default);
 
-// Project component
-Vue.component('projects', require('./components/ProjectComponent.vue').default);
-/*
-* All Components related to users
-*/
-Vue.component('users', require('./components/UserComponent.vue').default);
-Vue.component('usersSystem', require('./components/UserSystemComponent.vue').default);
-Vue.component('userAvatar', require('./components/UserProfilePhotoComponent.vue').default);
-Vue.component('userNotificator', require('./components/UserNotificationsComponent.vue').default);
-Vue.component('userInboxNotificator', require('./components/UserNotificationInboxComponent.vue').default);
-Vue.component('userRoles', require('./components/catalogs/UserRolesComponent.vue').default);
-Vue.component('usersRolesPicker', require('./components/UserRoleSelectorComponent.vue').default);
-Vue.component('profile', require('./components/ProfileComponent.vue').default);
-Vue.component('userFunctions', require('./components/users/UserFunctionsStructureComponent.vue').default);
-/*
-* All Components related to notifications
-*/
-Vue.component('notificatorGoalsCheking', require('./components/UserNotificatorGoalsCheckingComponent.vue').default);
-Vue.component('notificatorProjectStructure', require('./components/GoalsCheckingManagerComponent.vue').default);
-Vue.component('notificatorTask', require('./components/TaskNotifierComponent.vue').default);
+//Users
+Vue.component('users', require('./components/user/UserComponent.vue').default);
+Vue.component('usersSystem', require('./components/user/UserSystemComponent.vue').default);
+Vue.component('userAvatar', require('./components/user/UserProfilePhotoComponent.vue').default);
+Vue.component('userInboxNotificator', require('./components/user/UserNotificationInboxComponent.vue').default);
+Vue.component('usersRolesPicker', require('./components/user/UserRoleSelectorComponent.vue').default);
+Vue.component('profile', require('./components/user/ProfileComponent.vue').default);
+Vue.component('userFunctions', require('./components/user/UserFunctionsStructureComponent.vue').default);
 
-/*
-*Components realted to Navigation headers
-*/
+//notifications
+Vue.component('notificatorGoalsCheking', require('./components/notificator/NotificatorGoalsCheckingComponent.vue').default);
+Vue.component('notificatorProjectStructure', require('./components/notificator/GoalsCheckingManagerComponent.vue').default);
+Vue.component('notificatorTask', require('./components/notificator/TaskNotifierComponent.vue').default);
+Vue.component('userNotificator', require('./components/notificator/UserNotificationsComponent.vue').default);
+
+//Projects
 Vue.component('projectNavHeader', require('./components/navheaders/ProjectNavHeaderComponent.vue').default);
+Vue.component('projectPicker', require('./components/dashboard/ProjectPickerComponent.vue').default);
+Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
+/*******/
+Vue.component('projects', require('./components/project/ProjectComponent.vue').default);
+Vue.component('projectStructure', require('./components/project/ProjectStructureComponent.vue').default);
 
+//Parametrization
 
-/*
-*Componet to get current Project
-*/
-Vue.component('projectPicker', require('./components/ProjectPickerComponent.vue').default);
+/*MACROPROCES*/
+Vue.component('subprocesos', require('./components/parameterization_macroprocess/SubprocessComponent.vue').default);
+Vue.component('procesos', require('./components/parameterization_macroprocess/ProcessComponent.vue').default);
+Vue.component('macroprocesos', require('./components/parameterization_macroprocess/MacroprocessComponent.vue').default);
 
-/*
-*
-*/
-
-Vue.component('catalogs', require('./components/catalogs/CatalogsComponent.vue').default);
-Vue.component('macroprocessCatalogs', require('./components/catalogs/MacroprocessComponent.vue').default);
-Vue.component('tasksCatalogs', require('./components/catalogs/TasksComponent.vue').default);
-
-
-/*
-* Components related to Macroprocess an Psychosocial questions
-*/
-Vue.component('psychosocialQuestions', require('./components/PsychosocialQuestionComponent.vue').default);
-Vue.component('psychosocialVariables', require('./components/PsychosocialVariableComponent.vue').default);
-
-Vue.component('parameters', require('./components/ParametersComponent.vue').default);
-Vue.component('subparameters', require('./components/SubParametersComponent.vue').default);
-Vue.component('questions', require('./components/CriteriaQuestionComponent.vue').default);
-Vue.component('variables', require('./components/VariableComponent.vue').default);
-Vue.component('variablesAjusteTiempos', require('./components/VariableTEComponent.vue').default);
-
-Vue.component('subprocesos', require('./components/SubprocessComponent.vue').default);
-Vue.component('procesos', require('./components/ProcessComponent.vue').default);
-Vue.component('macroprocesos', require('./components/MacroprocessComponent.vue').default);
-
+/*WORK-LOADS*/
+Vue.component('parameters', require('./components/parameterization_work_loads/ParametersComponent.vue').default);
+Vue.component('subparameters', require('./components/parameterization_work_loads/SubParametersComponent.vue').default);
+Vue.component('variables', require('./components/parameterization_work_loads/VariableComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+
+/*PSYCHO-SOCIAL*/
+Vue.component('psychosocialQuestions', require('./components/parameterization_psycho_social/PsychosocialQuestionComponent.vue').default);
+Vue.component('psychosocialVariables', require('./components/parameterization_psycho_social/PsychosocialVariableComponent.vue').default);
+Vue.component('questions', require('./components/parameterization_psycho_social/CriteriaQuestionComponent.vue').default);
 Vue.component('psychosocialTemplates', require('./components/templates/TemplatesPychioSocialParametersComponent.vue').default);
 
-Vue.component('TreeMenu', require('./components/treeComponent/VTreeViewMainComponent.vue').default);
+//Tasks
+Vue.component('tasks', require('./components/task/TaskManagerComponent.vue').default);
+Vue.component('tasksElements', require('./components/task/TaskElementsManagerComponent.vue').default);
+Vue.component('tasksUnit', require('./components/task/TaskUnitElementComponent.vue').default);
+Vue.component('tasksMeasures', require('./components/task/TaskMeasuresManagerComponent.vue').default);
+Vue.component('tasksMeasure', require('./components/task/TaskUnitMeasureComponent.vue').default);
 
-Vue.component('projectStructure', require('./components/ProjectStructureComponent.vue').default);
-Vue.component('help', require('./components/HelpComponent.vue').default);
-Vue.component('tasks', require('./components/TaskManagerComponent.vue').default);
-Vue.component('tasksElements', require('./components/TaskElementsManagerComponent.vue').default);
-Vue.component('tasksUnit', require('./components/TaskUnitElementComponent.vue').default);
-Vue.component('tasksMeasures', require('./components/TaskMeasuresManagerComponent.vue').default);
-Vue.component('tasksMeasure', require('./components/TaskUnitMeasureComponent.vue').default);
-//Templates
-Vue.component('parametersMeasures',require('./components/ParametersMeasureManagerComponent.vue').default);
-Vue.component('parameterMeasure', require('./components/ParameterUnitMeasureComponent.vue').default);
+//Measures
+Vue.component('parametersMeasures',require('./components/assorted/ParametersMeasureManagerComponent.vue').default);
+Vue.component('parameterMeasure', require('./components/assorted/ParameterUnitMeasureComponent.vue').default);
+Vue.component('variablesAjusteTiempos', require('./components/assorted/VariableTEComponent.vue').default);
+Vue.component('help', require('./components/assorted/HelpComponent.vue').default);
 
-/*Reports*/
+//Reports
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
-Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
-
 Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
-//Vue.component('treeselect', VueTreeselect.Treeselect);
-
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
  const app = new Vue({
     el: '#app',
     data:{
-      search:'',
-      currentProject: ''
+      search:''
     },
     methods:{
       searchit: _.debounce(() => {
             Fire.$emit('searching');
         },900),
-    },
-    created(){
-      Fire.$on('selectedProject',(project) => {
-          this.currentProject= project
-      })
     }
 });
