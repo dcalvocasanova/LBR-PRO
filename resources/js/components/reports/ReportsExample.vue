@@ -59,7 +59,7 @@ export default {
         },
         series:[{
           type:'pie',
-          radius:'25%',
+          radius:'45%',
           cursor: 'pointer',
           labelLine: {
             show: false

@@ -30,11 +30,9 @@ class MeasureController extends Controller
     public function getUserMeasures()
     {
       $userMeasures = Measure::where('user_id', Auth::user()->id)->get();
-
-      $categorias = array();
-
+      $categorias = collect();
       foreach ($userMeasures as $measure) {
-        array_push($categorias,array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
+        $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
       }
       return $categorias;
     }
