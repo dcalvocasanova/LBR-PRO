@@ -10,6 +10,7 @@
       <div class="container-fluid">
         <tasks-measures></tasks-measures>
 		<parameters-measures></parameters-measures>
+	<!--	<categories-parameters></categories-parameters> -->
       </div>
     </div>
     {{-- Adding footer --}}

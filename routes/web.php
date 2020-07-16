@@ -441,7 +441,10 @@ Route::get('/funciones/{id}', 'UserFunctionController@getUserFunctionsById');
 Route::put('/funciones/actualizar', 'UserFunctionController@update');
 Route::post('/funciones/guardar', 'UserFunctionController@store');
 Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
+/* Measures*/
+
 Route::put('/measures/actualizar', 'MeasureController@update');
+Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');

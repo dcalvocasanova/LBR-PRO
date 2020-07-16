@@ -4,6 +4,8 @@ use App\Template;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TemplateRequest;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class TemplateController extends Controller
 {
@@ -79,20 +81,26 @@ class TemplateController extends Controller
 	public function getTemplatesByUser(Request $request)
     {
 		
-		//return "1";
-   //   $template = Template::where('user_id',$request->id)->get();
-      //$template = Template::where('user_id',1)->first();
-	   $template = Template::first();
-	  //$levels = ProjectStructure::where('project_id', $request->id)->first();
+	  $template = Template::first();
+	  //$levels = ProjectStructure::where('user_id', $request->id)->first();
   	  $obj = json_decode($template->stencil,true);
-  	  $catalogos = array();
-  	 // $this->hasChildren($obj,$catalogos);
 		
-	  for ( $i = 1; $i< count($obj); $i++){
-			array_push($catalogos,array("id" =>$i ,"category"=>$obj[$i]['category'],"variable"=>$obj[$i]['name']));
-		  
-	  }   
-  	  return ($catalogos);
+	 //return $obj;
+  	  $catalogos = array();
+	  $categorias = array();
+	  $collection = collect();
+		
+	  for ( $i = 1; $i< count($obj)+1; $i++){
+		
+		$category = $obj[$i]['category']; 
+		array_push($categorias, $category); 
+	  	$collection->push( ["category" =>$category, "id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['name'] ] );
+	  }
+		$collection = $collection->groupBy('category');
+	    // $collection = $collection->values();
+		//$collection = $collection->groupBy('category');
+	  
+	return ($collection);
 		
     }
 
