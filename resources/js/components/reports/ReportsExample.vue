@@ -15,6 +15,10 @@
         <v-chart  class="newer" :options="graph_three"  @click="onclick" />
       </div>
       <div class="col-12">
+        <v-chart  class="newer2" :options="graph_five"  @click="onclick" />
+      </div>
+
+      <div class="col-12">
         <v-chart  class="newer2" :options="graph_four"  @click="onclick" />
       </div>
 
@@ -59,7 +63,7 @@ export default {
         },
         series:[{
           type:'pie',
-          radius:'45%',
+          radius:'90%',
           cursor: 'pointer',
           labelLine: {
             show: false
@@ -290,7 +294,74 @@ export default {
             ]
           }
         ]
-      }
+      },
+
+      graph_five:{
+        title: {
+          text: 'Ejemplo',
+          subtext: 'Pareto Tareas Asociadas',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        legend: {
+          data: ['Macropocesos', 'Tareas', 'Procesos']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['1d', '2d', '3d', '4d', '5d'],
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: 'Minutos',
+            min: 0,
+            max: 1000,
+            interval: 100,
+            axisLabel: {
+              formatter: '{value} m'
+            }
+          },
+          {
+            type: 'value',
+            name: 'Minutos acumulados',
+            min: 0,
+            max: 1000,
+            interval: 100,
+            axisLabel: {
+              formatter: '{value} m'
+            }
+          }
+        ],
+        series: [
+          {
+            name: 'Tareas',
+            type: 'bar',
+            data: []
+            //data: [2.0, 4.9, 7.0, 15.2, 35.6]
+          },
+          {
+            name: 'Acumulado',
+            type: 'line',
+            yAxisIndex: 1,
+            data: []
+            //data: [2.0, 6.9, 13.9, 29.1, 64.7]
+          }
+        ]
+      },
+
     }
   },
   methods:{
@@ -305,18 +376,28 @@ export default {
         this.graph_one['series'][0]['data'] = response.data
         this.graph_two['series'][0]['data'] = response.data
       });
+    },
+    loadUserParameterTask(){
+      axios.get('/parameter_measures/usuario')
+      .then(response => {
+        this.data_graph1 = response.data
+        this.graph_five['series'][0]['data'] = response.data.Amount
+        this.graph_five['xAxis'][0]['data'] = response.data.Legend
+        this.graph_five['series'][1]['data'] = [2.0, 6.9, 13.9, 29.1, 64.7]
+      });
     }
   },
   mounted(){
     this.loadUserTask()
+    this.loadUserParameterTask()
   }
 }
 </script>
 
  <style scoped>
  	.echarts {
- 	  width: 400px;
- 	  height: 300px;
+ 	  width: 100%;
+ 	  height: 100hv;
     margin:auto;
  	}
   .newer{

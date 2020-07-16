@@ -447,6 +447,7 @@ Route::put('/measures/actualizar', 'MeasureController@update');
 Route::get('/measures/usuario', 'MeasureController@getUserMeasures');
 
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
+Route::get('/parameter_measures/usuario', 'ParameterMeasureController@getUserParameterMeasures');
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
