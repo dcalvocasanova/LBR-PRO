@@ -27,9 +27,10 @@
                 <tbody>
                     <parameter-measure
                     :template="Templates"
+                    :jornada ="jornada"
                     >
                    </parameter-measure>
-            
+
               </tbody>
             </table>
           </div>
@@ -47,6 +48,7 @@
 export default {
   data(){
     return{
+      jornada:0,
       selectingProjectToAddTasks: false,
       tiempos:true,
       mejoramiento:false,
@@ -66,9 +68,9 @@ export default {
       Levels:{},
       level:"",
       type:"",
-	/////////////////////////////////////	
+	/////////////////////////////////////
 	  Templates:[]
-		
+
     }
   },
   methods:{
@@ -109,7 +111,7 @@ export default {
         me.Tasks = response.data
       });
     },
-	  
+
 	getUserTemplates(page = 1) {
       let me =this;
       axios.get('/plantillas/porusuario',{

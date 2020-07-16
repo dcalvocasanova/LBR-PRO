@@ -1,7 +1,7 @@
 <template>
   <div class="container-elements mp-1 mp-1">
 	  <div class="card-body">
-		
+
 		<div class="row">
 		  <div class="col-md-8 text-center">
 			<button type="button" class="btn btn-outline-info btn-lg " disabled>{{category.variable}}</button>
@@ -20,7 +20,7 @@
 			<button v-if="showSaveButton" @click="saveCategory(category)" class="btn btn-success"> Guardar</button>
 		  </div>
 		</div>
-	  </div>    
+	  </div>
   </div>
 </template>
 <script>
@@ -28,22 +28,20 @@
   name: 'parameters-measure',
   props: {
     category: Object
-	  
   },
   data(){
     return{
       form: new Form ({
         id:"",
-		category_id:"",
-		variable:"",
-		measure:"",
-	    project_id:"",
-		user_id:""
-        
+        category_id:"",
+        variable:"",
+        measure:"",
+        project_id:"",
+        user_id:""
       }),
       showSaveButton:false,
-	  currentUser:"",
-	  currentProject:""
+      currentUser:"",
+      currentProject:""
     }
   },
   methods:{

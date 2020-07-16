@@ -444,6 +444,8 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 /* Measures*/
 
 Route::put('/measures/actualizar', 'MeasureController@update');
+Route::get('/measures/usuario', 'MeasureController@getUserMeasures');
+
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
 
 /*Manage Task of a project*/

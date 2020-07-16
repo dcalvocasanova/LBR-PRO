@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Measure;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
@@ -26,10 +27,16 @@ class MeasureController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getUserMeasures(Request $request)
+    public function getUserMeasures()
     {
-      $userMeasures = UserMeasure::where('user_id',$request->user_id);
-      return $userMeasures;
+      $userMeasures = Measure::where('user_id', Auth::user()->id)->get();
+
+      $categorias = array();
+
+      foreach ($userMeasures as $measure) {
+        array_push($categorias,array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
+      }
+      return $categorias;
     }
 
     /**
@@ -100,14 +107,14 @@ class MeasureController extends Controller
     public function update(MeasureRequest $request)
     {
       $now = Carbon::now()->format('Y-m-d');
-		
-	  $Measure = Measure::firstOrNew(['user_id' =>$request->user_id,'task_id' => $request->task_id,'fecha' =>$now ]);	
-		
+
+	  $Measure = Measure::firstOrNew(['user_id' =>$request->user_id,'task_id' => $request->task_id,'fecha' =>$now ]);
+
 	  $Measure->project_id = $request->project_id;
 	  $Measure->user_id = $request->user_id;//$this->User->getCurrentUser();
 	  $Measure->task_id = $request->task_id;
 	  $Measure->measure = $request->measure;
-	  $Measure->fecha     = $now;   
+	  $Measure->fecha     = $now;
       $Measure->save();
     }
 
