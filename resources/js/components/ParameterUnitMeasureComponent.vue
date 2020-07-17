@@ -25,9 +25,8 @@
 </template>
 <script>
  export default {
-  name: 'parameters-measure',
   props: {
-    category: Object
+    category: Array
 	  
   },
   data(){

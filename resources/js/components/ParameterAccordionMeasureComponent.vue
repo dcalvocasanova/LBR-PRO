@@ -30,9 +30,8 @@
 
 <script>
  export default {
-  name: 'parameters-measure',
   props: {
-    template: Array  
+    template: Array 
   },
   created(){
   }

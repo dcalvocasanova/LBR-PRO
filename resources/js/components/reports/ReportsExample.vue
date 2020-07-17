@@ -42,7 +42,11 @@ export default {
   components: {
     'v-chart': ECharts
   },
-  data:() =>({
+  data(){
+	 const that = this
+      return {
+        data: [],  
+	  
     graph:{
       title:{
         text:"Ejemplo 1"
@@ -89,13 +93,7 @@ export default {
         type: 'pie',
         radius: '55%',
         center: ['50%', '60%'],
-        data: [
-          {value: 335, name: 'tarea 1'},
-          {value: 310, name: 'tarea 2'},
-          {value: 234, name: 'tarea 3'},
-          {value: 135, name: 'tarea 4'},
-          {value: 1548, name: 'tarea 5'}
-        ],
+        data:[],
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -305,14 +303,33 @@ export default {
         }
       ]
     }
-
-    }),
+ }
+},
     methods:{
+	 
+ 	
+	
       onclick (event, instance, echarts) {
         console.log (arguments);
-      }
-    }
-  }
+      },
+	
+	  mounted(){
+		  const that = this
+		  this.data =  [
+          {value: 335, name: 'tarea 1'},
+          {value: 310, name: 'tarea 2'},
+          {value: 234, name: 'tarea 3'},
+          {value: 135, name: 'tarea 4'},
+          {value: 1548, name: 'tarea 5'}
+        ]
+		  this.graph_one['series'][0]['data'] = this.data 
+		  
+		  
+		
+	}
+ }
+}    
+  
   </script>
 
  <style scoped>
@@ -334,4 +351,4 @@ export default {
   }
  </style>
 
-</script>
+

@@ -14,24 +14,7 @@
     </div>
   
     
-    <div class="row" v-if="showImproveOption">
-      <div class="col-md-4" @click="showSave">
-        <div class="form-group">
-          <label class="bmd-label-floating"> </label>
-          <treeselect
-            :clearable="true"
-            :searchable="true"
-            :options="options"
-            :limit="3"
-            :max-height="200"
-            placeholder="PHVA"
-            noResultsText="No existe registro"
-            clearValueText="Eliminar"
-            v-model="form.PHVA"
-            />
-        </div>
-      </div>
-    </div>
+    
     
     <br>
     <div class="row mb-2">
@@ -56,26 +39,10 @@
     return{
       form: new Form ({
         id:"",
-       // task:"",
-        //allocator:"",
         project_id:"",
 		task_id:"",
 		user_id:"",
-        //procedure:"",
 		measure:""
-        //PHVA:"",
-        //frecuency:"",
-        //t_min:"",
-        //t_avg:"",
-        //t_max:"",
-        //quantity:"",
-        //laborType:"",
-        //competence:"",
-        //effort:"",
-        //risk:"",
-        //addedValue:[],
-        //correlation:[]
-		 
       }),
       showSaveButton:false,
 	  currentUser:""
@@ -99,12 +66,8 @@
     updateTask(){
       let me = this
       me.form.task_id= me.task.id
-      //me.form.task= me.task.task
-      //me.form.allocator= me.task.allocator
       me.form.project_id= me.task.project_id
 	  me.form.user_id= me.currentUser
-      //me.form.addedValue=me.addedValueArray
-      //me.form.correlation=me.correlationArray
       me.form.put('/measures/actualizar')
       .then(function (response) {
          toast.fire({
@@ -117,8 +80,6 @@
   created(){
     let me = this
     this.form.fill(this.task)
-   // me.addedValueArray=me.task.addedValue
-   // me.correlationArray=me.task.correlation
 	me.getCurrentUser()
   }
 }
