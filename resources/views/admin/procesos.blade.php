@@ -8,6 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
+        <macroprocess-nav-header></macroprocess-nav-header>
         <procesos></procesos>
       </div>
     </div>

@@ -13,9 +13,10 @@
                 <tbody>
                     <parameter-measure
                     :template="Templates"
+                    :jornada ="jornada"
                     >
                    </parameter-measure>
-            
+
               </tbody>
             </table>
           </div>
@@ -33,13 +34,11 @@
 export default {
   data(){
     return{
-     
       currentProject:"",
       currentUser:"",
       Projects:{},
       Tasks:{},	
 	  Templates:{}
-		
     }
   },
   methods:{
@@ -80,7 +79,7 @@ export default {
         me.Tasks = response.data
       });
     },
-	  
+
 	getUserTemplates(page = 1) {
       let me =this;
       axios.get('/plantillas/porusuario',{

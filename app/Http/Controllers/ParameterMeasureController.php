@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ParametersMeasure;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,8 +29,33 @@ class ParameterMeasureController extends Controller
      */
     public function getUserParameterMeasures(Request $request)
     {
-      $userParameterMeasures = UserParameterMeasure::where('user_id',$request->user_id);
-      return $userParameterMeasures;
+      //$userMeasures = Measure::where('user_id', Auth::user()->id)->get();
+      $result = array();
+      $userParameterMeasures = collect();
+      $userParameterMeasures = ParametersMeasure::where('user_id', Auth::user()->id)->get();
+      //$userParameterMeasures->groupBy('fecha');
+
+      $result['Data'] = $userParameterMeasures->groupBy([
+          'fecha',
+          function ($item) {
+              return $item['fecha'];
+          },
+      ], $preserveKeys = true);
+
+      $result['Legend'] = $userParameterMeasures->unique('fecha')
+                          ->map(function ($row) {return $row['fecha'];})->flatten();
+
+      $result['Amount'] = $userParameterMeasures->groupBy('fecha')
+                        ->map(function ($row) {return $row->sum('measure');})->flatten();
+      return $result;
+
+      /*foreach ($userParameterMeasures as $measure) {
+        $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
+      }
+      return $categorias;*/
+
+    //  $userParameterMeasures = UserParameterMeasure::where('user_id',$request->user_id);
+    //  return $userParameterMeasures;
     }
 
     /**
@@ -99,17 +125,17 @@ class ParameterMeasureController extends Controller
      */
     public function update(ParameterMeasureRequest $request)
     {
-		
+
 	$now = Carbon::now()->format('Y-m-d');
-    
+
       $ParameterMeasure = ParametersMeasure::firstOrNew(['user_id' =>$request->user_id,'category_id' => $request->category_id,'variable'       =>$request->variable,'fecha' =>$now ]);
-		
+
 	  $ParameterMeasure->project_id = $request->project_id;
 	  $ParameterMeasure->user_id = $request->user_id;//$this->User->getCurrentUser();
 	  $ParameterMeasure->category_id = $request->category_id;
 	  $ParameterMeasure->measure = $request->measure;
 	  $ParameterMeasure->variable = $request->variable;
-	  $ParameterMeasure->fecha     = $now;   
+	  $ParameterMeasure->fecha     = $now;
       $ParameterMeasure->save();
     }
 
