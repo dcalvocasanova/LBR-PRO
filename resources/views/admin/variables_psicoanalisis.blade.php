@@ -8,6 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
+        <psycho-analisis-nav-header></psycho-analisis-nav-header>
         <psychosocial-variables></psychosocial-variables>
       </div>
     </div>

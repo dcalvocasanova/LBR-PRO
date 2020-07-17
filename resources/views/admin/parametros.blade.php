@@ -8,6 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
+        <work-load-nav-header></work-load-nav-header>
         <parameters></parameters>
       </div>
     </div>

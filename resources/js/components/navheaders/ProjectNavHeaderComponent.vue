@@ -1,6 +1,6 @@
 <template>
 <div id="header-project-option-navigator" class="w-100">
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-3 col-xs-6">
           <div class="card border-info mx-sm-1 p-3">
             <a href="/gestionar-proyectos">
@@ -40,7 +40,7 @@
     </div>
  </div>
 </template>
-<style media="screen">
+<style media="screen" scoped>
 #header-project-option-navigator{
   margin-bottom: 50px;
 }

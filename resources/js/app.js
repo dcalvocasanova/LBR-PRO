@@ -41,6 +41,7 @@ window.Fire =  new Vue(); //using global comunication
 | Components by functionality
 ------------------------------------------------------------*/
 //Catalogs
+Vue.component('catalogNavHeader', require('./components/navheaders/CatalogsNavHeaderComponent.vue').default);
 Vue.component('catalogs', require('./components/catalog/CatalogsComponent.vue').default);
 Vue.component('macroprocessCatalogs', require('./components/catalog/MacroprocessComponent.vue').default);
 Vue.component('tasksCatalogs', require('./components/catalog/TasksComponent.vue').default);
@@ -71,24 +72,31 @@ Vue.component('projectStructure', require('./components/project/ProjectStructure
 
 //Parametrization
 
+//GOALS
+Vue.component('goalNavHeader', require('./components/navheaders/GoalsNavHeaderComponent.vue').default);
+
 /*MACROPROCES*/
+Vue.component('macroprocessNavHeader', require('./components/navheaders/MacroprocessNavHeaderComponent.vue').default);
 Vue.component('subprocesos', require('./components/parameterization_macroprocess/SubprocessComponent.vue').default);
 Vue.component('procesos', require('./components/parameterization_macroprocess/ProcessComponent.vue').default);
 Vue.component('macroprocesos', require('./components/parameterization_macroprocess/MacroprocessComponent.vue').default);
 
 /*WORK-LOADS*/
+Vue.component('workLoadNavHeader', require('./components/navheaders/WorkLoadNavHeaderComponent.vue').default);
 Vue.component('parameters', require('./components/parameterization_work_loads/ParametersComponent.vue').default);
 Vue.component('subparameters', require('./components/parameterization_work_loads/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/parameterization_work_loads/VariableComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
 
 /*PSYCHO-SOCIAL*/
+Vue.component('psychoAnalisisNavHeader', require('./components/navheaders/PsychoAnalisisNavHeaderComponent.vue').default);
 Vue.component('psychosocialQuestions', require('./components/parameterization_psycho_social/PsychosocialQuestionComponent.vue').default);
 Vue.component('psychosocialVariables', require('./components/parameterization_psycho_social/PsychosocialVariableComponent.vue').default);
 Vue.component('questions', require('./components/parameterization_psycho_social/CriteriaQuestionComponent.vue').default);
 Vue.component('psychosocialTemplates', require('./components/templates/TemplatesPychioSocialParametersComponent.vue').default);
 
 //Tasks
+Vue.component('taskNavHeader', require('./components/navheaders/TaskNavHeaderComponent.vue').default);
 Vue.component('tasks', require('./components/task/TaskManagerComponent.vue').default);
 Vue.component('tasksElements', require('./components/task/TaskElementsManagerComponent.vue').default);
 Vue.component('tasksUnit', require('./components/task/TaskUnitElementComponent.vue').default);
