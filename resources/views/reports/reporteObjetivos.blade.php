@@ -8,6 +8,7 @@
       @include('layouts.topbar')
       {{-- Adding page content --}}
       <div class="container-fluid">
+        <goal-nav-header></goal-nav-header>
         <goal-status></goal-status>
       </div>
     </div>
