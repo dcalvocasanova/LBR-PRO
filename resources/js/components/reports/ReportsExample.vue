@@ -12,7 +12,7 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <v-chart  class="newer" :options="graph_three"  @click="onclick" />
+        <v-chart :options="graph_three"  @click="onclick" />
       </div>
       <div class="col-12">
         <v-chart  class="newer2" :options="graph_five"  @click="onclick" />
@@ -395,11 +395,7 @@ export default {
 </script>
 
  <style scoped>
- 	.echarts {
- 	  width: 100%;
- 	  height: 100hv;
-    margin:auto;
- 	}
+ 	
   .newer{
     width: 600px;
  	  height: 300px;
