@@ -40,6 +40,10 @@ window.Fire =  new Vue(); //using global comunication
 /*---------------------------------------------------------
 | Components by functionality
 ------------------------------------------------------------*/
+//DASHBOARD
+Vue.component('projectTime', require('./components/dashboard/ProjectTimeComponent.vue').default);
+Vue.component('projectDate', require('./components/dashboard/ProjectTimeDateComponent.vue').default);
+
 //Catalogs
 Vue.component('catalogNavHeader', require('./components/navheaders/CatalogsNavHeaderComponent.vue').default);
 Vue.component('catalogs', require('./components/catalog/CatalogsComponent.vue').default);

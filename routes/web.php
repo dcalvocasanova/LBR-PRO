@@ -262,6 +262,9 @@ Route::get('/notificaciones/tareas/{id}','NotificatorController@getTasksNotifica
 Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
+Route::get('/notificaciones', function () {
+    return view('admin.usuariosNotificaciones');
+})->middleware('auth');
 
 /*Manage Projects*/
 Route::get('/proyectos', 'ProjectController@index');

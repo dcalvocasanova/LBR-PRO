@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Project;
 use App\Subprocess;
 use App\Process;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image as Image;
@@ -232,8 +234,13 @@ class ProjectController extends Controller
     {
       $session_project = session('currentProject_id');
       if (!isset($session_project)) {
-        $project = Project::latest()->first();
-        session()->put('currentProject_id', $project->id);
+        if(Auth::user()->relatedProjects > 0 ){
+            session()->put('currentProject_id', Auth::user()->relatedProjects);  
+        }else{
+          $project = Project::latest()->first();
+          session()->put('currentProject_id', $project->id);
+        }
+
       }
       return ['id'=> session('currentProject_id')];
     }
@@ -244,7 +251,7 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      */
     public function setCurrentProjectSession(Request  $request)
-    {    
+    {
       session()->put('currentProject_id', $request->id);
       return ['id'=> session('currentProject_id')];
     }

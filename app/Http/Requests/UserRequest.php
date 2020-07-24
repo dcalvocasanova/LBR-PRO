@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
           'name' => 'required|string|max:100',
           'email' => 'required|email|unique:users',
           'identification' => 'required|string|unique:users',
-          'relatedProjects'=>'required| max:100',
+          'relatedLevel'=>'required',
         ];
     }
     /**
@@ -39,7 +39,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'nombre',
             'identification' => 'identificación',
-            'relatedProjects' => 'proyecto relacionado',
+            'relatedLevel' => 'Nivel de estructura',
 
         ];
     }
