@@ -75,11 +75,32 @@
               </div>
 
               <div class="form-group">
-                <label for="logo_project" class="col-sm-8 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo del proyecto <span v-html="loadLogoAuxiliar"></span></i> </label>
+                <label for="logo_project" class="col-sm-10 control-label file-uploader">  <i class="fas fa-cloud-upload-alt"> Logo del proyecto <span v-html="loadLogoAuxiliar"></span></i> </label>
                 <div class="col-sm-12">
-                    <input type="file" @change="updateLogo" name="logo_project" id="logo_project" class="form-input" style='display: none;'>
+                    <input type="file" @change="loadLogoAuxInstitution" name="logo_project" id="logo_project" class="form-input" style='display: none;'>
                 </div>
               </div>
+
+              <br>
+              <br>
+              <div class="form-group">
+                <label for="terms" class="col-sm-8 control-label file-uploader">
+                  <i class="fas fa-cloud-upload-alt"> Archivo de términos y condiciones
+                    <span v-html="termsAndConditions"></span>
+                  </i>
+                </label>
+                <div class="col-sm-12">
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      enctype="multipart/form-data"
+                      @change="loadTermsConditions"
+                      name="terms"
+                      id="terms"
+                      class="form-input" style='display: none;'>
+                </div>
+              </div>
+
               <div class="form-group">
                 <label class="typo__label">Detalles adicionales</label>
                 <multiselect
@@ -122,7 +143,8 @@
           logo_auxiliar:"", //Auxiliar's logo
           longitud:"", // ubicación
           latitud:"", // ubicación
-          actividad_economica:"" // actividad económica
+          actividad_economica:"", // actividad económica
+          terms_connditions:""
         }),
         level: new Form({
           id:"", //level projectID
@@ -136,8 +158,10 @@
         loadLogoProject:"",
         loadLogoSponsor:"",
         loadLogoAuxiliar:"",
+        termsAndConditions:"",
         Projects:{}, //All registered projects
         Economics:{},
+        datos:{},
         value: [
           { name: 'Gratuito', code: 'GR' }
         ],
@@ -181,7 +205,17 @@
             reader.readAsDataURL(file);
           }
       },
-      updateLogo(e){
+      loadTermsConditions(f){
+        let file = f.target.files[0];
+        let reader = new FileReader();
+        this.termsAndConditions ='<i class="far fa-check-circle"></i> ';
+        reader.onloadend = (file) => {
+            this.form.terms_connditions = reader.result;
+        }
+        reader.readAsDataURL(file);
+      },
+
+      loadLogoAuxInstitution(e){
           let file = e.target.files[0];
           let reader = new FileReader();
           if (this.validateFile(file)){
@@ -212,7 +246,7 @@
           });
       },
       saveProjects(){
-          let me =this;
+          let me =this
           this.form.post('/proyectos/guardar')
           .then(function (response) {
               toast.fire({
@@ -255,6 +289,7 @@
           me.form.latitud = project.latitude
           me.form.longitud = project.longitude
           me.form.actividad_economica = project.economic_activity
+          me.form.terms_connditions = project.terms_connditions
 
       },
       deleteProject(project){
@@ -289,10 +324,11 @@
       },
       clearFields(){
           let me =this;
-          me.loadLogoProject ='';
-          me.loadLogoSponsor='';
-          me.loadLogoAuxiliar='';
-          me.title= "Agregar nuevo proyecto";
+          me.loadLogoProject =''
+          me.loadLogoSponsor=''
+          me.loadLogoAuxiliar=''
+          me.termsAndConditions=''
+          me.title= "Agregar nuevo proyecto"
           me.update = 0;
           me.form.reset();
           me.value= [];

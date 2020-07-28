@@ -276,6 +276,7 @@ Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
 Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
 Route::get('/proyecto/actual', 'ProjectController@getCurrentProjectSession');
+Route::get('/proyecto/terms', 'ProjectController@getCurrentProjectTerms');
 Route::post('/proyecto/establecer', 'ProjectController@setCurrentProjectSession');
 
 
@@ -326,6 +327,7 @@ Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
 Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
+Route::get('/terminos/aceptar', 'UserController@aceptarTerminosYCondiciones');
 
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');

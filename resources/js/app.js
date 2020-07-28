@@ -59,6 +59,7 @@ Vue.component('userInboxNotificator', require('./components/user/UserNotificatio
 Vue.component('usersRolesPicker', require('./components/user/UserRoleSelectorComponent.vue').default);
 Vue.component('profile', require('./components/user/ProfileComponent.vue').default);
 Vue.component('userFunctions', require('./components/user/UserFunctionsStructureComponent.vue').default);
+Vue.component('userTerms', require('./components/user/UserTermsComponent.vue').default);
 
 //notifications
 Vue.component('notificatorGoalsCheking', require('./components/notificator/NotificatorGoalsCheckingComponent.vue').default);

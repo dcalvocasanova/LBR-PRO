@@ -281,4 +281,11 @@ class UserController extends Controller
         }
         return response()->json(['fail'=>'No envió nada.']);
 	}
+
+  public function aceptarTerminosYCondiciones(){
+    $user = $user = User::findOrFail(Auth::user()->id);
+    $user->agree_terms=false;
+    $user->save();
+    return['id'=>1];
+  }
 }

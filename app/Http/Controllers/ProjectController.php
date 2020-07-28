@@ -6,6 +6,7 @@ use App\Project;
 use App\Subprocess;
 use App\Process;
 use App\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,15 @@ class ProjectController extends Controller
       }
       $project->logo_auxiliar = isset($request->logo_auxiliar)? $request->logo_auxiliar:"default.png";
 
+      if(isset($request->terms_connditions)){
+        $file64_current_terms_connditions = substr($request->terms_connditions, strpos($request->terms_connditions, ',') + 1);
+        $file = base64_decode($file64_current_terms_connditions);
+        $fileName ='terms'.time().'.pdf';
+        Storage::put('public/docs/'.$fileName, $file);
+        $request->terms_connditions = $fileName;
+      }
+      $project->terms_connditions = isset($request->terms_connditions)? $request->terms_connditions:"default.pdf";
+
       $project->longitude = isset($request->longitud)? $request->longitud:"0,0";
       $project->latitude = isset($request->latitud)? $request->latitud:"0,0";
       $project->economic_activity = isset($request->actividad_economica)? $request->actividad_economica:"Sin fines de lucro";
@@ -120,7 +130,7 @@ class ProjectController extends Controller
       $current_logo_project = $project->logo_project;
       $current_logo_sponsor = $project->logo_sponsor;
       $current_logo_auxiliar = $project->logo_auxiliar;
-
+      $current_terms_connditions = $project->terms_connditions;
       $project->name = $request->name;
 
       if($request->logo_project != $current_logo_project)
@@ -167,6 +177,16 @@ class ProjectController extends Controller
                 @unlink($last_logo_auxiliar);
         }
       }
+
+      if($request->terms_connditions != $current_terms_connditions){
+        $file64_current_terms_connditions = substr($request->terms_connditions, strpos($request->terms_connditions, ',') + 1);
+        $file = base64_decode($file64_current_terms_connditions);
+        $fileName ='terms'.time().'.pdf';
+        Storage::put('public/docs/'.$fileName, $file);
+        $request->terms_connditions = $fileName;
+      }
+      $project->terms_connditions = isset($request->terms_connditions)? $request->terms_connditions:"default.pdf";
+
 
       if (isset($request->ubicacion))
       {
@@ -235,7 +255,7 @@ class ProjectController extends Controller
       $session_project = session('currentProject_id');
       if (!isset($session_project)) {
         if(Auth::user()->relatedProjects > 0 ){
-            session()->put('currentProject_id', Auth::user()->relatedProjects);  
+            session()->put('currentProject_id', Auth::user()->relatedProjects);
         }else{
           $project = Project::latest()->first();
           session()->put('currentProject_id', $project->id);
@@ -243,6 +263,17 @@ class ProjectController extends Controller
 
       }
       return ['id'=> session('currentProject_id')];
+    }
+
+    public function getCurrentProjectTerms()
+    {
+      if(Auth::user()->relatedProjects > 0 ){
+        $project = Project::find(Auth::user()->relatedProjects);
+        $route = asset('storage/docs/'.$project->terms_connditions);
+        return  ['id'=> 1, 'terms' => $route];
+      }else{
+        return  ['id'=> -1];
+      }
     }
 
     /**
