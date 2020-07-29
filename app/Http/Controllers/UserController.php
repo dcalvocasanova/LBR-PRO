@@ -62,6 +62,18 @@ class UserController extends Controller
     }
 
     /**
+     * Get all users according to a related project
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserByProjectId(Request $request)
+    {
+      $users = User::select('id','name','identification')->where('relatedProjects',$request->project_id)->latest()->paginate(5);
+      return $users;
+    }
+
+    /**
      * Get all users according to a related level structure
      *
      * @param  \Illuminate\Http\Request  $request

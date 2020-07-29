@@ -230,6 +230,10 @@ Route::get('/ejemplos', function () {
     return view('reports.reporteEjemplo');
 });
 
+Route::get('reporte/frecuencias', function () {
+    return view('reports.reporteFrecuencias');
+});
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -311,6 +315,7 @@ Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getLi
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
+Route::get('/usuarios-del-proyecto', 'UserController@getUserByProjectId');
 Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
 Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
@@ -476,3 +481,11 @@ Route::put('/psicoanalisis-variables/actualizar', 'PsychosocialVariableControlle
 Route::post('/psicoanalisis-variables/guardar', 'PsychosocialVariableController@store');
 Route::delete('/psicoanalisis-variables/borrar/{id}', 'PsychosocialVariableController@destroy');
 Route::get('/findvariable', 'PsychosocialVariableController@search');
+
+
+/**REPORTS*/
+
+Route::get('/grafica/productos/', 'ReportController@getFrecuencyMeasuresByProduct');
+Route::get('/grafica/niveles/', 'ReportController@getFrecuencyMeasuresByLevel');
+Route::get('/grafica/frecuencias/', 'ReportController@getFrecuencyMeasuresByFrecuency');
+Route::get('/grafica/usuario/', 'ReportController@getFrecuencyMeasuresByUser');

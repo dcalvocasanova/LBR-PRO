@@ -125,7 +125,8 @@ Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasure
 
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
-Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
+Vue.component('reportExample', require('./components/reports/ReportsExample.vue').default);
+Vue.component('reportFrecuency', require('./components/reports/ReportsFrecuencies.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

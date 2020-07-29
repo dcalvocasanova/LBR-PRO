@@ -32,7 +32,8 @@ class ProjectController extends Controller
      */
     public function getAllProjects()
     {
-      $projects = Project::all();
+      $projects = Project::all('id','name');
+
       return $projects;
     }
 
