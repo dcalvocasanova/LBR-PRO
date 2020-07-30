@@ -1,10 +1,8 @@
 <template>
-  <div class="col-12 form-inline mr-auto ml-md-3">
-    <div class="col-12">
-        <select v-model="form.id" class="form-control" @change="selectedProject()">
-          <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-        </select>
-    </div>
+  <div class="w-100 p-3 ">
+    <select v-model="form.id" class="form-control" @change="selectedProject()">
+      <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
+    </select>
   </div>
 </template>
 

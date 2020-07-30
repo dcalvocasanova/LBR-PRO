@@ -23,7 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name','identification','type', 'email','salary','position', 'job',
         'birthday','workingsince', 'education','workday', 'avatar', 'gender',
-        'ethnic','sex','password','relatedProjects','relatedLevel'
+        'ethnic','sex','password','relatedProjects','relatedLevel','agree_terms'
     ];
 
     /**
@@ -118,6 +118,9 @@ class User extends Authenticatable implements MustVerifyEmail
         });
         static::creating(function ($query) {
             $query->password = $query->password ?? Str::random(15);
+        });
+        static::creating(function ($query) {
+            $query->agree_terms = $query->agree_terms ?? 0;
         });
     }
 }

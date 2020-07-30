@@ -230,6 +230,10 @@ Route::get('/ejemplos', function () {
     return view('reports.reporteEjemplo');
 });
 
+Route::get('reporte/frecuencias', function () {
+    return view('reports.reporteFrecuencias');
+});
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -262,6 +266,9 @@ Route::get('/notificaciones/tareas/{id}','NotificatorController@getTasksNotifica
 Route::get('/notificaciones/objetivos/{id}','NotificatorController@getGoalsNotifications')->middleware('auth');
 Route::get('/usuario/notificaciones', 'NotificatorController@allNotifications');
 Route::get('/usuario/notificaciones-nuevas', 'NotificatorController@unreadNotifications');
+Route::get('/notificaciones', function () {
+    return view('admin.usuariosNotificaciones');
+})->middleware('auth');
 
 /*Manage Projects*/
 Route::get('/proyectos', 'ProjectController@index');
@@ -273,6 +280,7 @@ Route::get('/proyectos/buscar', 'ProjectController@show');
 Route::get('/findproject', 'ProjectController@search');
 Route::get('/proyecto/productos/{id}', 'ProjectController@getProducts');
 Route::get('/proyecto/actual', 'ProjectController@getCurrentProjectSession');
+Route::get('/proyecto/terms', 'ProjectController@getCurrentProjectTerms');
 Route::post('/proyecto/establecer', 'ProjectController@setCurrentProjectSession');
 
 
@@ -307,6 +315,7 @@ Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getLi
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
+Route::get('/usuarios-del-proyecto-con-tareas', 'UserController@getUserByProjectId');
 Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
 Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
@@ -323,6 +332,7 @@ Route::post('/uploadfile', 'UserController@loadFiles');
 Route::put('/usuarios/avatar-change', 'UserController@saveAvatar');
 Route::put('/usuarios/password-change', 'UserController@savePassword');
 Route::put('/usuarios/asignar-roles', 'UserController@updateUserRoles');
+Route::get('/terminos/aceptar', 'UserController@aceptarTerminosYCondiciones');
 
 /*Manage Parameters*/
 Route::get('/parametros', 'ParameterController@index');
@@ -471,3 +481,11 @@ Route::put('/psicoanalisis-variables/actualizar', 'PsychosocialVariableControlle
 Route::post('/psicoanalisis-variables/guardar', 'PsychosocialVariableController@store');
 Route::delete('/psicoanalisis-variables/borrar/{id}', 'PsychosocialVariableController@destroy');
 Route::get('/findvariable', 'PsychosocialVariableController@search');
+
+
+/**REPORTS*/
+Route::get('/grafica/frecuencias/productos/', 'ReportController@getFrecuencyMeasuresByProduct');
+Route::get('/grafica/frecuencias/niveles/', 'ReportController@getFrecuencyMeasuresByLevel');
+Route::get('/grafica/frecuencias/frecuencias/', 'ReportController@getFrecuencyMeasuresByFrecuency');
+Route::get('/grafica/frecuencias/usuario/', 'ReportController@getFrecuencyMeasuresByUser');
+Route::get('/grafica/frecuencias/datos/', 'ReportController@getFrecuencyData');

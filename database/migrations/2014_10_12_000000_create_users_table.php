@@ -33,7 +33,8 @@ class CreateUsersTable extends Migration
             $table->string('type');
             $table->string('avatar');
             $table->string('relatedLevel');
-            $table->bigInteger('relatedProjects');            
+            $table->bigInteger('relatedProjects');
+            $table->boolean('agree_terms')->default(0)->change();
             $table->rememberToken();
             $table->timestamps();
         });

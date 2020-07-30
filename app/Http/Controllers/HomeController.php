@@ -28,7 +28,10 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {        
+    {
+      if(Auth::user()->agree_terms > 0 ){
+        return view('terminosYcondiciones');
+      }
         return view('home');
     }
 }

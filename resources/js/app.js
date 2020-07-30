@@ -40,6 +40,10 @@ window.Fire =  new Vue(); //using global comunication
 /*---------------------------------------------------------
 | Components by functionality
 ------------------------------------------------------------*/
+//DASHBOARD
+Vue.component('projectTime', require('./components/dashboard/ProjectTimeComponent.vue').default);
+Vue.component('projectDate', require('./components/dashboard/ProjectTimeDateComponent.vue').default);
+
 //Catalogs
 Vue.component('catalogNavHeader', require('./components/navheaders/CatalogsNavHeaderComponent.vue').default);
 Vue.component('catalogs', require('./components/catalog/CatalogsComponent.vue').default);
@@ -55,6 +59,7 @@ Vue.component('userInboxNotificator', require('./components/user/UserNotificatio
 Vue.component('usersRolesPicker', require('./components/user/UserRoleSelectorComponent.vue').default);
 Vue.component('profile', require('./components/user/ProfileComponent.vue').default);
 Vue.component('userFunctions', require('./components/user/UserFunctionsStructureComponent.vue').default);
+Vue.component('userTerms', require('./components/user/UserTermsComponent.vue').default);
 
 //notifications
 Vue.component('notificatorGoalsCheking', require('./components/notificator/NotificatorGoalsCheckingComponent.vue').default);
@@ -118,7 +123,8 @@ Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasure
 
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
-Vue.component('ReportExample', require('./components/reports/ReportsExample.vue').default);
+Vue.component('reportExample', require('./components/reports/ReportsExample.vue').default);
+Vue.component('reportFrecuency', require('./components/reports/ReportsFrecuencies.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
