@@ -22,6 +22,7 @@ class CreateProjectsTable extends Migration
             $table->string('latitude',200);
             $table->string('longitude',20);
             $table->string('economic_activity',100);
+            $table->string('terms_connditions',100);
             $table->timestamps();
         });
     }

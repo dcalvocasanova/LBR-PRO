@@ -62,6 +62,22 @@ class UserController extends Controller
     }
 
     /**
+     * Get all users according to a related project
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserByProjectId(Request $request)
+    {
+      $project = $request->project_id;
+      $users= User::join('user_tasks', function ($join) use($project) {
+            $join->on('users.id', '=', 'user_tasks.user_id')
+                 ->where('users.relatedProjects', '=', $project);
+            })->orderBy('users.id', 'asc')->select('users.id','users.name', 'users.identification')->paginate(5);
+      return $users;
+    }
+
+    /**
      * Get all users according to a related level structure
      *
      * @param  \Illuminate\Http\Request  $request
@@ -282,4 +298,11 @@ class UserController extends Controller
         }
         return response()->json(['fail'=>'No envió nada.']);
 	}
+
+  public function aceptarTerminosYCondiciones(){
+    $user = $user = User::findOrFail(Auth::user()->id);
+    $user->agree_terms=false;
+    $user->save();
+    return['id'=>1];
+  }
 }

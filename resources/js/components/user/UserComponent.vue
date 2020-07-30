@@ -144,7 +144,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Étnia</label>
-                  <select v-model="form.ethnic" class=" form-control":class=" { 'is-invalid': form.errors.has('ethnic') }">
+                  <select v-model="form.ethnic" class=" form-control" :class=" { 'is-invalid': form.errors.has('ethnic') }">
                     <option v-for="ethnic in Ethnics">{{ ethnic.name }}</option>
                   </select>
                   <has-error :form="form" field="ethnic"></has-error>
@@ -156,9 +156,10 @@
                 <div class="form-group">
                   <label class="bmd-label-floating">Nivel de estructura donde está el usuario</label>
                   <br>
-                  <select v-model="form.relatedLevel" class="form-control">
+                  <select v-model="form.relatedLevel" class="form-control" :class=" { 'is-invalid': form.errors.has('relatedLevel') }">
                     <option v-for="l in Levels" :value="l">{{ l }}</option>
                   </select>
+                    <has-error :form="form" field="relatedLevel"></has-error>
                 </div>
               </div>
             </div>
@@ -170,6 +171,15 @@
                   <select v-model="form.role" class="form-control">
                     <option v-for="r in Roles.data" :value="r">{{ r }}</option>
                   </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <input v-model="form.agree_terms" type="checkbox" value="1">
+                  <label class="bmd-label-floating">Este usuario debe aceptar términos y condiciones</label>
                 </div>
               </div>
             </div>
@@ -248,7 +258,8 @@ export default {
         avatar:"",
         relatedProjects:"",
         relatedLevel:"",
-        role:""
+        role:"",
+        agree_terms:0
       }),
       d:"",
       title:"Agregar nuevo usuario", //title to show
