@@ -219,6 +219,11 @@ Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
 })->middleware('permission:CRUD_tasks');
 
+Route::get('/gestionar-plantillas-usuarios', function () {
+    return view('taskManager.tareas-plantillas-usuarios');
+})->middleware('permission:CRUD_tasks');
+
+
 
 /*--------------------------------------------------------------------------
 | REPORTES
@@ -360,6 +365,8 @@ Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
 Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTemplatesByType');
 Route::get('/plantillas/porusuario/','TemplateController@getTemplatesByUser');
 Route::get('/plantillas/buscar', 'TemplateController@show');
+Route::post('/relate/users', 'TemplateController@relateToUsers');
+
 
 /*Manage Parameters*/
 Route::get('/criterios-evaluacion', 'CriteriaController@index');

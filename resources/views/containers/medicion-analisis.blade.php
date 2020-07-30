@@ -9,7 +9,7 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h2 mb-0 text-gray-900">Estapa de medición: Análisis de los instrumentos</h1>
+            <h1 class="h2 mb-0 text-gray-900">Estapa de mediciรณn: Anรกlisis de los instrumentos</h1>
           </div>
           <div class="row">
             @component('components.colorcard')
@@ -19,9 +19,17 @@
               @slot('url') gestionar-tareas-variables-adicionales @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
+			  
+			@component('components.colorcard')
+              @slot('title') Relacionar plantillas con Usuarios @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') /gestionar-plantillas-usuarios @endslot
+              @slot('icon') fas fa-tags @endslot
+            @endcomponent
 
 			@component('components.colorcard')
-              @slot('title') Gestionar variables de medición @endslot
+              @slot('title') Gestionar variables de mediciรณn @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
               @slot('url') gestionar-tareas-con-variables-medicion @endslot

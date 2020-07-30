@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 use App\Template;
+use Illuminate\Support\Facades\Auth;
+use App\TemplateUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TemplateRequest;
@@ -29,6 +31,19 @@ class TemplateController extends Controller
     public function store(TemplateRequest $request)
     {
       $template = Template::create($request->all());
+    }
+	
+	public function relateToUsers(Request $request)
+    {
+     // $template = TemplateUsers::create($request->all());
+		
+	  $TemplateUsers = TemplateUsers::firstOrNew(['RelatedUsers' =>$request->usersToRelate,'project_id' => $request->project_id]);
+
+	  $TemplateUsers->project_id = $request->project_id;
+	  $TemplateUsers->RelatedUsers = $request->usersToRelate;//$this->User->getCurrentUser();
+	  $TemplateUsers->relatedToLevel = $request->relatedToLevel;
+	  $TemplateUsers->relatedTemplate = $request->relatedTemplate;
+      $TemplateUsers->save();
     }
 
     /**
@@ -78,11 +93,22 @@ class TemplateController extends Controller
       return $template;
     }
 	
+	public function getUserByTemplate(){
+		
+		
+	}
+	
 	public function getTemplatesByUser(Request $request)
     {
 		
-	  $template = Template::first();
-	  //$levels = ProjectStructure::where('user_id', $request->id)->first();
+	//$template = Template::first();
+		
+	  $user = TemplateUsers::where('relatedUsers','like', '%'.Auth::user()->id.'%')->first();
+		//return $user;
+	  //$template = Template::where('user_id',$user->id)->first();
+	  $template = Template::where('id',$user->relatedTemplate)->first();
+	
+	  
   	  $obj = json_decode($template->stencil,true);
 		
 	 //return $obj;

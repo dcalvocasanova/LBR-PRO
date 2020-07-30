@@ -25,9 +25,7 @@
 </template>
 <script>
  export default {
-  props: {
-    category  
-  },
+  props: ['category'],
   data(){
     return{
       form: new Form ({

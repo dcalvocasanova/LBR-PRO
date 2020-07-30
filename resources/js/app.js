@@ -113,6 +113,7 @@ Vue.component('categoriesParameters',require('./components/CategoriesComponent.v
 Vue.component('parametersMeasures',require('./components/ParametersMeasureManagerComponent.vue').default);
 Vue.component('parameterMeasure', require('./components/ParameterAccordionMeasureComponent.vue').default);
 Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasureComponent.vue').default);
+Vue.component('templatesUsers', require('./components/TemplateUsersComponent.vue').default);
 
 /*Reports*/
 

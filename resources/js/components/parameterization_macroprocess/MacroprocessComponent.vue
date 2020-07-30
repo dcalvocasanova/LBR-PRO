@@ -144,14 +144,29 @@
               </div>
 <hr/>
               <div class="row">
+				 
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Riesgos Asociados</label>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>  
 
                 <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Frecuencia del riesgo</label>
                     <multiselect
-                 		 v-model="Riesgos"
+                 		 v-model="RiesgosFrecuencia"
                  		 placeholder="Seleccione o escriba una opción"
-						  :options="Risks"
+						  :options="RisksFrecuency"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
@@ -164,9 +179,9 @@
                   <div class="form-group">
                     <label class="bmd-label-floating">Consecencia del riesgo</label>
                     <multiselect
-                 		 v-model="Riesgos"
+                 		 v-model="RiesgosConsecuencia"
                  		 placeholder="Seleccione o escriba una opción"
-						  :options="Risks"
+						  :options="RisksConsecuency"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
@@ -179,9 +194,9 @@
                   <div class="form-group">
                     <label class="bmd-label-floating">Nivel de madurez asociado</label>
                     <multiselect
-                 		 v-model="Riesgos"
+                 		 v-model="RiesgosNivel"
                  		 placeholder="Seleccione o escriba una opción"
-						  :options="Risks"
+						  :options="RisksLevel"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
@@ -192,16 +207,9 @@
 				  
 				<div class="col-md-3">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Niveles del riesgo</label>
-                    <multiselect
-                 		 v-model="Riesgos"
-                 		 placeholder="Seleccione o escriba una opción"
-						  :options="Risks"
-						  :multiple="true"
-						  :taggable="true"
-						  :show-labels="false"
-						  @tag="addTagRisk" >
-                	</multiselect>
+                    <label class="bmd-label-floating">Niveles de Riesgo</label>
+                    <input type="text" v-model="form.riskLevel"  class="form-control":class="{ 'is-invalid': form.errors.has('responsible') }">
+                    <has-error :form="form" field="levelRisk"></has-error>
                   </div>
                 </div>
 			</div>	
@@ -295,6 +303,7 @@ export default {
             responsible:"",
             process:"",
 			user:"",
+			risk:"",
 			riskFrecuency:"",
 			riskMaturity:"",
 			riskConsecuency:"",
@@ -319,7 +328,7 @@ export default {
 		  Macroprocesses:[],
           Inputs:[],
           Providers:[],
-		  Risks:[], //borrar
+		  Risks:[], 
           RisksFrecuency:[],
 		  RisksConsecuency:[],
 		  RisksMaturity:[],
@@ -377,6 +386,21 @@ export default {
       const tag = newTag
 
       this.Riesgos.push(tag)
+    },
+	addTagRiskFrecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosFrecuencia.push(tag)
+    },
+	addTagRiskConsecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosConsecuencia.push(tag)
+    },
+	addTagRiskMaturity (newTag) {
+      const tag = newTag
+
+      this.RiesgosMadurez.push(tag)
     },
 	addTagIndicator (newTag) {
       const tag = newTag
@@ -561,25 +585,25 @@ export default {
 	 LoadCatalogRisk_Frecuency() {
       axios.get('catalogo?id=RISK-FRECUENCY')
       .then(response => {
-            this.Risks = response.data;
+            this.RisksFrecuency = response.data;
       });
     },
 	LoadCatalogRisk_CONSECUENCES() {
       axios.get('catalogo?id=RISK-CONSECUENCES')
       .then(response => {
-            this.Risks = response.data;
+            this.RisksConsecuency = response.data;
       });
     },
 	LoadCatalogRisk_MATURITY() {
       axios.get('catalogo?id=RISK-MATURITY')
       .then(response => {
-            this.Risks = response.data;
+            this.RisksMaturity = response.data;
       });
     },
 	LoadCatalogRisk_Frecuency_LEVEL() {
       axios.get('catalogo?id=RISK-LEVEL')
       .then(response => {
-            this.Risks = response.data;
+            this.RisksLevel = response.data;
       });
     },
 	LoadCatalogIndicator() {
