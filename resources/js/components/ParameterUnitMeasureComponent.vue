@@ -25,10 +25,7 @@
 </template>
 <script>
  export default {
-  name: 'parameters-measure',
-  props: {
-    category: Object
-  },
+  props: ['category'],
   data(){
     return{
       form: new Form ({

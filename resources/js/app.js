@@ -109,8 +109,6 @@ Vue.component('tasksMeasures', require('./components/task/TaskMeasuresManagerCom
 Vue.component('tasksMeasure', require('./components/task/TaskUnitMeasureComponent.vue').default);
 
 //Measures
-Vue.component('parametersMeasures',require('./components/assorted/ParametersMeasureManagerComponent.vue').default);
-Vue.component('parameterMeasure', require('./components/assorted/ParameterUnitMeasureComponent.vue').default);
 Vue.component('variablesAjusteTiempos', require('./components/assorted/VariableTEComponent.vue').default);
 Vue.component('help', require('./components/assorted/HelpComponent.vue').default);
 
@@ -120,6 +118,7 @@ Vue.component('categoriesParameters',require('./components/CategoriesComponent.v
 Vue.component('parametersMeasures',require('./components/ParametersMeasureManagerComponent.vue').default);
 Vue.component('parameterMeasure', require('./components/ParameterAccordionMeasureComponent.vue').default);
 Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasureComponent.vue').default);
+Vue.component('templatesUsers', require('./components/TemplateUsersComponent.vue').default);
 
 /*Reports*/
 

@@ -28,14 +28,6 @@
                   <tr v-for="t in Tasks.data" :key="t.id">
                     <tasks-measure
                     :task="t"
-                    :showTimeOption="tiempos"
-                    :Frecuencies="Frecuencies"
-                    :WorkTypes="WorkTypes"
-                    :Correlation="Correlation"
-                    :AddedValue="AddedValue"
-                    :Risk="Risk"
-                    :RiskCondition="RiskCondition"
-                    :OrganizationalSkills="OrganizationalSkills"
                     >
                   </tasks-measure>
                 </tr>

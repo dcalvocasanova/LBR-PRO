@@ -1,21 +1,7 @@
 <template>
   <div class="container container-project">
-    <div class="row h-100" v-if="this.selectingProjectToAddTasks === true">
-      <div class="card card-plain col-12">
-        <div class="card-header card-header-primary ">
-          <h4 class="card-title mt-0 "> Seleccione el proyecto donde se gestionaran las tareas y procedimientos asociados</h4>
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <br>
-            <select v-model="currentProject" class="form-control" @change="setProject()">
-              <option v-for="p in Projects" :value="p.id">{{ p.name }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" v-if="this.selectingProjectToAddTasks === false">
+    
+    <div class="row">
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-body ">
@@ -40,7 +26,7 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 </div>
 </template>
 
@@ -48,29 +34,11 @@
 export default {
   data(){
     return{
-      jornada:0,
-      selectingProjectToAddTasks: false,
-      tiempos:true,
-      mejoramiento:false,
       currentProject:"",
       currentUser:"",
       Projects:{},
-      Tasks:{},
-      TaskElements:{},
-      PHVA:{},
-      Frecuencies:{},
-      WorkTypes:{},
-      AddedValue:{},
-      Correlation:{},
-      Risk:{},
-      RiskCondition:{},
-      OrganizationalSkills:{},
-      Levels:{},
-      level:"",
-      type:"",
-	/////////////////////////////////////
-	  Templates:[]
-
+      Tasks:{},	
+	  Templates:{}
     }
   },
   methods:{
@@ -140,7 +108,7 @@ export default {
     },
     setProject(){
       let me = this
-      me.selectingProjectToAddTasks=false
+     // me.selectingProjectToAddTasks=false
       me.getTasks()
      // me.LoadLevelsOfStructure()
     },

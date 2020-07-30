@@ -31,11 +31,9 @@
 
 <script>
  export default {
-  name: 'parameters-measure',
   props: {
     template: Array,
     jornada: Number
-
   },
   created(){
   }
