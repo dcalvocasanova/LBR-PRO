@@ -239,6 +239,10 @@ Route::get('reporte/frecuencias', function () {
     return view('reports.reporteFrecuencias');
 });
 
+Route::get('reporte/phva', function () {
+    return view('reports.reportePHVA');
+});
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -491,8 +495,21 @@ Route::get('/findvariable', 'PsychosocialVariableController@search');
 
 
 /**REPORTS*/
+//Frecuencias
 Route::get('/grafica/frecuencias/productos/', 'ReportController@getFrecuencyMeasuresByProduct');
 Route::get('/grafica/frecuencias/niveles/', 'ReportController@getFrecuencyMeasuresByLevel');
 Route::get('/grafica/frecuencias/frecuencias/', 'ReportController@getFrecuencyMeasuresByFrecuency');
 Route::get('/grafica/frecuencias/usuario/', 'ReportController@getFrecuencyMeasuresByUser');
 Route::get('/grafica/frecuencias/datos/', 'ReportController@getFrecuencyData');
+//PHVA
+Route::get('/grafica/phva/productos/', 'ReportController@getPHVAMeasuresByProduct');
+Route::get('/grafica/phva/niveles/', 'ReportController@getPHVAMeasuresByLevel');
+Route::get('/grafica/phva/phva/', 'ReportController@getPHVAMeasuresByPHVA');
+Route::get('/grafica/phva/usuario/', 'ReportController@getPHVAMeasuresByUser');
+Route::get('/grafica/phva/datos/', 'ReportController@getPHVAData');
+//Competencias
+Route::get('/grafica/competencias/productos/', 'ReportController@getCompentencesMeasuresByProduct');
+Route::get('/grafica/competencias/niveles/', 'ReportController@getCompentencesMeasuresByLevel');
+Route::get('/grafica/competencias/competencias/', 'ReportController@getCompentencesMeasuresByCompetence');
+Route::get('/grafica/competencias/usuario/', 'ReportController@getCompentencesMeasuresByUser');
+Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesAData');
