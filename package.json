@@ -33,6 +33,8 @@
     "vform": "^1.0.1",
     "vue-clock2": "^1.1.5",
     "vue-echarts": "^5.0.0-beta.0",
+    "vue-element-loading": "^1.1.5",
+    "vue-materialize-datatable": "^1.0.3",
     "vue-multiselect": "^2.1.6",
     "vue-progressbar": "^0.7.5",
     "vue2-timeago": "^1.2.6"

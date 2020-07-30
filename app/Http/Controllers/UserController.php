@@ -69,7 +69,11 @@ class UserController extends Controller
      */
     public function getUserByProjectId(Request $request)
     {
-      $users = User::select('id','name','identification')->where('relatedProjects',$request->project_id)->latest()->paginate(5);
+      $project = $request->project_id;
+      $users= User::join('user_tasks', function ($join) use($project) {
+            $join->on('users.id', '=', 'user_tasks.user_id')
+                 ->where('users.relatedProjects', '=', $project);
+            })->orderBy('users.id', 'asc')->select('users.id','users.name', 'users.identification')->paginate(5);
       return $users;
     }
 

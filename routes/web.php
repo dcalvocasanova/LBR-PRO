@@ -315,7 +315,7 @@ Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getLi
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
 Route::get('/usuarios-por-proyecto', 'UserController@getUserByProject');
-Route::get('/usuarios-del-proyecto', 'UserController@getUserByProjectId');
+Route::get('/usuarios-del-proyecto-con-tareas', 'UserController@getUserByProjectId');
 Route::get('/usuarios-por-nivel', 'UserController@getUserByLevelStructure');
 Route::get('/usuarios-jefes-por-nivel', 'UserController@getUserWhithRolesByLevelStructure');
 Route::get('/usuario', 'UserController@getCurrentUser');
@@ -484,8 +484,8 @@ Route::get('/findvariable', 'PsychosocialVariableController@search');
 
 
 /**REPORTS*/
-
-Route::get('/grafica/productos/', 'ReportController@getFrecuencyMeasuresByProduct');
-Route::get('/grafica/niveles/', 'ReportController@getFrecuencyMeasuresByLevel');
-Route::get('/grafica/frecuencias/', 'ReportController@getFrecuencyMeasuresByFrecuency');
-Route::get('/grafica/usuario/', 'ReportController@getFrecuencyMeasuresByUser');
+Route::get('/grafica/frecuencias/productos/', 'ReportController@getFrecuencyMeasuresByProduct');
+Route::get('/grafica/frecuencias/niveles/', 'ReportController@getFrecuencyMeasuresByLevel');
+Route::get('/grafica/frecuencias/frecuencias/', 'ReportController@getFrecuencyMeasuresByFrecuency');
+Route::get('/grafica/frecuencias/usuario/', 'ReportController@getFrecuencyMeasuresByUser');
+Route::get('/grafica/frecuencias/datos/', 'ReportController@getFrecuencyData');

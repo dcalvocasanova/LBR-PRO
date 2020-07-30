@@ -1,5 +1,6 @@
 <template>
 <div>
+  <loader :active="loadingPage" spinner="bar-fade-scale" size="90"/>
   <div class="container container-project">
     <div class="col-12">
       <div class="row">
@@ -25,6 +26,10 @@
                   <input @click="showFrecuencies" type="radio" name="radio" id="radio3"  v-model="checks[2]" value="2" />
                   <label for="radio3">Frecuencia</label>
               </div>
+              <div class="lbpradio-danger">
+                  <input @click="showDataFrecuencies" type="radio" name="radio" id="radio4"  v-model="checks[3]" value="3" />
+                  <label for="radio4">Ver tabla</label>
+              </div>
           </div>
         </div>
         <div class="col-md-4" v-if="showProductType">
@@ -34,8 +39,8 @@
                 <label class="bmd-label-floating">Por producto</label>
                 <select @change="selectByProduct" v-model="productPicked"  id="productPicker" class=" form-control">
                   <option  value="USER-FUNCTION" > Función de usuario</option>
-                  <option  value="PRODUCT" > Producto</option>
-                  <option  value="SUB-PRODUCT" > Producto de Subproceso</option>
+                  <option  value="PRODUCT" > Productos de procesos</option>
+                  <option  value="SUB-PRODUCT" > Productos de subproceso</option>
                 </select>
               </div>
             </div>
@@ -96,7 +101,20 @@
 
   <div class="row mt-3">
     <div class="col-12">
-      <v-chart :options="graph_one"  @click="onclick"  class="chart"/>
+      <v-chart :options="graph_one"  class="chart"/>
+    </div>
+    <div class="col-12">
+      <v-chart :options="graph_two"  class="chart"/>
+    </div>
+    <div class="col-12" v-if="showData">
+      <datatable
+      	:title="tableName"
+        :printable="false"
+      	:columns="tableColumns"
+      	:rows="tableRows"
+        :perPage="[10,15,20,25]"
+        locale="es"
+      />
     </div>
   </div>
 </div>
@@ -104,17 +122,21 @@
 
 <script>
 import ECharts from 'vue-echarts'
+import DataTable from 'vue-materialize-datatable'
+import VueElementLoading from 'vue-element-loading'
 import 'echarts/lib/chart/bar';
-import "echarts/lib/chart/line";
-import "echarts/lib/chart/pie";
+import 'echarts/lib/chart/line';
+import 'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/title';
-import "echarts/lib/component/toolbox";
+import 'echarts/lib/component/toolbox';
 
 export default {
   components: {
-    'v-chart': ECharts
+    'v-chart': ECharts,
+    'datatable': DataTable,
+    'loader': VueElementLoading
   },
   data() {
     return{
@@ -136,6 +158,8 @@ export default {
       showFrecuencyType:false,
       showUserType:false,
       showUser:false,
+      showData:false,
+      loadingPage:true,
       data_graph1:{},
       ready: false,
       graph_one: {
@@ -152,13 +176,33 @@ export default {
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
-          top: 30,
+          top: 40,
           orient: 'vertical',
           right: 0,
           data: []
         },
+        toolbox: {
+          right: 10,
+          show: false,
+          feature: {
+            dataView: {
+              show: true,
+              readOnly: true,
+              title: 'Ver datos',
+              lang: ['', 'Salir', '']
+            },
+            saveAsImage: {
+              show:true,
+              title: 'Guardar imagen'
+            }
+          }
+       },
         series: [
           {
+            label: {
+              position: 'outside',
+              formatter: '{b}: {c} ({d}%)'
+            },
             top: 35,
             right: 55,
             name: '',
@@ -167,6 +211,52 @@ export default {
             data:[],
           }]
       },
+      graph_two: {
+        xAxis: {
+            type: 'category',
+            data: ['bar']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        toolbox: {
+          feature: {
+            magicType: {
+              type: ['stack', 'tiled']
+            },
+            dataView: {}
+          }
+        },
+        series: [
+          {
+              name: 'bar',
+              type: 'bar',
+              stack: '1',
+              data: [20]
+          },
+          {
+              name: 'bar2',
+              type: 'bar',
+              stack: '2',
+              data: [30]
+          },
+          {
+              name: 'bar3',
+              type: 'bar',
+              stack: '3',
+              data: [20]
+          },
+          {
+              name: 'bar4',
+              type: 'bar',
+              stack: '4',
+              data: [15]
+          }
+        ]
+      },
+      tableName:'',
+      tableColumns:[],
+		  tableRows:[]
     }
   },
   watch: {
@@ -176,18 +266,17 @@ export default {
       this.graph_one['title']['text'] = this.tipo
       this.graph_one['series'][0]['data'] = val.data
       this.graph_one['series'][0]['name'] = this.tipo
+      this.graph_one['toolbox']['show'] = true
+      this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
       this.graph_one['legend']['data'] = val.legend
     },
   },
   methods:{
-    onclick (event, instance, echarts) {
-    //  console.log (arguments);
-    },
-
     loadAllProjects(){
       axios.get('/todos-los-proyectos')
       .then(response => {
         this.Projects=response
+        this.loadingPage = false
       });
     },
     selectedProject(){
@@ -213,9 +302,13 @@ export default {
       this.showFrecuencyType=false
       this.showProductType=false
     },
+    showDataFrecuencies(){
+      this.getTableData()
+      this.showData=true
+    },
     loadUsers(page = 1) {
       let me =this
-      axios.get('/usuarios-del-proyecto/',{
+      axios.get('/usuarios-del-proyecto-con-tareas/',{
         params: {
           project_id: me.projectPickedId,
           page: page
@@ -240,14 +333,18 @@ export default {
     },
     selectByProduct(){
       let me = this
-      axios.get('/grafica/productos/', {
+      axios.get('/grafica/frecuencias/productos/', {
         params: {
           project_id: me.projectPickedId,
           product: me.productPicked
         }
       })
       .then(response => {
-        this.tipo = "Frecuencias por producto"
+        let product = ''
+        if(me.productPicked == "USER-FUNCTION") {product = 'funciones de usuario'}
+        if(me.productPicked == "PRODUCT") {product = 'productos de proceso'}
+        if(me.productPicked == "SUB-PRODUCT") {product = 'productos de sub-proceso'}
+        this.tipo = "Frecuencias por "+product
         this.dataToShowInGraph =  response.data
       });
     },
@@ -266,7 +363,7 @@ export default {
     },
     selectByFrecuency(){
       let me = this
-      axios.get('/grafica/frecuencias/', {
+      axios.get('/grafica/frecuencias/frecuencias/', {
         params: {
           project_id: me.projectPickedId,
           frecuency: me.frecuencyPicked
@@ -278,8 +375,9 @@ export default {
       });
     },
     getUserData(user){
+      console.log(user)
       let me = this
-      axios.get('/grafica/usuario/', {
+      axios.get('/grafica/frecuencias/usuario/', {
         params: {
           user_id: user.id
         }
@@ -287,6 +385,19 @@ export default {
       .then(response => {
         this.tipo = "Tareas por usuario: "+user.name
         this.dataToShowInGraph =  response.data
+      });
+    },
+    getTableData(){
+      let me = this
+      axios.get('/grafica/frecuencias/datos/', {
+        params: {
+          project_id: me.projectPickedId
+        }
+      })
+      .then(response => {
+        this.tableName = "Datos de usuarios, tareas y frecuencias"
+        this.tableColumns = response.data.title
+        this.tableRows =response.data.content
       });
     },
   },
@@ -298,7 +409,7 @@ export default {
 </script>
 
  <style scoped>
-
+@import url(http://fonts.googleapis.com/icon?family=Material+Icons);
  .chart{
    width: 100%
  }
