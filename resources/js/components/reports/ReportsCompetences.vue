@@ -24,7 +24,7 @@
               </div>
               <div class="lbpradio-danger">
                   <input @click="showCompetence" type="radio" name="radio" id="radio3"  v-model="checks[2]" value="2" />
-                  <label for="radio3">Competence</label>
+                  <label for="radio3">Competencia</label>
               </div>
               <div class="lbpradio-danger">
                   <input @click="showDataCompetence" type="radio" name="radio" id="radio4"  v-model="checks[3]" value="3" />
@@ -64,7 +64,7 @@
                   <treeselect
                     :clearable="true"
                     :searchable="true"
-                    :options="Competence"
+                    :options="Skills"
                     :limit="8"
                     :max-height="300"
                     placeholder="Competence"
@@ -72,6 +72,7 @@
                     clearValueText="Eliminar"
                     v-model="CompetencePicked"
                     />
+                    <br>
                     <button @click="selectByCompetence" type="button" name="button">buscar</button>
                 </div>
               </div>
@@ -164,7 +165,7 @@ export default {
       legends:[],
       Projects:{},
       Levels:{},
-      Competence:[],
+      Skills:[],
       Users:{},
       tipo:"",
       projectPickedId:0,
@@ -341,9 +342,9 @@ export default {
       });
     },
     loadCatalogCompetence() {
-      axios.get('/catalogo/Competence')
+      axios.get('/catalogo/competencias')
       .then(response => {
-        this.Competence = response.data;
+        this.Skills = response.data;
       });
     },
     selectByProduct(){
@@ -392,7 +393,7 @@ export default {
     getUserData(user){
       console.log(user)
       let me = this
-      axios.get('/grafica/Competence/usuario/', {
+      axios.get('/grafica/competencias/usuario/', {
         params: {
           user_id: user.id
         }
@@ -404,7 +405,7 @@ export default {
     },
     getTableData(){
       let me = this
-      axios.get('/grafica/Competence/datos/', {
+      axios.get('/grafica/competencias/datos/', {
         params: {
           project_id: me.projectPickedId
         }

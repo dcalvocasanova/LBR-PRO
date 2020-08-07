@@ -12,7 +12,7 @@
                 <tr v-for="l in Levels" :key="l.id" >
                   <td>
                     <span v-text="l">:</span>
-                  
+
                   </td>
                   <td>
                     <button class="btn btn-info" @click="showRelatedUsers(l)"><i class="fas fa-edit"></i></button>
@@ -161,9 +161,9 @@ export default {
         Products:{},
         allocator:"",
         Tasks:{},
-		  
+
 		 //////
-		  
+
 		 Templates:{},
 		 Levels:{}
       }
@@ -180,7 +180,7 @@ export default {
           me.getProducts()
       });
     },
-	  
+
 	/////////////////////////////////////////////////////////// TemplatesUser
 	LoadLevelsOfStructure() {
       let me = this
@@ -206,7 +206,7 @@ export default {
         console.log(error);
       });
     },
-	/////////////////////////////////////  
+	/////////////////////////////////////
     getUserFunctions() {
       axios.get('/estructura/lista-funciones-de-usuario/'+this.currentProject)
       .then(response => {
@@ -252,7 +252,7 @@ export default {
       })
       .then(response => {
         this.Users = response.data; //get all projects from page
-        //$('#TaskNotificator').modal('show');
+        $('#TaskNotificator').modal('show');
       });
     },
 	getUsersInTemplate(level){
@@ -267,7 +267,7 @@ export default {
         //$('#TaskNotificator').modal('show');
       });
     },
-	  
+
 	saveRelation(){
 		let me = this
         me.form.relatedToLevel = me.relatedToLevel
@@ -283,7 +283,7 @@ export default {
         })
         me.exit()
     },
-		
+
     sendNotification(){
       let me = this
       if(me.usersToNotify.length > 0 &&  me.tasksToNotify.length > 0){

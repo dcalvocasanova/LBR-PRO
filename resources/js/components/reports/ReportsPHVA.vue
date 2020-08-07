@@ -73,6 +73,7 @@
                     v-model="phvaPicked"
                     />
                 </div>
+                <br>
                 <button @click="selectByPHVA" type="button" name="button">buscar</button>
               </div>
             </div>

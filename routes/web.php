@@ -243,6 +243,10 @@ Route::get('reporte/phva', function () {
     return view('reports.reportePHVA');
 });
 
+Route::get('reporte/competencias', function () {
+    return view('reports.reporteCompetencias');
+});
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -512,4 +516,4 @@ Route::get('/grafica/competencias/productos/', 'ReportController@getCompentences
 Route::get('/grafica/competencias/niveles/', 'ReportController@getCompentencesMeasuresByLevel');
 Route::get('/grafica/competencias/competencias/', 'ReportController@getCompentencesMeasuresByCompetence');
 Route::get('/grafica/competencias/usuario/', 'ReportController@getCompentencesMeasuresByUser');
-Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesAData');
+Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesData');
