@@ -247,6 +247,14 @@ Route::get('reporte/competencias', function () {
     return view('reports.reporteCompetencias');
 });
 
+Route::get('reporte/esfuerzo', function () {
+    return view('reports.reporteEsfuerzos');
+});
+
+Route::get('reporte/tipo-trabajo', function () {
+    return view('reports.reporteTipoTrabajo');
+});
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -517,3 +525,17 @@ Route::get('/grafica/competencias/niveles/', 'ReportController@getCompentencesMe
 Route::get('/grafica/competencias/competencias/', 'ReportController@getCompentencesMeasuresByCompetence');
 Route::get('/grafica/competencias/usuario/', 'ReportController@getCompentencesMeasuresByUser');
 Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesData');
+
+//Esfuerzo
+Route::get('/grafica/esfuerzo/productos/', 'ReportController@getEffortMeasuresByProduct');
+Route::get('/grafica/esfuerzo/niveles/', 'ReportController@getEffortMeasuresByLevel');
+Route::get('/grafica/esfuerzo/esfuerzo/', 'ReportController@getEffortMeasuresByEffort');
+Route::get('/grafica/esfuerzo/usuario/', 'ReportController@getEffortMeasuresByUser');
+Route::get('/grafica/esfuerzo/datos/', 'ReportController@getEffortData');
+
+//Tipo de trabajo
+Route::get('/grafica/tipo-trabajo/productos/', 'ReportController@getWorkTypeMeasuresByProduct');
+Route::get('/grafica/tipo-trabajo/niveles/', 'ReportController@getWorkTypeMeasuresByLevel');
+Route::get('/grafica/tipo-trabajo', 'ReportController@getWorkTypeMeasuresByWorkType');
+Route::get('/grafica/tipo-trabajo/usuario/', 'ReportController@getWorkTypeMeasuresByUser');
+Route::get('/grafica/tipo-trabajo/datos/', 'ReportController@getWorkTypeData');

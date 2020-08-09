@@ -128,6 +128,8 @@ Vue.component('reportExample', require('./components/reports/ReportsExample.vue'
 Vue.component('reportFrecuency', require('./components/reports/ReportsFrecuencies.vue').default);
 Vue.component('reportPhva', require('./components/reports/ReportsPHVA.vue').default);
 Vue.component('reportCompetences', require('./components/reports/ReportsCompetences.vue').default);
+Vue.component('reportEfforts', require('./components/reports/ReportsEfforts.vue').default);
+Vue.component('reportsWorkTypes', require('./components/reports/ReportsWorkType.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

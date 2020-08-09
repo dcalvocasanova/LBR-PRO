@@ -58,7 +58,7 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <label class="bmd-label-floating">Por Competence</label>
+                <label class="bmd-label-floating">Por competencias</label>
                 <div class="form-group">
                   <label class="bmd-label-floating"></label>
                   <treeselect
@@ -236,7 +236,7 @@ export default {
       graph_two: {
         xAxis: {
             type: 'category',
-            data: ['Competence']
+            data: ['Competencia']
         },
         yAxis: {
             type: 'value'
@@ -386,12 +386,11 @@ export default {
         }
       })
       .then(response => {
-        this.tipo = "Tareas por frecuencia: "+me.CompetencePicked
+        this.tipo = "Tareas por competencia "
         this.dataToShowInGraph =  response.data
       });
     },
     getUserData(user){
-      console.log(user)
       let me = this
       axios.get('/grafica/competencias/usuario/', {
         params: {

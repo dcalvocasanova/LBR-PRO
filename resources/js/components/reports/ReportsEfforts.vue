@@ -23,11 +23,11 @@
                   <label for="radio2">Estructura</label>
               </div>
               <div class="lbpradio-danger">
-                  <input @click="showFrecuencies" type="radio" name="radio" id="radio3"  v-model="checks[2]" value="2" />
-                  <label for="radio3">Frecuencia</label>
+                  <input @click="showEfforts" type="radio" name="radio" id="radio3"  v-model="checks[2]" value="2" />
+                  <label for="radio3">Esfuerzo</label>
               </div>
               <div class="lbpradio-danger">
-                  <input @click="showDataFrecuencies" type="radio" name="radio" id="radio4"  v-model="checks[3]" value="3" />
+                  <input @click="showDataEfforts" type="radio" name="radio" id="radio4"  v-model="checks[3]" value="3" />
                   <label for="radio4">Ver tabla</label>
               </div>
           </div>
@@ -54,13 +54,13 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4" v-if="showFrecuencyType">
+        <div class="col-md-4" v-if="showEffortType">
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <label class="bmd-label-floating">Por frecuencia</label>
-                <select @change="selectByFrecuency" v-model="frecuencyPicked"  id="frecuencyPicker" class=" form-control">
-                  <option v-for="f in Frecuencies" :key="f.id" :value="f.name"> {{ f.name }}</option>
+                <label class="bmd-label-floating">Por esfuerzo</label>
+                <select @change="selectByEffort" v-model="effortPicked"  id="EffortPicker" class=" form-control">
+                  <option v-for="f in Efforts" :key="f.id" :value="f.name"> {{ f.name }}</option>
                 </select>
               </div>
             </div>
@@ -149,17 +149,17 @@ export default {
       legends:[],
       Projects:{},
       Levels:{},
-      Frecuencies:{},
+      Efforts:{},
       Users:{},
       tipo:"",
       projectPickedId:0,
       key_graph_two:0,
       levelPicked:'',
       productPicked:'',
-      frecuencyPicked:'',
+      effortPicked:'',
       showOptions:false,
       showProductType:false,
-      showFrecuencyType:false,
+      showEffortType:false,
       showUserType:false,
       showUser:false,
       showData:false,
@@ -288,22 +288,22 @@ export default {
     showStrutureInformation(){
       this.loadLevelsOfStructure()
       this.showProductType=true
-      this.showFrecuencyType=false
+      this.showEffortType=false
       this.showUserType=false
     },
-    showFrecuencies(){
-      this.loadCatalogFrecuency()
-      this.showFrecuencyType=true
+    showEfforts(){
+      this.loadCatalogEffort()
+      this.showEffortType=true
       this.showProductType=false
       this.showUserType=false
     },
     showUsers(){
       this.loadUsers()
       this.showUserType=true
-      this.showFrecuencyType=false
+      this.showEffortType=false
       this.showProductType=false
     },
-    showDataFrecuencies(){
+    showDataEfforts(){
       this.getTableData()
     },
     loadUsers(page = 1) {
@@ -325,15 +325,15 @@ export default {
         me.Levels = response.data; //get all catalogs from category selected
       });
     },
-    loadCatalogFrecuency(){
-      axios.get('/catalogo?id=FRECUENCY')
+    loadCatalogEffort(){
+      axios.get('/catalogo?id=Effort-T')
       .then(response => {
-        this.Frecuencies = response.data;
+        this.Efforts = response.data;
       });
     },
     selectByProduct(){
       let me = this
-      axios.get('/grafica/frecuencias/productos/', {
+      axios.get('/grafica/esfuerzo/productos/', {
         params: {
           project_id: me.projectPickedId,
           product: me.productPicked
@@ -350,7 +350,7 @@ export default {
     },
     selectByLevel(){
       let me = this
-      axios.get('/grafica/frecuencias/niveles/', {
+      axios.get('/grafica/esfuerzo/niveles/', {
         params: {
           project_id: me.projectPickedId,
           level: me.levelPicked
@@ -361,22 +361,22 @@ export default {
         this.dataToShowInGraph =  response.data
       });
     },
-    selectByFrecuency(){
+    selectByEffort(){
       let me = this
-      axios.get('/grafica/frecuencias/frecuencias/', {
+      axios.get('/grafica/esfuerzo/esfuerzo/', {
         params: {
           project_id: me.projectPickedId,
-          frecuency: me.frecuencyPicked
+          effort: me.effortPicked
         }
       })
       .then(response => {
-        this.tipo = "Tareas por frecuencia: "+me.frecuencyPicked
+        this.tipo = "Tareas por frecuencia: "+me.effortPicked
         this.dataToShowInGraph =  response.data
       });
     },
     getUserData(user){
       let me = this
-      axios.get('/grafica/frecuencias/usuario/', {
+      axios.get('/grafica/esfuerzo/usuario/', {
         params: {
           user_id: user.id
         }
@@ -388,7 +388,7 @@ export default {
     },
     getTableData(){
       let me = this
-      axios.get('/grafica/frecuencias/datos/', {
+      axios.get('/grafica/esfuerzo/datos/', {
         params: {
           project_id: me.projectPickedId
         }
