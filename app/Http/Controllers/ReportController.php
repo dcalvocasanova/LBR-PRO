@@ -913,6 +913,9 @@ class ReportController extends Controller
 
     $result['Amount'] = $userParameterMeasures->groupBy('fecha')
                       ->map(function ($row) {return $row->sum('measure');})->flatten();
+
+    $Promedio = $userParameterMeasures->groupBy('fecha')
+                      ->map(function ($row) {return $row->avg('measure');})->flatten();
     return $result;
   }
 
