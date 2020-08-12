@@ -134,6 +134,7 @@
         <a class="collapse-item" href="/reporte/competencias">Competencias</a>
         <a class="collapse-item" href="/reporte/esfuerzo">Esfuerzo de trabajo</a>
         <a class="collapse-item" href="/reporte/tipo-trabajo">Tipo de trabajo</a>
+        <a class="collapse-item" href="/reporte/riesgo">Riesgos</a>
 
       </div>
     </div>

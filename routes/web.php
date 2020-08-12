@@ -255,6 +255,9 @@ Route::get('reporte/tipo-trabajo', function () {
     return view('reports.reporteTipoTrabajo');
 });
 
+Route::get('reporte/riesgo', function () {
+    return view('reports.reporteRiesgos');
+});
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -539,3 +542,10 @@ Route::get('/grafica/tipo-trabajo/niveles/', 'ReportController@getWorkTypeMeasur
 Route::get('/grafica/tipo-trabajo', 'ReportController@getWorkTypeMeasuresByWorkType');
 Route::get('/grafica/tipo-trabajo/usuario/', 'ReportController@getWorkTypeMeasuresByUser');
 Route::get('/grafica/tipo-trabajo/datos/', 'ReportController@getWorkTypeData');
+
+//Riesgos
+Route::get('/grafica/riesgo/productos/', 'ReportController@getRiskMeasuresByProduct');
+Route::get('/grafica/riesgo/niveles/', 'ReportController@getRiskMeasuresByLevel');
+Route::get('/grafica/riesgo', 'ReportController@getRiskMeasuresByRisk');
+Route::get('/grafica/riesgo/usuario/', 'ReportController@getRiskMeasuresByUser');
+Route::get('/grafica/riesgo/datos/', 'ReportController@getRiskData');

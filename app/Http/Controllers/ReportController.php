@@ -726,6 +726,160 @@ class ReportController extends Controller
 
 
 
+  /***** Riesgos***/
+
+  public function getRiskMeasuresByProduct(Request $request){
+    $result = array();
+    $task= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.risk')
+                ->where('tasks.project_id',$request->project_id)
+                ->where('tasks.type',$request->product)
+                ->whereNotNull('tasks.risk')
+                ->select('tasks.risk', 'catalogs.type', 'catalogs.id', 'catalogs.name')->get();
+
+    $counter =  $task->countBy(function ($item) {
+      if (($item->type =="RISK-T")){ return $item->id;}
+      $id = explode("-T", $item->type);
+      return $id[0];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($name);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getRiskMeasuresByLevel(Request $request) {
+    $result = array();
+    $task= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.risk')
+                ->where('tasks.project_id',$request->project_id)
+                ->where('tasks.relatedToLevel',$request->level)
+                ->whereNotNull('tasks.risk')
+                ->select('tasks.risk', 'catalogs.type', 'catalogs.id', 'catalogs.name')->get();
+    $counter =  $task->countBy(function ($item) {
+      if (($item->type =="RISK-T")){ return $item->id;}
+      $id = explode("-T", $item->type);
+      return $id[0];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($name);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getRiskMeasuresByRisk(Request $request) {
+    $result = array();
+    $task= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.risk')
+                ->where('tasks.project_id',$request->project_id)
+                ->where('tasks.risk',$request->risk)
+                ->whereNotNull('tasks.risk')
+                ->select('tasks.risk', 'catalogs.type', 'catalogs.id', 'tasks.task')->get();
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    foreach ($task as $t){
+      $datos->push(array('value'=> 1 ,'name'=>$t->task));
+      $legend->push($t->task);
+      $graph_two->push(array('name'=>$t->task, 'type'=>'bar', 'stack'=> $t->type, 'data'=>array(1)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getRiskMeasuresByUser(Request $request) {
+    $result = array();
+    $userTask=UserTask::where('user_id',$request->user_id)->get();
+    $taskbyUser=explode(',', $userTask[0]->tasks_id);
+    $task = Task::find($taskbyUser);
+    $task= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.risk')
+                ->whereIn('tasks.id',$taskbyUser)
+                ->whereNotNull('tasks.risk')
+                ->select('tasks.risk', 'catalogs.type', 'catalogs.id', 'catalogs.name')->get();
+
+    $counter =  $task->countBy(function ($item) {
+      if (($item->type =="RISK-T")){ return $item->id;}
+      $id = explode("-T", $item->type);
+      return $id[0];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($key);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getRiskData(Request $request){
+
+    $project = $request->project_id;
+    $tasks= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.risk')
+                ->where('tasks.project_id',$request->project_id)
+                ->whereNotNull('risk')
+                ->select('tasks.id','tasks.risk', 'tasks.task', 'tasks.relatedToLevel','tasks.allocator','catalogs.type', 'catalogs.name')->get();
+
+    $users =  DB::table('user_tasks')
+              ->Join('users', function ($join) use($project) {
+                  $join->on('users.id', '=', 'user_tasks.user_id')
+                  ->where('users.relatedProjects', '=', $project);
+              })->select('users.name', 'users.identification', 'user_tasks.tasks_id')->get();
+
+
+    $result = collect();
+    foreach ($users as $user) {
+        $taskAssigned=explode(',', $user->tasks_id);
+        foreach ($taskAssigned as $taskReview) {
+          $t =$tasks->where('id', $taskReview)->flatten();
+          $result->push(array('identification'=>$user->identification,
+                         'user'=>$user->name,
+                         'task'=>$t[0]['task'],
+                         'level'=>$t[0]['relatedToLevel'],
+                         'product'=>$t[0]['allocator'],
+                         'risk'=>$t[0]['name'],
+                        ));
+          }
+    }
+    $title =[
+      ['label'=>"Identificación",'field'=> "identification",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nombre",'field'=> "user",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nivel de estructura",'field'=> "level",'numeric'=> false, 'html'=> false],
+      ['label'=> "Producto",'field'=> "product",'numeric'=> false, 'html'=> false],
+      ['label'=> "Riesgo",'field'=> "risk",'numeric'=> false, 'html'=> false]
+    ];
+    return ['content'=> $result, 'title'=> $title];
+  }
 
 
 
@@ -739,6 +893,7 @@ class ReportController extends Controller
     return $categorias;
   }
 
+  /*Recopila los datos de los dias evaluados por usuario*/
   public function getUserParameterMeasures(Request $request)
   {
 

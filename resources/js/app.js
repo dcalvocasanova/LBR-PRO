@@ -130,6 +130,7 @@ Vue.component('reportPhva', require('./components/reports/ReportsPHVA.vue').defa
 Vue.component('reportCompetences', require('./components/reports/ReportsCompetences.vue').default);
 Vue.component('reportEfforts', require('./components/reports/ReportsEfforts.vue').default);
 Vue.component('reportsWorkTypes', require('./components/reports/ReportsWorkType.vue').default);
+Vue.component('reportsRisks', require('./components/reports/ReportsRisks.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
