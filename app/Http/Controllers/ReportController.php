@@ -6,6 +6,8 @@ use App\Task;
 use App\User;
 use App\Catalog;
 use App\UserTask;
+use App\Measure;
+use App\ParametersMeasure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;

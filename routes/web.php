@@ -266,6 +266,9 @@ Route::get('reporte/valor-agregado', function () {
 Route::get('reporte/correlacion', function () {
     return view('reports.reporteCorrelacion');
 });
+Route::get('reporte/instrumentos', function () {
+    return view('reports.reporteRelacionInstrumentos');
+});
 
 
 //PENDIENTE DE REVISIÓN
@@ -573,3 +576,8 @@ Route::get('/grafica/correlacion/niveles/', 'ReportController@getCorelationMeasu
 Route::get('/grafica/correlacion', 'ReportController@getCorelationMeasuresByCorelation');
 Route::get('/grafica/correlacion/usuario/', 'ReportController@getCorelationMeasuresByUser');
 Route::get('/grafica/correlacion/datos/', 'ReportController@getCorelationData');
+
+//Revisión de instrumentos
+Route::get('/grafica/instrumentos/productos/', 'ReportController@getInstrumentsMeasuresByProduct');
+Route::get('/grafica/instrumentos/niveles/', 'ReportController@getInstrumentsMeasuresByLevel');
+Route::get('/grafica/instrumentos/usuario/', 'ReportController@getInstrumentsMeasuresByUser');
