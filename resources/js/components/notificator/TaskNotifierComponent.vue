@@ -64,7 +64,7 @@
                   <span v-text="f[0]"></span>
                 </td>
                 <td>
-                  <button class="btn btn-info" @click="showRelatedTask(f[0],f[3])"><i class="fas fa-envelope"></i></button>
+                  <button class="btn btn-info" @click="showRelatedTask(f[0],f[2])"><i class="fas fa-envelope"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -195,9 +195,9 @@ export default {
       });
     },
     showRelatedTask(allocator, level){
-      this.allocator = allocator
-      this.relatedToLevel = level
-      this.getTasks()
+        this.allocator = allocator
+        this.relatedToLevel = level
+        this.getTasks()
     },
     getTasks(page = 1) {
       let me =this;
@@ -210,8 +210,12 @@ export default {
         }
       })
       .then(response => {
-        me.Tasks = response.data
-        me.getUsersInLevel(me.Tasks.data[0].relatedToLevel)
+        if(Object.keys(response.data.data).length > 0){
+          me.Tasks = response.data
+          me.getUsersInLevel(me.Tasks.data[0].relatedToLevel)
+        }else{
+          swal.fire('info','Sin tareas registradas','info')
+        }
       });
     },
     loadNotificator(task){
@@ -256,10 +260,8 @@ export default {
     changeTaskStatus(){
       let me = this
       me.tasks.tasks = me.tasksToNotify
-      console.log(me.tasks.tasks)
       me.tasks.post('/tareas/notificadas')
       .then(function (response) {
-        console.log(response.data)
         me.tasksToNotify = []
       })
     },

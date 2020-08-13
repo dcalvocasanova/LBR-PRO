@@ -126,6 +126,13 @@ Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue
 Vue.component('taskStatus', require('./components/reports/ReportsTasksStatus.vue').default);
 Vue.component('reportExample', require('./components/reports/ReportsExample.vue').default);
 Vue.component('reportFrecuency', require('./components/reports/ReportsFrecuencies.vue').default);
+Vue.component('reportPhva', require('./components/reports/ReportsPHVA.vue').default);
+Vue.component('reportCompetences', require('./components/reports/ReportsCompetences.vue').default);
+Vue.component('reportEfforts', require('./components/reports/ReportsEfforts.vue').default);
+Vue.component('reportsWorkTypes', require('./components/reports/ReportsWorkType.vue').default);
+Vue.component('reportsRisks', require('./components/reports/ReportsRisks.vue').default);
+Vue.component('reportAddedValue', require('./components/reports/ReportsAddedValue.vue').default);
+Vue.component('reportCorelation', require('./components/reports/ReportsCorelation.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

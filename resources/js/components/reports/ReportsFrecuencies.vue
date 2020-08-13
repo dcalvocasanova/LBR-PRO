@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-4">
           <div class="form-group">
-            <label class="bmd-label-floating">Projecto</label>
+            <label class="bmd-label-floating">Proyecto</label>
             <select @change="selectedProject" v-model="projectPickedId" class=" form-control">
               <option v-for="p in Projects.data" :value="p.id">{{ p.name }}</option>
             </select>
@@ -100,11 +100,14 @@
   </div>
 
   <div class="row mt-3">
-    <div class="col-12">
+    <div class="col-12" v-if="showNodata">
+      <h2 class="text-center">No hay datos para presentar</h2>
+    </div>
+    <div class="col-12" v-if="showGraphics">
       <v-chart :options="graph_one"  class="chart"/>
     </div>
-    <div class="col-12">
-      <v-chart :options="graph_two"  class="chart"/>
+    <div class="col-12" v-if="showGraphics">
+      <v-chart :options="graph_two" :key="key_graph_two" class="chart"/>
     </div>
     <div class="col-12" v-if="showData">
       <datatable
@@ -150,6 +153,7 @@ export default {
       Users:{},
       tipo:"",
       projectPickedId:0,
+      key_graph_two:0,
       levelPicked:'',
       productPicked:'',
       frecuencyPicked:'',
@@ -159,6 +163,8 @@ export default {
       showUserType:false,
       showUser:false,
       showData:false,
+      showGraphics:false,
+      showNodata:false,
       loadingPage:true,
       data_graph1:{},
       ready: false,
@@ -214,45 +220,31 @@ export default {
       graph_two: {
         xAxis: {
             type: 'category',
-            data: ['bar']
+            data: ['Frecuencias']
         },
         yAxis: {
             type: 'value'
         },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c}'
+        },
         toolbox: {
+          showTitle:false,
           feature: {
             magicType: {
+              title:'',
               type: ['stack', 'tiled']
             },
-            dataView: {}
+            dataView: {
+              show: true,
+              readOnly: true,
+              title: 'Ver datos',
+              lang: ['', 'Salir', '']
+            }
           }
         },
-        series: [
-          {
-              name: 'bar',
-              type: 'bar',
-              stack: '1',
-              data: [20]
-          },
-          {
-              name: 'bar2',
-              type: 'bar',
-              stack: '2',
-              data: [30]
-          },
-          {
-              name: 'bar3',
-              type: 'bar',
-              stack: '3',
-              data: [20]
-          },
-          {
-              name: 'bar4',
-              type: 'bar',
-              stack: '4',
-              data: [15]
-          }
-        ]
+        series:[]
       },
       tableName:'',
       tableColumns:[],
@@ -261,14 +253,21 @@ export default {
   },
   watch: {
     dataToShowInGraph: function (val) {
-      this.datos = val.data
-      this.legends = val.legend
-      this.graph_one['title']['text'] = this.tipo
-      this.graph_one['series'][0]['data'] = val.data
-      this.graph_one['series'][0]['name'] = this.tipo
-      this.graph_one['toolbox']['show'] = true
-      this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
-      this.graph_one['legend']['data'] = val.legend
+      if(Object.keys(val.data).length > 0){
+        this.showNodata=false
+        this.graph_one['title']['text'] = this.tipo
+        this.graph_one['series'][0]['data'] = val.data
+        this.graph_one['series'][0]['name'] = this.tipo
+        this.graph_one['toolbox']['show'] = true
+        this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
+        this.graph_one['legend']['data'] = val.legend
+        this.key_graph_two+= 1
+        this.graph_two['series']= val.second_graphic
+        this.showGraphics=true
+      }else{
+        this.showNodata=true
+        this.showGraphics=false
+      }
     },
   },
   methods:{
@@ -283,6 +282,8 @@ export default {
       this.checks=[]
       this.showOptions = true
       this.showProductType=false
+      this.showGraphics=false
+      this.showData=false
     },
     showStrutureInformation(){
       this.loadLevelsOfStructure()
@@ -304,7 +305,6 @@ export default {
     },
     showDataFrecuencies(){
       this.getTableData()
-      this.showData=true
     },
     loadUsers(page = 1) {
       let me =this
@@ -350,7 +350,7 @@ export default {
     },
     selectByLevel(){
       let me = this
-      axios.get('/grafica/niveles/', {
+      axios.get('/grafica/frecuencias/niveles/', {
         params: {
           project_id: me.projectPickedId,
           level: me.levelPicked
@@ -375,7 +375,6 @@ export default {
       });
     },
     getUserData(user){
-      console.log(user)
       let me = this
       axios.get('/grafica/frecuencias/usuario/', {
         params: {
@@ -395,15 +394,22 @@ export default {
         }
       })
       .then(response => {
-        this.tableName = "Datos de usuarios, tareas y frecuencias"
-        this.tableColumns = response.data.title
-        this.tableRows =response.data.content
+        if(Object.keys(response.data.content).length > 0){
+          this.showNodata=false
+          this.tableName = "Datos de usuarios, tareas y frecuencias"
+          this.tableColumns = response.data.title
+          this.tableRows =response.data.content
+          this.showData=true
+        }else{
+          this.showNodata=true
+          this.showData=false
+        }
+
       });
     },
   },
   mounted(){
     this.loadAllProjects()
-    this.loadCatalogFrecuency()
   }
 }
 </script>
