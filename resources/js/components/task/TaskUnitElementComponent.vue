@@ -140,14 +140,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="a in AddedValue" :key="a.id">
+                <tr v-for="(a, index) in AddedValue" :key="a.id">
                   <th v-text="a.name"></th>
                   <th>
-                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="1"> 1
-                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="2"> 2
-                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="3"> 3
-                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="4"> 4
-                    <input @click="showSave" type="radio" v-model="addedValueArray[a.id]" value="5"> 5
+                    <input @click="showSave" type="radio" v-model="addedValueArray[index]" value="1"> 1
+                    <input @click="showSave" type="radio" v-model="addedValueArray[index]" value="2"> 2
+                    <input @click="showSave" type="radio" v-model="addedValueArray[index]" value="3"> 3
+                    <input @click="showSave" type="radio" v-model="addedValueArray[index]" value="4"> 4
+                    <input @click="showSave" type="radio" v-model="addedValueArray[index]" value="5"> 5
                   </th>
                 </tr>
               </tbody>
@@ -168,7 +168,7 @@
                 <tr v-for="a in Correlation" :key="a.id">
                   <th v-text="a.name"></th>
                   <th>
-                    <input @click="showSave" v-model="correlationArray" type="checkbox":value="a.name">
+                    <input @click="showSave" v-model="correlationArray" type="checkbox":value="a.id">
                   </th>
                 </tr>
               </tbody>

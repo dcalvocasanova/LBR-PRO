@@ -135,10 +135,10 @@
         <a class="collapse-item" href="/reporte/esfuerzo">Esfuerzo de trabajo</a>
         <a class="collapse-item" href="/reporte/tipo-trabajo">Tipo de trabajo</a>
         <a class="collapse-item" href="/reporte/riesgo">Riesgos</a>
-
+        <a class="collapse-item" href="/reporte/valor-agregado">Valor Agregado</a>
+        <a class="collapse-item" href="/reporte/correlacion">Correlación</a>
       </div>
     </div>
-
   </li>
 
   @endif

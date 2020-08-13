@@ -131,6 +131,8 @@ Vue.component('reportCompetences', require('./components/reports/ReportsCompeten
 Vue.component('reportEfforts', require('./components/reports/ReportsEfforts.vue').default);
 Vue.component('reportsWorkTypes', require('./components/reports/ReportsWorkType.vue').default);
 Vue.component('reportsRisks', require('./components/reports/ReportsRisks.vue').default);
+Vue.component('reportAddedValue', require('./components/reports/ReportsAddedValue.vue').default);
+Vue.component('reportCorelation', require('./components/reports/ReportsCorelation.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

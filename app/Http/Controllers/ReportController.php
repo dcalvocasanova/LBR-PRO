@@ -881,7 +881,388 @@ class ReportController extends Controller
     return ['content'=> $result, 'title'=> $title];
   }
 
+  /***** VALOR AGREGADO***/
 
+  public function getAddedValueMeasuresByProduct(Request $request){
+    $result = array();
+    $task = Task::select('addedValue', 'task')->where('project_id',$request->project_id)->where('type',$request->product)->whereNotNull('addedValue')->get();
+    $counterAddedValueReal=0;
+    $counterAddedValueEnterprice=0;
+    $counterNoAddedValue=0;
+
+    foreach ($task as $t) {
+      if(isset($t->addedValue[0]) && isset($t->addedValue[1]) && isset($t->addedValue[2])){
+        if($t->addedValue[0]== "4" || $t->addedValue[0] == "5"){
+          $counterAddedValueReal ++;
+        }elseif ($t->addedValue[1]== "4" || $t->addedValue[1] == "5" || $t->addedValue[2]== "4" || $t->addedValue[2] == "5")  {
+          $counterAddedValueEnterprice ++;
+        }else{
+          $counterNoAddedValue ++;
+        }
+      }
+    }
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+
+    if($counterAddedValueReal > 0){
+      $datos->push(array('value'=>$counterAddedValueReal,'name'=>'Valor real'));
+      $legend->push('Valor real');
+      $graph_two->push(array('name'=>'Valor real', 'type'=>'bar', 'stack'=> 'VR', 'data'=>array($counterAddedValueReal)));
+    }
+    if($counterAddedValueEnterprice > 0){
+      $datos->push(array('value'=>$counterAddedValueEnterprice,'name'=>'Valor agregado para la empresa'));
+      $legend->push('Valor agregado para la empresa');
+      $graph_two->push(array('name'=>'Valor agregado para la empresa', 'type'=>'bar', 'stack'=> 'VRE', 'data'=>array($counterAddedValueEnterprice)));
+    }
+    if($counterNoAddedValue > 0){
+      $datos->push(array('value'=>$counterNoAddedValue,'name'=>'Sin valor real'));
+      $legend->push('Sin valor real');
+      $graph_two->push(array('name'=>'Sin valor real', 'type'=>'bar', 'stack'=> 'NVR', 'data'=>array($counterNoAddedValue)));
+    }
+
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getAddedValueMeasuresByLevel(Request $request) {
+    $result = array();
+    $task = Task::select('addedValue')->where('project_id',$request->project_id)->where('relatedToLevel',$request->level)->get();
+    $counterAddedValueReal=0;
+    $counterAddedValueEnterprice=0;
+    $counterNoAddedValue=0;
+
+    foreach ($task as $t) {
+      if(isset($t->addedValue[0]) && isset($t->addedValue[1]) && isset($t->addedValue[2])){
+        if($t->addedValue[0]== "4" || $t->addedValue[0] == "5"){
+          $counterAddedValueReal ++;
+        }elseif ($t->addedValue[1]== "4" || $t->addedValue[1] == "5" || $t->addedValue[2]== "4" || $t->addedValue[2] == "5")  {
+          $counterAddedValueEnterprice ++;
+        }else{
+          $counterNoAddedValue ++;
+        }
+      }
+    }
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+
+    if($counterAddedValueReal > 0){
+      $datos->push(array('value'=>$counterAddedValueReal,'name'=>'Valor real'));
+      $legend->push('Valor real');
+      $graph_two->push(array('name'=>'Valor real', 'type'=>'bar', 'stack'=> 'VR', 'data'=>array($counterAddedValueReal)));
+    }
+    if($counterAddedValueEnterprice > 0){
+      $datos->push(array('value'=>$counterAddedValueEnterprice,'name'=>'Valor agregado para la empresa'));
+      $legend->push('Valor agregado para la empresa');
+      $graph_two->push(array('name'=>'Valor agregado para la empresa', 'type'=>'bar', 'stack'=> 'VRE', 'data'=>array($counterAddedValueEnterprice)));
+    }
+    if($counterNoAddedValue > 0){
+      $datos->push(array('value'=>$counterNoAddedValue,'name'=>'Sin valor real'));
+      $legend->push('Sin valor real');
+      $graph_two->push(array('name'=>'Sin valor real', 'type'=>'bar', 'stack'=> 'NVR', 'data'=>array($counterNoAddedValue)));
+    }
+
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getAddedValueMeasuresByAddedValue(Request $request) {
+    $result = array();
+    $option= $request->addedValue;
+
+    $task = Task::select('addedValue', 'task')->where('project_id',$request->project_id)->get();
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    foreach ($task as $t) {
+      if(isset($t->addedValue[0]) && isset($t->addedValue[1]) && isset($t->addedValue[2])){
+        if($option == 1){
+          if($t->addedValue[0]== "4" || $t->addedValue[0] == "5"){
+            $datos->push(array('value'=> 1 ,'name'=>$t->task));
+            $legend->push($t->task);
+            $graph_two->push(array('name'=>$t->task, 'type'=>'bar', 'stack'=> 'VR', 'data'=>array(1)));
+          }
+        }
+        if($option == 2){
+            if($t->addedValue[1]== "4" || $t->addedValue[1] == "5" || $t->addedValue[2]== "4" || $t->addedValue[2] == "5"){
+              $datos->push(array('value'=> 1 ,'name'=>$t->task));
+              $legend->push($t->task);
+              $graph_two->push(array('name'=>$t->task, 'type'=>'bar', 'stack'=> 'VR', 'data'=>array(1)));
+            }
+        }
+        if($option == 3){
+          if($t->addedValue[0] != "4" && $t->addedValue[0] != "5" && $t->addedValue[1] != "4" && $t->addedValue[1] != "5" && $t->addedValue[2] != "4" && $t->addedValue[2] != "5"){
+            $datos->push(array('value'=> 1 ,'name'=>$t->task));
+            $legend->push($t->task);
+            $graph_two->push(array('name'=>$t->task, 'type'=>'bar', 'stack'=> 'VR', 'data'=>array(1)));
+          }
+        }
+      }
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getAddedValueMeasuresByUser(Request $request) {
+    $result = array();
+    $userTask=UserTask::where('user_id',$request->user_id)->get();
+    $taskbyUser=explode(',', $userTask[0]->tasks_id);
+    $task = Task::find($taskbyUser);
+
+    $counterAddedValueReal=0;
+    $counterAddedValueEnterprice=0;
+    $counterNoAddedValue=0;
+
+    foreach ($task as $t) {
+      if(isset($t->addedValue[0]) && isset($t->addedValue[1]) && isset($t->addedValue[2])){
+        if($t->addedValue[0]== "4" || $t->addedValue[0] == "5"){
+          $counterAddedValueReal ++;
+        }elseif ($t->addedValue[1]== "4" || $t->addedValue[1] == "5" || $t->addedValue[2]== "4" || $t->addedValue[2] == "5")  {
+          $counterAddedValueEnterprice ++;
+        }else{
+          $counterNoAddedValue ++;
+        }
+      }
+    }
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    if($counterAddedValueReal > 0){
+      $datos->push(array('value'=>$counterAddedValueReal,'name'=>'Valor real'));
+      $legend->push('Valor real');
+      $graph_two->push(array('name'=>'Valor real', 'type'=>'bar', 'stack'=> 'VR', 'data'=>array($counterAddedValueReal)));
+    }
+    if($counterAddedValueEnterprice > 0){
+      $datos->push(array('value'=>$counterAddedValueEnterprice,'name'=>'Valor agregado para la empresa'));
+      $legend->push('Valor agregado para la empresa');
+      $graph_two->push(array('name'=>'Valor agregado para la empresa', 'type'=>'bar', 'stack'=> 'VRE', 'data'=>array($counterAddedValueEnterprice)));
+    }
+    if($counterNoAddedValue > 0){
+      $datos->push(array('value'=>$counterNoAddedValue,'name'=>'Sin valor real'));
+      $legend->push('Sin valor real');
+      $graph_two->push(array('name'=>'Sin valor real', 'type'=>'bar', 'stack'=> 'NVR', 'data'=>array($counterNoAddedValue)));
+    }
+
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getAddedValueData(Request $request){
+    $project = $request->project_id;
+    $tasks = Task::select('id','task','relatedToLevel','allocator','addedValue')->where('project_id',$project)->get();
+    $users =  DB::table('user_tasks')
+              ->Join('users', function ($join) use($project) {
+                  $join->on('users.id', '=', 'user_tasks.user_id')
+                  ->where('users.relatedProjects', '=', $project);
+              })->select('users.name', 'users.identification', 'user_tasks.tasks_id')->get();
+
+    $result = collect();
+    foreach ($users as $user) {
+        $type = "";
+        $taskAssigned=explode(',', $user->tasks_id);
+        foreach ($taskAssigned as $task) {
+          $t =$tasks->where('id', $task)->flatten();
+          if(isset($t[0]['addedValue'][0]) && isset($t[0]['addedValue'][1]) && isset($t[0]['addedValue'][2])){
+            if($t[0]['addedValue'][0]== "4" || $t[0]['addedValue'][0] == "5"){
+              $type = "Valor Agregado Real";
+            }elseif ($t[0]['addedValue'][1]== "4" || $t[0]['addedValue'][1] == "5" || $t[0]['addedValue'][2]== "4" || $t[0]['addedValue'][2] == "5")  {
+              $type = "Valor Agregado para al empresa";
+            }else{
+              $type = "Sin Valor Agregado";
+            }
+            $result->push(array('identification'=>$user->identification,
+                       'user'=>$user->name,
+                       'task'=>$t[0]['task'],
+                       'level'=>$t[0]['relatedToLevel'],
+                       'product'=>$t[0]['allocator'],
+                       'clasification'=>$type,
+                      ));
+          }
+        }
+    }
+    $title =[
+      ['label'=>"Identificación",'field'=> "identification",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nombre",'field'=> "user",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nivel de estructura",'field'=> "level",'numeric'=> false, 'html'=> false],
+      ['label'=> "Producto",'field'=> "product",'numeric'=> false, 'html'=> false],
+      ['label'=> "Valor Agregado",'field'=> "clasification",'numeric'=> false, 'html'=> false]
+    ];
+    return ['content'=> $result, 'title'=> $title];
+  }
+
+
+  /*****CORELACIÓN***/
+
+  public function getCorelationMeasuresByProduct(Request $request){
+    $result = array();
+    $task = Task::select('correlation', 'task')->where('project_id',$request->project_id)->where('type',$request->product)->whereNotNull('correlation')->get();
+    $counter= array();
+    foreach ($task as $t) {
+      foreach ($t->correlation as $tc){
+        if(isset($counter [$tc])){
+          $counter [$tc] += 1;
+        }else{
+          $counter [$tc] = 1;
+        }
+      }
+    }
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($name);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getCorelationMeasuresByLevel(Request $request) {
+    $result = array();
+    $task = Task::select('correlation')->where('project_id',$request->project_id)->where('relatedToLevel',$request->level)->whereNotNull('correlation')->get();
+    $counter= array();
+    foreach ($task as $t) {
+      foreach ($t->correlation as $tc){
+        if(isset($counter [$tc])){
+          $counter [$tc] += 1;
+        }else{
+          $counter [$tc] = 1;
+        }
+      }
+    }
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($name);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getCorelationMeasuresByCorelation(Request $request) {
+    $result = array();
+    $option= $request->correlation;
+
+    $task = Task::select('correlation', 'task')->where('project_id',$request->project_id)->whereNotNull('correlation')->get();
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+
+    foreach ($task as $t) {
+      if (in_array($option, $t->correlation)){
+        $datos->push(array('value'=> 1 ,'name'=>$t->task));
+        $legend->push($t->task);
+        $graph_two->push(array('name'=>$t->task, 'type'=>'bar', 'stack'=> 'COR', 'data'=>array(1)));
+      }
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+  }
+
+  public function getCorelationMeasuresByUser(Request $request) {
+    $result = array();
+    $userTask=UserTask::where('user_id',$request->user_id)->get();
+    $taskbyUser=explode(',', $userTask[0]->tasks_id);
+    $task = Task::find($taskbyUser);
+
+    $counter= array();
+    foreach ($task as $t) {
+      foreach ($t->correlation as $tc){
+        if(isset($counter [$tc])){
+          $counter [$tc] += 1;
+        }else{
+          $counter [$tc] = 1;
+        }
+      }
+    }
+
+    $datos = collect();
+    $legend = collect();
+    $graph_two = collect();
+    foreach ($counter as $key => $value){
+      $name = Catalog::Where('id',$key)->get('name')[0]->name;
+      $datos->push(array('value'=>$value,'name'=>$name));
+      $legend->push($name);
+      $graph_two->push(array('name'=>$name, 'type'=>'bar', 'stack'=> $key, 'data'=>array($value)));
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+    $result['second_graphic']=$graph_two;
+    return $result;
+
+
+
+  }
+
+  public function getCorelationData(Request $request){
+    $project = $request->project_id;
+    $tasks = Task::select('id','task','relatedToLevel','allocator','correlation')->where('project_id',$project)->get();
+    $users =  DB::table('user_tasks')
+              ->Join('users', function ($join) use($project) {
+                  $join->on('users.id', '=', 'user_tasks.user_id')
+                  ->where('users.relatedProjects', '=', $project);
+              })->select('users.name', 'users.identification', 'user_tasks.tasks_id')->get();
+
+    $result = collect();
+    foreach ($users as $user) {
+        $type = "";
+        $taskAssigned=explode(',', $user->tasks_id);
+        foreach ($taskAssigned as $task) {
+          $t =$tasks->where('id', $task)->flatten();
+          foreach ($t[0]['correlation'] as $correlation) {
+            $type = Catalog::Where('id',$correlation)->get('name')[0]->name;
+            $result->push(
+              array('identification'=>$user->identification,
+                     'user'=>$user->name,
+                     'task'=>$t[0]['task'],
+                     'level'=>$t[0]['relatedToLevel'],
+                     'product'=>$t[0]['allocator'],
+                     'correlation'=>$type,
+            ));
+          }
+        }
+    }
+    $title =[
+      ['label'=>"Identificación",'field'=> "identification",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nombre",'field'=> "user",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nivel de estructura",'field'=> "level",'numeric'=> false, 'html'=> false],
+      ['label'=> "Producto",'field'=> "product",'numeric'=> false, 'html'=> false],
+      ['label'=> "Correlación",'field'=> "correlation",'numeric'=> false, 'html'=> false]
+    ];
+    return ['content'=> $result, 'title'=> $title];
+  }
+/*** -------------------------------- ****/
 
   public function getUserMeasures()
   {

@@ -258,6 +258,16 @@ Route::get('reporte/tipo-trabajo', function () {
 Route::get('reporte/riesgo', function () {
     return view('reports.reporteRiesgos');
 });
+
+Route::get('reporte/valor-agregado', function () {
+    return view('reports.reporteValorAgregado');
+});
+
+Route::get('reporte/correlacion', function () {
+    return view('reports.reporteCorrelacion');
+});
+
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -549,3 +559,17 @@ Route::get('/grafica/riesgo/niveles/', 'ReportController@getRiskMeasuresByLevel'
 Route::get('/grafica/riesgo', 'ReportController@getRiskMeasuresByRisk');
 Route::get('/grafica/riesgo/usuario/', 'ReportController@getRiskMeasuresByUser');
 Route::get('/grafica/riesgo/datos/', 'ReportController@getRiskData');
+
+//Valor Agregado
+Route::get('/grafica/valor-agregado/productos/', 'ReportController@getAddedValueMeasuresByProduct');
+Route::get('/grafica/valor-agregado/niveles/', 'ReportController@getAddedValueMeasuresByLevel');
+Route::get('/grafica/valor-agregado', 'ReportController@getAddedValueMeasuresByAddedValue');
+Route::get('/grafica/valor-agregado/usuario/', 'ReportController@getAddedValueMeasuresByUser');
+Route::get('/grafica/valor-agregado/datos/', 'ReportController@getAddedValueData');
+
+//Correlacion
+Route::get('/grafica/correlacion/productos/', 'ReportController@getCorelationMeasuresByProduct');
+Route::get('/grafica/correlacion/niveles/', 'ReportController@getCorelationMeasuresByLevel');
+Route::get('/grafica/correlacion', 'ReportController@getCorelationMeasuresByCorelation');
+Route::get('/grafica/correlacion/usuario/', 'ReportController@getCorelationMeasuresByUser');
+Route::get('/grafica/correlacion/datos/', 'ReportController@getCorelationData');
