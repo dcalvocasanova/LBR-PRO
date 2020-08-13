@@ -64,6 +64,7 @@
       axios.get('/usuario')
       .then(response => {
         me.currentUser = response.data.id
+		me.form.measure = me.category.measure
       });
     },
     updateMeasure(category){

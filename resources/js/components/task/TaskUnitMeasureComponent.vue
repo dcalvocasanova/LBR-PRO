@@ -13,9 +13,6 @@
       </div>
     </div>
   
-    
-    
-    
     <br>
     <div class="row mb-2">
       <div class="col-12 text-center">
@@ -42,7 +39,7 @@
         project_id:"",
 		task_id:"",
 		user_id:"",
-		measure:""
+		measure:0
       }),
       showSaveButton:false,
 	  currentUser:""
@@ -61,6 +58,7 @@
       axios.get('/usuario')
       .then(response => {
         me.currentUser = response.data.id
+    	if(!me.task.measure){me.form.measure = 10;} 
       });
     },
     updateTask(){

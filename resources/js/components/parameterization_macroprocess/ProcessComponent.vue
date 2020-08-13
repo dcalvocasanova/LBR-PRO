@@ -26,7 +26,7 @@
 						 <td v-text="proceso.subprocessProduct"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(proceso)"><i class="fas fa-edit"></i></button>
-                          <button class="btn btn-danger" @click="deleteUser(proceso)"><i class="fas fa-trash-alt"></i></button>
+                          <button class="btn btn-danger" @click="deleteMacroproceso(proceso)"><i class="fas fa-trash-alt"></i></button>
                         </td>
                       </tr>
                     </tbody>
@@ -159,25 +159,40 @@
               </div>
 <hr/>
               <div class="row">
-			 
-        <div class="col-md-4">
-        <div class="form-group">
-          <label class="bmd-label-floating"> </label>
-          <treeselect
-            :clearable="true"
-            :searchable="true"
-            :options="PHVAs"
-            :limit="8"
-            :max-height="300"
-            placeholder="PHVA"
-            noResultsText="No existe registro"
-            clearValueText="Eliminar"
-            v-model="form.phva"
-            />
-        </div>
-     		 	</div>
-			  
-				 <div class="col-md-4">
+				<div class="col-md-4">
+					<div class="form-group">
+					  <label class="bmd-label-floating"> </label>
+					  <treeselect
+						:clearable="true"
+						:searchable="true"
+						:options="PHVAs"
+						:limit="8"
+						:max-height="300"
+						placeholder="PHVA"
+						noResultsText="No existe registro"
+						clearValueText="Eliminar"
+						v-model="form.phva"
+						/>
+					</div>
+     		  </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Indicadores</label>
+                    <multiselect
+                 		 v-model="Indicadores"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Indicators"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagIndicator" >
+                	</multiselect>
+                  </div>
+                </div>
+              </div>
+			  <div class="row">				 
+				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
                     <multiselect
@@ -190,22 +205,53 @@
 						  @tag="addTagRisk" >
                 	</multiselect>
                   </div>
-                </div>
-                <div class="col-md-4">
+                </div>  
+
+                <div class="col-md-3">
                   <div class="form-group">
-                    <label class="bmd-label-floating">Indicadores</label>
-                   <multiselect
-                 		 v-model="Indicadores"
+                    <label class="bmd-label-floating">Frecuencia del riesgo</label>
+                    <multiselect
+                 		 v-model="RiesgosFrecuencia"
                  		 placeholder="Seleccione o escriba una opción"
-						  :options="Indicators"
+						  :options="RisksFrecuency"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
-						  @tag="addTagIndicator" >
+						  @tag="addTagRisk" >
                 	</multiselect>
                   </div>
                 </div>
-              </div>
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Consecencia del riesgo</label>
+                    <multiselect
+                 		 v-model="RiesgosConsecuencia"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="RisksConsecuency"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div> 
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nivel de madurez asociado</label>
+                    <multiselect
+                 		 v-model="RiesgosMadurez"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="RisksMaturity"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>
+		      </div>	
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveMacroproceso()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateMacroproceso()" class="btn btn-info">Actualizar</button>
@@ -281,6 +327,9 @@ export default {
 			resultProduct:"",
 			user:"",
 			risk:"",
+			riskFrecuency:"",
+			riskMaturity:"",
+			riskConsecuency:"",
 			phva:"",
 			subclassification:"",
 			indicator:""
@@ -296,6 +345,9 @@ export default {
           Inputs:[],
           Providers:[],
           Risks:[],
+		   RisksFrecuency:[],
+		  RisksConsecuency:[],
+		  RisksMaturity:[],
 		  Indicators:[],
 		  PHVAs:[],
 		  Activities:[],
@@ -304,6 +356,9 @@ export default {
 		  Entradas:[],
           Proveedores:[],
           Riesgos:[],
+		  RiesgosFrecuencia:[],
+		  RiesgosConsecuencia:[],
+		  RiesgosMadurez:[],
 		  Indicadores:[],
 		  PHVAs:[],
 		  Actividades: [],
@@ -318,9 +373,10 @@ export default {
       .then(response => {
         me.project_id = response.data.id
        me.form.project_id = response.data.id
-	    this.getProcesos();
-		this.getMacroprocessFile();
+	  this.getProcesos();
+	  this.getMacroprocessFile();
       });
+	  
     },
 		loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
@@ -345,6 +401,21 @@ export default {
       const tag = newTag
 
       this.Riesgos.push(tag)
+    },
+		addTagRiskFrecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosFrecuencia.push(tag)
+    },
+	addTagRiskConsecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosConsecuencia.push(tag)
+    },
+	addTagRiskMaturity (newTag) {
+      const tag = newTag
+
+      this.RiesgosMadurez.push(tag)
     },
 	
 	addTagIndicator (newTag) {
@@ -395,6 +466,7 @@ export default {
       .then(response => {
             me.Procesos = response.data; //get all projects from page
       });
+	 //this.getMacroprocessFile();
     },
     getTemplate() {
       let me =this;
@@ -407,7 +479,6 @@ export default {
         link.click();
       });
     },
-
 	getMacroprocessFile(){
 		 let me =this;
           let url = '/macroprocesos/file?id='+me.project_id;
@@ -466,6 +537,15 @@ export default {
       let me =this;
       this.form.fill(process);
       me.update = process.id
+	  me.form.project_id = process.project_id
+	  me.form.file = process.file
+	  me.Entradas = JSON.parse(process.input)//JSON.stringify(me.Entradas)
+	  me.Proveedores= JSON.parse(process.provider) //JSON.stringify(me.Proveedores)
+	  me.Riesgos = JSON.parse(process.risk) //JSON.stringify(me.Riesgos)
+	  //me.Usuarios = JSON.parse(process.user) //JSON.stringify(me.Usuarios)
+	  me.Actividades = JSON.parse(process.activity) // JSON.stringify(me.Actividades)ñ
+	  me.Indicadores = JSON.parse(process.indicator)	
+	  me.Usuarios = JSON.parse(process.user) //JSON.stringify(me.Usuarios)
       me.title="Actualizar información de la Ficha";
     },
     deleteMacroproceso(process){
@@ -533,6 +613,35 @@ export default {
 			}
       });
     },
+		 LoadCatalogRisk_Frecuency() {
+		  axios.get('catalogo?id=RISK-FRECUENCY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksFrecuency.push(inputs[i].name);
+				}
+		  });
+    },
+	LoadCatalogRisk_CONSECUENCES() {
+      
+	  axios.get('catalogo?id=RISK-CONSECUENCE')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksConsecuency.push(inputs[i].name);
+				}
+		  });
+    },
+	LoadCatalogRisk_MATURITY() {
+		
+		 axios.get('catalogo?id=RISK-MATURITY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksMaturity.push(inputs[i].name);
+				}
+		  });
+    },
 	LoadCatalogIndicator() {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
@@ -568,6 +677,9 @@ export default {
        this.LoadCatalogRisk();
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
+	   this.LoadCatalogRisk_Frecuency();
+	   this.LoadCatalogRisk_CONSECUENCES();
+	   this.LoadCatalogRisk_MATURITY();
   }
 }
 </script>

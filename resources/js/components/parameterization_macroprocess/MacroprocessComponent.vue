@@ -16,7 +16,6 @@
 					  <th> Responsable </th>
 					  <th> Proceso </th>
 				
-					  
 					  <th style ="withd:120px"> Acciones </th>
                     </tr>
                   </thead>
@@ -28,7 +27,7 @@
 						<td v-text="macroproceso.process"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(macroproceso)"><i class="fas fa-edit"></i></button>
-                          <button class="btn btn-danger" @click="deleteUser(macroproceso)"><i class="fas fa-trash-alt"></i></button>
+                          <button class="btn btn-danger" @click="deleteMacroproceso(macroproceso)"><i class="fas fa-trash-alt"></i></button>
                         </td>
                       </tr>
                     </tbody>
@@ -38,15 +37,6 @@
             <div class="card-footer">
               <pagination :data="Macroprocesos" @pagination-change-page="getMacroprocesos"></pagination>
             </div>
-          </div>
-
-          <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#loadMacroprocesos">
-              Cargar Ficha usando un archivo
-              <i class="fa fa-plus-circle"></i>
-            </button>
           </div>
 
         </div>
@@ -194,9 +184,9 @@
                   <div class="form-group">
                     <label class="bmd-label-floating">Nivel de madurez asociado</label>
                     <multiselect
-                 		 v-model="RiesgosNivel"
+                 		 v-model="RiesgosMadurez"
                  		 placeholder="Seleccione o escriba una opción"
-						  :options="RisksLevel"
+						  :options="RisksMaturity"
 						  :multiple="true"
 						  :taggable="true"
 						  :show-labels="false"
@@ -204,15 +194,7 @@
                 	</multiselect>
                   </div>
                 </div>
-				  
-				<div class="col-md-3">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Niveles de Riesgo</label>
-                    <input type="text" v-model="form.riskLevel"  class="form-control":class="{ 'is-invalid': form.errors.has('responsible') }">
-                    <has-error :form="form" field="levelRisk"></has-error>
-                  </div>
-                </div>
-			</div>	
+			  </div>	
 			<div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -309,7 +291,7 @@ export default {
 			riskConsecuency:"",
 			riskLevel:"",
 			indicator:"",
-			project_id:0 //este valor debe ser el current project
+			project_id:"" //este valor debe ser el current project
 
           }),
 		  level: new Form({
@@ -317,7 +299,7 @@ export default {
           levels:"",
           project_id:0
         }),
-		  project_id:0,//este valor debe ser el current project
+		  project_id:"",//este valor debe ser el current project
 		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -357,14 +339,14 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.project_id = response.data.id
-       me.form.project_id = response.data.id
-		 me.level.project_id = response.data.id
+       me.form.project_id =  me.project_id
+		
 		 this.getLevels();
        this.getMacroprocesos();
       });
 	
     },
-		loadfile(event){
+    loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.macroprocessFile = event.target.files[0];
 			alert(files[0]);
@@ -465,6 +447,7 @@ export default {
     saveMacroproceso(){
       let me =this;
 	  let myResult = [];
+	  me.update = 0
 	  myResult = me.form.macroprocess.split("-");
 	  me.form.relatedToLevel = myResult[0];
 	  me.form.macroprocess = myResult[1];
@@ -473,8 +456,9 @@ export default {
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
 	  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.project_id = me.project_id
 	  me.form.activity = JSON.stringify(me.Actividades)
-      this.form.post('/macroprocesos/guardar')
+      me.form.post('/macroprocesos/guardar')
       .then(function (response) {
           me.clearFields();
           me.getMacroprocesos();// show all macroprocesss
@@ -489,13 +473,23 @@ export default {
 
     },
     updateMacroproceso(){
-        let me = this;
-        //me.form.role="Usuario";
+      let me = this;
+	  let myResult = [];
+	  myResult = me.form.macroprocess.split("-");
+	  me.form.relatedToLevel = myResult[0];
+	  me.form.macroprocess = myResult[1];
+	  me.form.input = JSON.stringify(me.Entradas)
+	  me.form.provider = JSON.stringify(me.Proveedores)
+	  me.form.risk = JSON.stringify(me.Riesgos)
+	  me.form.indicator = JSON.stringify(me.Indicadores)
+	  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
+		
         me.form.put('/macroprocesos/actualizar')
         .then(function (response) {
            toast.fire({
             type: 'success',
-            title: 'Usuario actualizado con éxito'
+            title: 'Macroproceso actualizado con éxito'
            });
            me.getMacroprocesos();
            me.clearFields();
@@ -506,15 +500,19 @@ export default {
     },
     loadFieldsUpdate(macroprocess){
       let me =this;
-      
+	  me.update = 1
+      me.form.id = macroprocess.id
+	  me.form.project_id = macroprocess.project_id
 	  //me.form.relatedToLevel = macroprocess.relatedToLevel
-	  me.form.macroprocess = macroprocess.macroprocess
-	  me.form.input = macroprocess.input//JSON.stringify(me.Entradas)
-	  me.form.provider = macroprocess.provider //JSON.stringify(me.Proveedores)
-	  me.form.risk = macroprocess.risk //JSON.stringify(me.Riesgos)
-	  me.form.indicator = macroprocess.indicator //JSON.stringify(me.Indicadores)
-	  me.form.user = macroprocess.user //JSON.stringify(me.Usuarios)
-	  me.form.activity = macroprocess.activity // JSON.stringify(me.Actividades)
+	  me.form.macroprocess =macroprocess.relatedToLevel+"-"+macroprocess.macroprocess
+	  me.Entradas = JSON.parse(macroprocess.input)//JSON.stringify(me.Entradas)
+	  me.Proveedores= JSON.parse(macroprocess.provider) //JSON.stringify(me.Proveedores)
+	  me.Riesgos = JSON.parse(macroprocess.risk) //JSON.stringify(me.Riesgos)
+	  me.Usuarios = JSON.parse(macroprocess.user) //JSON.stringify(me.Usuarios)
+	  me.Actividades = JSON.parse(macroprocess.activity) // JSON.stringify(me.Actividades)
+	  me.form.responsible = macroprocess.responsible
+	  me.form.process = macroprocess.process
+	  me.Indicadores = JSON.parse(macroprocess.indicator)
       me.title="Actualizar información de la Ficha";
     },
     deleteMacroproceso(macroprocess){
@@ -522,7 +520,7 @@ export default {
       let macroprocess_id = macroprocess.id
       swal.fire({
         title: 'Eliminar un usuario',
-        text: "Esta acción no se puede revertir, Está a punto de eliminar un usuario",
+        text: "Esta acción no se puede revertir, Está a punto de eliminar un Macroproceso",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#114e7e',
@@ -535,7 +533,7 @@ export default {
           .then(function (response) {
             swal.fire(
               'Eliminado',
-              'Usuario fue eliminado',
+              'Macroproceso fue eliminado',
               'success'
             )
             me.getMacroprocesos();
@@ -583,22 +581,33 @@ export default {
       });
     },
 	 LoadCatalogRisk_Frecuency() {
-      axios.get('catalogo?id=RISK-FRECUENCY')
-      .then(response => {
-            this.RisksFrecuency = response.data;
-      });
+		  axios.get('catalogo?id=RISK-FRECUENCY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksFrecuency.push(inputs[i].name);
+				}
+		  });
     },
 	LoadCatalogRisk_CONSECUENCES() {
-      axios.get('catalogo?id=RISK-CONSECUENCES')
-      .then(response => {
-            this.RisksConsecuency = response.data;
-      });
+      
+	  axios.get('catalogo?id=RISK-CONSECUENCE')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksConsecuency.push(inputs[i].name);
+				}
+		  });
     },
 	LoadCatalogRisk_MATURITY() {
-      axios.get('catalogo?id=RISK-MATURITY')
-      .then(response => {
-            this.RisksMaturity = response.data;
-      });
+		
+		 axios.get('catalogo?id=RISK-MATURITY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksMaturity.push(inputs[i].name);
+				}
+		  });
     },
 	LoadCatalogRisk_Frecuency_LEVEL() {
       axios.get('catalogo?id=RISK-LEVEL')
@@ -607,10 +616,13 @@ export default {
       });
     },
 	LoadCatalogIndicator() {
-      axios.get('catalogo?id=INDICATOR')
+     axios.get('catalogo?id=INDICATOR')
       .then(response => {
-            this.Indicators = response.data;    
-      });
+            let inputs = response.data;
+		    for (let i =0; i<inputs.length;i++){
+				 this.Indicators.push(inputs[i].name);
+			}
+	 	});
     },
 	getLevels(){
           let me =this;
@@ -642,6 +654,9 @@ export default {
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogIndicator();
+	  this.LoadCatalogRisk_Frecuency();
+	  this.LoadCatalogRisk_CONSECUENCES();
+	  this.LoadCatalogRisk_MATURITY();
 
   }
 }

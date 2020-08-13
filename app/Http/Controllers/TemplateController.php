@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Template;
+use App\ParametersMeasure;
 use Illuminate\Support\Facades\Auth;
 use App\TemplateUsers;
 use Illuminate\Http\Request;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TemplateRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class TemplateController extends Controller
 {
@@ -93,35 +95,40 @@ class TemplateController extends Controller
       return $template;
     }
 	
-	public function getUserByTemplate(){
-		
+	public function getUsersByTemplate(Request $request){
+		$users = TemplateUsers::select('ReleatedUsers')->where('project_id', $request->project)
+			->where('relatedToLevel', $request->level)
+			->where(' relatedTemplate', $request->template)
+			->first();
 		
 	}
 	
 	public function getTemplatesByUser(Request $request)
     {
 		
-	//$template = Template::first();
-		
 	  $user = TemplateUsers::where('relatedUsers','like', '%'.Auth::user()->id.'%')->first();
-		//return $user;
-	  //$template = Template::where('user_id',$user->id)->first();
 	  $template = Template::where('id',$user->relatedTemplate)->first();
-	
-	  
   	  $obj = json_decode($template->stencil,true);
-		
-	 //return $obj;
   	  $catalogos = array();
 	  $categorias = array();
 	  $collection = collect();
 		
 	  for ( $i = 1; $i< count($obj)+1; $i++){
+		  $now = Carbon::now()->format('Y-m-d');
+		  
+		  $measure = ParametersMeasure::select('measure')->where('user_id',Auth::user()->id)
+			         ->where('variable',$obj[$i]['name'])
+			         ->where('fecha',$now)->first();
+		  
+		  if($measure){
+			  $measure = (Int)$measure->measure;
+		  }else{$measure = 10;}
 		
 		$category = $obj[$i]['category']; 
 		array_push($categorias, $category); 
-	  	$collection->push( ["category" =>$category, "id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['name'] ] );
+	  	$collection->push( ["category" =>$category, "id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['name'] , "measure" =>$measure]);
 	  }
+		
 		$collection = $collection->groupBy('category');
 	    // $collection = $collection->values();
 		//$collection = $collection->groupBy('category');
