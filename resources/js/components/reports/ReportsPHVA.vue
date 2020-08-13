@@ -73,6 +73,7 @@
                     v-model="phvaPicked"
                     />
                 </div>
+                <br>
                 <button @click="selectByPHVA" type="button" name="button">buscar</button>
               </div>
             </div>
@@ -385,12 +386,11 @@ export default {
         }
       })
       .then(response => {
-        this.tipo = "Tareas por frecuencia: "+me.phvaPicked
+        this.tipo = "Tareas por PHVA"
         this.dataToShowInGraph =  response.data
       });
     },
     getUserData(user){
-      console.log(user)
       let me = this
       axios.get('/grafica/phva/usuario/', {
         params: {

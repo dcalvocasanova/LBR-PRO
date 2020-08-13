@@ -375,7 +375,6 @@ export default {
       });
     },
     getUserData(user){
-      console.log(user)
       let me = this
       axios.get('/grafica/frecuencias/usuario/', {
         params: {

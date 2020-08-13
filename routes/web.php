@@ -243,6 +243,31 @@ Route::get('reporte/phva', function () {
     return view('reports.reportePHVA');
 });
 
+Route::get('reporte/competencias', function () {
+    return view('reports.reporteCompetencias');
+});
+
+Route::get('reporte/esfuerzo', function () {
+    return view('reports.reporteEsfuerzos');
+});
+
+Route::get('reporte/tipo-trabajo', function () {
+    return view('reports.reporteTipoTrabajo');
+});
+
+Route::get('reporte/riesgo', function () {
+    return view('reports.reporteRiesgos');
+});
+
+Route::get('reporte/valor-agregado', function () {
+    return view('reports.reporteValorAgregado');
+});
+
+Route::get('reporte/correlacion', function () {
+    return view('reports.reporteCorrelacion');
+});
+
+
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
@@ -512,4 +537,39 @@ Route::get('/grafica/competencias/productos/', 'ReportController@getCompentences
 Route::get('/grafica/competencias/niveles/', 'ReportController@getCompentencesMeasuresByLevel');
 Route::get('/grafica/competencias/competencias/', 'ReportController@getCompentencesMeasuresByCompetence');
 Route::get('/grafica/competencias/usuario/', 'ReportController@getCompentencesMeasuresByUser');
-Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesAData');
+Route::get('/grafica/competencias/datos/', 'ReportController@getCompentencesData');
+
+//Esfuerzo
+Route::get('/grafica/esfuerzo/productos/', 'ReportController@getEffortMeasuresByProduct');
+Route::get('/grafica/esfuerzo/niveles/', 'ReportController@getEffortMeasuresByLevel');
+Route::get('/grafica/esfuerzo/esfuerzo/', 'ReportController@getEffortMeasuresByEffort');
+Route::get('/grafica/esfuerzo/usuario/', 'ReportController@getEffortMeasuresByUser');
+Route::get('/grafica/esfuerzo/datos/', 'ReportController@getEffortData');
+
+//Tipo de trabajo
+Route::get('/grafica/tipo-trabajo/productos/', 'ReportController@getWorkTypeMeasuresByProduct');
+Route::get('/grafica/tipo-trabajo/niveles/', 'ReportController@getWorkTypeMeasuresByLevel');
+Route::get('/grafica/tipo-trabajo', 'ReportController@getWorkTypeMeasuresByWorkType');
+Route::get('/grafica/tipo-trabajo/usuario/', 'ReportController@getWorkTypeMeasuresByUser');
+Route::get('/grafica/tipo-trabajo/datos/', 'ReportController@getWorkTypeData');
+
+//Riesgos
+Route::get('/grafica/riesgo/productos/', 'ReportController@getRiskMeasuresByProduct');
+Route::get('/grafica/riesgo/niveles/', 'ReportController@getRiskMeasuresByLevel');
+Route::get('/grafica/riesgo', 'ReportController@getRiskMeasuresByRisk');
+Route::get('/grafica/riesgo/usuario/', 'ReportController@getRiskMeasuresByUser');
+Route::get('/grafica/riesgo/datos/', 'ReportController@getRiskData');
+
+//Valor Agregado
+Route::get('/grafica/valor-agregado/productos/', 'ReportController@getAddedValueMeasuresByProduct');
+Route::get('/grafica/valor-agregado/niveles/', 'ReportController@getAddedValueMeasuresByLevel');
+Route::get('/grafica/valor-agregado', 'ReportController@getAddedValueMeasuresByAddedValue');
+Route::get('/grafica/valor-agregado/usuario/', 'ReportController@getAddedValueMeasuresByUser');
+Route::get('/grafica/valor-agregado/datos/', 'ReportController@getAddedValueData');
+
+//Correlacion
+Route::get('/grafica/correlacion/productos/', 'ReportController@getCorelationMeasuresByProduct');
+Route::get('/grafica/correlacion/niveles/', 'ReportController@getCorelationMeasuresByLevel');
+Route::get('/grafica/correlacion', 'ReportController@getCorelationMeasuresByCorelation');
+Route::get('/grafica/correlacion/usuario/', 'ReportController@getCorelationMeasuresByUser');
+Route::get('/grafica/correlacion/datos/', 'ReportController@getCorelationData');

@@ -128,15 +128,17 @@
         <h6 class="collapse-header">Ejemplos </h6>
         <a class="collapse-item" href="/ejemplos">IR</a>
 
-        <h6 class="collapse-header">Reporte</h6>
+        <h6 class="collapse-header">Reportes</h6>
         <a class="collapse-item" href="/reporte/frecuencias">Frecuencias</a>
-
-        <h6 class="collapse-header">Reporte</h6>
         <a class="collapse-item" href="/reporte/phva">PHVA</a>
-
+        <a class="collapse-item" href="/reporte/competencias">Competencias</a>
+        <a class="collapse-item" href="/reporte/esfuerzo">Esfuerzo de trabajo</a>
+        <a class="collapse-item" href="/reporte/tipo-trabajo">Tipo de trabajo</a>
+        <a class="collapse-item" href="/reporte/riesgo">Riesgos</a>
+        <a class="collapse-item" href="/reporte/valor-agregado">Valor Agregado</a>
+        <a class="collapse-item" href="/reporte/correlacion">Correlación</a>
       </div>
     </div>
-
   </li>
 
   @endif
