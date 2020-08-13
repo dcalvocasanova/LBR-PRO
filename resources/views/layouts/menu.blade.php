@@ -137,6 +137,8 @@
         <a class="collapse-item" href="/reporte/riesgo">Riesgos</a>
         <a class="collapse-item" href="/reporte/valor-agregado">Valor Agregado</a>
         <a class="collapse-item" href="/reporte/correlacion">Correlación</a>
+        <a class="collapse-item" href="/reporte/instrumentos">Instrumentos</a>
+        <a class="collapse-item" href="/reporte/abc">ABC</a>
       </div>
     </div>
   </li>

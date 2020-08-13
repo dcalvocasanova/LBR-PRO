@@ -269,6 +269,9 @@ Route::get('reporte/correlacion', function () {
 Route::get('reporte/instrumentos', function () {
     return view('reports.reporteRelacionInstrumentos');
 });
+Route::get('reporte/abc', function () {
+    return view('reports.reporteABC');
+});
 
 
 //PENDIENTE DE REVISIÓN
@@ -583,3 +586,8 @@ Route::get('/grafica/correlacion/datos/', 'ReportController@getCorelationData');
 Route::get('/grafica/instrumentos/productos/', 'ReportController@getInstrumentsMeasuresByProduct');
 Route::get('/grafica/instrumentos/niveles/', 'ReportController@getInstrumentsMeasuresByLevel');
 Route::get('/grafica/instrumentos/usuario/', 'ReportController@getInstrumentsMeasuresByUser');
+
+//Revisión de ABC
+Route::get('/grafica/abc/productos/', 'ReportController@getABCMeasuresByProduct');
+Route::get('/grafica/abc/niveles/', 'ReportController@getABCMeasuresByLevel');
+Route::get('/grafica/abc/usuario/', 'ReportController@getABCMeasuresByUser');

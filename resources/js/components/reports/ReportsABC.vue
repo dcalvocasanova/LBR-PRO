@@ -271,7 +271,7 @@ export default {
     },
     selectByProduct(){
       let me = this
-      axios.get('/grafica/instrumentos/productos/', {
+      axios.get('/grafica/abc/productos/', {
         params: {
           project_id: me.projectPickedId,
           product: me.productPicked
@@ -288,7 +288,7 @@ export default {
     },
     selectByLevel(){
       let me = this
-      axios.get('/grafica/instrumentos/niveles/', {
+      axios.get('/grafica/abc/niveles/', {
         params: {
           project_id: me.projectPickedId,
           level: me.levelPicked
@@ -301,7 +301,7 @@ export default {
     },
     getUserData(user){
       let me = this
-      axios.get('/grafica/instrumentos/usuario/', {
+      axios.get('/grafica/abc/usuario/', {
         params: {
           user_id: user.id
         }
@@ -311,7 +311,7 @@ export default {
         this.dataToShowInGraph =  response.data
       });
     },
-  
+
   },
   mounted(){
     this.loadAllProjects()

@@ -1264,6 +1264,326 @@ class ReportController extends Controller
     ];
     return ['content'=> $result, 'title'=> $title];
   }
+
+  /*****INSTRUMENTOS***/
+  public function getInstrumentsMeasuresByProduct(Request $request){
+    $result = array();
+    $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+                ->where('tasks.project_id',$request->project_id)
+                ->where('tasks.type',$request->product)
+                ->whereNotNull('measures.measure')
+                ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+
+    $counter = $task->groupBy([
+        'id', function ($item) { return ['id'=>$item->id];},
+    ], $preserveKeys = true);
+
+    $avg_t= collect();
+
+    foreach ($counter as $key=> $value) {
+      $condition="sobrestimado";
+      $avg = $value[$key]->avg('measure');
+      if($avg > $value[$key]->pluck('t_avg')->first()){
+        $condition="subestimado";
+      }
+      $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+              'time'=>$value[$key]->pluck('t_avg')->first(),
+              'avg'=> $avg,
+              'condition'=>$condition)
+            );
+    }
+    //Data for table
+    $title =[
+      ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+      ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+    ];
+
+    $result['content'] = $avg_t;
+    $result['title'] = $title;
+
+    $participation =  $avg_t->countBy(function ($item) {
+      return $item['condition'];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    foreach ($participation as $key => $value){
+      $datos->push(array('value'=>$value,'name'=>$key));
+      $legend->push($key);
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+
+    return $result;
+  }
+
+  public function getInstrumentsMeasuresByLevel(Request $request) {
+    $result = array();
+    $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+                ->where('tasks.project_id',$request->project_id)
+                ->where('tasks.relatedToLevel',$request->level)
+                ->whereNotNull('measures.measure')
+                ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+
+    $counter = $task->groupBy([
+        'id', function ($item) { return ['id'=>$item->id];},
+    ], $preserveKeys = true);
+
+    $avg_t= collect();
+
+    foreach ($counter as $key=> $value) {
+      $condition="sobrestimado";
+      $avg = $value[$key]->avg('measure');
+      if($avg > $value[$key]->pluck('t_avg')->first()){
+        $condition="subestimado";
+      }
+      $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+              'time'=>$value[$key]->pluck('t_avg')->first(),
+              'avg'=> $avg,
+              'condition'=>$condition)
+            );
+    }
+    //Data for table
+    $title =[
+      ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+      ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+    ];
+
+    $result['content'] = $avg_t;
+    $result['title'] = $title;
+
+    $participation =  $avg_t->countBy(function ($item) {
+      return $item['condition'];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    foreach ($participation as $key => $value){
+      $datos->push(array('value'=>$value,'name'=>$key));
+      $legend->push($key);
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+
+    return $result;
+  }
+
+  public function getInstrumentsMeasuresByUser(Request $request) {
+    $result = array();
+    $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+                ->where('measures.user_id',$request->user_id)
+                ->whereNotNull('measures.measure')
+                ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+    $counter = $task->groupBy([
+        'id', function ($item) { return ['id'=>$item->id];},
+    ], $preserveKeys = true);
+
+    $avg_t= collect();
+
+    foreach ($counter as $key=> $value) {
+      $condition="sobrestimado";
+      $avg = $value[$key]->avg('measure');
+      if($avg > $value[$key]->pluck('t_avg')->first()){
+        $condition="subestimado";
+      }
+      $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+              'time'=>$value[$key]->pluck('t_avg')->first(),
+              'avg'=> $avg,
+              'condition'=>$condition)
+            );
+    }
+    //Data for table
+    $title =[
+      ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+      ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+    ];
+
+    $result['content'] = $avg_t;
+    $result['title'] = $title;
+
+    $participation =  $avg_t->countBy(function ($item) {
+      return $item['condition'];
+    });
+
+    $datos = collect();
+    $legend = collect();
+    foreach ($participation as $key => $value){
+      $datos->push(array('value'=>$value,'name'=>$key));
+      $legend->push($key);
+    }
+    $result['data'] =$datos;
+    $result['legend'] =$legend;
+
+    return $result;
+  }
+
+/*** ABC ****/
+
+public function getABCMeasuresByProduct(Request $request){
+  $result = array();
+  $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+              ->where('tasks.project_id',$request->project_id)
+              ->where('tasks.type',$request->product)
+              ->whereNotNull('measures.measure')
+              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure', 'measures.user_id')->get();
+
+  $counter = $task->groupBy([
+      'id', function ($item) { return ['id'=>$item->id];},
+  ], $preserveKeys = true);
+
+  //return $counter;
+  $avg_t= collect();
+
+  foreach ($counter as $key=> $value) {
+
+    $avg = $value[$key]->avg('measure');
+    return $avg;
+    if($avg > $value[$key]->pluck('t_avg')->first()){
+      $condition="subestimado";
+    }
+    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+            'time'=>$value[$key]->pluck('t_avg')->first(),
+            'avg'=> $avg,
+            'condition'=>$condition)
+          );
+  }
+  //Data for table
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+  ];
+
+  $result['content'] = $avg_t;
+  $result['title'] = $title;
+
+  $participation =  $avg_t->countBy(function ($item) {
+    return $item['condition'];
+  });
+
+  $datos = collect();
+  $legend = collect();
+  foreach ($participation as $key => $value){
+    $datos->push(array('value'=>$value,'name'=>$key));
+    $legend->push($key);
+  }
+  $result['data'] =$datos;
+  $result['legend'] =$legend;
+
+  return $result;
+}
+
+public function getABCMeasuresByLevel(Request $request) {
+  $result = array();
+  $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+              ->where('tasks.project_id',$request->project_id)
+              ->where('tasks.relatedToLevel',$request->level)
+              ->whereNotNull('measures.measure')
+              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+
+  $counter = $task->groupBy([
+      'id', function ($item) { return ['id'=>$item->id];},
+  ], $preserveKeys = true);
+
+  $avg_t= collect();
+
+  foreach ($counter as $key=> $value) {
+    $condition="sobrestimado";
+    $avg = $value[$key]->avg('measure');
+    if($avg > $value[$key]->pluck('t_avg')->first()){
+      $condition="subestimado";
+    }
+    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+            'time'=>$value[$key]->pluck('t_avg')->first(),
+            'avg'=> $avg,
+            'condition'=>$condition)
+          );
+  }
+  //Data for table
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+  ];
+
+  $result['content'] = $avg_t;
+  $result['title'] = $title;
+
+  $participation =  $avg_t->countBy(function ($item) {
+    return $item['condition'];
+  });
+
+  $datos = collect();
+  $legend = collect();
+  foreach ($participation as $key => $value){
+    $datos->push(array('value'=>$value,'name'=>$key));
+    $legend->push($key);
+  }
+  $result['data'] =$datos;
+  $result['legend'] =$legend;
+
+  return $result;
+}
+
+public function getABCMeasuresByUser(Request $request) {
+  $result = array();
+  $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+              ->where('measures.user_id',$request->user_id)
+              ->whereNotNull('measures.measure')
+              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+  $counter = $task->groupBy([
+      'id', function ($item) { return ['id'=>$item->id];},
+  ], $preserveKeys = true);
+
+  $avg_t= collect();
+
+  foreach ($counter as $key=> $value) {
+    $condition="sobrestimado";
+    $avg = $value[$key]->avg('measure');
+    if($avg > $value[$key]->pluck('t_avg')->first()){
+      $condition="subestimado";
+    }
+    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+            'time'=>$value[$key]->pluck('t_avg')->first(),
+            'avg'=> $avg,
+            'condition'=>$condition)
+          );
+  }
+  //Data for table
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+  ];
+
+  $result['content'] = $avg_t;
+  $result['title'] = $title;
+
+  $participation =  $avg_t->countBy(function ($item) {
+    return $item['condition'];
+  });
+
+  $datos = collect();
+  $legend = collect();
+  foreach ($participation as $key => $value){
+    $datos->push(array('value'=>$value,'name'=>$key));
+    $legend->push($key);
+  }
+  $result['data'] =$datos;
+  $result['legend'] =$legend;
+
+  return $result;
+}
+
 /*** -------------------------------- ****/
 
   public function getUserMeasures()
