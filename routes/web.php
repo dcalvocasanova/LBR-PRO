@@ -359,6 +359,7 @@ Route::get('/usuario', 'UserController@getCurrentUser');
 Route::get('/usuarios-plantilla', 'UserController@getExcel');
 Route::get('/usuarios/del-sistema', 'UserController@getUserSystem');
 Route::get('/usuarios/rol/{id}', 'UserController@getRole');
+Route::get('/usuarios/workday', 'UserController@getWorkday');
 Route::any('/usuarios/loadusers', 'UserController@loadUsers');
 Route::put('/usuarios/actualizar', 'UserController@update');
 Route::post('/usuarios/guardar', 'UserController@store');
@@ -406,6 +407,7 @@ Route::post('/plantillas/guardar', 'TemplateController@store');
 Route::delete('/plantillas/borrar/{id}', 'TemplateController@destroy');
 Route::get('/plantillas/buscarxtipo/{type}','TemplateController@getTemplatesByType');
 Route::get('/plantillas/porusuario/','TemplateController@getTemplatesByUser');
+Route::get('/usuarios-por-template','TemplateController@getUsersByTemplate');
 Route::get('/plantillas/buscar', 'TemplateController@show');
 Route::post('/relate/users', 'TemplateController@relateToUsers');
 

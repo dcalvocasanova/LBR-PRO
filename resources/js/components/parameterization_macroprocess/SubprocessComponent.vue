@@ -11,11 +11,10 @@
                 <table class="table table-hover">
                   <thead class="">
                     <tr>
-
 					  <th> Proceso </th>
                       <th> Entradas </th>
                       <th> Provedores </th>
-					  <th> Actividades sustantivas </th>
+					  <th> Actividades sustantivas</th>
 					  <th> Responsable </th>
 					  <th> producto </th>
 					  <th> Usuarios  </th>
@@ -42,7 +41,7 @@
 						  <td v-text="subproceso.indicator"></td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(subproceso)"><i class="fas fa-edit"></i></button>
-                          <button class="btn btn-danger" @click="deleteUser(subproceso)"><i class="fas fa-trash-alt"></i></button>
+                          <button class="btn btn-danger" @click="deleteSubproceso(subproceso)"><i class="fas fa-trash-alt"></i></button>
                         </td>
                       </tr>
                     </tbody>
@@ -160,20 +159,6 @@
               </div>
 <hr/>
               <div class="row">
-				 <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">Riesgos Asociados</label>
-                    <multiselect
-                 		 v-model="Riesgos"
-                 		 placeholder="Seleccione o escriba una opción"
-						  :options="Risks"
-						  :multiple="true"
-						  :taggable="true"
-						  :show-labels="false"
-						  @tag="addTagRisk" >
-                	</multiselect>
-                  </div>
-                </div>
 			    <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">PHVA</label>
@@ -204,6 +189,68 @@
                 </div>
 
               </div>
+			  <div class="row">
+				 
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Riesgos Asociados</label>
+                    <multiselect
+                 		 v-model="Riesgos"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="Risks"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>  
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Frecuencia del riesgo</label>
+                    <multiselect
+                 		 v-model="RiesgosFrecuencia"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="RisksFrecuency"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Consecencia del riesgo</label>
+                    <multiselect
+                 		 v-model="RiesgosConsecuencia"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="RisksConsecuency"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div> 
+				  
+				<div class="col-md-3">
+                  <div class="form-group">
+                    <label class="bmd-label-floating">Nivel de madurez asociado</label>
+                    <multiselect
+                 		 v-model="RiesgosMadurez"
+                 		 placeholder="Seleccione o escriba una opción"
+						  :options="RisksMaturity"
+						  :multiple="true"
+						  :taggable="true"
+						  :show-labels="false"
+						  @tag="addTagRisk" >
+                	</multiselect>
+                  </div>
+                </div>
+			  </div>	
               <div class="container-buttons">
                 <button v-if="update == 0" @click="saveSubproceso()" class="btn btn-success">Añadir</button>
                 <button v-if="update != 0" @click="updateMacrosubproceso()" class="btn btn-info">Actualizar</button>
@@ -274,6 +321,9 @@ export default {
 			product:"",
 			user:"",
 			risk:"",
+			riskFrecuency:"",
+			riskMaturity:"",
+			riskConsecuency:"",
 			phva:"",
 			subclassification:"",
 			indicator:"",
@@ -288,6 +338,9 @@ export default {
            Inputs:[],
           Providers:[],
           Risks:[],
+		  RisksFrecuency:[],
+		  RisksConsecuency:[],
+		  RisksMaturity:[],
 		  Indicators:[],
 		  PHVA:[], Activities:[],
 		  Users:[],
@@ -295,6 +348,9 @@ export default {
 		  Entradas:[],
           Proveedores:[],
           Riesgos:[],
+		  RiesgosFrecuencia:[],
+		  RiesgosConsecuencia:[],
+		  RiesgosMadurez:[],
 		  Indicadores:[],
 		  PHVAs:[],
 		  Actividades: [],
@@ -355,6 +411,21 @@ export default {
       const tag = newTag
       this.Riesgos.push(tag)
     },
+	addTagRiskFrecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosFrecuencia.push(tag)
+    },
+	addTagRiskConsecuency (newTag) {
+      const tag = newTag
+
+      this.RiesgosConsecuencia.push(tag)
+    },
+	addTagRiskMaturity (newTag) {
+      const tag = newTag
+
+      this.RiesgosMadurez.push(tag)
+    },
 	addTagPHVA (newTag) {
       const tag = newTag
       this.PHVAs.push(tag)
@@ -412,7 +483,7 @@ export default {
 	   let myResult = [];
 	  myResult = me.form.process.split("-");
 	  me.form.relatedToLevel = myResult[0];
-	  me.form.process = myResult[1];
+	  me.form.process = myResult[1]+"-"+myResult[2];
 	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
@@ -452,11 +523,22 @@ export default {
     },
     loadFieldsUpdate(subprocess){
       let me =this;
-      this.form.fill(subprocess);
-      me.update = subprocess.id
+     // this.form.fill(subprocess);
+      me.update = 1
+	  me.form.process = subprocess.relatedToLevel+"-"+subprocess.process
+	  me.form.id= subprocess.id
+	  me.form.project_id = me.project_id
+	  me.Entradas = JSON.parse(subprocess.input)//JSON.stringify(me.Entradas)
+	  me.Proveedores= JSON.parse(subprocess.provider) //JSON.stringify(me.Proveedores)
+	  me.Riesgos = JSON.parse(subprocess.risk) //JSON.stringify(me.Riesgos)
+	  me.Usuarios = JSON.parse(subprocess.user) //JSON.stringify(me.Usuarios)
+	  me.Actividades = JSON.parse(subprocess.activity) // JSON.stringify(me.Actividades)
+	  me.form.responsible = subprocess.responsible
+	  me.form.process = subprocess.process
+	  me.Indicadores = JSON.parse(subprocess.indicator)
       me.title="Actualizar información de la Ficha";
     },
-    deleteMacrosubproceso(subprocess){
+    deleteSubproceso(subprocess){
       let me =this;
       let subprocess_id = subprocess.id
       swal.fire({
@@ -518,6 +600,35 @@ export default {
 			}
       });
     },
+	 LoadCatalogRisk_Frecuency() {
+		  axios.get('catalogo?id=RISK-FRECUENCY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksFrecuency.push(inputs[i].name);
+				}
+		  });
+    },
+	LoadCatalogRisk_CONSECUENCES() {
+      
+	  axios.get('catalogo?id=RISK-CONSECUENCE')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksConsecuency.push(inputs[i].name);
+				}
+		  });
+    },
+	LoadCatalogRisk_MATURITY() {
+		
+		 axios.get('catalogo?id=RISK-MATURITY')
+		  .then(response => {
+				let inputs = response.data;
+				for (let i =0; i<inputs.length;i++){
+					 this.RisksMaturity.push(inputs[i].name);
+				}
+		  });
+    },
 	LoadCatalogIndicator() {
       axios.get('catalogo?id=INDICATOR')
       .then(response => {
@@ -556,6 +667,9 @@ export default {
        this.LoadCatalogRisk();
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
+	   this.LoadCatalogRisk_Frecuency();
+	  this.LoadCatalogRisk_CONSECUENCES();
+	  this.LoadCatalogRisk_MATURITY();
 	  
   }
 }

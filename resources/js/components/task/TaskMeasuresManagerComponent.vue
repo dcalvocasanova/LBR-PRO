@@ -15,6 +15,12 @@
         </div>
       </div>
     </div>
+	<div class="row">
+      <div class="col-md-8 text-center">
+        <button type="button" class="btn btn-outline-info btn-lg " disabled>Jordada: {{workday}} min</button>
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Tiempo utilizado:{{ Tasks.data[0].id}} min</button>
+      </div>
+    </div>	
     <div class="row" v-if="this.selectingProjectToAddTasks === false">
       <div class="col-md-12">
         <div class="card card-plain">
@@ -67,6 +73,7 @@ export default {
       Levels:{},
       level:"",
       type:"",
+	  workday:""
     }
   },
   methods:{
@@ -93,6 +100,7 @@ export default {
       .then(response => {
       me.currentUser = response.data.id
 	   me.getUserTasks();
+	   me.getWorday();
       });
     },
 	getUserTasks(page = 1) {
@@ -104,9 +112,21 @@ export default {
         }
       })
       .then(response => {
-        me.Tasks = response.data
+        me.Tasks = response.data 	  
       });
     },
+	getWorday(){
+		 let me =this;
+      axios.get('/usuarios/workday',{
+        params:{
+          id: me.currentUser
+        }
+      })
+      .then(response => {
+        me.workday = response.data
+      });
+		
+	},
 
     getTasks(page = 1) {
       let me =this;
