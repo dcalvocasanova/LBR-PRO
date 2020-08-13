@@ -168,6 +168,18 @@ class UserController extends Controller
       $role = $user->getRoleNames();
       return $role[0];
     }
+	 /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getWorkday(Request $request)
+    {
+      $user = User::findOrFail($request->id);
+      $workday= $user->workday;
+      return $workday;
+    }
     /**
      * Update the specified resource in storage.
      *

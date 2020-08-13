@@ -29,9 +29,16 @@ class TaskController extends Controller
      */
     public function getUserTasks(Request $request)
     {
-      $userTasks = UserTask::where('user_id',$request->id)->first();
-	  $tasks = Task::find($userTasks->tasks_id)->paginate(10);
-      return $tasks;
+     	$userTasks = UserTask::select('tasks_id')->where('user_id',$request->id)->first();
+		$taskMeasures = Task::find($userTasks->tasks_id)->paginate(10);
+		$now = Carbon::now()->format('Y-m-d');
+	  	$tasks = Task::find($userTasks->tasks_id)->leftJoin('measures', function ($join) use($now,$request )   {
+            $join ->on('tasks.id', '=', 'measures.task_id')
+			->where('measures.fecha', '=', $now);
+			
+        })->select('tasks.id', 'tasks.task', 'measures.measure','tasks.project_id')->paginate(10);
+		return $tasks;
+		
     }
 
     /**

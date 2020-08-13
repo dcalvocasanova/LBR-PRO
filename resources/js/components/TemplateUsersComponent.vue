@@ -83,8 +83,8 @@
                         <tbody>
                           <tr>
                             <td>
-                              <select v-model="form.relatedTemplate" class="form-control">
-                    <option v-for="t in Templates.data" :value="t.id" :key="t.id">{{ t.description }}</option>
+                              <select v-model="form.relatedTemplate" class="form-control" @chanche="getUsersInTemplate(form.relatedTemplate)">
+                    <option v-for="t in Templates.data" :value="t.id" :key="t.id">{{ t.name }}</option>
                   </select>
                               </td>
                           </tr>
@@ -199,6 +199,7 @@ export default {
       axios.get(url + '?page=' + page)
       .then(response => {
         me.Templates = response.data; //get all parameters in DB
+		me.form.relatedTemplate = "h";  
         //me.showParameters = true; //Show parameters
 		me.getUsersInLevel(me.relatedToLevel)
       })
@@ -252,18 +253,20 @@ export default {
       })
       .then(response => {
         this.Users = response.data; //get all projects from page
-        //$('#TaskNotificator').modal('show');
+        $('#TaskNotificator').modal('show');
       });
     },
-	getUsersInTemplate(level){
-      axios.get('/usuarios-por-nivel', {
+	getUsersInTemplate(template){
+		let me =this;
+      axios.get('/usuarios-por-template', {
           params: {
             project: this.currentProject,
-            level: level
+            template: template,
+			level:me.relatedToLevel
           }
       })
       .then(response => {
-        this.Users = response.data; //get all projects from page
+        this.usersToRelate = response.data; //get all projects from page
         //$('#TaskNotificator').modal('show');
       });
     },
