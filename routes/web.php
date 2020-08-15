@@ -217,7 +217,7 @@ Route::get('/gestionar-tareas-variables-adicionales', function () {
 //GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
-})->middleware('permission:CRUD_tasks');
+})->middleware('auth');
 
 Route::get('/gestionar-plantillas-usuarios', function () {
     return view('taskManager.tareas-plantillas-usuarios');

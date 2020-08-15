@@ -15,10 +15,6 @@
         <div class="col-md-4" v-if="showOptions">
           <div class="lbpradio">
               <div class="lbpradio-danger">
-                  <input @click="showUsers" type="radio" name="radio" id="radio1" v-model="checks[0]" value="1" />
-                  <label for="radio1">Usuario</label>
-              </div>
-              <div class="lbpradio-danger">
                   <input @click="showStrutureInformation" type="radio" name="radio" id="radio2"  v-model="checks[1]" value="1"/>
                   <label for="radio2">Estructura</label>
               </div>
@@ -46,35 +42,6 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4" v-if="showUserType">
-          <div class="row">
-            <div class="col-12">
-              <div class="card card-plain">
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th> Identificación </th>
-                          <th> Nombre </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr  v-for="user in Users.data" :key="user.id">
-                            <td @click="getUserData(user)" v-text="user.identification"></td>
-                            <td @click="getUserData(user)" v-text="user.name"></td>
-                          </tr>
-                        </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <pagination :data="Users" @pagination-change-page="loadUsers"></pagination>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -84,7 +51,7 @@
       <h2 class="text-center">No hay datos para presentar</h2>
     </div>
     <div class="col-12" v-if="showGraphics">
-      <v-chart :options="graph_one"  class="chart"/>
+      <v-chart :options="graph_ABC"  class="chart"/>
     </div>
     <div class="col-12" v-if="showData">
       <datatable
@@ -144,7 +111,7 @@ export default {
       loadingPage:true,
       data_graph1:{},
       ready: false,
-      graph_one: {
+      graph_ABC:{
         title: {
           text: ' ',
           left: 'center',
@@ -154,14 +121,13 @@ export default {
           }
         },
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          top: 40,
-          orient: 'vertical',
-          right: 0,
-          data: []
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            crossStyle: {
+              color: '#999'
+            }
+          }
         },
         toolbox: {
           right: 10,
@@ -178,20 +144,54 @@ export default {
               title: 'Guardar imagen'
             }
           }
-       },
+        },
+        legend: {
+          data: []
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: [],
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '%',
+            min: 10,
+            max: 100,
+            interval: 10,
+            axisLabel: {
+              formatter: '{value} %'
+            }
+          },
+          {
+            type: 'value',
+            name: '% Acumulado',
+            min: 10,
+            max: 100,
+            interval: 10,
+            axisLabel: {
+              formatter: '{value} %'
+            }
+          }
+        ],
         series: [
           {
-            label: {
-              position: 'outside',
-              formatter: '{b}: {c} ({d}%)'
-            },
-            top: 35,
-            right: 55,
-            name: '',
-            type: 'pie',
-            radius: '80%',
-            data:[],
-          }]
+            name: 'Actividades',
+            type: 'bar',
+            data: []
+          },
+          {
+            name: 'Acumulado',
+            type: 'line',
+            yAxisIndex: 1,
+            data: []
+          }
+        ]
       },
       tableName:'',
       tableColumns:[],
@@ -202,12 +202,14 @@ export default {
     dataToShowInGraph: function (val) {
       if(Object.keys(val.data).length > 0){
         this.showNodata=false
-        this.graph_one['title']['text'] = this.tipo
-        this.graph_one['series'][0]['data'] = val.data
-        this.graph_one['series'][0]['name'] = this.tipo
-        this.graph_one['toolbox']['show'] = true
-        this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
-        this.graph_one['legend']['data'] = val.legend
+        this.graph_ABC['title']['text'] = this.tipo
+        this.graph_ABC['toolbox']['show'] = true
+        this.graph_ABC['toolbox']['feature']['dataView']['lang'][0] = this.tipo
+        this.graph_ABC['series'][0]['data'] = val.data
+        this.graph_ABC['series'][1]['data'] = val.cumulative
+        this.graph_ABC['legend']['data'] = val.legend
+        this.graph_ABC['xAxis'][0]['data'] = val.legend
+
         this.tableName = "Datos de relación de instrumentos"
         this.tableColumns = val.title
         this.tableRows = val.content
@@ -241,27 +243,6 @@ export default {
       this.showFrecuencyType=false
       this.showUserType=false
     },
-    showUsers(){
-      this.loadUsers()
-      this.showUserType=true
-      this.showFrecuencyType=false
-      this.showProductType=false
-    },
-    showDataFrecuencies(){
-      this.getTableData()
-    },
-    loadUsers(page = 1) {
-      let me =this
-      axios.get('/usuarios-del-proyecto-con-tareas/',{
-        params: {
-          project_id: me.projectPickedId,
-          page: page
-        }
-      })
-      .then(response => {
-        me.Users = response.data;
-      });
-    },
     loadLevelsOfStructure(){
       let me = this
       axios.get('/estructura/lista-niveles/'+ me.projectPickedId)
@@ -282,7 +263,7 @@ export default {
         if(me.productPicked == "USER-FUNCTION") {product = 'funciones de usuario'}
         if(me.productPicked == "PRODUCT") {product = 'productos de proceso'}
         if(me.productPicked == "SUB-PRODUCT") {product = 'productos de sub-proceso'}
-        this.tipo = "Frecuencias por "+product
+        this.tipo = "ABC por "+product
         this.dataToShowInGraph =  response.data
       });
     },
@@ -295,22 +276,10 @@ export default {
         }
       })
       .then(response => {
-        this.tipo = "Frecuencias por nivel: "+me.levelPicked
+        this.tipo = "ABC por nivel: "+me.levelPicked
         this.dataToShowInGraph =  response.data
       });
-    },
-    getUserData(user){
-      let me = this
-      axios.get('/grafica/abc/usuario/', {
-        params: {
-          user_id: user.id
-        }
-      })
-      .then(response => {
-        this.tipo = "Tareas por usuario: "+user.name
-        this.dataToShowInGraph =  response.data
-      });
-    },
+    }
 
   },
   mounted(){

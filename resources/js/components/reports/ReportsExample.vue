@@ -395,7 +395,7 @@ export default {
 </script>
 
  <style scoped>
- 	
+
   .newer{
     width: 600px;
  	  height: 300px;

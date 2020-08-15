@@ -257,7 +257,7 @@ class ReportController extends Controller
     $tasks= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.PHVA')
                 ->where('tasks.project_id',$request->project_id)
                 ->whereNotNull('PHVA')
-                ->select('tasks.id','tasks.PHVA', 'tasks.relatedToLevel','tasks.allocator','tasks.PHVA','catalogs.type')->get();
+                ->select('tasks.id','tasks.task','tasks.PHVA', 'tasks.relatedToLevel','tasks.allocator','tasks.PHVA','catalogs.type')->get();
 
     $users =  DB::table('user_tasks')
               ->Join('users', function ($join) use($project) {
@@ -416,7 +416,7 @@ class ReportController extends Controller
     $tasks= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.competence')
                 ->where('tasks.project_id',$request->project_id)
                 ->whereNotNull('PHVA')
-                ->select('tasks.id','tasks.competence', 'tasks.relatedToLevel','tasks.allocator','catalogs.type', 'catalogs.name')->get();
+                ->select('tasks.id','tasks.task','tasks.competence', 'tasks.relatedToLevel','tasks.allocator','catalogs.type', 'catalogs.name')->get();
 
     $users =  DB::table('user_tasks')
               ->Join('users', function ($join) use($project) {
@@ -692,7 +692,7 @@ class ReportController extends Controller
     $tasks= task::leftJoin('catalogs', 'catalogs.id', '=', 'tasks.laborType')
                 ->where('tasks.project_id',$request->project_id)
                 ->whereNotNull('PHVA')
-                ->select('tasks.id','tasks.laborType', 'tasks.relatedToLevel','tasks.allocator','catalogs.type', 'catalogs.name')->get();
+                ->select('tasks.id','tasks.task','tasks.laborType', 'tasks.relatedToLevel','tasks.allocator','catalogs.type', 'catalogs.name')->get();
 
     $users =  DB::table('user_tasks')
               ->Join('users', function ($join) use($project) {
@@ -1427,160 +1427,241 @@ class ReportController extends Controller
 
 public function getABCMeasuresByProduct(Request $request){
   $result = array();
+  //obtener las tareas
   $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
               ->where('tasks.project_id',$request->project_id)
               ->where('tasks.type',$request->product)
               ->whereNotNull('measures.measure')
               ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure', 'measures.user_id')->get();
 
-  $counter = $task->groupBy([
-      'id', function ($item) { return ['id'=>$item->id];},
+  //agrupar las tareas por id de la tarea y luego por usuario
+  $groupedTask = $task->groupBy([
+      'id', function ($item) { return ['user_id'=>$item->user_id];},
   ], $preserveKeys = true);
 
-  //return $counter;
-  $avg_t= collect();
 
-  foreach ($counter as $key=> $value) {
+  $avgTimePerUserInTask= collect();
 
-    $avg = $value[$key]->avg('measure');
-    return $avg;
-    if($avg > $value[$key]->pluck('t_avg')->first()){
-      $condition="subestimado";
+  foreach ( $groupedTask as $taskId=> $taskInformation) { //por cada tarea obtenida
+    foreach ($taskInformation as $userId => $userTaskInformation) { //obtenemos los datos obtenidos
+      $userInformation = User::find($userId, ['salary', 'workday']);
+      if (is_numeric($userInformation['salary']) && is_numeric($userInformation['workday']) ){
+        $averageTimePerUser = $userTaskInformation->avg('measure'); //promedio de tiempo en tareas
+        $costPerMinute = $userInformation['salary'] / $userInformation['workday'];
+        $cost = $averageTimePerUser * $costPerMinute; //Costo de cada tarea por usuario
+        $avgTimePerUserInTask->push(
+          array('task_id'=> $userTaskInformation->pluck('id')->first(),
+                'task'=>$userTaskInformation->pluck('task')->first(),
+                'minuteSpent'=>$averageTimePerUser,
+                'userId'=> $userId,
+                'userCost'=>$costPerMinute,
+                'cost'=> $cost)
+        );
+      }
     }
-    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
-            'time'=>$value[$key]->pluck('t_avg')->first(),
-            'avg'=> $avg,
-            'condition'=>$condition)
-          );
-  }
-  //Data for table
-  $title =[
-    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
-    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
-  ];
+  } //Ya tenemos listo por cada tarea el costo en tiempo por usuario
 
-  $result['content'] = $avg_t;
-  $result['title'] = $title;
+  //Hay que sumar el costo de las tareas y obtener un Total de costo por tarea entre tdos los usuarios
 
-  $participation =  $avg_t->countBy(function ($item) {
-    return $item['condition'];
+  $SumCostPerTask = $avgTimePerUserInTask->groupBy('task_id', $preserveKeys = true)->map(function ($row) {
+    return ['costActivity'=>$row->sum('cost'), 'task'=>$row];
   });
 
-  $datos = collect();
-  $legend = collect();
-  foreach ($participation as $key => $value){
-    $datos->push(array('value'=>$value,'name'=>$key));
-    $legend->push($key);
-  }
-  $result['data'] =$datos;
-  $result['legend'] =$legend;
+  //Costo total de todas las tareas
+  $totalCost = $SumCostPerTask->sum('costActivity');
 
+  //Ordenamos latareas por orden de costo
+  $OrderingTaskByCost = $SumCostPerTask->sortByDesc('costActivity');
+  $TaskInOrder = $OrderingTaskByCost->values()->all();
+
+  //Obtenemos la clasificación A B o C
+  $taskCategory=collect();
+
+  $cumulativePercentage=0;
+  foreach ($TaskInOrder as $activity) {
+    $taskCostPercentage =  round(($activity['costActivity'] /$totalCost)*100, PHP_ROUND_HALF_DOWN);
+    $cumulativePercentage+= $taskCostPercentage;
+    if($cumulativePercentage < 80){
+      $category = 'A';
+    }elseif ($cumulativePercentage < 95) {
+      $category = 'B';
+    }else {
+      $category = 'C';
+    }
+    $taskCategory->push(
+      array('task'=>$activity['task']->first()['task'],
+            'percentage'=> $taskCostPercentage,
+            'costActivity'=>$activity['costActivity'] ,
+            'cumulativePercentage'=> $cumulativePercentage,
+            'category'=> $category
+      )
+    );
+  }
+  //agrupar las tareas por A,B o C
+  $groupedTaskbyABC = $taskCategory->groupBy('category', $preserveKeys = true)->map(function ($row) {
+    return [
+      'costActivity'=>$row->sum('costActivity'),
+      'percentage'=>$row->sum('percentage'),
+      'quantity'=>$row->count('task'),
+      'task'=>$row];
+  });
+
+  $totalActivities = $groupedTaskbyABC->sum('quantity');
+  $data=collect();
+  $cumulativeData=collect();
+  $legend=collect();
+  $tableData=collect();
+  $cumulativeCaculatePercentage=0;
+  //Preparar datos para mostrarse en gráficos y tabla
+  foreach ($groupedTaskbyABC as $category=>$abcTask) {
+    $activityPercentage=  round(($abcTask['quantity'] /$totalActivities)*100, PHP_ROUND_HALF_DOWN);
+    $data->push($activityPercentage);
+    $cumulativeCaculatePercentage+=$abcTask['percentage'];
+    $cumulativeData->push(round($cumulativeCaculatePercentage));
+    $legend->push($category);
+    foreach ($abcTask['task'] as $taskId => $taskDetails) {
+      $tableData->push(
+          array('task' => $taskDetails['task'],
+                'cost' => $taskDetails['costActivity'],
+                'percentage' => round($taskDetails['percentage']),
+                'cumulativePercentage'=> round($taskDetails['cumulativePercentage']),
+                'category' => $taskDetails['category'])
+        );
+    }
+  }
+
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Costo de la tarea",'field'=> "cost",'numeric'=> true, 'html'=> false],
+    ['label'=> "%",'field'=> "percentage",'numeric'=> true, 'html'=> false],
+    ['label'=> "% acumulado",'field'=> "cumulativePercentage",'numeric'=> true, 'html'=> false],
+    ['label'=> "Categoría",'field'=> "category",'numeric'=> false, 'html'=> false]
+  ];
+  $result['data'] =$data;
+  $result['cumulative'] =$cumulativeData;
+  $result['legend'] =$legend;
+  $result['content'] = $tableData;
+  $result['title'] = $title;
   return $result;
 }
 
 public function getABCMeasuresByLevel(Request $request) {
   $result = array();
+  //obtener las tareas
   $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
               ->where('tasks.project_id',$request->project_id)
               ->where('tasks.relatedToLevel',$request->level)
               ->whereNotNull('measures.measure')
-              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
+              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure', 'measures.user_id')->get();
 
-  $counter = $task->groupBy([
-      'id', function ($item) { return ['id'=>$item->id];},
+  //agrupar las tareas por id de la tarea y luego por usuario
+  $groupedTask = $task->groupBy([
+      'id', function ($item) { return ['user_id'=>$item->user_id];},
   ], $preserveKeys = true);
 
-  $avg_t= collect();
 
-  foreach ($counter as $key=> $value) {
-    $condition="sobrestimado";
-    $avg = $value[$key]->avg('measure');
-    if($avg > $value[$key]->pluck('t_avg')->first()){
-      $condition="subestimado";
+  $avgTimePerUserInTask= collect();
+
+  foreach ( $groupedTask as $taskId=> $taskInformation) { //por cada tarea obtenida
+    foreach ($taskInformation as $userId => $userTaskInformation) { //obtenemos los datos obtenidos
+      $userInformation = User::find($userId, ['salary', 'workday']);
+      if (is_numeric($userInformation['salary']) && is_numeric($userInformation['workday']) ){
+        $averageTimePerUser = $userTaskInformation->avg('measure'); //promedio de tiempo en tareas
+        $costPerMinute = $userInformation['salary'] / $userInformation['workday'];
+        $cost = $averageTimePerUser * $costPerMinute; //Costo de cada tarea por usuario
+        $avgTimePerUserInTask->push(
+          array('task_id'=> $userTaskInformation->pluck('id')->first(),
+                'task'=>$userTaskInformation->pluck('task')->first(),
+                'minuteSpent'=>$averageTimePerUser,
+                'userId'=> $userId,
+                'userCost'=>$costPerMinute,
+                'cost'=> $cost)
+        );
+      }
     }
-    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
-            'time'=>$value[$key]->pluck('t_avg')->first(),
-            'avg'=> $avg,
-            'condition'=>$condition)
-          );
-  }
-  //Data for table
-  $title =[
-    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
-    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
-  ];
+  } //Ya tenemos listo por cada tarea el costo en tiempo por usuario
 
-  $result['content'] = $avg_t;
-  $result['title'] = $title;
+  //Hay que sumar el costo de las tareas y obtener un Total de costo por tarea entre tdos los usuarios
 
-  $participation =  $avg_t->countBy(function ($item) {
-    return $item['condition'];
+  $SumCostPerTask = $avgTimePerUserInTask->groupBy('task_id', $preserveKeys = true)->map(function ($row) {
+    return ['costActivity'=>$row->sum('cost'), 'task'=>$row];
   });
 
-  $datos = collect();
-  $legend = collect();
-  foreach ($participation as $key => $value){
-    $datos->push(array('value'=>$value,'name'=>$key));
-    $legend->push($key);
-  }
-  $result['data'] =$datos;
-  $result['legend'] =$legend;
+  //Costo total de todas las tareas
+  $totalCost = $SumCostPerTask->sum('costActivity');
 
-  return $result;
-}
+  //Ordenamos latareas por orden de costo
+  $OrderingTaskByCost = $SumCostPerTask->sortByDesc('costActivity');
+  $TaskInOrder = $OrderingTaskByCost->values()->all();
 
-public function getABCMeasuresByUser(Request $request) {
-  $result = array();
-  $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
-              ->where('measures.user_id',$request->user_id)
-              ->whereNotNull('measures.measure')
-              ->select('tasks.id','tasks.task', 'tasks.t_avg', 'measures.measure')->get();
-  $counter = $task->groupBy([
-      'id', function ($item) { return ['id'=>$item->id];},
-  ], $preserveKeys = true);
+  //Obtenemos la clasificación A B o C
+  $taskCategory=collect();
 
-  $avg_t= collect();
-
-  foreach ($counter as $key=> $value) {
-    $condition="sobrestimado";
-    $avg = $value[$key]->avg('measure');
-    if($avg > $value[$key]->pluck('t_avg')->first()){
-      $condition="subestimado";
+  $cumulativePercentage=0;
+  foreach ($TaskInOrder as $activity) {
+    $taskCostPercentage =  round(($activity['costActivity'] /$totalCost)*100, PHP_ROUND_HALF_DOWN);
+    $cumulativePercentage+= $taskCostPercentage;
+    if($cumulativePercentage < 80){
+      $category = 'A';
+    }elseif ($cumulativePercentage < 95) {
+      $category = 'B';
+    }else {
+      $category = 'C';
     }
-    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
-            'time'=>$value[$key]->pluck('t_avg')->first(),
-            'avg'=> $avg,
-            'condition'=>$condition)
-          );
+    $taskCategory->push(
+      array('task'=>$activity['task']->first()['task'],
+            'percentage'=> $taskCostPercentage,
+            'costActivity'=>$activity['costActivity'] ,
+            'cumulativePercentage'=> $cumulativePercentage,
+            'category'=> $category
+      )
+    );
   }
-  //Data for table
-  $title =[
-    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
-    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
-  ];
-
-  $result['content'] = $avg_t;
-  $result['title'] = $title;
-
-  $participation =  $avg_t->countBy(function ($item) {
-    return $item['condition'];
+  //agrupar las tareas por A,B o C
+  $groupedTaskbyABC = $taskCategory->groupBy('category', $preserveKeys = true)->map(function ($row) {
+    return [
+      'costActivity'=>$row->sum('costActivity'),
+      'percentage'=>$row->sum('percentage'),
+      'quantity'=>$row->count('task'),
+      'task'=>$row];
   });
 
-  $datos = collect();
-  $legend = collect();
-  foreach ($participation as $key => $value){
-    $datos->push(array('value'=>$value,'name'=>$key));
-    $legend->push($key);
+  $totalActivities = $groupedTaskbyABC->sum('quantity');
+  $data=collect();
+  $cumulativeData=collect();
+  $legend=collect();
+  $tableData=collect();
+  $cumulativeCaculatePercentage=0;
+  //Preparar datos para mostrarse en gráficos y tabla
+  foreach ($groupedTaskbyABC as $category=>$abcTask) {
+    $activityPercentage=  round(($abcTask['quantity'] /$totalActivities)*100, PHP_ROUND_HALF_DOWN);
+    $data->push($activityPercentage);
+    $cumulativeCaculatePercentage+=$abcTask['percentage'];
+    $cumulativeData->push(round($cumulativeCaculatePercentage));
+    $legend->push($category);
+    foreach ($abcTask['task'] as $taskId => $taskDetails) {
+      $tableData->push(
+          array('task' => $taskDetails['task'],
+                'cost' => $taskDetails['costActivity'],
+                'percentage' => round($taskDetails['percentage']),
+                'cumulativePercentage'=> round($taskDetails['cumulativePercentage']),
+                'category' => $taskDetails['category'])
+        );
+    }
   }
-  $result['data'] =$datos;
-  $result['legend'] =$legend;
 
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Costo de la tarea",'field'=> "cost",'numeric'=> true, 'html'=> false],
+    ['label'=> "%",'field'=> "percentage",'numeric'=> true, 'html'=> false],
+    ['label'=> "% acumulado",'field'=> "cumulativePercentage",'numeric'=> true, 'html'=> false],
+    ['label'=> "Categoría",'field'=> "category",'numeric'=> false, 'html'=> false]
+  ];
+  $result['data'] =$data;
+  $result['cumulative'] =$cumulativeData;
+  $result['legend'] =$legend;
+  $result['content'] = $tableData;
+  $result['title'] = $title;
   return $result;
 }
 
