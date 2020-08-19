@@ -125,20 +125,8 @@
     </a>
     <div id="collapseReports" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Ejemplos </h6>
-        <a class="collapse-item" href="/ejemplos">IR</a>
-
-        <h6 class="collapse-header">Reportes</h6>
-        <a class="collapse-item" href="/reporte/frecuencias">Frecuencias</a>
-        <a class="collapse-item" href="/reporte/phva">PHVA</a>
-        <a class="collapse-item" href="/reporte/competencias">Competencias</a>
-        <a class="collapse-item" href="/reporte/esfuerzo">Esfuerzo de trabajo</a>
-        <a class="collapse-item" href="/reporte/tipo-trabajo">Tipo de trabajo</a>
-        <a class="collapse-item" href="/reporte/riesgo">Riesgos</a>
-        <a class="collapse-item" href="/reporte/valor-agregado">Valor Agregado</a>
-        <a class="collapse-item" href="/reporte/correlacion">Correlación</a>
-        <a class="collapse-item" href="/reporte/instrumentos">Instrumentos</a>
-        <a class="collapse-item" href="/reporte/abc">ABC</a>
+        <h6 class="collapse-header">Cargas de Trabajo </h6>
+        <a class="collapse-item" href="/mostrar-graficos">IR</a>      
       </div>
     </div>
   </li>

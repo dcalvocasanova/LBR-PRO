@@ -1665,7 +1665,66 @@ public function getABCMeasuresByLevel(Request $request) {
   return $result;
 }
 
+/**** CARGAS DE TRABAJO****/
+
+public function getWorkFlow(Request $request) {
+  $result = array();
+  $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
+              ->where('measures.user_id',$request->user_id)
+              ->whereNotNull('measures.measure')
+              ->select('tasks.id','tasks.task', 'measures.fecha', 'measures.measure')->get();
+  $userParameterMeasures = ParametersMeasure::where('user_id', $request->user_id)
+                          ->select('category_id','variable', 'fecha', 'measure')->get();
+
+  return ['tareas'=>$task, 'Tiempos'=>$userParameterMeasures];
+  $counter = $task->groupBy([
+      'id', function ($item) { return ['id'=>$item->id];},
+  ], $preserveKeys = true);
+
+  $avg_t= collect();
+
+  foreach ($counter as $key=> $value) {
+    $condition="sobrestimado";
+    $avg = $value[$key]->avg('measure');
+    if($avg > $value[$key]->pluck('t_avg')->first()){
+      $condition="subestimado";
+    }
+    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
+            'time'=>$value[$key]->pluck('t_avg')->first(),
+            'avg'=> $avg,
+            'condition'=>$condition)
+          );
+  }
+  //Data for table
+  $title =[
+    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
+    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+  ];
+
+  $result['content'] = $avg_t;
+  $result['title'] = $title;
+
+  $participation =  $avg_t->countBy(function ($item) {
+    return $item['condition'];
+  });
+
+  $datos = collect();
+  $legend = collect();
+  foreach ($participation as $key => $value){
+    $datos->push(array('value'=>$value,'name'=>$key));
+    $legend->push($key);
+  }
+  $result['data'] =$datos;
+  $result['legend'] =$legend;
+
+  return $result;
+}
+
+
 /*** -------------------------------- ****/
+
 
   public function getUserMeasures()
   {
