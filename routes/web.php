@@ -217,7 +217,7 @@ Route::get('/gestionar-tareas-variables-adicionales', function () {
 //GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
-})->middleware('permission:CRUD_tasks');
+})->middleware('auth');
 
 Route::get('/gestionar-plantillas-usuarios', function () {
     return view('taskManager.tareas-plantillas-usuarios');
@@ -229,43 +229,59 @@ Route::get('/gestionar-plantillas-usuarios', function () {
 | REPORTES
 |--------------------------------------------------------------------------*/
 
+Route::get('/mostrar-graficos', function () {
+    return view('containers.reportes');
+})->middleware('auth');
+
 //POR EL MOMENTO
 
 Route::get('/ejemplos', function () {
     return view('reports.reporteEjemplo');
-});
+})->middleware('auth');
 
 Route::get('reporte/frecuencias', function () {
     return view('reports.reporteFrecuencias');
-});
+})->middleware('auth');
 
 Route::get('reporte/phva', function () {
     return view('reports.reportePHVA');
-});
+})->middleware('auth');
 
 Route::get('reporte/competencias', function () {
     return view('reports.reporteCompetencias');
-});
+})->middleware('auth');
 
 Route::get('reporte/esfuerzo', function () {
     return view('reports.reporteEsfuerzos');
-});
+})->middleware('auth');
 
 Route::get('reporte/tipo-trabajo', function () {
     return view('reports.reporteTipoTrabajo');
-});
+})->middleware('auth');
 
 Route::get('reporte/riesgo', function () {
     return view('reports.reporteRiesgos');
-});
+})->middleware('auth');
 
 Route::get('reporte/valor-agregado', function () {
     return view('reports.reporteValorAgregado');
-});
+})->middleware('auth');
 
 Route::get('reporte/correlacion', function () {
     return view('reports.reporteCorrelacion');
-});
+})->middleware('auth');
+
+Route::get('reporte/instrumentos', function () {
+    return view('reports.reporteRelacionInstrumentos');
+})->middleware('auth');
+
+Route::get('reporte/abc', function () {
+    return view('reports.reporteABC');
+})->middleware('auth');
+
+Route::get('reporte/carga-trabajo', function () {
+    return view('reports.reporteCargasDeTrabajo');
+})->middleware('auth');
 
 
 //PENDIENTE DE REVISIÓN
@@ -575,3 +591,16 @@ Route::get('/grafica/correlacion/niveles/', 'ReportController@getCorelationMeasu
 Route::get('/grafica/correlacion', 'ReportController@getCorelationMeasuresByCorelation');
 Route::get('/grafica/correlacion/usuario/', 'ReportController@getCorelationMeasuresByUser');
 Route::get('/grafica/correlacion/datos/', 'ReportController@getCorelationData');
+
+//Revisión de instrumentos
+Route::get('/grafica/instrumentos/productos/', 'ReportController@getInstrumentsMeasuresByProduct');
+Route::get('/grafica/instrumentos/niveles/', 'ReportController@getInstrumentsMeasuresByLevel');
+Route::get('/grafica/instrumentos/usuario/', 'ReportController@getInstrumentsMeasuresByUser');
+
+//Revisión de ABC
+Route::get('/grafica/abc/productos/', 'ReportController@getABCMeasuresByProduct');
+Route::get('/grafica/abc/niveles/', 'ReportController@getABCMeasuresByLevel');
+Route::get('/grafica/abc/usuario/', 'ReportController@getABCMeasuresByUser');
+
+//Cargas de trabajo
+Route::get('/grafica/workFlow', 'ReportController@getWorkFlow');

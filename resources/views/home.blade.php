@@ -40,7 +40,7 @@
 
         <div class="row m-3 mt-5">
           @component('components.colorcard')
-            @slot('title') Rellenar medición del día @endslot
+            @slot('title') Registro de medición de labores del día @endslot
             @slot('type') success @endslot
             @slot('subtitle') ir @endslot
             @slot('url') gestionar-tareas-con-variables-medicion @endslot
