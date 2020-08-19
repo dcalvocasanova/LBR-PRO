@@ -15,12 +15,11 @@
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
 					  <th> Proceso </th>
-				
 					  <th style ="withd:120px"> Acciones </th>
                     </tr>
                   </thead>
                   <tbody>
-                      <tr  v-for="macroproceso in Macroprocesos.data" :key="macroproceso.id">
+                      <tr   v-for="macroproceso in Macroprocesos.data" :key="macroproceso.id">
                         <td v-text="macroproceso.macroprocess"></td>
                         <td v-text="macroproceso.activity"></td>
 						<td v-text="macroproceso.responsible"></td>
@@ -549,6 +548,12 @@ export default {
       me.title= "Registrar nueva Ficha Macroproceso";
       me.update = 0;
       me.form.reset();
+	  me.Entradas = [];
+	  me.Proveedores = [];
+	  me.Riesgos = [];
+	  me.Usuarios = [];
+	  me.Actividades = [];
+	  me.Indicadores = [];
     },
     LoadCatalogInput() {
       axios.get('catalogo?id=INPUT')

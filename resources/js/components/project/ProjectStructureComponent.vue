@@ -328,45 +328,66 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="InheritageManager"></h5>
+            <h5 class="modal-title" id="TaskNotificator"> Relacionar Objetivos </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <div class="card">
-              <div class="card-body">
-                <div class="col-md-8">
-                  <div class="form-group">
-                    <table class="table table-hover">
-                      <thead class="">
-                        <tr>
-                          <th > Objetivos del nivel superior </th>
-                          <th > Objetivos de este nivel </th>
-                        </tr>
-                      </thead>
-                      <tbody >
-                        <tr v-for="rows in relatedGoals">
-                          <td v-for="goal in rows">
-                            <input
-                            type="checkbox"
-                            v-model="goal.related"
-                            v-bind:key="goal.randomCellIndex"
-                            :value="goal.randomCellIndex">
-                            {{goal.name}}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <table class="table table-hover">
+                       <thead>
+                          <tr><th>Objetivos de nivel superior</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <select v-model="parentGoalName" class="form-control" @chanche="getUsersInTemplate(form.relatedTemplate)">
+                    <option v-for="goal in parentNode.goals" :value="goal.name" :key="goal.pos">{{ goal.name }}</option>
+                  </select>
+                              </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="card-footer">
-                <div class="container-buttons">
-                  <button @click="salirRelacionarObjetivos()" class="btn btn-secondary">Salir</button>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <table class="table table-hover">
+                       <thead>
+                          <tr><th>Seleccionar objetivos de nivel</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="currentgoal in currentNode.goals" :key="currentgoal.pos" >
+                            <td>
+                              <input v-model="relatedGoals" type="checkbox"
+                                :value="currentgoal.name">
+                                  {{currentgoal.name}}
+                              </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="modal-footer">
+            <div class="card-body">
+                <div class="container-buttons">
+                  <button  @click="saveRelation()" class="btn btn-success">Enviar</button>
+                  <button @click="exit()" class="btn btn-secondary">Salir</button>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -384,10 +405,17 @@ export default {
   },
   data(){
     return{
-      project_id:2,
+      project_id:"",
       goalsInherited:[],
       relatedGoals:[],
       relatedTest:[[]],
+	  ////////////////////
+      parentGoals:[],
+	  currentGoals:[],
+	  parentGoalName:"",	
+		
+		
+		
       temp:[],
       currentSelectedItem:"",
       Macroprocessgoals:[],
@@ -406,6 +434,7 @@ export default {
         levels:"",
         project_id:""
       })
+	  
     }
   },
   methods:{
@@ -418,37 +447,16 @@ export default {
       me.currentNode = item
       me.updateNodeControl = 0
       this.getGoalName()
+	  me.relatedGoals = []
     },
     relateGoals(nodo){
-      let me = this;
-      me.currentNode = nodo.item
-      me.parentNode = nodo.parent
-      me.updateNodeControl = 0
-      for (var i = 0; i < me.parentNode.goals.length; ++i) {
-        let temp1 = [];
-        me.relatedGoals.push(temp1);
-        me.relatedGoals[i].push(me.parentNode.goals[i]);
-        for (var k = 0; k < me.parentNode.goals.length; ++k) {
-           me.relatedGoals[i].push(me.currentNode.goals[k]);
-
-        }
-      }
-
-      for (var i = 0; i < me.relatedGoals.length; ++i) {
-        for (var k = 0; k < me.relatedGoals[i].length; ++k) {
-
-
-          me.itemsCopy = me.relatedGoals.slice();
-          var obj = Object.assign({}, me.itemsCopy[i][k]);
-          let randomCellIndex = me.rndStr(15);
-          obj.randomCellIndex = randomCellIndex;
-          obj.related = "";
-          me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-
-        }
-      }
-
-      this.getGoals()
+	  let me = this;
+	  me.currentNode = nodo.item
+	  me.parentNode = nodo.parent
+	  me.parentGoals = me.parentNode.goals
+	  me.CurrentGoals = me.currentNode.goals
+	  me.updateNodeControl = 0
+	  this.getGoals()
     },
     loadGoalsUpdate(goal){
       let me = this;
@@ -578,9 +586,27 @@ export default {
       me.level.levels =JSON.stringify(me.Levels)
       me.updateLevel()
     },
+	saveRelation(){
+		let me = this
+		
+	    axios.put('/estructura/objetivos-relacionados',{
+			
+				project_id: me.project_id,
+			    level:me.currentNode.name,
+				parentGoal:me.parentGoalName,
+				currentGoals: JSON.stringify(me.relatedGoals)
+		    
+		})
+	    .then(function (response) {
+		  toast.fire({
+		   type: 'success',
+		   title: 'Elementos de la tarea agregados con éxito'
+		  });
+       })
+     },
     updateLevel(){
       let me = this;
-      this.level.put('/estructura/actualizar')
+      me.level.put('/estructura/actualizar')
       .then(function (response) {
         toast.fire({
           type: 'success',
@@ -883,7 +909,7 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.project_id = response.data.id
-        me.level.project_id= response.data.id
+        me.level.project_id= me.project_id
         me.getLevels()
       });
     },

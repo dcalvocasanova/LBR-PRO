@@ -12,7 +12,6 @@
         </div>
       </div>
     </div>
-  
     <br>
     <div class="row mb-2">
       <div class="col-12 text-center">
@@ -58,7 +57,7 @@
       axios.get('/usuario')
       .then(response => {
         me.currentUser = response.data.id
-    	if(!me.task.measure){me.form.measure = 10;} 
+    	//if(!me.task.measure){me.form.measure = 10;} 
       });
     },
     updateTask(){
@@ -78,7 +77,13 @@
   created(){
     let me = this
     this.form.fill(this.task)
-	me.getCurrentUser()
+    me.getCurrentUser()
+	for(let i = 0; i<100;i++){
+	  if(me.task.id == me.task[i].task_id){
+		me.form.measure = this.task[i].measure
+		break
+	  }
+	}
   }
 }
 </script>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Measure;
+use App\SettingsMeasure;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -115,7 +116,33 @@ class MeasureController extends Controller
 	  $Measure->fecha     = $now;
       $Measure->save();
     }
+	
+	/**
+     * Update the specified resource in storage.
+     *
+     * @param  MeasureRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSettings(MeasureRequest $request)
+    {
 
+	  $SettingsMeasure = SettingsMeasure::firstOrNew(['project_id' =>$request->project_id]);
+	  $SettingsMeasure ->project_id = $request->project_id;
+	  $SettingsMeasure->vacation = $request->vacation;
+	  $SettingsMeasure->disability = $request->disability;
+	  $SettingsMeasure->workdays = $request->workdays;
+	  $SettingsMeasure->weekdays = $request->weekdays;
+	  $SettingsMeasure->yeardays = $request->yeardays;
+	  $SettingsMeasure->training = $request->training;
+	  $SettingsMeasure->license = $request->license;
+      $SettingsMeasure->save();
+    }
+	
+	 public function getSettings(Request $request)
+    {
+		 $SettingsMeasure = SettingsMeasure::where('project_id', $request->project_id);
+		 return $SettingsMeasure;
+	}
     /**
      * Change status as Read.
      *

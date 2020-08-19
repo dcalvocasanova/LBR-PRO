@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Measure;
 use App\UserTask;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskController extends Controller
 {
@@ -29,15 +31,42 @@ class TaskController extends Controller
      */
     public function getUserTasks(Request $request)
     {
+		
      	$userTasks = UserTask::select('tasks_id')->where('user_id',$request->id)->first();
-		$taskMeasures = Task::find($userTasks->tasks_id)->paginate(10);
+		$a = explode(",",$userTasks->tasks_id);
+		$numArray = array_map('intval', $a);
+		$taskMeasures = Task::find($numArray);
+		
+		$filtered = $taskMeasures->whereIn('id', $numArray);
+        $filtered->all();
+		//return Task::find($numArray);
 		$now = Carbon::now()->format('Y-m-d');
-	  	$tasks = Task::find($userTasks->tasks_id)->leftJoin('measures', function ($join) use($now,$request )   {
-            $join ->on('tasks.id', '=', 'measures.task_id')
-			->where('measures.fecha', '=', $now);
+	  	//$tasks = $taskMeasures->join('measures', function ($join) use($now,$request )   {
+        //    $join ->on('tasks.id', '=', 'measures.task_id')
+		//	->where('measures.fecha', '=', $now);
 			
-        })->select('tasks.id', 'tasks.task', 'measures.measure','tasks.project_id')->paginate(10);
-		return $tasks;
+      //  })->select('tasks.id', 'tasks.task', 'measures.measure','tasks.project_id')->paginate(10);
+		$measures = Measure::all();
+		
+		//return $measures;
+		$filtered= $filtered->map(function ($item, $key) use($now) {
+			$measures = Measure::all();
+			$measuresTask = $measures->where('task_id',$item->id);
+			$measuresTask = $measures->where('fecha',$now);
+			//$measuresTask = $measures->where('fecha',$now);
+			return collect($item)->merge($measuresTask);
+        });
+		
+		$currentPage = LengthAwarePaginator::resolveCurrentPage();
+		$perPage = 10;
+
+		$currentItems = array_slice($filtered->toArray(), $perPage * ($currentPage - 1), $perPage);
+		$paginator = new LengthAwarePaginator($currentItems, count($currentItems), $perPage, $currentPage);
+        $results = $paginator->appends('filter', request('filter'));
+		
+		return $results;
+		
+		
 		
     }
 

@@ -223,6 +223,11 @@ Route::get('/gestionar-plantillas-usuarios', function () {
     return view('taskManager.tareas-plantillas-usuarios');
 })->middleware('permission:CRUD_tasks');
 
+//GESTIONAR VARIABLES DE AJUSTE
+Route::get('/ajustes-medicion', function () {
+    return view('taskManager.ajustes-medicion');
+})->middleware('permission:CRUD_tasks');
+
 
 
 /*--------------------------------------------------------------------------
@@ -339,12 +344,14 @@ Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisss
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
 Route::get('/estructura/macroprocesos', 'ProjectStructureController@getMacroprocessProject');
 Route::put('/estructura/actualizar', 'ProjectStructureController@update');
+Route::put('/estructura/objetivos-relacionados', 'ProjectStructureController@updateRelatedGoals');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
 Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureController@getListOfUserFunctions');
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
+
 
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
@@ -492,6 +499,7 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 /* Measures*/
 
 Route::put('/measures/actualizar', 'MeasureController@update');
+Route::put('/measures/ajustes', 'MeasureController@updateSettings');
 Route::get('/measures/usuario', 'MeasureController@getUserMeasures');
 
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');

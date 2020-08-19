@@ -125,7 +125,6 @@ export default {
       .then(response => {
         me.workday = response.data
       });
-		
 	},
 
     getTasks(page = 1) {

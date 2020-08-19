@@ -109,6 +109,10 @@ Vue.component('tasksMeasures', require('./components/task/TaskMeasuresManagerCom
 Vue.component('tasksMeasure', require('./components/task/TaskUnitMeasureComponent.vue').default);
 
 //Measures
+Vue.component('settingsMeasure', require('./components/measure/SettingsMeasureComponent.vue').default);
+
+
+
 Vue.component('variablesAjusteTiempos', require('./components/assorted/VariableTEComponent.vue').default);
 Vue.component('help', require('./components/assorted/HelpComponent.vue').default);
 

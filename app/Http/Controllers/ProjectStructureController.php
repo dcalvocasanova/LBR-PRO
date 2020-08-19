@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\ProjectStructure;
+use App\RelatedGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StructureProjectRequest;
@@ -167,32 +168,16 @@ class ProjectStructureController extends Controller
      *  @param  \Illuminate\Http\Request  $request
      *  @return \Illuminate\Http\Response
      */
-     public function getListOfGoals(Request $request)
-     {
-        $listOfGoals = array();
-        $levels = ProjectStructure::where('project_id', $request->id)->first();
-        $LevelsObjet = json_decode($levels->levels,true);
-        $this->getGoalsR($LevelsObjet,$listOfGoals);
-        return $listOfGoals;
-      }
+       function updateRelatedGoals(Request $request)
+	   {
+		   //return $request->level;
+		  $RelatedGoals = RelatedGoals::firstOrNew(['project_id' =>$request->project_id,'relatedLevel' => $request->level,'parentGoal' => $request->parentGoal]);
 
-    /**
-      * Display a list of the userfunctions.
-      *
-      * @param objet $LevelsObjet
-      * @param array $listOfLevels
-      * @return array $listOfLevels
-      */
-      function getGoalsR($LevelsObjet,&$listOfGoals)
-      {
-        if(isset($LevelsObjet['name'])) {
-          $notified = isset($LevelsObjet['notificated'])? true : false;
-          array_push($listOfGoals, array("name" => $LevelsObjet['name'], "goals" => $LevelsObjet['numGoals'], "notified" => $notified));
-        }
-        if(isset($LevelsObjet['children']) and !empty($LevelsObjet['children']) ){
-          for ( $i = 0; $i< count($LevelsObjet['children']); $i++){
-            $this->getGoalsR($LevelsObjet['children'][$i],$listOfGoals);
-          }
-        }
-      }
+		  $RelatedGoals->project_id = $request->project_id;
+		  $RelatedGoals->relatedLevel = $request->level;//$this->User->getCurrentUser();
+		  $RelatedGoals->parentGoal = $request->parentGoal;
+		  $RelatedGoals->currentGoals = $request->currentGoals;
+		  $RelatedGoals->save();
+		   
+	   }
 }

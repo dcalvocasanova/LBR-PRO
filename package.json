@@ -37,6 +37,7 @@
     "vue-materialize-datatable": "^1.0.3",
     "vue-multiselect": "^2.1.6",
     "vue-progressbar": "^0.7.5",
-    "vue2-timeago": "^1.2.7"
+    "vue2-timeago": "^1.2.7",
+    "vuejs-datepicker": "^1.6.2"
   }
 }
