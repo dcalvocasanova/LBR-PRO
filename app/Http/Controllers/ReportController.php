@@ -268,21 +268,24 @@ class ReportController extends Controller
     $result = collect();
     foreach ($users as $user) {
         $taskAssigned=explode(',', $user->tasks_id);
-        foreach ($taskAssigned as $taskReview) {
+        foreach ($taskAssigned as $idTask => $taskReview) {
           $t =$tasks->where('id', $taskReview)->flatten();
-          $phva =$t[0]['PHVA'];
-          if (!empty($t[0]['type'])){ $phva =$t[0]['type'];}
-          if($phva =="P"){$phva="Planear";}
-          if($phva =="H"){$phva="Hacer";}
-          if($phva =="V"){$phva="Verificar";}
-          if($phva =="A"){$phva="Actuar";}
-          $result->push(array('identification'=>$user->identification,
-                         'user'=>$user->name,
-                         'task'=>$t[0]['task'],
-                         'level'=>$t[0]['relatedToLevel'],
-                         'product'=>$t[0]['allocator'],
-                         'PHVA'=>$phva,
-                        ));
+          $phva = $t->first()['PHVA'];
+          if (!empty($t->first()['type'])){ $phva =$t->first()['type'];}
+
+          if($phva =="P"){$phva_name="Planear";}
+          if($phva =="H"){$phva_name="Hacer";}
+          if($phva =="V"){$phva_name="Verificar";}
+          if($phva =="A"){$phva_name="Actuar";}
+
+          $result->push(
+            array('identification'=>$user->identification,
+                 'user'=>$user->name,
+                 'task'=>$t->first()['task'],
+                 'level'=>$t->first()['relatedToLevel'],
+                 'product'=>$t->first()['allocator'],
+                 'PHVA'=>$phva_name,
+                ));
           }
     }
     $title =[
@@ -432,10 +435,10 @@ class ReportController extends Controller
           $t =$tasks->where('id', $taskReview)->flatten();
           $result->push(array('identification'=>$user->identification,
                          'user'=>$user->name,
-                         'task'=>$t[0]['task'],
-                         'level'=>$t[0]['relatedToLevel'],
-                         'product'=>$t[0]['allocator'],
-                         'competence'=>$t[0]['name'],
+                         'task'=>$t->first()['task'],
+                         'level'=>$t->first()['relatedToLevel'],
+                         'product'=>$t->first()['allocator'],
+                         'competence'=>$t->first()['name'],
                         ));
           }
     }
@@ -553,10 +556,10 @@ class ReportController extends Controller
           $t =$tasks->where('id', $task)->flatten();
           $result->push(array('identification'=>$user->identification,
                          'user'=>$user->name,
-                         'task'=>$t[0]['task'],
-                         'level'=>$t[0]['relatedToLevel'],
-                         'product'=>$t[0]['allocator'],
-                         'effort'=>$t[0]['effort'],
+                         'task'=>$t->first()['task'],
+                         'level'=>$t->first()['relatedToLevel'],
+                         'product'=>$t->first()['allocator'],
+                         'effort'=>$t->first()['effort'],
                         ));
         }
     }
@@ -708,10 +711,10 @@ class ReportController extends Controller
           $t =$tasks->where('id', $taskReview)->flatten();
           $result->push(array('identification'=>$user->identification,
                          'user'=>$user->name,
-                         'task'=>$t[0]['task'],
-                         'level'=>$t[0]['relatedToLevel'],
-                         'product'=>$t[0]['allocator'],
-                         'laborType'=>$t[0]['name'],
+                         'task'=>$t->first()['task'],
+                         'level'=>$t->first()['relatedToLevel'],
+                         'product'=>$t->first()['allocator'],
+                         'laborType'=>$t->first()['name'],
                         ));
           }
     }
@@ -862,13 +865,13 @@ class ReportController extends Controller
     foreach ($users as $user) {
         $taskAssigned=explode(',', $user->tasks_id);
         foreach ($taskAssigned as $taskReview) {
-          $t =$tasks->where('id', $taskReview)->flatten();
+          $t =$tasks->where('id', $taskReview)->flatten()->first();
           $result->push(array('identification'=>$user->identification,
                          'user'=>$user->name,
-                         'task'=>$t[0]['task'],
-                         'level'=>$t[0]['relatedToLevel'],
-                         'product'=>$t[0]['allocator'],
-                         'risk'=>$t[0]['name'],
+                         'task'=>$t['task'],
+                         'level'=>$t['relatedToLevel'],
+                         'product'=>$t['allocator'],
+                         'risk'=>$t['name'],
                         ));
           }
     }
@@ -1079,20 +1082,20 @@ class ReportController extends Controller
         $type = "";
         $taskAssigned=explode(',', $user->tasks_id);
         foreach ($taskAssigned as $task) {
-          $t =$tasks->where('id', $task)->flatten();
-          if(isset($t[0]['addedValue'][0]) && isset($t[0]['addedValue'][1]) && isset($t[0]['addedValue'][2])){
-            if($t[0]['addedValue'][0]== "4" || $t[0]['addedValue'][0] == "5"){
+          $t =$tasks->where('id', $task)->flatten()->first();
+          if(isset($t['addedValue'][0]) && isset($t['addedValue'][1]) && isset($t['addedValue'][2])){
+            if($t['addedValue'][0]== "4" || $t['addedValue'][0] == "5"){
               $type = "Valor Agregado Real";
-            }elseif ($t[0]['addedValue'][1]== "4" || $t[0]['addedValue'][1] == "5" || $t[0]['addedValue'][2]== "4" || $t[0]['addedValue'][2] == "5")  {
+            }elseif ($t['addedValue'][1]== "4" || $t['addedValue'][1] == "5" || $t['addedValue'][2]== "4" || $t['addedValue'][2] == "5")  {
               $type = "Valor Agregado para al empresa";
             }else{
               $type = "Sin Valor Agregado";
             }
             $result->push(array('identification'=>$user->identification,
                        'user'=>$user->name,
-                       'task'=>$t[0]['task'],
-                       'level'=>$t[0]['relatedToLevel'],
-                       'product'=>$t[0]['allocator'],
+                       'task'=>$t['task'],
+                       'level'=>$t['relatedToLevel'],
+                       'product'=>$t['allocator'],
                        'clasification'=>$type,
                       ));
           }
@@ -1240,15 +1243,16 @@ class ReportController extends Controller
         $type = "";
         $taskAssigned=explode(',', $user->tasks_id);
         foreach ($taskAssigned as $task) {
-          $t =$tasks->where('id', $task)->flatten();
-          foreach ($t[0]['correlation'] as $correlation) {
-            $type = Catalog::Where('id',$correlation)->get('name')[0]->name;
+          $t =$tasks->where('id', $task)->flatten()->first();
+          $correlations=$t['correlation'];
+          foreach ( (array)$correlations as $correlation) {
+            $type = Catalog::Where('id',$correlation)->get('name')->first()['name'];
             $result->push(
               array('identification'=>$user->identification,
                      'user'=>$user->name,
-                     'task'=>$t[0]['task'],
-                     'level'=>$t[0]['relatedToLevel'],
-                     'product'=>$t[0]['allocator'],
+                     'task'=>$t['task'],
+                     'level'=>$t['relatedToLevel'],
+                     'product'=>$t['allocator'],
                      'correlation'=>$type,
             ));
           }
@@ -1669,72 +1673,115 @@ public function getABCMeasuresByLevel(Request $request) {
 
 public function getWorkFlow(Request $request) {
   $result = array();
+  //Obtener las tareas y medidas de los instrumentos según el usuario
   $task= task::leftJoin('measures', 'measures.task_id', '=', 'tasks.id')
               ->where('measures.user_id',$request->user_id)
               ->whereNotNull('measures.measure')
-              ->select('tasks.id','tasks.task', 'measures.fecha', 'measures.measure')->get();
-  $userParameterMeasures = ParametersMeasure::where('user_id', $request->user_id)
-                          ->select('category_id','variable', 'fecha', 'measure')->get();
-
-  return ['tareas'=>$task, 'Tiempos'=>$userParameterMeasures];
-  $counter = $task->groupBy([
-      'id', function ($item) { return ['id'=>$item->id];},
+              ->select('tasks.id','tasks.task', 'tasks.allocator', 'measures.fecha', 'measures.measure')->get();
+  $userParameterMeasures = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
+                          ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
+                          ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
+                          ->where('user_id', $request->user_id)
+                          ->select('parameters_measures.id',
+                                  'parameters_measures.category_id',
+                                  'parameters_measures.variable',
+                                  'parameters_measures.fecha',
+                                  'parameters_measures.measure',
+                                  'variables.identificator',
+                                  'subparameters.name AS category',
+                                  'parameters.name AS parameter')->get();
+  $tasksGrouped= $task->groupBy([
+      'fecha', function ($row) {return $row['id'];},
   ], $preserveKeys = true);
 
-  $avg_t= collect();
+  //Agrupar todo por fechas
+  $userParameterMeasuresGrouped = $userParameterMeasures->groupBy([
+      'fecha',function ($row) {return $row['id'];},
+  ], $preserveKeys = true);
 
-  foreach ($counter as $key=> $value) {
-    $condition="sobrestimado";
-    $avg = $value[$key]->avg('measure');
-    if($avg > $value[$key]->pluck('t_avg')->first()){
-      $condition="subestimado";
+  //Hacer el reporte con el promedio de tareas
+  $tasksReport= collect();
+  foreach ($tasksGrouped as $key => $registeredTasks) {
+    foreach ($registeredTasks as $id => $evaluatedTask) {
+      $tasksReport->push(
+        array('day'=>$evaluatedTask->first()->fecha,
+              'process'=>$evaluatedTask->first()->allocator,
+              'task'=>$evaluatedTask->first()->task,
+              'measure'=> $evaluatedTask->first()->measure
+        )
+      );
     }
-    $avg_t->push(array('task'=>$value[$key]->pluck('task')->first(),
-            'time'=>$value[$key]->pluck('t_avg')->first(),
-            'avg'=> $avg,
-            'condition'=>$condition)
-          );
   }
-  //Data for table
-  $title =[
-    ['label'=>"Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo registrado",'field'=> "time",'numeric'=> false, 'html'=> false],
-    ['label'=> "Tiempo promediado",'field'=> "avg",'numeric'=> false, 'html'=> false],
-    ['label'=> "Condición",'field'=> "condition",'numeric'=> false, 'html'=> false]
+
+  //Hacer el reporte con el promedio de los tiempos evaluados
+  $timesReport= collect();
+  foreach ($userParameterMeasuresGrouped as $key => $registeredTimes) {
+    foreach ($registeredTimes as $id => $evaluatedTime) {
+      $timesReport->push(
+        array('day'=>$evaluatedTime->first()->fecha,
+              'type'=>$evaluatedTime->first()->parameter,
+              'category'=>$evaluatedTime->first()->category,
+              'identificator'=>$evaluatedTime->first()->identificator,
+              'variable'=>$evaluatedTime->first()->variable,
+              'measure'=> $evaluatedTime->first()->measure
+        )
+      );
+    }
+  }
+
+  //títulos tabla de tareas
+  $titleTaskReport =[
+    ['label'=>"Día",'field'=> "day",'numeric'=> false, 'html'=> false],
+    ['label'=> "Proceso",'field'=> "process",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+    ['label'=> "Medida",'field'=> "measure",'numeric'=> false, 'html'=> false]
   ];
-
-  $result['content'] = $avg_t;
-  $result['title'] = $title;
-
-  $participation =  $avg_t->countBy(function ($item) {
-    return $item['condition'];
-  });
-
-  $datos = collect();
-  $legend = collect();
-  foreach ($participation as $key => $value){
-    $datos->push(array('value'=>$value,'name'=>$key));
-    $legend->push($key);
-  }
-  $result['data'] =$datos;
-  $result['legend'] =$legend;
-
+  //títulos tabla de tiempos
+  $titleTimesReport =[
+    ['label'=>"Día",'field'=> "day",'numeric'=> false, 'html'=> false],
+    ['label'=> "Tipo",'field'=> "type",'numeric'=> false, 'html'=> false],
+    ['label'=> "Categoría",'field'=> "category",'numeric'=> false, 'html'=> false],
+    ['label'=> "Identificador",'field'=> "identificator",'numeric'=> false, 'html'=> false],
+    ['label'=> "Variable",'field'=> "variable",'numeric'=> false, 'html'=> false],
+    ['label'=> "Medida",'field'=> "measure",'numeric'=> false, 'html'=> false]
+  ];
+  //Enviar datos
+  $result['tasks'] = $tasksReport;
+  $result['titleTasks'] = $titleTaskReport;
+  $result['times'] = $timesReport;
+  $result['titleTimes'] = $titleTimesReport;
   return $result;
 }
 
+/**** TIEMPOS DE AJUSTE ****/
+public function getTimesByUser(Request $request)
+{
+  $workday=480;
+  $incapacidad=10;
+  $vacaciones=3.11;
+  $permisos= 1.23;
+  $capacitacion= 4.25;
+  $Fatiga=$workday*0.04;
 
-/*** -------------------------------- ****/
+  $userTimesRegistered = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
+                          ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
+                          ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
+                          ->where('user_id', $request->user_id)
+                          ->select('parameters_measures.measure',
+                                  'parameters.name AS parameter',
+                                  'parameters.id')->get();
+
+    //return $userTimesRegistered;
+    //Agrupar todo por categorías
+    $results = $userTimesRegistered->groupBy('id')
+                                   ->map(function ($row){
+                                      return array('sum'=>$row->sum('measure'), 'data'=>$row->first());
+                                    })->flatten();
+    $tiempos=$results->sum('sum');
+    return $results;
 
 
-  public function getUserMeasures()
-  {
-    $userMeasures = Measure::where('user_id', Auth::user()->id)->get();
-    $categorias = collect();
-    foreach ($userMeasures as $measure) {
-      $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
-    }
-    return $categorias;
-  }
+}
 
   /*Recopila los datos de los dias evaluados por usuario*/
   public function getUserParameterMeasures(Request $request)

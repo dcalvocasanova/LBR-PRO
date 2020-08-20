@@ -57,18 +57,22 @@
     <div class="col-12" v-if="showNodata">
       <h2 class="text-center">No hay datos para presentar</h2>
     </div>
-    <div class="col-12" v-if="showGraphics">
-      <v-chart :options="graph_one"  class="chart"/>
-    </div>
-    <div class="col-12" v-if="showGraphics">
-      <v-chart :options="graph_two" :key="key_graph_two" class="chart"/>
+    <div class="col-12" v-if="showData">
+      <datatable
+      	:title="tableTasksName"
+        :printable="false"
+      	:columns="tableTasksColumns"
+      	:rows="tableTasksRows"
+        :perPage="[10,15,20,25]"
+        locale="es"
+      />
     </div>
     <div class="col-12" v-if="showData">
       <datatable
-      	:title="tableName"
+      	:title="tableTimeName"
         :printable="false"
-      	:columns="tableColumns"
-      	:rows="tableRows"
+      	:columns="tableTimeColumns"
+      	:rows="tableTimeRows"
         :perPage="[10,15,20,25]"
         locale="es"
       />
@@ -78,20 +82,13 @@
 </template>
 
 <script>
-import ECharts from 'vue-echarts'
 import DataTable from 'vue-materialize-datatable'
 import VueElementLoading from 'vue-element-loading'
-import 'echarts/lib/chart/bar';
-import 'echarts/lib/chart/line';
-import 'echarts/lib/chart/pie';
-import 'echarts/lib/component/tooltip';
-import 'echarts/lib/component/legend';
-import 'echarts/lib/component/title';
-import 'echarts/lib/component/toolbox';
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
   components: {
-    'v-chart': ECharts,
     'datatable': DataTable,
     'loader': VueElementLoading
   },
@@ -100,129 +97,25 @@ export default {
       dataToShowInGraph:{},
       datos:[],
       checks:[],
-      legends:[],
       Projects:{},
-      Levels:{},
-      Frecuencies:{},
       Users:{},
       tipo:"",
       projectPickedId:0,
-      key_graph_two:0,
-      levelPicked:'',
-      productPicked:'',
-      frecuencyPicked:'',
       showOptions:false,
-      showProductType:false,
-      showFrecuencyType:false,
       showUserType:false,
+      showGraphics:true,
       showUser:false,
       showData:false,
-      showGraphics:false,
       showNodata:false,
       loadingPage:true,
-      data_graph1:{},
       ready: false,
-      graph_one: {
-        title: {
-          text: ' ',
-          left: 'center',
-          top : 0,
-          textStyle: {
-            fontSize: 25
-          }
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          top: 40,
-          orient: 'vertical',
-          right: 0,
-          data: []
-        },
-        toolbox: {
-          right: 10,
-          show: false,
-          feature: {
-            dataView: {
-              show: true,
-              readOnly: true,
-              title: 'Ver datos',
-              lang: ['', 'Salir', '']
-            },
-            saveAsImage: {
-              show:true,
-              title: 'Guardar imagen'
-            }
-          }
-       },
-        series: [
-          {
-            label: {
-              position: 'outside',
-              formatter: '{b}: {c} ({d}%)'
-            },
-            top: 35,
-            right: 55,
-            name: '',
-            type: 'pie',
-            radius: '80%',
-            data:[],
-          }]
-      },
-      graph_two: {
-        xAxis: {
-            type: 'category',
-            data: ['Frecuencias']
-        },
-        yAxis: {
-            type: 'value'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c}'
-        },
-        toolbox: {
-          showTitle:false,
-          feature: {
-            magicType: {
-              title:'',
-              type: ['stack', 'tiled']
-            },
-            dataView: {
-              show: true,
-              readOnly: true,
-              title: 'Ver datos',
-              lang: ['', 'Salir', '']
-            }
-          }
-        },
-        series:[]
-      },
-      tableName:'',
-      tableColumns:[],
-		  tableRows:[]
-    }
-  },
-  watch: {
-    dataToShowInGraph: function (val) {
-      if(Object.keys(val.data).length > 0){
-        this.showNodata=false
-        this.graph_one['title']['text'] = this.tipo
-        this.graph_one['series'][0]['data'] = val.data
-        this.graph_one['series'][0]['name'] = this.tipo
-        this.graph_one['toolbox']['show'] = true
-        this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
-        this.graph_one['legend']['data'] = val.legend
-        this.key_graph_two+= 1
-        this.graph_two['series']= val.second_graphic
-        this.showGraphics=true
-      }else{
-        this.showNodata=true
-        this.showGraphics=false
-      }
-    },
+      tableTasksName:'',
+      tableTasksColumns:[],
+		  tableTasksRows:[],
+      tableTimeName:'',
+      tableTimeColumns:[],
+		  tableTimeRows:[]
+    }    
   },
   methods:{
     loadAllProjects(){
@@ -245,20 +138,11 @@ export default {
       this.showFrecuencyType=false
       this.showUserType=false
     },
-    showFrecuencies(){
-      this.loadCatalogFrecuency()
-      this.showFrecuencyType=true
-      this.showProductType=false
-      this.showUserType=false
-    },
     showUsers(){
       this.loadUsers()
       this.showUserType=true
       this.showFrecuencyType=false
       this.showProductType=false
-    },
-    showDataFrecuencies(){
-      this.getTableData()
     },
     loadUsers(page = 1) {
       let me =this
@@ -280,29 +164,26 @@ export default {
         }
       })
       .then(response => {
-        this.tipo = "Tareas por usuario: "+user.name
-        this.dataToShowInGraph =  response.data
-      });
-    },
-    getTableData(){
-      let me = this
-      axios.get('/grafica/frecuencias/datos/', {
-        params: {
-          project_id: me.projectPickedId
-        }
-      })
-      .then(response => {
-        if(Object.keys(response.data.content).length > 0){
+        if(Object.keys(response.data.tasks).length > 0){
           this.showNodata=false
-          this.tableName = "Datos de usuarios, tareas y frecuencias"
-          this.tableColumns = response.data.title
-          this.tableRows =response.data.content
+          this.tableTasksName = "Tiempo registrado de tareas"
+          this.tableTasksColumns = response.data.titleTasks
+          this.tableTasksRows =response.data.tasks
           this.showData=true
         }else{
           this.showNodata=true
           this.showData=false
         }
-
+        if(Object.keys(response.data.times).length > 0){
+          this.showNodata=false
+          this.tableTimeName = "Tiempo registrado de cargas de trabajo"
+          this.tableTimeColumns = response.data.titleTimes
+          this.tableTimeRows =response.data.times
+          this.showData=true
+        }else{
+          this.showNodata=true
+          this.showData=false
+        }
       });
     },
   },
