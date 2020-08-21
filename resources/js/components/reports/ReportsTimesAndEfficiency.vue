@@ -180,7 +180,7 @@ export default {
         this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
         this.graph_one['legend']['data'] = val.legend
         this.key_graph_two+= 1
-        this.graph_two['series']= val.second_graphic
+        this.graph_two['series']= val.data
         this.showGraphics=true
       }else{
         this.showNodata=true
@@ -251,6 +251,7 @@ export default {
       let me = this
       axios.get('/grafica/tiempos/usuario/', {
         params: {
+          project_id: me.projectPickedId,
           user_id: user.id
         }
       })

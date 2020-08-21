@@ -1754,60 +1754,108 @@ public function getWorkFlow(Request $request) {
 }
 
 /**** TIEMPOS DE AJUSTE ****/
-public function getTimesByUser(Request $request)
-{
-  $workday=480;
-  $incapacidad=10;
-  $vacaciones=3.11;
-  $permisos= 1.23;
-  $capacitacion= 4.25;
-  $Fatiga=$workday*0.04;
+public function getTimesByUser(Request $request){
+    $dailyWorkHours=8;
+    $workingDaysPerWeek=5;
+    $workingDaysPerYear=365;
+    $incapacityRate=10;
+    $holyday=15;
+    $daysOff=10;
+    $trainingInHours=20;
+    $dailyWorkMinutes=$dailyWorkHours*8;
+    $employees=User::where('relatedProjects', $request->project_id)->count();
 
-  $userTimesRegistered = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
-                          ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
-                          ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
-                          ->where('user_id', $request->user_id)
-                          ->select('parameters_measures.measure',
-                                  'parameters.name AS parameter',
-                                  'parameters.id')->get();
+    if($dailyWorkHours <= 0){$dailyWorkHours=8;}
+    if($workingDaysPerYear <= 0){$workingDaysPerYear=365;}
+    if($employees <= 0){$employees=1;}
 
-    //return $userTimesRegistered;
-    //Agrupar todo por categorías
-    $results = $userTimesRegistered->groupBy('id')
-                                   ->map(function ($row){
-                                      return array('sum'=>$row->sum('measure'), 'data'=>$row->first());
-                                    })->flatten();
-    $tiempos=$results->sum('sum');
-    return $results;
+    $trainingPercentage = (($trainingInHours/$dailyWorkHours)*(1/($workingDaysPerYear*$employees)))*100;
+    $holydayPercentage =($holyday/($workingDaysPerYear*$employees))*100;
+    $incapacityPercentage=($incapacityRate/($workingDaysPerYear*$employees))*100;
+    $daysOffPercentage=($daysOff/($workingDaysPerYear*$employees))*100;
+
+      //Obtener los parametros del usuario
+    $times = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
+              ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
+              ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
+              ->where('user_id', $request->user_id)
+              ->select('parameters_measures.fecha',
+                      'parameters_measures.measure',
+                      'variables.identificator',
+                      'parameters.name AS parameter')->get();
+
+      //Agrupar todo por categoría de tiempo a evaluar y obtener promedio entre las distintas fechas en que se midió
+    $avgTimes = $times->groupBy('identificator')
+                       ->map(function ($row){
+                           $addition['total'] = $row->avg('measure');
+                           $addition['category'] = $row->first()['parameter'];
+                           return $addition;
+                        });
+    //Agrupar por categoría de tiempo y totalizar tiempos
+    $totalTimes = $avgTimes->groupBy('category')
+                        ->map(function ($row){
+                            return $row->sum('total');
+                         });
+    $categoryObjectTimes = $totalTimes->sum();
+    //Cálculos propios para calculo de tiempo básico
+    $basicTime = $dailyWorkMinutes - $categoryObjectTimes;
+    $basicTime += $dailyWorkMinutes * $trainingPercentage;
+    $basicTime += $dailyWorkMinutes * $incapacityPercentage;
+    $basicTime += $dailyWorkMinutes * $holydayPercentage;
+    $basicTime += $dailyWorkMinutes * $daysOffPercentage;
+    //Cálculos propios para calculo de tiempo extra
+    $extraTime = $dailyWorkMinutes * $trainingPercentage;
+    $extraTime += $dailyWorkMinutes * $incapacityPercentage;
+    $extraTime += $dailyWorkMinutes * $holydayPercentage;
+    $extraTime += $dailyWorkMinutes * $daysOffPercentage;
 
 
-}
+    $legend= collect();
+    $graph= collect();
+    foreach ($totalTimes as $category => $total) {
+      $percentage = ($total/$dailyWorkMinutes)*100;
+      $legend->push($category);
+      $graph->push(
+        array(
+          'name'=>$category,
+          'type'=>'bar',
+          'stack'=> 'TIMES',
+          'data'=>$percentage
+        )
+      );
+    }
 
-  /*Recopila los datos de los dias evaluados por usuario*/
-  public function getUserParameterMeasures(Request $request)
-  {
+    //Elementos adicionales
 
-    $result = array();
-    $userParameterMeasures = collect();
-    $userParameterMeasures = ParametersMeasure::where('user_id', Auth::user()->id)->get();
+    $legend->push('Incapacidades');
+    $graph->push(array('name'=>'Incapacidades', 'data'=> $incapacityPercentage,'type'=>'bar','stack'=> 'TIMES'));
 
-    $result['Data'] = $userParameterMeasures->groupBy([
-        'fecha',
-        function ($item) {
-            return $item['fecha'];
-        },
-    ], $preserveKeys = true);
+    $legend->push('Vacaciones');
+    $graph->push(array('name'=>'Vacaciones', 'data'=> $holydayPercentage,'type'=>'bar','stack'=> 'TIMES'));
 
-    $result['Legend'] = $userParameterMeasures->unique('fecha')
-                        ->map(function ($row) {return $row['fecha'];})->flatten();
+    $legend->push('Permisos');
+    $graph->push(array('name'=>'Permisos', 'data'=> $daysOffPercentage,'type'=>'bar','stack'=> 'TIMES'));
 
-    $result['Amount'] = $userParameterMeasures->groupBy('fecha')
-                      ->map(function ($row) {return $row->sum('measure');})->flatten();
+    $legend->push('Capacitación ');
+    $graph->push(array('name'=>'Capacitación', 'data'=> $trainingPercentage,'type'=>'bar','stack'=> 'TIMES'));
 
-    $Promedio = $userParameterMeasures->groupBy('fecha')
-                      ->map(function ($row) {return $row->avg('measure');})->flatten();
-    return $result;
+    $legend->push('Fatiga');
+    $graph->push(array('name'=>'Fatiga', 'data'=> '4','type'=>'bar','stack'=> 'TIMES'));
+
+    $legend->push('Extra');
+    $graph->push(array('name'=>'Extra', 'data'=> $extraTime,'type'=>'bar','stack'=> 'TIMES'));
+
+
+    $percentage = ($basicTime/$dailyWorkMinutes)*100;
+    $legend->push('Tiempo Básico');
+    $graph->push(array('name'=>'Tiempo Básico', 'data'=> $percentage,'type'=>'bar','stack'=> 'TIMES'));
+
+    // Tiempo objeto
+
+
+    $report['data'] =$graph;
+    $report['legend'] =$legend;
+
+    return $report;
   }
-
-
 }
