@@ -75,13 +75,6 @@
             @slot('url') reporte/correlacion @endslot
             @slot('icon') fas fa-tags @endslot
             @endcomponent
-            @component('components.colorcard')
-            @slot('title') Reporte de  @endslot
-            @slot('type') info @endslot
-            @slot('subtitle') ir @endslot
-            @slot('url')  @endslot
-            @slot('icon') fas fa-tags @endslot
-            @endcomponent
 
             @component('components.colorcard')
             @slot('title') Reporte de Relación entre Instrumentos @endslot
@@ -111,7 +104,7 @@
             @slot('title') Reporte de Cálculo de Eficiencia y Tiempos de trabajo  @endslot
             @slot('type') info @endslot
             @slot('subtitle') ir @endslot
-            @slot('url') # @endslot
+            @slot('url') reporte/ajuste-tiempos @endslot
             @slot('icon') fas fa-tags @endslot
             @endcomponent
 

@@ -283,6 +283,10 @@ Route::get('reporte/carga-trabajo', function () {
     return view('reports.reporteCargasDeTrabajo');
 })->middleware('auth');
 
+Route::get('reporte/ajuste-tiempos', function () {
+    return view('reports.reporteEficienciaYTiempos');
+})->middleware('auth');
+
 
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
@@ -604,3 +608,7 @@ Route::get('/grafica/abc/usuario/', 'ReportController@getABCMeasuresByUser');
 
 //Cargas de trabajo
 Route::get('/grafica/workFlow', 'ReportController@getWorkFlow');
+
+//Cálculo de Tiempos
+Route::get('/grafica/tiempos/usuario', 'ReportController@getTimesByUser');
+Route::get('/grafica/tiempos/nivel', 'ReportController@getTimesByLevel');
