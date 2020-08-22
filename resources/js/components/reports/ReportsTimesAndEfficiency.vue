@@ -74,7 +74,7 @@
       <h2 class="text-center">No hay datos para presentar</h2>
     </div>
     <div class="col-12" v-if="showGraphics">
-      <v-chart :options="graph_two" :key="key_graph_two" class="chart"/>
+      <v-chart :options="graph" :key="key_graph_two" class="chart"/>
     </div>
     <div class="col-12" v-if="showData">
       <datatable
@@ -135,7 +135,8 @@ export default {
       loadingPage:true,
       data_graph1:{},
       ready: false,
-      graph_two: {
+      graph: {
+        legend:{},
         xAxis: {
             type: 'category',
             data: ['Tiempos']
@@ -162,6 +163,11 @@ export default {
             }
           }
         },
+        label:{
+          show: true,
+          position:'inside',
+          formatter: '{a}:{@score}'
+        },
         series:[]
       },
       tableName:'',
@@ -173,14 +179,8 @@ export default {
     dataToShowInGraph: function (val) {
       if(Object.keys(val.data).length > 0){
         this.showNodata=false
-        this.graph_one['title']['text'] = this.tipo
-        this.graph_one['series'][0]['data'] = val.data
-        this.graph_one['series'][0]['name'] = this.tipo
-        this.graph_one['toolbox']['show'] = true
-        this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
-        this.graph_one['legend']['data'] = val.legend
         this.key_graph_two+= 1
-        this.graph_two['series']= val.data
+        this.graph['series']= val.data
         this.showGraphics=true
       }else{
         this.showNodata=true
@@ -201,6 +201,7 @@ export default {
       this.showOptions = true
       this.showProductType=false
       this.showGraphics=false
+      this.showUserType=false
       this.showData=false
     },
     showStrutureInformation(){
@@ -236,7 +237,7 @@ export default {
     },
     selectByLevel(){
       let me = this
-      axios.get('/grafica/tiempos/niveles/', {
+      axios.get('/grafica/tiempos/nivel/', {
         params: {
           project_id: me.projectPickedId,
           level: me.levelPicked
