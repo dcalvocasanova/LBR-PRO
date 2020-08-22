@@ -6,7 +6,7 @@
         <div class="date-content">
           <p class="nomargin"><strong>{{ dayName }} </strong></p>
           <hr class="nomargin"/>
-          <p class="dia"> {{ day}}</p>
+          <p class="dia"> {{ todayD }}</p>
           <hr class="nomargin"/>
           <p class="nomargin"><strong>{{ monthName }}</strong></p>
         </div>
@@ -20,6 +20,7 @@
     data () {
       return {
           year: '',
+          todayD:' ',
           month:'',
           day:'',
           dayName:'',
@@ -31,6 +32,7 @@
     methods: {
       getNow: function() {
         let today = new Date()
+        this.todayD =today.getDate()
         this.year = today.getFullYear()
         this.month = today.getMonth()
         this.day = today.getDay()

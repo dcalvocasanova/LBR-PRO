@@ -58,6 +58,26 @@ class ParameterMeasureController extends Controller
     //  return $userParameterMeasures;
     }
 
+	/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserMeasuresTiempo(Request $request)
+    {
+		$suma = 0;
+		$now = Carbon::now()->format('Y-m-d');
+		
+		$userParameterMeasures = ParametersMeasure::where('user_id', Auth::user()->id)->where('fecha', $now)->get();
+		foreach ($userParameterMeasures as $measure) {
+       		 $suma += $measure->measure;
+        }
+      return $suma;
+
+    //  $userParameterMeasures = UserParameterMeasure::where('user_id',$request->user_id);
+    //  return $userParameterMeasures;
+		
+	}
     /**
      * Display a listing of the resource.
      *

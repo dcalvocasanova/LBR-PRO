@@ -25,9 +25,9 @@ class CreateProcessesTable extends Migration
 			 $table->string('resultProduct');
             $table->string('user');
             $table->string('risk');
-			$table->string('frecuency_risk');
-			$table->string('consecuency_risk');
-			$table->string('maturity_risk');
+			$table->string('riskFrecuency');
+			$table->string('riskMaturity');
+			$table->string('riskConsecuency');
 			$table->string('phva');
 			 $table->string('subclassification');
             $table->string('indicator');

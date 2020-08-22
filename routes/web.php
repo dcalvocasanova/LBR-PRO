@@ -501,9 +501,12 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 Route::put('/measures/actualizar', 'MeasureController@update');
 Route::put('/measures/ajustes', 'MeasureController@updateSettings');
 Route::get('/measures/usuario', 'MeasureController@getUserMeasures');
+Route::get('/measures/tiempo', 'MeasureController@getUserMeasuresTime');
 
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
 Route::get('/parameter_measures/usuario', 'ParameterMeasureController@getUserParameterMeasures');
+Route::get('/parameter_measures/tiempo', 'ParameterMeasureController@getUserMeasuresTiempo');
+
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');

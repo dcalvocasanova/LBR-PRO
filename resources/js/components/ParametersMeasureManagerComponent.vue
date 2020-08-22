@@ -1,6 +1,5 @@
 <template>
   <div class="container container-project">
-    
     <div class="row">
       <div class="col-md-12">
         <div class="card card-plain">
@@ -13,10 +12,8 @@
                 <tbody>
                     <parameter-measure
                     :template="Templates"
-                    :jornada ="jornada"
                     >
                    </parameter-measure>
-
               </tbody>
             </table>
           </div>
@@ -55,8 +52,6 @@ export default {
       .then(response => {
         me.currentProject = response.data.id
         me.getCurrentUser()
-       // me.LoadLevelsOfStructure()
-
       });
     },
 	getCurrentUser(){
@@ -72,14 +67,12 @@ export default {
       axios.get('/tareas-por-usuario',{
         params:{
           id: me.currentUser
-
         }
       })
       .then(response => {
         me.Tasks = response.data
       });
     },
-
 	getUserTemplates(page = 1) {
       let me =this;
       axios.get('/plantillas/porusuario',{
@@ -91,7 +84,6 @@ export default {
         me.Templates = response.data
       });
     },
-
     getTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-tipo',{
@@ -112,11 +104,9 @@ export default {
       me.getTasks()
      // me.LoadLevelsOfStructure()
     },
-
   },
   mounted() {
     this.getCurrentProject()
-
   }
 }
 </script>

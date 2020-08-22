@@ -16,9 +16,13 @@
       </div>
     </div>
 	<div class="row">
-      <div class="col-md-8 text-center">
+      <div class="col-md-4 text-center">
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Identificación: {{currentUserData.identification}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Nombre: {{currentUserData.name}}</button>
         <button type="button" class="btn btn-outline-info btn-lg " disabled>Jordada: {{workday}} min</button>
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Tiempo utilizado:{{ Tasks.data[0].id}} min</button>
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Puesto: {{currentUserData.position}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Nivel: {{currentUserData.relatedLevel}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg " disabled>Tiempo utilizado:{{tiempoUtilizado}} min</button>
       </div>
     </div>	
     <div class="row" v-if="this.selectingProjectToAddTasks === false">
@@ -73,7 +77,9 @@ export default {
       Levels:{},
       level:"",
       type:"",
-	  workday:""
+	  workday:"",
+	  tiempoUtilizado:0,
+	  currentUserData:{}
     }
   },
   methods:{
@@ -99,8 +105,11 @@ export default {
       axios.get('/usuario')
       .then(response => {
       me.currentUser = response.data.id
-	   me.getUserTasks();
-	   me.getWorday();
+	  me.currentUserData = response.data
+	  me.getUserTasks();
+	  me.getWorday();
+	  me.getUserTime();
+	  me.getParametersTime();
       });
     },
 	getUserTasks(page = 1) {
@@ -126,7 +135,28 @@ export default {
         me.workday = response.data
       });
 	},
-
+	getUserTime(){
+		 let me =this;
+      axios.get('/measures/tiempo',{
+        params:{
+          id: me.currentUser
+        }
+      })
+      .then(response => {
+        me.tiempoUtilizado += response.data
+      });
+	},
+	getParametersTime(){
+		 let me =this;
+      axios.get('/parameter_measures/tiempo',{
+        params:{
+          id: me.currentUser
+        }
+      })
+      .then(response => {
+        me.tiempoUtilizado += response.data
+      });
+	},
     getTasks(page = 1) {
       let me =this;
       axios.get('/tareas-por-tipo',{
@@ -151,7 +181,6 @@ export default {
   },
   mounted() {
     this.getCurrentProject()
-
   }
 }
 </script>

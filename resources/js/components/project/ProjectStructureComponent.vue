@@ -115,7 +115,7 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="GoalManager"></h5>
+            <h5 class="modal-title" id="GoalManager">Agregar objetivo</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -136,7 +136,7 @@
                     <div class="container-buttons">
 					<button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
                       <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                      <button @click="exitUpdateGoal()" class="btn btn-secondary">Atrás</button>
+                      <button @click="exitGoalManager()" class="btn btn-secondary">Atrás</button>
                     </div>
                   </div>
                 </div>
@@ -201,10 +201,8 @@
                   <tr v-for="macro in currentNode.macroprocess" :key="macro.code">
                     <td v-text="macro.name"></td>
                     <td>
-						
-						
-                      <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
+					<button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -239,7 +237,7 @@
             <div class="container-buttons">
               <button v-if="update == 0" @click="saveTask()" class="btn btn-success">Añadir</button>
               <button v-if="update != 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-              <button v-if="update != 0" @click="exitGoal()" class="btn btn-secondary">Atrás</button>
+              <button v-if="update != 0" @click="exitGoalEditManager()" class="btn btn-secondary">Atrás</button>
             </div>
           </div>
         </div>
@@ -385,7 +383,7 @@
             <div class="card-body">
                 <div class="container-buttons">
                   <button  @click="saveRelation()" class="btn btn-success">Enviar</button>
-                  <button @click="exit()" class="btn btn-secondary">Salir</button>
+                  <button @click="exitRelatedManager()" class="btn btn-secondary">Salir</button>
                 </div>
               </div>
           </div>
@@ -408,14 +406,10 @@ export default {
       project_id:"",
       goalsInherited:[],
       relatedGoals:[],
-      relatedTest:[[]],
 	  ////////////////////
       parentGoals:[],
 	  currentGoals:[],
 	  parentGoalName:"",	
-		
-		
-		
       temp:[],
       currentSelectedItem:"",
       Macroprocessgoals:[],
@@ -434,12 +428,10 @@ export default {
         levels:"",
         project_id:""
       })
-	  
     }
   },
   methods:{
-    nodoSeleccionado(item){
-      
+    nodoSeleccionado(item){ 
     },
     asignarObjetivoANodo(item){
       let me = this;
@@ -448,6 +440,7 @@ export default {
       me.updateNodeControl = 0
       this.getGoalName()
 	  me.relatedGoals = []
+	  me.title="Actualizar información del objetivo";
     },
     relateGoals(nodo){
 	  let me = this;
@@ -588,9 +581,7 @@ export default {
     },
 	saveRelation(){
 		let me = this
-		
 	    axios.put('/estructura/objetivos-relacionados',{
-			
 				project_id: me.project_id,
 			    level:me.currentNode.name,
 				parentGoal:me.parentGoalName,
@@ -632,7 +623,6 @@ export default {
       me.currentNode = item
       me.updateNodeControl = 0
       me.title= "Agregar nivel de estructura"
-
     },
     editNode(item){
       let me = this
@@ -804,7 +794,6 @@ export default {
 				  goals: me.Macroprocessgoals // definir contador para objetivos
 				})
         		me.salirMacroprocess()
-				
 			}else{
 				swal.fire(
 				  'Datos incompletos',
@@ -844,8 +833,13 @@ export default {
         $('#LevelManager').modal('toggle');
         this.newName = ""
       },
-      salirObjetivos(){
-        $('#GoalManager').modal('toggle');
+      exitGoalManager(){
+      $('#GoalManager').modal('toggle');
+        this.newName = ""
+		this.newCode = ""
+      },
+	  exitRelatedManager(){
+      $('#RelatedManager').modal('toggle');
         this.newName = ""
 		this.newCode = ""
       },
@@ -853,17 +847,22 @@ export default {
         $('#InheritedManager').modal('toggle');
         this.newName = ""
       },
+	  exitGoalEditManager(){
+        $('#GoalEditManager').modal('toggle');
+         this.newName = ""
+		 this.newCode = ""
+      },
 	    salirMacroprocess(){
         $('#MacroprocessManager').modal('toggle');
         this.newName = ""
         this.newCode = ""
-	      this.Macroprocessgoals = []
+	    this.Macroprocessgoals = []
       },
       getMacroprocessData(){
         $('#MacroprocessManager').modal('show')
         this.newName = ""
         this.newCode = ""
-		    this.Macroprocessgoals = []
+		this.Macroprocessgoals = []
       },
 	    getNodeName(){
         $('#LevelManager').modal('show')
@@ -873,14 +872,10 @@ export default {
       getGoalsInherited(){
         $('#InheritedManager').modal('show')
       },
-	 // getGoals(){
-     //   $('#RelatedManager').modal('show')
-     // },
 	  editGoal(item){
-		   let me =this;
+		  let me =this;
           me.currentNode = item
           me.updateNodeControl = 0
-          //this.getGoalName()
         $('#GoalEdit').modal('show')
       },
 	 editMacroprocess(item){
@@ -896,7 +891,6 @@ export default {
 	  rndStr(len) {
     	let text = " "
     	let chars = "abcdefghijklmnopqrstuvwxyz123456789"
-
      	 for( let i=0; i < len; i++ ) {
 			 for(let k=0; k < 8; k++ ){
 				text += chars.charAt(Math.floor(Math.random() * chars.length))
@@ -930,7 +924,6 @@ export default {
   }
 }
 </script>
-
 <style>
 .modal-body {
   max-height: calc(100vh - 210px);

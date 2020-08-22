@@ -37,6 +37,25 @@ class MeasureController extends Controller
       }
       return $categorias;
     }
+	
+	/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserMeasuresTime()
+    {
+      $now = Carbon::now()->format('Y-m-d');
+      $userMeasures = Measure::where('user_id', Auth::user()->id)->where('fecha', $now)->get();
+      $categorias = collect();
+	  $sumaTareas = 0;
+      foreach ($userMeasures as $measure) {
+       // $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
+		  
+		  $sumaTareas += $measure->measure;
+      }
+      return $sumaTareas;
+    }
 
     /**
      * Display a listing of the resource.

@@ -32,7 +32,7 @@ class Macroprocess extends Model
      * @var array
      */
     protected $fillable = [
-        'relatedToLevel','macroprocess', 'input', 'provider', 'activity','responsible', 'process', 'user','risk','indicator','project_id'];
+        'relatedToLevel','macroprocess', 'input', 'provider', 'activity','responsible', 'process', 'user','risk','indicator','project_id','riskFrecuency','riskMaturity','riskConsecuency'];
 
     /**
      * The attributes that should be hidden for arrays.

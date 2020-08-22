@@ -308,7 +308,8 @@ class UserController extends Controller
           $request->file('archivo')->move(public_path('upload'), $fileName);
           return response()->json(['success'=>'You have successfully upload file.']);
         }
-        return response()->json(['fail'=>'No envió nada.']);
+       // return response()->json(['fail'=>'No envió nada.']);
+		   return response()->$datos;
 	}
 
   public function aceptarTerminosYCondiciones(){
