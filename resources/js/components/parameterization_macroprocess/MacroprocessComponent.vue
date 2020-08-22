@@ -15,12 +15,11 @@
 					  <th> Actividades sustantivas </th>
 					  <th> Responsable </th>
 					  <th> Proceso </th>
-				
 					  <th style ="withd:120px"> Acciones </th>
                     </tr>
                   </thead>
                   <tbody>
-                      <tr  v-for="macroproceso in Macroprocesos.data" :key="macroproceso.id">
+                      <tr   v-for="macroproceso in Macroprocesos.data" :key="macroproceso.id">
                         <td v-text="macroproceso.macroprocess"></td>
                         <td v-text="macroproceso.activity"></td>
 						<td v-text="macroproceso.responsible"></td>
@@ -87,7 +86,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="row">
 				 <div class="col-md-4">
                   <div class="form-group">
@@ -134,7 +132,6 @@
               </div>
 <hr/>
               <div class="row">
-				 
 				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
@@ -149,7 +146,6 @@
                 	</multiselect>
                   </div>
                 </div>  
-
                 <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Frecuencia del riesgo</label>
@@ -271,7 +267,6 @@ export default {
      Node: Object,
 	 Title: String,
 	 Title1: Array
-
   },
   data(){
     return{
@@ -300,13 +295,11 @@ export default {
           project_id:0
         }),
 		  project_id:"",//este valor debe ser el current project
-		  //Levels:{}, //All registered projects
           title:"Agregar nueva Ficha", //title to show
           update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
 	      macroprocessFile:"",
           Macroprocesos:{}, //BD content
 		  Levels: {},
-		 //Macroprocesses:[{name:'macroproceso 1'},{name:'macroproceso 2'}],
 		  Macroprocesses:[],
           Inputs:[],
           Providers:[],
@@ -329,8 +322,6 @@ export default {
 		  Indicadores:[],
 		  Actividades: [],
 		  Usuarios:[]
-
-
       }
   },
   methods:{
@@ -339,12 +330,11 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.project_id = response.data.id
-       me.form.project_id =  me.project_id
+        me.form.project_id =  me.project_id
 		
-		 this.getLevels();
+	   this.getLevels();
        this.getMacroprocesos();
       });
-	
     },
     loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
@@ -458,6 +448,9 @@ export default {
 	  me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.project_id = me.project_id
 	  me.form.activity = JSON.stringify(me.Actividades)
+	  me.form.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.form.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.form.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
       me.form.post('/macroprocesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -470,7 +463,6 @@ export default {
       .catch(function (error) {
           console.log(error);
       });
-
     },
     updateMacroproceso(){
       let me = this;
@@ -484,15 +476,18 @@ export default {
 	  me.form.indicator = JSON.stringify(me.Indicadores)
 	  me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.activity = JSON.stringify(me.Actividades)
-		
-        me.form.put('/macroprocesos/actualizar')
+	  me.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
+      me.form.put('/macroprocesos/actualizar')
         .then(function (response) {
            toast.fire({
             type: 'success',
             title: 'Macroproceso actualizado con éxito'
            });
+		   me.clearFields();
            me.getMacroprocesos();
-           me.clearFields();
+          
         })
         .catch(function (error) {
             console.log(error);
@@ -513,6 +508,9 @@ export default {
 	  me.form.responsible = macroprocess.responsible
 	  me.form.process = macroprocess.process
 	  me.Indicadores = JSON.parse(macroprocess.indicator)
+	  me.RiesgosFrecuencia = JSON.parse(process.riskFrecuency)
+	  me.RiesgosConsecuencia = JSON.parse(process.riskConsecuency)
+	  me.RiesgosMadurez = JSON.parse(process.riskMaturity)
       me.title="Actualizar información de la Ficha";
     },
     deleteMacroproceso(macroprocess){
@@ -549,6 +547,12 @@ export default {
       me.title= "Registrar nueva Ficha Macroproceso";
       me.update = 0;
       me.form.reset();
+	  me.Entradas = [];
+	  me.Proveedores = [];
+	  me.Riesgos = [];
+	  me.Usuarios = [];
+	  me.Actividades = [];
+	  me.Indicadores = [];
     },
     LoadCatalogInput() {
       axios.get('catalogo?id=INPUT')
@@ -556,7 +560,6 @@ export default {
             //this.Inputs = response.data; //get all catalogs from category selected
 		    let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
 				 this.Inputs.push(inputs[i].name);
 			}
       });
@@ -633,8 +636,7 @@ export default {
           .catch(function (error) {
               console.log(error);
           });
-	},
-	  
+	},  
   },
   created(){
     Fire.$on('searching',() => {
@@ -646,7 +648,6 @@ export default {
           .catch(() => {
           })
       })
-
   },
   mounted() {
 	   this.getCurrentProject();
@@ -654,10 +655,9 @@ export default {
        this.LoadCatalogProvider();
        this.LoadCatalogRisk();
 	   this.LoadCatalogIndicator();
-	  this.LoadCatalogRisk_Frecuency();
-	  this.LoadCatalogRisk_CONSECUENCES();
-	  this.LoadCatalogRisk_MATURITY();
-
+	   this.LoadCatalogRisk_Frecuency();
+	   this.LoadCatalogRisk_CONSECUENCES();
+	   this.LoadCatalogRisk_MATURITY();
   }
 }
 </script>

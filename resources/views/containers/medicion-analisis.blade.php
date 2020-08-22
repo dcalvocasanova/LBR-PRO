@@ -21,7 +21,7 @@
             @endcomponent
 
 			@component('components.colorcard')
-              @slot('title') Relacionar plantillas con Usuarios @endslot
+              @slot('title') Gestionar plantillas @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
               @slot('url') /gestionar-plantillas-usuarios @endslot
@@ -35,9 +35,16 @@
               @slot('url') gestionar-tareas-con-variables-medicion @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
+			  
+			@component('components.colorcard')
+              @slot('title') Gestionar ajustes @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') ajustes-medicion @endslot
+              @slot('icon') fas fa-tags @endslot
+            @endcomponent
           </div>
 		   <div class="row">
-
           </div>
       </div>
     </div>

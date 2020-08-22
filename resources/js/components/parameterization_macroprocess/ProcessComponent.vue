@@ -147,8 +147,6 @@
                 	</multiselect>
                   </div>
                 </div>
-
-
 				  <div class="col-md-4">
 				 <div class="form-group">
                     <label class="bmd-label-floating">Subclasificación</label>
@@ -161,7 +159,7 @@
               <div class="row">
 				<div class="col-md-4">
 					<div class="form-group">
-					  <label class="bmd-label-floating"> </label>
+					  <label class="bmd-label-floating">PHVA</label>
 					  <treeselect
 						:clearable="true"
 						:searchable="true"
@@ -363,7 +361,6 @@ export default {
 		  PHVAs:[],
 		  Actividades: [],
 		  Usuarios:[]
-
       }
   },
   methods:{
@@ -371,7 +368,7 @@ export default {
       let me =this;
       axios.get('/proyecto/actual')
       .then(response => {
-        me.project_id = response.data.id
+       me.project_id = response.data.id
        me.form.project_id = response.data.id
 	  this.getProcesos();
 	  this.getMacroprocessFile();
@@ -503,6 +500,10 @@ export default {
 	  me.form.indicator = JSON.stringify(me.Indicadores)
       me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.activity = JSON.stringify(me.Actividades)
+	  me.form.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.form.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.form.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
+	
       this.form.post('/procesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -520,14 +521,24 @@ export default {
     updateMacroproceso(){
         let me = this;
         //me.form.role="Usuario";
+		me.form.input = JSON.stringify(me.Entradas)
+	  me.form.provider = JSON.stringify(me.Proveedores)
+	  me.form.risk = JSON.stringify(me.Riesgos)
+	  me.form.indicator = JSON.stringify(me.Indicadores)
+	  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
+	  me.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
         me.form.put('/procesos/actualizar')
         .then(function (response) {
            toast.fire({
             type: 'success',
             title: 'Proceso actualizado con éxito'
            });
+		   me.clearFields();
            me.getProcesos();
-           me.clearFields();
+           
         })
         .catch(function (error) {
             console.log(error);
@@ -542,10 +553,12 @@ export default {
 	  me.Entradas = JSON.parse(process.input)//JSON.stringify(me.Entradas)
 	  me.Proveedores= JSON.parse(process.provider) //JSON.stringify(me.Proveedores)
 	  me.Riesgos = JSON.parse(process.risk) //JSON.stringify(me.Riesgos)
-	  //me.Usuarios = JSON.parse(process.user) //JSON.stringify(me.Usuarios)
 	  me.Actividades = JSON.parse(process.activity) // JSON.stringify(me.Actividades)ñ
 	  me.Indicadores = JSON.parse(process.indicator)	
-	  me.Usuarios = JSON.parse(process.user) //JSON.stringify(me.Usuarios)
+	  me.Usuarios = JSON.parse(process.user) 
+	  me.RiesgosFrecuencia = JSON.parse(process.riskFrecuency)
+	  me.RiesgosConsecuencia = JSON.parse(process.riskConsecuency)
+	  me.RiesgosMadurez = JSON.parse(process.riskMaturity)
       me.title="Actualizar información de la Ficha";
     },
     deleteMacroproceso(process){
@@ -588,7 +601,6 @@ export default {
       .then(response => {
 		    let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
 				 this.Inputs.push(inputs[i].name);
 			}
       });
@@ -598,8 +610,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
-				 this.Providers.push(inputs[i].name);
+				this.Providers.push(inputs[i].name);
 			}
       });
     },
@@ -608,12 +619,11 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
-				 this.Risks.push(inputs[i].name);
+				this.Risks.push(inputs[i].name);
 			}
       });
     },
-		 LoadCatalogRisk_Frecuency() {
+	LoadCatalogRisk_Frecuency() {
 		  axios.get('catalogo?id=RISK-FRECUENCY')
 		  .then(response => {
 				let inputs = response.data;
@@ -623,8 +633,7 @@ export default {
 		  });
     },
 	LoadCatalogRisk_CONSECUENCES() {
-      
-	  axios.get('catalogo?id=RISK-CONSECUENCE')
+      axios.get('catalogo?id=RISK-CONSECUENCE')
 		  .then(response => {
 				let inputs = response.data;
 				for (let i =0; i<inputs.length;i++){
@@ -633,8 +642,7 @@ export default {
 		  });
     },
 	LoadCatalogRisk_MATURITY() {
-		
-		 axios.get('catalogo?id=RISK-MATURITY')
+		axios.get('catalogo?id=RISK-MATURITY')
 		  .then(response => {
 				let inputs = response.data;
 				for (let i =0; i<inputs.length;i++){
@@ -647,8 +655,7 @@ export default {
       .then(response => {
             let inputs = response.data;
 		    for (let i =0; i<inputs.length;i++){
-
-				 this.Indicators.push(inputs[i].name);
+				this.Indicators.push(inputs[i].name);
 			}
       });
     },

@@ -342,7 +342,8 @@
           numGoals:0,
           goals:[],
           macroprocess:[],
-          userFunctions:[]
+          userFunctions:[],
+		  relatedGoals:[]
         });
         this.level.post('/estructura/guardar')
         .then(function (response) {

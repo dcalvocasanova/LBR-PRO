@@ -10,7 +10,7 @@
 		  <div class="col-md-4">
 			<div class="form-group">
 			  <label class="bmd-label-floating">Tiempo en minutos</label>
-			  <input @click="showSave" type="number" v-model="form.measure"  class="form-control">
+			  <input @click="showSave" type="number" v-model="measure"  class="form-control">
 			</div>
 		  </div>
 		</div>
@@ -32,10 +32,11 @@
         id:"",
         category_id:"",
         variable:"",
-        measure:"",
+        measure:0,
         project_id:"",
         user_id:""
       }),
+	  measure:0,
       showSaveButton:false,
       currentUser:"",
       currentProject:""
@@ -55,8 +56,6 @@
       .then(response => {
         me.currentProject = response.data.id
         me.getCurrentUser()
-       // me.LoadLevelsOfStructure()
-
       });
     },
 	 getCurrentUser(){
@@ -64,27 +63,36 @@
       axios.get('/usuario')
       .then(response => {
         me.currentUser = response.data.id
-		me.form.measure = me.category.measure
+		me.measure = me.category.measure
       });
     },
     updateMeasure(category){
       let me = this
-      me.form.category_id= category.id
-	  me.form.variable= category.variable
-      me.form.project_id= me.currentProject
-	  me.form.user_id= me.currentUser
-      me.form.put('/parameters_measures/actualizar')
-      .then(function (response) {
-         toast.fire({
-          type: 'success',
-          title: 'Elementos de la tarea agregados con éxito'
-         });
-      })
+	  if(me.measure >= 10){
+		  me.form.measure= me.measure
+		  me.form.category_id= category.id
+		  me.form.variable= category.variable
+		  me.form.project_id= me.currentProject
+		  me.form.user_id= me.currentUser
+		  me.form.put('/parameters_measures/actualizar')
+		  .then(function (response) {
+			 toast.fire({
+			  type: 'success',
+			  title: 'Elementos de la tarea agregados con éxito'
+			 });
+		  })
+	  }else{
+			swal.fire(
+				  'Datos incompletos',
+				  'Agregue tiempo myor a 10 minutos',
+				  'warning'
+        )
+      }
     },
   },
   created(){
     let me = this
-    //this.form.fill(this.template)
+   // this.form.fill(this.template)
 	me.getCurrentProject()
   }
 }

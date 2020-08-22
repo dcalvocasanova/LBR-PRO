@@ -5,43 +5,22 @@ namespace App\Imports;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class UsersImport implements ToModel //,SkipsOnFailure //,WithValidation
+class UsersImport implements ToModel, WithStartRow //,SkipsOnFailure //,WithValidation
 {
-
-
-  /*  public function rules(): array
+ 
+	 /**
+     * @return int
+     */
+    public function startRow(): int
     {
-        return [
-            '0' => 'required',
-            '1' => 'required|unique:users,identification',
-            '2' =>'string',
-            '3' =>'email|unique:users,email',
-            '4'=> 'required|numeric',
-            '5' => 'required|date',
-            '6'=> 'required|date',
-            '7' => 'required',
-            '8'=> 'required',
-            '9'=> 'required',
-            '10'=> 'required',
-            '11'=> 'required',
-            '12' => 'required',
-            '13' => 'required'
-        ];
+        return 2;
     }
-*/
-/*
-    public function customValidationMessages()
-{
-    return [
-        '0'=>'Nombre es requerido',
-        '1.unique' => 'La cédula de identidad está en uso',
-        '3.unique' => 'Correo ya esta en uso.',
-        '5'=>'Fecha de cumpleaños inválida',
-        '6'=>'Fecha de inicio de trabajo inválida',
-    ];
-}
-*/
+
+  
     /**
     * @param array $row
     *
@@ -49,21 +28,25 @@ class UsersImport implements ToModel //,SkipsOnFailure //,WithValidation
     */
     public function model(array $row)
     {
+		//$fecha = Carbon::parse($row['2'])->format('Y-m-d Canada/Central');
+		$date = Carbon::createFromFormat('d/m/Y', $row['2']);
         return new User([
-    			'name'=> $row['0'],
-          'identification'=> $row['1'],
-    			'type' => $row['2'],
+			    'identification'=> $row['0'],
+    			'name'=> $row['1'],
+          		'birthday'=>  $date,
     			'email' => $row['3'],
     			'salary' => $row['4'],
-    			'birthday' => now(),
-    			'workingsince' => now(),
-    			'gender' =>$row['5'],
-          'job'=>$row['6'],
-          'position'=>$row['7'],
-          'education'=>$row['8'],
-          'workday'=>$row['9'],
-    			'ethnic' =>$row['10'],
+    			'job'=>$row['5'],
+          'position'=>$row['6'],
+          'education'=>$row['7'],
+          'workday'=>$row['8'],
+			'workingsince' =>Carbon::createFromFormat('d/m/Y', $row['9']),
+			'gender' =>$row['10'],
+    			'ethnic' =>$row['12'],
     			'sex' =>$row['11'],
+			    'relatedLevel'=>$row['13'],
+			    'type' => $row['14'],
+				'relatedProjects' => Auth::user()->relatedProjects,
     			'avatar'=>'default.png',
     			'password' => \Hash::make('123456'),
         ]);

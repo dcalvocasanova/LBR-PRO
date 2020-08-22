@@ -1,4 +1,4 @@
-<template>
+          <template>
     <div class="container container-project">
       <div class="row">
         <div class="col-md-12">
@@ -17,31 +17,20 @@
 					  <th> Actividades sustantivas</th>
 					  <th> Responsable </th>
 					  <th> producto </th>
-					  <th> Usuarios  </th>
-					  <th> Riesgos Asociados </th>
-					  <th> PHVA </th>
-					  <th> Subclasificacion </th>
 					  <th> Acciones </th>
-
                     </tr>
                   </thead>
                   <tbody>
-                      <tr  v-for="subproceso in Subprocesos.data" :key="subproceso.id">
-
-						 <td v-text="subproceso.process"></td>
-                        <td v-text="subproceso.input"></td>
-						<td v-text="subproceso.provider"></td>
-						<td v-text="subproceso.activity"></td>
-						 <td v-text="subproceso.responsible"></td>
-						  <td v-text="subproceso.product"></td>
-						  <td v-text="subproceso.user"></td>
-						  <td v-text="subproceso.risk"></td>
-						  <td v-text="subproceso.phva"></td>
-						  <td v-text="subproceso.subclassification"></td>
-						  <td v-text="subproceso.indicator"></td>
+                      <tr v-for="subproceso in Subprocesos.data" :key="subproceso.id">
+							<td v-text="subproceso.relatedToLevel"></td>
+                        	<td v-text="subproceso.input"></td>
+							<td v-text="subproceso.provider"></td>
+							<td v-text="subproceso.activity"></td>
+						 	<td v-text="subproceso.responsible"></td>
+						  	<td v-text="subproceso.product"></td>
                         <td>
-                          <button class="btn btn-info" @click="loadFieldsUpdate(subproceso)"><i class="fas fa-edit"></i></button>
-                          <button class="btn btn-danger" @click="deleteSubproceso(subproceso)"><i class="fas fa-trash-alt"></i></button>
+                    <button class="btn btn-info" @click="loadFieldsUpdate(subproceso)"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" @click="deleteSubproceso(subproceso)"><i class="fas fa-trash-alt"></i></button>
                         </td>
                       </tr>
                     </tbody>
@@ -52,16 +41,6 @@
               <pagination :data="Subprocesos" @pagination-change-page="getSubprocesos"></pagination>
             </div>
           </div>
-        <!--
-          <div class="col-6" data-toggle="tooltip" data-placement="bottom" title="Agregar nuevo parámetro">
-            <button class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#loadSubprocesos">
-              Cargar usuario usando un archivo
-              <i class="fa fa-plus-circle"></i>
-            </button>
-          </div>
-        -->
         </div>
 	</div>
 	<div class="row">
@@ -76,7 +55,7 @@
                   <div class="form-group">
                     <label class="bmd-label-floating">Proceso</label>
                     <select v-model="form.process" class=" form-control":class=" { 'is-invalid': form.errors.has('sex') }">
-                      <option v-for="process in Processfile">{{ process.relatedToLevel }}-{{ process.file }} - {{ process.subprocessProduct }}</option>
+                      <option v-for="process in Processfile">{{ process.file }}-{{ process.subprocessProduct }}</option>
                     </select>
                     <has-error :form="form" field="process"></has-error>
                   </div>
@@ -109,10 +88,7 @@
                 	</multiselect>
                   </div>
                 </div>
-
-
               </div>
-
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -160,19 +136,21 @@
 <hr/>
               <div class="row">
 			    <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="bmd-label-floating">PHVA</label>
-                    <multiselect
-                 		 v-model="PHVAs"
-                 		 placeholder="Seleccione o escriba una opción"
-						  :options="PHVA"
-						  :multiple="true"
-						  :taggable="true"
-						  :show-labels="false"
-						  @tag="addTagPHVA" >
-                	</multiselect>
-                  </div>
-                </div>
+					<div class="form-group">
+					  <label class="bmd-label-floating">PHVA</label>
+					  <treeselect
+						:clearable="true"
+						:searchable="true"
+						:options="PHVAs"
+						:limit="8"
+						:max-height="300"
+						placeholder="PHVA"
+						noResultsText="No existe registro"
+						clearValueText="Eliminar"
+						v-model="form.phva"
+						/>
+					</div>
+     		  </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label class="bmd-label-floating">Indicadores</label>
@@ -187,10 +165,8 @@
                 	</multiselect>
                   </div>
                 </div>
-
               </div>
 			  <div class="row">
-				 
 				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Riesgos Asociados</label>
@@ -205,7 +181,6 @@
                 	</multiselect>
                   </div>
                 </div>  
-
                 <div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Frecuencia del riesgo</label>
@@ -219,8 +194,7 @@
 						  @tag="addTagRisk" >
                 	</multiselect>
                   </div>
-                </div>
-				  
+                </div>  
 				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Consecencia del riesgo</label>
@@ -235,7 +209,6 @@
                 	</multiselect>
                   </div>
                 </div> 
-				  
 				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Nivel de madurez asociado</label>
@@ -299,11 +272,13 @@
       </div>
     </div>
 </template>
-
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
 	 components: {
-      Multiselect
+      Multiselect,
+	  Treeselect
     },
   props: {
      showDeleteAndUpdateButton: Number,
@@ -342,7 +317,8 @@ export default {
 		  RisksConsecuency:[],
 		  RisksMaturity:[],
 		  Indicators:[],
-		  PHVA:[], Activities:[],
+		  PHVA:[],
+		Activities:[],
 		  Users:[],
 		  //arreglos temporales
 		  Entradas:[],
@@ -373,8 +349,7 @@ export default {
 			alert(files[0]);
 			axios.post('/subprocesos/loadsubprocess',{subprocess:this.subprocessFile})
 				.then(function(response){console.log(response)})
-				.catch(function(response){console.log(response)})
-			
+				.catch(function(response){console.log(response)})	
 	},
 		EventSubir(f){
           let me =this;
@@ -479,18 +454,20 @@ export default {
 	},
     saveSubproceso(){
 
-      let me =this;
+       let me =this;
 	   let myResult = [];
 	  myResult = me.form.process.split("-");
 	  me.form.relatedToLevel = myResult[0];
-	  me.form.process = myResult[1]+"-"+myResult[2];
+	  me.form.process = myResult[1]+"-"+myResult[2]+"-"+myResult[3];
 	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
-	  me.form.phva = JSON.stringify(me.PHVAs)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
 	  me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.activity = JSON.stringify(me.Actividades)
+	  me.form.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.form.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.form.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
       this.form.post('/subprocesos/guardar')
       .then(function (response) {
           me.clearFields();
@@ -503,19 +480,31 @@ export default {
       .catch(function (error) {
           console.log(error);
       });
-
     },
     updateMacrosubproceso(){
-        let me = this;
-        //me.form.role="Usuario";
+        let me =this;
+	   let myResult = [];
+	  myResult = me.form.process.split("-");
+	  me.form.relatedToLevel = myResult[0];
+	  me.form.process = myResult[1]+"-"+myResult[2]+"-"+myResult[3];
+	  me.form.input = JSON.stringify(me.Entradas)
+	  me.form.provider = JSON.stringify(me.Proveedores)
+	  me.form.risk = JSON.stringify(me.Riesgos)
+	  me.form.indicator = JSON.stringify(me.Indicadores)
+	  me.form.user = JSON.stringify(me.Usuarios)
+	  me.form.activity = JSON.stringify(me.Actividades)
+	  me.riskFrecuency= JSON.stringify(me.RiesgosFrecuencia)
+	  me.riskMaturity= JSON.stringify(me.RiesgosMadurez)
+	  me.riskConsecuency = JSON.stringify(me.RiesgosConsecuencia)
         me.form.put('/subprocesos/actualizar')
         .then(function (response) {
            toast.fire({
             type: 'success',
             title: 'Sub proceso actualizado con éxito'
            });
+			me.clearFields();
            me.getSubprocesos();
-           me.clearFields();
+           
         })
         .catch(function (error) {
             console.log(error);
@@ -525,6 +514,7 @@ export default {
       let me =this;
      // this.form.fill(subprocess);
       me.update = 1
+	  this.form.fill(subprocess);
 	  me.form.process = subprocess.relatedToLevel+"-"+subprocess.process
 	  me.form.id= subprocess.id
 	  me.form.project_id = me.project_id
@@ -534,8 +524,11 @@ export default {
 	  me.Usuarios = JSON.parse(subprocess.user) //JSON.stringify(me.Usuarios)
 	  me.Actividades = JSON.parse(subprocess.activity) // JSON.stringify(me.Actividades)
 	  me.form.responsible = subprocess.responsible
-	  me.form.process = subprocess.process
+	  me.form.product = subprocess.product
 	  me.Indicadores = JSON.parse(subprocess.indicator)
+	  me.RiesgosFrecuencia = JSON.parse(subprocess.riskFrecuency)
+	  me.RiesgosConsecuencia = JSON.parse(subprocess.riskConsecuency)
+	  me.RiesgosMadurez = JSON.parse(subprocess.riskMaturity)
       me.title="Actualizar información de la Ficha";
     },
     deleteSubproceso(subprocess){
@@ -572,6 +565,15 @@ export default {
       me.title= "Registrar nuevo Subproceso";
       me.update = 0;
       me.form.reset();
+	  me.Entradas = [];
+	  me.Proveedores = [];
+	  me.Riesgos = [];
+	  me.RiesgosFrecuencia = [];
+	  me.RiesgosMadurez = [];
+	  me.RiesgosConsecuencia = [];
+	  me.Usuarios = [];
+	  me.Actividades = [];
+	  me.Indicadores = [];
     },
     LoadCatalogInput() {
       axios.get('catalogo?id=INPUT')
@@ -639,12 +641,9 @@ export default {
       });
     },
 	LoadCatalogPHVA() {
-      axios.get('catalogo?id=PHVA')
+      axios.get('/catalogo/phva')
       .then(response => {
-            let inputs = response.data;
-		    for (let i =0; i<inputs.length;i++){
-				 this.PHVA.push(inputs[i].name);
-			}
+        this.PHVAs = response.data;
       });
     },
   },
@@ -668,9 +667,8 @@ export default {
 	   this.LoadCatalogPHVA();
 	   this.LoadCatalogIndicator();
 	   this.LoadCatalogRisk_Frecuency();
-	  this.LoadCatalogRisk_CONSECUENCES();
-	  this.LoadCatalogRisk_MATURITY();
-	  
+	   this.LoadCatalogRisk_CONSECUENCES();
+	   this.LoadCatalogRisk_MATURITY();
   }
 }
 </script>

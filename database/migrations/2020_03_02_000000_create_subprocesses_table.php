@@ -24,6 +24,9 @@ class CreateSubprocessesTable extends Migration
 			$table->string('process');
             $table->string('user');
             $table->string('risk');
+			$table->string('riskFrecuency');
+			$table->string('riskConsecuency');
+			$table->string('riskMaturity');
 			$table->string('phva');
             $table->string('indicator');
             $table->string('project_id');

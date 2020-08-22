@@ -136,7 +136,7 @@
                     <div class="container-buttons">
 					<button v-if="updateNodeControl== 0" @click="addGoal()" class="btn btn-success">Añadir</button>
                       <button v-if="updateNodeControl!= 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-                      <button @click="exitUpdateGoal()" class="btn btn-secondary">Atrás</button>
+                      <button @click="exitGoalManager()" class="btn btn-secondary">Atrás</button>
                     </div>
                   </div>
                 </div>
@@ -201,10 +201,8 @@
                   <tr v-for="macro in currentNode.macroprocess" :key="macro.code">
                     <td v-text="macro.name"></td>
                     <td>
-						
-						
-                      <button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
+					<button class="btn btn-info" @click="loadMacroprocessesUpdate(macro)"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" @click="deleteMacroprocess(macro)"><i class="fas fa-trash-alt"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -239,7 +237,7 @@
             <div class="container-buttons">
               <button v-if="update == 0" @click="saveTask()" class="btn btn-success">Añadir</button>
               <button v-if="update != 0" @click="updateGoal()" class="btn btn-info">Actualizar</button>
-              <button v-if="update != 0" @click="exitGoal()" class="btn btn-secondary">Atrás</button>
+              <button v-if="update != 0" @click="exitGoalEditManager()" class="btn btn-secondary">Atrás</button>
             </div>
           </div>
         </div>
@@ -328,45 +326,66 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="InheritageManager"></h5>
+            <h5 class="modal-title" id="TaskNotificator"> Relacionar Objetivos </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <div class="card">
-              <div class="card-body">
-                <div class="col-md-8">
-                  <div class="form-group">
-                    <table class="table table-hover">
-                      <thead class="">
-                        <tr>
-                          <th > Objetivos del nivel superior </th>
-                          <th > Objetivos de este nivel </th>
-                        </tr>
-                      </thead>
-                      <tbody >
-                        <tr v-for="rows in relatedGoals">
-                          <td v-for="goal in rows">
-                            <input
-                            type="checkbox"
-                            v-model="goal.related"
-                            v-bind:key="goal.randomCellIndex"
-                            :value="goal.randomCellIndex">
-                            {{goal.name}}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <table class="table table-hover">
+                       <thead>
+                          <tr><th>Objetivos de nivel superior</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <select v-model="parentGoalName" class="form-control" @chanche="getUsersInTemplate(form.relatedTemplate)">
+                    <option v-for="goal in parentNode.goals" :value="goal.name" :key="goal.pos">{{ goal.name }}</option>
+                  </select>
+                              </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="card-footer">
-                <div class="container-buttons">
-                  <button @click="salirRelacionarObjetivos()" class="btn btn-secondary">Salir</button>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <table class="table table-hover">
+                       <thead>
+                          <tr><th>Seleccionar objetivos de nivel</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="currentgoal in currentNode.goals" :key="currentgoal.pos" >
+                            <td>
+                              <input v-model="relatedGoals" type="checkbox"
+                                :value="currentgoal.name">
+                                  {{currentgoal.name}}
+                              </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="modal-footer">
+            <div class="card-body">
+                <div class="container-buttons">
+                  <button  @click="saveRelation()" class="btn btn-success">Enviar</button>
+                  <button @click="exitRelatedManager()" class="btn btn-secondary">Salir</button>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -384,10 +403,13 @@ export default {
   },
   data(){
     return{
-      project_id:2,
+      project_id:"",
       goalsInherited:[],
       relatedGoals:[],
-      relatedTest:[[]],
+	  ////////////////////
+      parentGoals:[],
+	  currentGoals:[],
+	  parentGoalName:"",	
       temp:[],
       currentSelectedItem:"",
       Macroprocessgoals:[],
@@ -409,8 +431,7 @@ export default {
     }
   },
   methods:{
-    nodoSeleccionado(item){
-      
+    nodoSeleccionado(item){ 
     },
     asignarObjetivoANodo(item){
       let me = this;
@@ -418,37 +439,17 @@ export default {
       me.currentNode = item
       me.updateNodeControl = 0
       this.getGoalName()
+	  me.relatedGoals = []
+	  me.title="Actualizar información del objetivo";
     },
     relateGoals(nodo){
-      let me = this;
-      me.currentNode = nodo.item
-      me.parentNode = nodo.parent
-      me.updateNodeControl = 0
-      for (var i = 0; i < me.parentNode.goals.length; ++i) {
-        let temp1 = [];
-        me.relatedGoals.push(temp1);
-        me.relatedGoals[i].push(me.parentNode.goals[i]);
-        for (var k = 0; k < me.parentNode.goals.length; ++k) {
-           me.relatedGoals[i].push(me.currentNode.goals[k]);
-
-        }
-      }
-
-      for (var i = 0; i < me.relatedGoals.length; ++i) {
-        for (var k = 0; k < me.relatedGoals[i].length; ++k) {
-
-
-          me.itemsCopy = me.relatedGoals.slice();
-          var obj = Object.assign({}, me.itemsCopy[i][k]);
-          let randomCellIndex = me.rndStr(15);
-          obj.randomCellIndex = randomCellIndex;
-          obj.related = "";
-          me.itemsCopy[i][k] = obj;  //replace the old obj with the new modified one.
-
-        }
-      }
-
-      this.getGoals()
+	  let me = this;
+	  me.currentNode = nodo.item
+	  me.parentNode = nodo.parent
+	  me.parentGoals = me.parentNode.goals
+	  me.CurrentGoals = me.currentNode.goals
+	  me.updateNodeControl = 0
+	  this.getGoals()
     },
     loadGoalsUpdate(goal){
       let me = this;
@@ -578,9 +579,27 @@ export default {
       me.level.levels =JSON.stringify(me.Levels)
       me.updateLevel()
     },
+	saveRelation(){
+		let me = this
+		
+	    axios.put('/estructura/objetivos-relacionados',{
+			
+				project_id: me.project_id,
+			    level:me.currentNode.name,
+				parentGoal:me.parentGoalName,
+				currentGoals: JSON.stringify(me.relatedGoals)
+		    
+		})
+	    .then(function (response) {
+		  toast.fire({
+		   type: 'success',
+		   title: 'Elementos de la tarea agregados con éxito'
+		  });
+       })
+     },
     updateLevel(){
       let me = this;
-      this.level.put('/estructura/actualizar')
+      me.level.put('/estructura/actualizar')
       .then(function (response) {
         toast.fire({
           type: 'success',
@@ -606,7 +625,6 @@ export default {
       me.currentNode = item
       me.updateNodeControl = 0
       me.title= "Agregar nivel de estructura"
-
     },
     editNode(item){
       let me = this
@@ -778,7 +796,6 @@ export default {
 				  goals: me.Macroprocessgoals // definir contador para objetivos
 				})
         		me.salirMacroprocess()
-				
 			}else{
 				swal.fire(
 				  'Datos incompletos',
@@ -818,8 +835,13 @@ export default {
         $('#LevelManager').modal('toggle');
         this.newName = ""
       },
-      salirObjetivos(){
-        $('#GoalManager').modal('toggle');
+      exitGoalManager(){
+      $('#GoalManager').modal('toggle');
+        this.newName = ""
+		this.newCode = ""
+      },
+	  exitRelatedManager(){
+      $('#RelatedManager').modal('toggle');
         this.newName = ""
 		this.newCode = ""
       },
@@ -827,17 +849,22 @@ export default {
         $('#InheritedManager').modal('toggle');
         this.newName = ""
       },
+	  exitGoalEditManager(){
+        $('#GoalEditManager').modal('toggle');
+         this.newName = ""
+		 this.newCode = ""
+      },
 	    salirMacroprocess(){
         $('#MacroprocessManager').modal('toggle');
         this.newName = ""
         this.newCode = ""
-	      this.Macroprocessgoals = []
+	    this.Macroprocessgoals = []
       },
       getMacroprocessData(){
         $('#MacroprocessManager').modal('show')
         this.newName = ""
         this.newCode = ""
-		    this.Macroprocessgoals = []
+		this.Macroprocessgoals = []
       },
 	    getNodeName(){
         $('#LevelManager').modal('show')
@@ -847,14 +874,10 @@ export default {
       getGoalsInherited(){
         $('#InheritedManager').modal('show')
       },
-	 // getGoals(){
-     //   $('#RelatedManager').modal('show')
-     // },
 	  editGoal(item){
-		   let me =this;
+		  let me =this;
           me.currentNode = item
           me.updateNodeControl = 0
-          //this.getGoalName()
         $('#GoalEdit').modal('show')
       },
 	 editMacroprocess(item){
@@ -870,7 +893,6 @@ export default {
 	  rndStr(len) {
     	let text = " "
     	let chars = "abcdefghijklmnopqrstuvwxyz123456789"
-
      	 for( let i=0; i < len; i++ ) {
 			 for(let k=0; k < 8; k++ ){
 				text += chars.charAt(Math.floor(Math.random() * chars.length))
@@ -883,7 +905,7 @@ export default {
       axios.get('/proyecto/actual')
       .then(response => {
         me.project_id = response.data.id
-        me.level.project_id= response.data.id
+        me.level.project_id= me.project_id
         me.getLevels()
       });
     },
@@ -904,7 +926,6 @@ export default {
   }
 }
 </script>
-
 <style>
 .modal-body {
   max-height: calc(100vh - 210px);

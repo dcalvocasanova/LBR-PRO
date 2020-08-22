@@ -174,7 +174,7 @@
                 </div>
               </div>
             </div>
-
+			<button @click="getUsuarios" class="btn btn-success">archivo usuarios</button>
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
@@ -204,6 +204,20 @@
               <div class="modal-body">
                 <div class="row">
                   <button @click="getTemplate" class="btn btn-success">Generar archivo</button>
+				     
+					
+	<download-excel
+    class   = "btn btn-default"
+    :data   = "json_data"
+    :fields = "UserDataForExcel"
+    worksheet = "Usuarios"
+    name    = "usuarios.xls">
+	 Download Excel (you can customize this with html code!)
+ 
+</download-excel>				
+					
+					
+        
                   <div class="col-md-12">
                     <div class="card">
                       <div class="card-header card-header-primary">
@@ -229,11 +243,49 @@
             </div>
           </div>
         </div>
+	  
+	  <div class="col-md-12">
+                    <div class="card">
+                      <div class="card-header card-header-primary">
+                        <h4 class="card-title">Cargar usuarios usando un archivo excel</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-8">
+                            <div class="form-group">
+                              <label class="bmd-label-floating">Cargar archivo</label>
+                              <input  type="file" id ="procesar_archivo" @change="EventSubir">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <button @click="getUsuarios" data-dismiss="modal" class="btn btn-success">Regresar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+	  
+	  	<download-excel
+    class   = "btn btn-default"
+    :data   = "json_data"
+    :fields = "UserDataForExcel"
+    worksheet = "Usuarios"
+    name    = "usuarios.xls">
+	 Descargar plantilla
+ 
+</download-excel>	
+	  
+	  
+	  
   </div>
 </template>
 
 <script>
+import JsonExcel from "vue-json-excel";
 export default {
+   components: {
+    'downloadExcel':JsonExcel,
+  },
   props: {
      showDeleteAndUpdateButton: Number
   },
@@ -261,7 +313,7 @@ export default {
         role:"",
         agree_terms:0
       }),
-      d:"",
+      id:"",
       title:"Agregar nuevo usuario", //title to show
       update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
       userFile:"",
@@ -272,7 +324,10 @@ export default {
       Genders:{},
       Ethnics:{},
       Levels:{},
-      Roles:{}
+      Roles:{},
+	  UserDataForExcel:{ identificación: " ", nombre: " ", fecha_Nacimiento: " ", email: " ", salario: " " , puesto: " ",cargo: " ", educación_formal: " ", jornada: " ", fecha_ingreso: " ", género: " ", sexo: " ", etnia: " ", nivel_estructura: " ",rol: " "}
+      ,
+	  json_data: [{}]
     }
   },
   methods:{

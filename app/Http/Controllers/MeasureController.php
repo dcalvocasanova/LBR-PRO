@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Measure;
+use App\ExtendWorkday;
+use App\SettingsMeasure;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,6 +37,25 @@ class MeasureController extends Controller
         $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
       }
       return $categorias;
+    }
+	
+	/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserMeasuresTime()
+    {
+      $now = Carbon::now()->format('Y-m-d');
+      $userMeasures = Measure::where('user_id', Auth::user()->id)->where('fecha', $now)->get();
+      $categorias = collect();
+	  $sumaTareas = 0;
+      foreach ($userMeasures as $measure) {
+       // $categorias->push(array('value'=>$measure->measure,'name'=>"Tarea ".$measure->measure));
+		  
+		  $sumaTareas += $measure->measure;
+      }
+      return $sumaTareas;
     }
 
     /**
@@ -115,7 +136,48 @@ class MeasureController extends Controller
 	  $Measure->fecha     = $now;
       $Measure->save();
     }
+	
+	public function ExtendWorkday(MeasureRequest $request)
+    {
+      
+     $ExtendWorkday = ExtendWorkday::firstOrNew(['user' =>$request->user,'project_id' => $request->project_id]);
 
+	  $ExtendWorkday->project_id = $request->project_id;
+	  $ExtendWorkday->user = $request->user;//$this->User->getCurrentUser();
+	  $ExtendWorkday->extend = $request->extend;
+	  $ExtendWorkday->relatedToLevel = $request->relatedToLevel;
+      $ExtendWorkday->save();
+    }
+	
+	/**
+     * Update the specified resource in storage.
+     *
+     * @param  MeasureRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSettings(MeasureRequest $request)
+    {
+
+	  $SettingsMeasure = SettingsMeasure::firstOrNew(['project_id' =>$request->project_id]);
+	  $SettingsMeasure ->project_id = $request->project_id;
+	  $SettingsMeasure->vacation = $request->vacation;
+	  $SettingsMeasure->disability = $request->disability;
+	  $SettingsMeasure->workdays = $request->workdays;
+	  $SettingsMeasure->weekdays = $request->weekdays;
+	  $SettingsMeasure->yeardays = $request->yeardays;
+	  $SettingsMeasure->training = $request->training;
+	  $SettingsMeasure->license = $request->license;
+	  $SettingsMeasure->startProject = $request->startProject;
+	  $SettingsMeasure->endProject = $request->endProject;
+      $SettingsMeasure->save();
+    }
+	
+	 public function getSettings(Request $request)
+    {
+		 
+		 $SettingsMeasure = SettingsMeasure::Where('project_id', $request->id)->first();
+		 return $SettingsMeasure;
+	}
     /**
      * Change status as Read.
      *

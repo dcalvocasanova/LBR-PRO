@@ -24,6 +24,9 @@ class CreateMacroprocessTable extends Migration
             $table->string('process');
             $table->string('user');
             $table->string('risk');
+			$table->string('riskFrecuency');
+			$table->string('riskMaturity');
+			$table->string('riskConsecuency');
             $table->string('indicator');
 			$table->string('project_id');
             $table->timestamps();

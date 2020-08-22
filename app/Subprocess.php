@@ -31,7 +31,7 @@ class Subprocess extends Model
      *
      * @var array
      */
-    protected $fillable = ['process', 'relatedToLevel','input', 'provider', 'activity','responsible','product',            'user','risk','phva','indicator','project_id'];
+    protected $fillable = ['process', 'relatedToLevel','input', 'provider', 'activity','responsible','product',            'user','risk','phva','indicator','project_id','riskFrecuency','riskMaturity','riskConsecuency'];
 
     /**
      * The attributes that should be hidden for arrays.

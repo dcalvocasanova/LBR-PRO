@@ -217,10 +217,15 @@ Route::get('/gestionar-tareas-variables-adicionales', function () {
 //GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
-})->middleware('auth');
+})->middleware('permission:CRUD_tasks');
 
 Route::get('/gestionar-plantillas-usuarios', function () {
     return view('taskManager.tareas-plantillas-usuarios');
+})->middleware('permission:CRUD_tasks');
+
+//GESTIONAR VARIABLES DE AJUSTE
+Route::get('/ajustes-medicion', function () {
+    return view('taskManager.ajustes-medicion');
 })->middleware('permission:CRUD_tasks');
 
 
@@ -301,6 +306,20 @@ Route::get('/ayuda', function () {
     return view('admin.ayuda');
 })->middleware('auth');
 
+
+//PENDIENTE DE REVISIÓN
+Route::get('/parametrizar-tiempos-ajuste', function () {
+    return view('admin.tiempo-ajuste');
+})->middleware('permission:CRUD_parameters');
+//
+Route::get('/gestionar-tareas-con-variables-medicion', function () {
+    return view('taskManager.tareas-variables-medicion');
+})->middleware('permission:CRUD_tasks');
+//
+Route::get('/ayuda', function () {
+    return view('admin.ayuda');
+})->middleware('auth');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes - CONTROLLER ROUTES
@@ -359,12 +378,14 @@ Route::post('/catalogo/guardar-permisos/{id}', 'CatalogController@updatePermisss
 Route::get('/estructura', 'ProjectStructureController@getProjectLevels');
 Route::get('/estructura/macroprocesos', 'ProjectStructureController@getMacroprocessProject');
 Route::put('/estructura/actualizar', 'ProjectStructureController@update');
+Route::put('/estructura/objetivos-relacionados', 'ProjectStructureController@updateRelatedGoals');
 Route::post('/estructura/guardar', 'ProjectStructureController@store');
 Route::delete('/estructura/borrar/{id}', 'ProjectStructureController@destroy');
 Route::get('/estructura/buscar', 'ProjectStructureController@show');
 Route::get('/estructura/lista-niveles/{id}', 'ProjectStructureController@getListOfProjectLevels');
 Route::get('/estructura/lista-funciones-de-usuario/{id}','ProjectStructureController@getListOfUserFunctions');
 Route::get('/estructura/lista-objetivos/{id}', 'ProjectStructureController@getListOfGoals');
+
 
 /*Manage Users*/
 Route::get('/usuarios', 'UserController@index');
@@ -512,10 +533,16 @@ Route::delete('/funciones/borrar/{id}', 'UserFunctionController@destroy');
 /* Measures*/
 
 Route::put('/measures/actualizar', 'MeasureController@update');
+Route::put('/measures/ajustes', 'MeasureController@updateSettings');
 Route::get('/measures/usuario', 'MeasureController@getUserMeasures');
+Route::get('/measures/getAjustes', 'MeasureController@getSettings');
+Route::get('/measures/tiempo', 'MeasureController@getUserMeasuresTime');
+Route::put('/measures/extender-jornada', 'MeasureController@ExtendWorkday');
 
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
 Route::get('/parameter_measures/usuario', 'ParameterMeasureController@getUserParameterMeasures');
+Route::get('/parameter_measures/tiempo', 'ParameterMeasureController@getUserMeasuresTiempo');
+
 
 /*Manage Task of a project*/
 Route::get('/tareas/{id}', 'TaskController@index');
