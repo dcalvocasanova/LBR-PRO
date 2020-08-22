@@ -12,8 +12,11 @@ class SettingsMeasure extends Model
    * @var array
    */
   protected $fillable = [
-      'project_id','vacation','disability'
+      'project_id','vacation','disability','endProject','startProject','license','training','yeardays','weekdays','workdays'
   ];
+	
+	
+	
 
   /**
    * The "booting" method of the model.

@@ -29,7 +29,7 @@
             @endcomponent
 
 			@component('components.colorcard')
-              @slot('title') Gestionar variables de mediciรณn @endslot
+              @slot('title') Gestionar variables de medición @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
               @slot('url') gestionar-tareas-con-variables-medicion @endslot

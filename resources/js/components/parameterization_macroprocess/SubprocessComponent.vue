@@ -194,8 +194,7 @@
 						  @tag="addTagRisk" >
                 	</multiselect>
                   </div>
-                </div>
-				  
+                </div>  
 				<div class="col-md-3">
                   <div class="form-group">
                     <label class="bmd-label-floating">Consecencia del riesgo</label>
@@ -463,7 +462,6 @@ export default {
 	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
-	  //me.form.phva = JSON.stringify(me.PHVAs)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
 	  me.form.user = JSON.stringify(me.Usuarios)
 	  me.form.activity = JSON.stringify(me.Actividades)
@@ -482,7 +480,6 @@ export default {
       .catch(function (error) {
           console.log(error);
       });
-
     },
     updateMacrosubproceso(){
         let me =this;
@@ -490,7 +487,7 @@ export default {
 	  myResult = me.form.process.split("-");
 	  me.form.relatedToLevel = myResult[0];
 	  me.form.process = myResult[1]+"-"+myResult[2]+"-"+myResult[3];
-		me.form.input = JSON.stringify(me.Entradas)
+	  me.form.input = JSON.stringify(me.Entradas)
 	  me.form.provider = JSON.stringify(me.Proveedores)
 	  me.form.risk = JSON.stringify(me.Riesgos)
 	  me.form.indicator = JSON.stringify(me.Indicadores)
@@ -672,7 +669,6 @@ export default {
 	   this.LoadCatalogRisk_Frecuency();
 	   this.LoadCatalogRisk_CONSECUENCES();
 	   this.LoadCatalogRisk_MATURITY();
-	  
   }
 }
 </script>

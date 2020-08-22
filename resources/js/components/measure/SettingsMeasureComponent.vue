@@ -1,5 +1,23 @@
 <template>
-  <div class="container-elements mp-1 mp-1">
+  <div class="container container-project">
+	<div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Inicio del proyecto</label>
+                  <input type="date" v-model="form.startProject"
+                    class="form-control":class="{ 'is-invalid': form.errors.has('startProject') }">
+                  <has-error :form="form" field="startProject"></has-error>
+                </div>
+              </div>
+		      <div class="col-md-4">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Fin del proyecto</label>
+                  <input type="date" v-model="form.endProject"
+                    class="form-control":class="{ 'is-invalid': form.errors.has('endProject') }">
+                  <has-error :form="form" field="endProject"></has-error>
+                </div>
+              </div>
+	</div>
 	<div class="row">
       <div class="col-md-4 text-center">
         <button type="button" class="btn btn-outline-info btn-lg " disabled>Jornada</button>
@@ -112,7 +130,9 @@
 		weekdays:0,
 		yeardays:0,
 		training:0,
-		license:0
+		license:0,
+		startProject:"",
+		endProject:""  
       }),
       showSaveButton:false,
 	  projectID:""
@@ -154,6 +174,7 @@
       axios.get('/proyecto/actual')
       .then(response => {
         me.projectID = response.data.id
+		me.getSettings()
       });
     },
   },

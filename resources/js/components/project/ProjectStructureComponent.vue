@@ -115,7 +115,7 @@
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="GoalManager">Agregar objetivo</h5>
+            <h5 class="modal-title" id="GoalManager"></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -581,7 +581,9 @@ export default {
     },
 	saveRelation(){
 		let me = this
+		
 	    axios.put('/estructura/objetivos-relacionados',{
+			
 				project_id: me.project_id,
 			    level:me.currentNode.name,
 				parentGoal:me.parentGoalName,

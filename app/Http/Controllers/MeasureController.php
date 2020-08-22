@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Measure;
+use App\ExtendWorkday;
 use App\SettingsMeasure;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
@@ -136,6 +137,18 @@ class MeasureController extends Controller
       $Measure->save();
     }
 	
+	public function ExtendWorkday(MeasureRequest $request)
+    {
+      
+     $ExtendWorkday = ExtendWorkday::firstOrNew(['user' =>$request->user,'project_id' => $request->project_id]);
+
+	  $ExtendWorkday->project_id = $request->project_id;
+	  $ExtendWorkday->user = $request->user;//$this->User->getCurrentUser();
+	  $ExtendWorkday->extend = $request->extend;
+	  $ExtendWorkday->relatedToLevel = $request->relatedToLevel;
+      $ExtendWorkday->save();
+    }
+	
 	/**
      * Update the specified resource in storage.
      *
@@ -154,12 +167,15 @@ class MeasureController extends Controller
 	  $SettingsMeasure->yeardays = $request->yeardays;
 	  $SettingsMeasure->training = $request->training;
 	  $SettingsMeasure->license = $request->license;
+	  $SettingsMeasure->startProject = $request->startProject;
+	  $SettingsMeasure->endProject = $request->endProject;
       $SettingsMeasure->save();
     }
 	
 	 public function getSettings(Request $request)
     {
-		 $SettingsMeasure = SettingsMeasure::where('project_id', $request->project_id);
+		 
+		 $SettingsMeasure = SettingsMeasure::Where('project_id', $request->id)->first();
 		 return $SettingsMeasure;
 	}
     /**
