@@ -140,6 +140,7 @@ Vue.component('reportCorelation', require('./components/reports/ReportsCorelatio
 Vue.component('reportInstrument', require('./components/reports/ReportsInstruments.vue').default);
 Vue.component('reportAbc', require('./components/reports/ReportsABC.vue').default);
 Vue.component('reportWorkFlow', require('./components/reports/ReportsWorkFlow.vue').default);
+Vue.component('reportTimesAndEfficiency', require('./components/reports/ReportsTimesAndEfficiency.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

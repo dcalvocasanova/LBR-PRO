@@ -14,9 +14,25 @@
         </div>
         <div class="col-md-4" v-if="showOptions">
           <div class="lbpradio">
-            <div class="lbpradio-danger">
-                <input @click="showUsers" type="radio" name="radio" id="radio1" v-model="checks[0]" value="1" />
-                <label for="radio1">Usuario</label>
+              <div class="lbpradio-danger">
+                  <input @click="showUsers" type="radio" name="radio" id="radio1" v-model="checks[0]" value="1" />
+                  <label for="radio1">Usuario</label>
+              </div>
+              <div class="lbpradio-danger">
+                  <input @click="showStrutureInformation" type="radio" name="radio" id="radio2"  v-model="checks[1]" value="1"/>
+                  <label for="radio2">Estructura</label>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-4" v-if="showProductType">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label class="bmd-label-floating">Por nivel</label>
+                <select @change="selectByLevel" v-model="levelPicked" id="levelPicker"  class=" form-control">
+                  <option v-for="l in Levels" :key="l" :value="l">{{ l }}</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -57,22 +73,15 @@
     <div class="col-12" v-if="showNodata">
       <h2 class="text-center">No hay datos para presentar</h2>
     </div>
-    <div class="col-12" v-if="showData">
-      <datatable
-      	:title="tableTasksName"
-        :printable="false"
-      	:columns="tableTasksColumns"
-      	:rows="tableTasksRows"
-        :perPage="[10,15,20,25]"
-        locale="es"
-      />
+    <div class="col-12" v-if="showGraphics">
+      <v-chart :options="graph_two" :key="key_graph_two" class="chart"/>
     </div>
     <div class="col-12" v-if="showData">
       <datatable
-      	:title="tableTimeName"
+      	:title="tableName"
         :printable="false"
-      	:columns="tableTimeColumns"
-      	:rows="tableTimeRows"
+      	:columns="tableColumns"
+      	:rows="tableRows"
         :perPage="[10,15,20,25]"
         locale="es"
       />
@@ -82,13 +91,20 @@
 </template>
 
 <script>
+import ECharts from 'vue-echarts'
 import DataTable from 'vue-materialize-datatable'
 import VueElementLoading from 'vue-element-loading'
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import 'echarts/lib/chart/bar';
+import 'echarts/lib/chart/line';
+import 'echarts/lib/chart/pie';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/legend';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/toolbox';
 
 export default {
   components: {
+    'v-chart': ECharts,
     'datatable': DataTable,
     'loader': VueElementLoading
   },
@@ -97,25 +113,80 @@ export default {
       dataToShowInGraph:{},
       datos:[],
       checks:[],
+      legends:[],
       Projects:{},
+      Levels:{},
+      Frecuencies:{},
       Users:{},
       tipo:"",
       projectPickedId:0,
+      key_graph_two:0,
+      levelPicked:'',
+      productPicked:'',
+      frecuencyPicked:'',
       showOptions:false,
+      showProductType:false,
+      showFrecuencyType:false,
       showUserType:false,
-      showGraphics:true,
       showUser:false,
       showData:false,
+      showGraphics:false,
       showNodata:false,
       loadingPage:true,
+      data_graph1:{},
       ready: false,
-      tableTasksName:'',
-      tableTasksColumns:[],
-		  tableTasksRows:[],
-      tableTimeName:'',
-      tableTimeColumns:[],
-		  tableTimeRows:[]
-    }    
+      graph_two: {
+        xAxis: {
+            type: 'category',
+            data: ['Tiempos']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c}'
+        },
+        toolbox: {
+          showTitle:false,
+          feature: {
+            magicType: {
+              title:'',
+              type: ['stack', 'tiled']
+            },
+            dataView: {
+              show: true,
+              readOnly: true,
+              title: 'Ver datos',
+              lang: ['', 'Salir', '']
+            }
+          }
+        },
+        series:[]
+      },
+      tableName:'',
+      tableColumns:[],
+		  tableRows:[]
+    }
+  },
+  watch: {
+    dataToShowInGraph: function (val) {
+      if(Object.keys(val.data).length > 0){
+        this.showNodata=false
+        this.graph_one['title']['text'] = this.tipo
+        this.graph_one['series'][0]['data'] = val.data
+        this.graph_one['series'][0]['name'] = this.tipo
+        this.graph_one['toolbox']['show'] = true
+        this.graph_one['toolbox']['feature']['dataView']['lang'][0] = this.tipo
+        this.graph_one['legend']['data'] = val.legend
+        this.key_graph_two+= 1
+        this.graph_two['series']= val.data
+        this.showGraphics=true
+      }else{
+        this.showNodata=true
+        this.showGraphics=false
+      }
+    },
   },
   methods:{
     loadAllProjects(){
@@ -156,34 +227,37 @@ export default {
         me.Users = response.data;
       });
     },
+    loadLevelsOfStructure(){
+      let me = this
+      axios.get('/estructura/lista-niveles/'+ me.projectPickedId)
+      .then(response => {
+        me.Levels = response.data; //get all catalogs from category selected
+      });
+    },
+    selectByLevel(){
+      let me = this
+      axios.get('/grafica/tiempos/niveles/', {
+        params: {
+          project_id: me.projectPickedId,
+          level: me.levelPicked
+        }
+      })
+      .then(response => {
+        this.tipo = "Cálculo de tiempos de ajuste por nivel: "+me.levelPicked
+        this.dataToShowInGraph =  response.data
+      });
+    },
     getUserData(user){
       let me = this
-      axios.get('/grafica/workFlow', {
+      axios.get('/grafica/tiempos/usuario/', {
         params: {
+          project_id: me.projectPickedId,
           user_id: user.id
         }
       })
       .then(response => {
-        if(Object.keys(response.data.tasks).length > 0){
-          this.showNodata=false
-          this.tableTasksName = "Tiempo registrado de tareas"
-          this.tableTasksColumns = response.data.titleTasks
-          this.tableTasksRows =response.data.tasks
-          this.showData=true
-        }else{
-          this.showNodata=true
-          this.showData=false
-        }
-        if(Object.keys(response.data.times).length > 0){
-          this.showNodata=false
-          this.tableTimeName = "Tiempo registrado de cargas de trabajo"
-          this.tableTimeColumns = response.data.titleTimes
-          this.tableTimeRows =response.data.times
-          this.showData=true
-        }else{
-          this.showNodata=true
-          this.showData=false
-        }
+        this.tipo = "Cálculo de tiempos usuario: "+user.name
+        this.dataToShowInGraph =  response.data
       });
     },
   },
