@@ -1,5 +1,5 @@
 <template>
-  <div class="container-elements mp-1 mp-1">
+<div class="container container-project">
 	<div class="row">
               <div class="col-md-4">
                 <div class="form-group">
@@ -138,7 +138,7 @@
 	  projectID:""
     }
   },
-  methods:{
+ methods:{
     showSave(){
       this.showSaveButton=true
     },
@@ -174,11 +174,10 @@
       axios.get('/proyecto/actual')
       .then(response => {
         me.projectID = response.data.id
-		getSettings()
+		me.getSettings()
       });
     },
   },
-	 
   created(){
     let me = this
     me.getCurrentProject()
