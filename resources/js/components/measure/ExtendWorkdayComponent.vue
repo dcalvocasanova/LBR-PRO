@@ -71,6 +71,14 @@
                   </div>
                 </div>
               </div>
+			  <div class="col-md-4">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Fecha de aplicación</label>
+                  <input type="date" v-model="form.fecha"
+                    class="form-control":class="{ 'is-invalid': form.errors.has('fecha') }">
+                  <has-error :form="form" field="fecha"></has-error>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -97,8 +105,8 @@ export default {
           project_id: '',
           relatedToLevel:'',
 		  user:"",
-		  extend:""
-
+		  extend:"",
+		  fecha:""
         }),
         currentProject:0,
         relatedToLevel:'',

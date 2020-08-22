@@ -19,6 +19,7 @@ class CreateExtendWorkdaysTable extends Migration
 		 $table->bigInteger('user');
 		 $table->String('relatedToLevel');
          $table->String('extend');
+		   $table->date('fecha');
          $table->timestamps();
        });
      }

@@ -12,7 +12,7 @@ class ExtendWorkday extends Model
    * @var array
    */
   protected $fillable = [
-      'project_id','releatedLevel','user','extend'
+      'project_id','releatedLevel','user','extend','fecha'
   ];
 
   /**
