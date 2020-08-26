@@ -1838,23 +1838,19 @@ public function getTimesByUser(Request $request){
 
 
     $graph= collect();
-    $inefficiencyTable=collect();
+    $inefficiencyValue=0;
     //Obtenemos los datos para saber qué tiempos miden la ineficiencia
     $parameters = Inefficiency::first();
     $parametersId = explode(",",$parameters->field_related);
     $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
     $inefficiency = $inefficiencyData->keys();
-  //  return $inefficiency;
-
     foreach ($avgCategoryTimes as $category => $total) {
       $percentage = ($total/$dailyWorkMinutes)*100;
-      $categoryStr =strval($category);      
-      if(isset($inefficiency[$categoryStr])){
-        $inefficiencyTable->push($percentage);
-      }else {
-          $inefficiencyTable->push(strval($category));
-      }
-
+      $categoryStr =strval($category);
+      $data=$inefficiency->map(function ($item) use($category,$percentage) {
+          if($item == $category){ return ($percentage/100);}else{return 0;}
+        });
+      $inefficiencyValue+= $data->sum();
       $graph->push(
         array(
           'name'=>$category,
@@ -1864,7 +1860,6 @@ public function getTimesByUser(Request $request){
         )
       );
     }
-    return $inefficiencyTable;
     //Elementos adicionales
     $graph->push(array('name'=>'Incapacidades','type'=>'bar','stack'=>'TIMES','data'=> array(round($incapacityPercentage*100, PHP_ROUND_HALF_DOWN))));
     $graph->push(array('name'=>'Vacaciones','type'=>'bar','stack'=>'TIMES','data'=> array(round($holydayPercentage*100, PHP_ROUND_HALF_DOWN))));
@@ -1877,7 +1872,9 @@ public function getTimesByUser(Request $request){
     $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     // Tiempo objeto
     $report['data'] =$graph;
-    $report['legend'] =$legend;
+    $report['Inefficiency'] =$inefficiencyValue;
+    $report['users'] =1;
+
     return $report;
 }
 
