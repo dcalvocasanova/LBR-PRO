@@ -1872,7 +1872,7 @@ public function getTimesByUser(Request $request){
     $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     // Tiempo objeto
     $report['data'] =$graph;
-    $report['Inefficiency'] =$inefficiencyValue;
+    $report['inefficiency'] =$inefficiencyValue;
     $report['users'] =1;
 
     return $report;
@@ -1961,11 +1961,21 @@ public function getTimesByLevel(Request $request){
       $extraTime += ($extraTimeMinutes * $daysOffPercentage);
     }else{ $extraTime=0;}
 
-    $legend= collect();
+
     $graph= collect();
+    $inefficiencyValue=0;
+    //Obtenemos los datos para saber qué tiempos miden la ineficiencia
+    $parameters = Inefficiency::first();
+    $parametersId = explode(",",$parameters->field_related);
+    $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
+    $inefficiency = $inefficiencyData->keys();
     foreach ($avgCategoryTimes as $category => $total) {
       $percentage = ($total/$dailyWorkMinutes)*100;
-      $legend->push($category);
+      $categoryStr =strval($category);
+      $data=$inefficiency->map(function ($item) use($category,$percentage) {
+          if($item == $category){ return ($percentage/100);}else{return 0;}
+        });
+      $inefficiencyValue+= $data->sum();
       $graph->push(
         array(
           'name'=>$category,
@@ -1987,7 +1997,9 @@ public function getTimesByLevel(Request $request){
     $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     // Tiempo objeto
     $report['data'] =$graph;
-    $report['legend'] =$legend;
+    $report['inefficiency'] =$inefficiencyValue;
+    $report['users'] =sizeof($users);
+
     return $report;
   }
 }

@@ -76,28 +76,21 @@
     <div class="col-12" v-if="showGraphics">
       <v-chart :options="graph" :key="key_graph_two" class="chart"/>
     </div>
-    <div class="col-12" v-if="showData">
+    <div class="col-12 text-center" v-if="showData">
       <!-- item -->
-      <div class="col-md-4 text-center">
+
        <div class="panel panel-danger panel-pricing">
          <div class="panel-heading">
-             <i class="fa fa-desktop"></i>
-             <h3>Plan 1</h3>
-         </div>
-         <div class="panel-body text-center">
-             <p><strong>$100 / Month</strong></p>
+             <h3>Calculo cargas de trabajo modelo eficiencia</h3>
          </div>
          <ul class="list-group text-center">
-             <li class="list-group-item"><i class="fa fa-check"></i> Personal use</li>
-             <li class="list-group-item"><i class="fa fa-check"></i> Unlimited projects</li>
-             <li class="list-group-item"><i class="fa fa-check"></i> 27/7 support</li>
+             <li class="list-group-item"> %  {{ ineficiencia }}</li>
+             <li class="list-group-item"> Personas {{ trabajadores }}</li>
+             <li class="list-group-item"> Cantidad requerida {{trabajadores-ineficiencia}}</li>
+             <li class="list-group-item"> Diferencia de la cantidad de personas funcionarias {{trabajadores- (trabajadores-ineficiencia)}}</li>
          </ul>
-         <div class="panel-footer">
-             <a class="btn btn-lg btn-block btn-danger" href="#">BUY NOW!</a>
-         </div>
         </div>
-      </div>
-      <!-- /item -->
+      <br><br>
     </div>
   </div>
 </div>
@@ -130,6 +123,8 @@ export default {
       Frecuencies:{},
       Users:{},
       tipo:"",
+      ineficiencia:0,
+      trabajadores:0,
       projectPickedId:0,
       key_graph_two:0,
       levelPicked:'',
@@ -192,8 +187,11 @@ export default {
         this.showNodata=false
         this.key_graph_two+= 1
         this.graph['series']= val.data
+        this.ineficiencia = val.inefficiency
+        this.trabajadores= val.users
         this.showGraphics=true
         this.showData=true
+
       }else{
         this.showNodata=true
         this.showGraphics=false
@@ -280,9 +278,118 @@ export default {
 }
 </script>
 
- <style scoped>
- @import url(http://fonts.googleapis.com/icon?family=Material+Icons);
- .chart{
-   width: 100%
- }
- </style>
+<style scoped>
+@import url(http://fonts.googleapis.com/icon?family=Material+Icons);
+.chart{
+  width: 100%
+}
+
+.lbpradio div {
+ clear: both;
+ overflow: hidden;
+}
+
+.lbpradio label {
+ width: 100%;
+ border-radius: 3px;
+ border: 1px solid #D1D3D4;
+ font-weight: normal;
+}
+
+.lbpradio input[type="radio"]:empty,
+.lbpradio input[type="checkbox"]:empty {
+ display: none;
+}
+
+.lbpradio input[type="radio"]:empty ~ label,
+.lbpradio input[type="checkbox"]:empty ~ label {
+ position: relative;
+ line-height: 2.5em;
+ text-indent: 3.25em;
+ cursor: pointer;
+ -webkit-user-select: none;
+    -moz-user-select: none;
+     -ms-user-select: none;
+         user-select: none;
+}
+
+.lbpradio input[type="radio"]:empty ~ label:before,
+.lbpradio input[type="checkbox"]:empty ~ label:before {
+ position: absolute;
+ display: block;
+ top: 0;
+ bottom: 0;
+ left: 0;
+ content: '';
+ width: 2.5em;
+ background: #D1D3D4;
+ border-radius: 3px 0 0 3px;
+}
+
+.lbpradio input[type="radio"]:hover:not(:checked) ~ label,
+.lbpradio input[type="checkbox"]:hover:not(:checked) ~ label {
+ color: #888;
+}
+
+.lbpradio input[type="radio"]:hover:not(:checked) ~ label:before,
+.lbpradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+ content: '\2714';
+ text-indent: .9em;
+ color: #C2C2C2;
+}
+
+.lbpradio input[type="radio"]:checked ~ label,
+.lbpradio input[type="checkbox"]:checked ~ label {
+ color: #777;
+}
+
+.lbpradio input[type="radio"]:checked ~ label:before,
+.lbpradio input[type="checkbox"]:checked ~ label:before {
+ content: '\2714';
+ text-indent: .9em;
+ color: #333;
+ background-color: #ccc;
+}
+
+.lbpradio input[type="radio"]:focus ~ label:before,
+.lbpradio input[type="checkbox"]:focus ~ label:before {
+ box-shadow: 0 0 0 3px #999;
+}
+
+.lbpradio-default input[type="radio"]:checked ~ label:before,
+.lbpradio-default input[type="checkbox"]:checked ~ label:before {
+ color: #333;
+ background-color: #ccc;
+}
+
+.lbpradio-primary input[type="radio"]:checked ~ label:before,
+.lbpradio-primary input[type="checkbox"]:checked ~ label:before {
+ color: #fff;
+ background-color: #337ab7;
+}
+
+.lbpradio-success input[type="radio"]:checked ~ label:before,
+.lbpradio-success input[type="checkbox"]:checked ~ label:before {
+ color: #fff;
+ background-color: #5cb85c;
+}
+
+.lbpradio-danger input[type="radio"]:checked ~ label:before,
+.lbpradio-danger input[type="checkbox"]:checked ~ label:before {
+ color: #fff;
+ background-color: #d9534f;
+}
+
+.lbpradio-warning input[type="radio"]:checked ~ label:before,
+.lbpradio-warning input[type="checkbox"]:checked ~ label:before {
+ color: #fff;
+ background-color: #f0ad4e;
+}
+
+.lbpradio-info input[type="radio"]:checked ~ label:before,
+.lbpradio-info input[type="checkbox"]:checked ~ label:before {
+ color: #fff;
+ background-color: #5bc0de;
+}
+
+</style>
