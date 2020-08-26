@@ -264,28 +264,20 @@
                       </div>
                     </div>
                   </div>
-	  
-	  	<download-excel
-    class   = "btn btn-default"
-    :data   = "UserDataForExcel"
-    :fields = "UserFieldsForExcel"
-    worksheet = "Usuarios"
-	type    = "csv"
-    name    = "usuarios.xls">
-	 Descargar plantilla
- 
-</download-excel>	
-	  
-	  
-	  
+	 
+			
+     <button type="button" v-on:click="onexport">Descargar plantilla</button>
+   
   </div>
 </template>
 
 <script>
 import JsonExcel from "vue-json-excel";
+import XLSX from 'xlsx';
 export default {
    components: {
     'downloadExcel':JsonExcel,
+	  
   },
   props: {
      showDeleteAndUpdateButton: Number
@@ -332,7 +324,27 @@ export default {
     }
   },
   methods:{
-		loadfile(event){
+	  
+	  
+			onexport () { // On Click Excel download button
+    
+      // export json to Worksheet of Excel
+      // only array possible
+      var usersWS = XLSX.utils.json_to_sheet(this.UserDataForExcel) 
+     // var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+      // A workbook is the name given to an Excel file
+      var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+      // add Worksheet to Workbook
+      // Workbook contains one or more worksheets
+      XLSX.utils.book_append_sheet(wb, usersWS, 'usuarios') // sheetAName is name of Worksheet
+      //XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+      // export Excel file
+      XLSX.writeFile(wb, 'usuarios.xlsx') // name of the file is 'book.xlsx'
+    },	  
+	loadfile(event){
 			var files = event.target.files || event.dataTransfer.files;
 			this.userFile = event.target.files[0];
 			alert(files[0]);
@@ -360,7 +372,7 @@ export default {
           })
           .catch(function (error) {
               console.log(error);
-              alert("no funca");
+              alert("Datos incompletos");
           });
     },
     handleFileUpload(){
