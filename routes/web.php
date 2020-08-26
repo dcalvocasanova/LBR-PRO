@@ -102,6 +102,10 @@ Route::get('/gestionar-parametros', function () {
     return view('admin.parametros');
 })->middleware('permission:CRUD_parameters');
 
+Route::get('/parametrizar-ineficiencia', function () {
+    return view('admin.ineficiencia');
+})->middleware('permission:CRUD_parameters');
+
 //PLANTILLAS
 Route::get('/gestionar-plantillas-parametros', function () {
     return view('admin.parametrosplantilla');
@@ -419,6 +423,8 @@ Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
 Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
 Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
+Route::post('/parametros/guardar-ineficiencia', 'ParameterController@saveParaemeterInefficiency');
+Route::get('/parametros/ineficiencia', 'ParameterController@getParaemeterInefficiency');
 
 /*Manage SubParameters*/
 Route::get('/subparametros', 'SubparameterController@index');

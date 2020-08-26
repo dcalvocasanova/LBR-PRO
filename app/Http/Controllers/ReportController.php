@@ -7,7 +7,10 @@ use App\User;
 use App\Catalog;
 use App\UserTask;
 use App\Measure;
+use App\Parameter;
 use App\ParametersMeasure;
+use App\SettingsMeasure;
+use App\Inefficiency;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskRequest;
@@ -1755,14 +1758,14 @@ public function getWorkFlow(Request $request) {
 
 /**** TIEMPOS DE AJUSTE ****/
 public function getTimesByUser(Request $request){
-    $dailyWorkHours=8;
-    $workingDaysPerWeek=5;
-    $workingDaysPerYear=365;
-    $incapacityRate=40;
-    $holyday=96;
-    $daysOff=120;
-    $trainingInHours=2500;
-
+    $datos = SettingsMeasure::where('project_id', $request->project_id)->first();
+    $dailyWorkHours=$datos->workdays;
+    $workingDaysPerWeek=$datos->weekdays;
+    $workingDaysPerYear=$datos->yeardays;
+    $incapacityRate=$datos->disability;
+    $holyday=$datos->vacation;
+    $daysOff=$datos->license;
+    $trainingInHours=$datos->training;
     $dailyWorkMinutes=$dailyWorkHours*60;
     $fatigue=0.04;
     $employees=User::where('relatedProjects', $request->project_id)->count();
@@ -1833,11 +1836,25 @@ public function getTimesByUser(Request $request){
       $extraTime += ($extraTimeMinutes * $daysOffPercentage);
     }else{ $extraTime=0;}
 
-    $legend= collect();
+
     $graph= collect();
+    $inefficiencyTable=collect();
+    //Obtenemos los datos para saber qué tiempos miden la ineficiencia
+    $parameters = Inefficiency::first();
+    $parametersId = explode(",",$parameters->field_related);
+    $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
+    $inefficiency = $inefficiencyData->keys();
+  //  return $inefficiency;
+
     foreach ($avgCategoryTimes as $category => $total) {
       $percentage = ($total/$dailyWorkMinutes)*100;
-      $legend->push($category);
+      $categoryStr =strval($category);      
+      if(isset($inefficiency[$categoryStr])){
+        $inefficiencyTable->push($percentage);
+      }else {
+          $inefficiencyTable->push(strval($category));
+      }
+
       $graph->push(
         array(
           'name'=>$category,
@@ -1847,6 +1864,7 @@ public function getTimesByUser(Request $request){
         )
       );
     }
+    return $inefficiencyTable;
     //Elementos adicionales
     $graph->push(array('name'=>'Incapacidades','type'=>'bar','stack'=>'TIMES','data'=> array(round($incapacityPercentage*100, PHP_ROUND_HALF_DOWN))));
     $graph->push(array('name'=>'Vacaciones','type'=>'bar','stack'=>'TIMES','data'=> array(round($holydayPercentage*100, PHP_ROUND_HALF_DOWN))));
@@ -1864,13 +1882,14 @@ public function getTimesByUser(Request $request){
 }
 
 public function getTimesByLevel(Request $request){
-    $dailyWorkHours=8;
-    $workingDaysPerWeek=5;
-    $workingDaysPerYear=365;
-    $incapacityRate=40;
-    $holyday=96;
-    $daysOff=120;
-    $trainingInHours=2500;
+    $datos = SettingsMeasure::where('project_id', $request->project_id)->first();
+    $dailyWorkHours=$datos->workdays;
+    $workingDaysPerWeek=$datos->weekdays;
+    $workingDaysPerYear=$datos->yeardays;
+    $incapacityRate=$datos->disability;
+    $holyday=$datos->vacation;
+    $daysOff=$datos->license;
+    $trainingInHours=$datos->training;
 
     $dailyWorkMinutes=$dailyWorkHours*60;
     $fatigue=0.04;

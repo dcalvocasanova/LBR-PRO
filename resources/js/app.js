@@ -92,6 +92,8 @@ Vue.component('parameters', require('./components/parameterization_work_loads/Pa
 Vue.component('subparameters', require('./components/parameterization_work_loads/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/parameterization_work_loads/VariableComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+Vue.component('inefficiencyParameters', require('./components/catalog/ParametrizationEfficiencyComponent.vue').default);
+
 
 /*PSYCHO-SOCIAL*/
 Vue.component('psychoAnalisisNavHeader', require('./components/navheaders/PsychoAnalisisNavHeaderComponent.vue').default);

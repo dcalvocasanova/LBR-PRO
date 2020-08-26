@@ -32,11 +32,13 @@ class ProjectController extends Controller
      */
     public function getAllProjects()
     {
-      $projects = Project::all('id','name');
-
-      return $projects;
+      if(Auth::user()->relatedProjects > 0 ){
+        $projects = Project::where('id',Auth::user()->relatedProjects);
+      }else{
+        $projects = Project::all('id','name');
+        return $projects;
+      }
     }
-
 
     /**
      * Store a newly created resource in storage.
