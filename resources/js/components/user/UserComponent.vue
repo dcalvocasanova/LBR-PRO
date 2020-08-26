@@ -267,9 +267,10 @@
 	  
 	  	<download-excel
     class   = "btn btn-default"
-    :data   = "json_data"
-    :fields = "UserDataForExcel"
+    :data   = "UserDataForExcel"
+    :fields = "UserFieldsForExcel"
     worksheet = "Usuarios"
+	type    = "csv"
     name    = "usuarios.xls">
 	 Descargar plantilla
  
@@ -325,9 +326,9 @@ export default {
       Ethnics:{},
       Levels:{},
       Roles:{},
-	  UserDataForExcel:{ identificación: " ", nombre: " ", fecha_Nacimiento: " ", email: " ", salario: " " , puesto: " ",cargo: " ", educación_formal: " ", jornada: " ", fecha_ingreso: " ", género: " ", sexo: " ", etnia: " ", nivel_estructura: " ",rol: " "}
-      ,
-	  json_data: [{}]
+	  UserFieldsForExcel:{ 'IDENTIFICACION':'identificacion', 'NOMBRE':'nombre', 'FECHA_NACIMIENTO':'fecha_nacimiento', 'EMAIL':'email', 'SALARIO': 'salario' , 'PUESTO': 'puesto','CARGO': 'cargo', 'EDUCACION_FORMAL':'educacion_formal', 'JORNADA':'jornada', 'FECHA_INGRESO':'fecha_ingreso', 'GENERO':'genero', 'SEXO':'sexo', 'ETNIA':'etnia', 'NIVEL_ESTRUCTURA': 'nivel_estructura','ROL':'rol'
+						 },
+	  UserDataForExcel: [{ 'identificacion': '', 'nombre': '', 'fecha_nacimiento': '', 'email':'', 'salario': '' , 'puesto': '','cargo':'', 'educacion_formal':'', 'jornada':'', 'fecha_ingreso':'', 'genero':'', 'sexo':'', 'etnia':'', 'nivel_estructura': '','rol':''}]
     }
   },
   methods:{

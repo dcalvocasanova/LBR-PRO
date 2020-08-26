@@ -1,5 +1,5 @@
 <template>
-  <div class="container container-project">
+<div class="container container-project">
 	<div class="row">
               <div class="col-md-4">
                 <div class="form-group">
@@ -20,7 +20,7 @@
 	</div>
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Jornada</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block " disabled>Jornada</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -32,7 +32,7 @@
     </div>  
     <div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Días de vacaciones</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Días de vacaciones</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -44,7 +44,7 @@
     </div>	
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Días de incapacidad</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Días de incapacidad</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -56,7 +56,7 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Días laborados por semana</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Días laborados por semana</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -68,7 +68,7 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Días laborados por año</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Días laborados por año</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -80,7 +80,7 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Capacitación al año</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Capacitación al año</button>
       </div>
       <br>
    <div class="col-md-4">
@@ -92,12 +92,12 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Permisos temporles</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Permisos temporles</button>
       </div>
       <br>
    <div class="col-md-4">
         <div class="form-group">
-          <label class="bmd-label-floating">Tiempo en minutos</label>
+          <label class="bmd-label-floating">Tiempo en horas</label>
           <input @click="showSave" type="number" v-model="form.license"  class="form-control">
         </div>
       </div>
@@ -138,7 +138,7 @@
 	  projectID:""
     }
   },
-  methods:{
+ methods:{
     showSave(){
       this.showSaveButton=true
     },
@@ -178,7 +178,6 @@
       });
     },
   },
-	 
   created(){
     let me = this
     me.getCurrentProject()

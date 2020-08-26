@@ -140,12 +140,13 @@ class MeasureController extends Controller
 	public function ExtendWorkday(MeasureRequest $request)
     {
       
-     $ExtendWorkday = ExtendWorkday::firstOrNew(['user' =>$request->user,'project_id' => $request->project_id]);
+     $ExtendWorkday = ExtendWorkday::firstOrNew(['user' =>$request->user,'project_id' => $request->project_id,'project_id' => $request->fecha]);
 
 	  $ExtendWorkday->project_id = $request->project_id;
 	  $ExtendWorkday->user = $request->user;//$this->User->getCurrentUser();
 	  $ExtendWorkday->extend = $request->extend;
 	  $ExtendWorkday->relatedToLevel = $request->relatedToLevel;
+	   $ExtendWorkday->fecha = $request->fecha;
       $ExtendWorkday->save();
     }
 	
