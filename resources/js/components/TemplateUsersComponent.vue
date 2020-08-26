@@ -83,7 +83,8 @@
                         <tbody>
                           <tr>
                             <td>
-                              <select v-model="form.relatedTemplate" class="form-control" @chanche="getUsersInTemplate(form.relatedTemplate)">
+                              <select v-model="form.relatedTemplate" class="form-control" @change="getUsersInTemplate(form.relatedTemplate)">
+					<option disabled value="">Seleccione un elemento</option>
                     <option v-for="t in Templates.data" :value="t.id" :key="t.id">{{ t.name }}</option>
                   </select>
                               </td>
@@ -100,13 +101,12 @@
                     <div class="form-group">
                       <table class="table table-hover">
                        <thead>
-                          <tr><th>Seleccionar de la lista de usuarios a notificar</th></tr>
+                          <tr><th>Seleccionar de la lista de usuarios a relacionar</th></tr>
                         </thead>
                         <tbody>
                           <tr v-for="user in Users" :key="user.id" >
                             <td>
-                              <input v-model="usersToRelate" type="checkbox"
-                                :value="user.id">
+                              <input v-model="usersToRelate" type="checkbox"  :value="user.id">
                                   {{user.name}}
                               </td>
                           </tr>
@@ -139,19 +139,19 @@ export default {
       return{
         form: new Form ({
           title:"Aprobación de tareas",
-          body:'',
-          project_id: '',
-          relatedToLevel:'',
-		  relatedTemplate:'',
+          body:"",
+          project_id: "",
+          relatedToLevel:"",
+		  relatedTemplate:"",
           usersToNotify:[],
-		  usersToRelate:'',
+		  usersToRelate:"",
           tasksToNotify:[]
         }),
         tasks: new Form({
           tasks:[]
         }),
         currentProject:0,
-        relatedToLevel:'',
+        relatedToLevel:"",
 		usersToRelate:[],
         usersToNotify:[],
         tasksToNotify:[],
@@ -176,8 +176,8 @@ export default {
           me.currentProject = response.data.id
           me.form.project_id = me.currentProject
 		  me.LoadLevelsOfStructure()
-          me.getUserFunctions()
-          me.getProducts()
+          //me.getUserFunctions()
+         // me.getProducts()
       });
     },
 
@@ -190,6 +190,7 @@ export default {
       });
     },
 	showRelatedUsers(level){
+	  this.form.relatedTemplate = ""
       this.relatedToLevel = level
       this.getTemplates()
     },
@@ -199,7 +200,7 @@ export default {
       axios.get(url + '?page=' + page)
       .then(response => {
         me.Templates = response.data; //get all parameters in DB
-		me.form.relatedTemplate = "h";  
+		//me.form.relatedTemplate = "h";  
         //me.showParameters = true; //Show parameters
 		me.getUsersInLevel(me.relatedToLevel)
       })
@@ -253,11 +254,13 @@ export default {
       })
       .then(response => {
         this.Users = response.data; //get all projects from page
+		  this.usersToRelate = [];
         $('#TaskNotificator').modal('show');
       });
     },
 	getUsersInTemplate(template){
 		let me =this;
+		this.usersToRelate = [];
       axios.get('/usuarios-por-template', {
           params: {
             project: this.currentProject,
@@ -266,7 +269,7 @@ export default {
           }
       })
       .then(response => {
-        this.usersToRelate = response.data; //get all projects from page
+        this.usersToRelate = JSON.parse(response.data.RelatedUsers); //get all projects from page
         //$('#TaskNotificator').modal('show');
       });
     },
@@ -275,7 +278,7 @@ export default {
 		let me = this
         me.form.relatedToLevel = me.relatedToLevel
         me.form.project_id = me.currentProject
-		me.form.usersToRelate = me.usersToRelate.join()
+		me.form.usersToRelate = JSON.stringify(me.usersToRelate)
         me.form.post('/relate/users')
         .then(function (response) {
          // me.changeTaskStatus()

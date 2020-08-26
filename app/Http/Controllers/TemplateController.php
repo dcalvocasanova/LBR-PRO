@@ -39,7 +39,7 @@ class TemplateController extends Controller
     {
      // $template = TemplateUsers::create($request->all());
 		
-	  $TemplateUsers = TemplateUsers::firstOrNew(['RelatedUsers' =>$request->usersToRelate,'project_id' => $request->project_id]);
+	  $TemplateUsers = TemplateUsers::firstOrNew(['relatedToLevel' =>$request->relatedToLevel,'project_id' => $request->project_id]);
 
 	  $TemplateUsers->project_id = $request->project_id;
 	  $TemplateUsers->RelatedUsers = $request->usersToRelate;//$this->User->getCurrentUser();
@@ -96,10 +96,13 @@ class TemplateController extends Controller
     }
 	
 	public function getUsersByTemplate(Request $request){
-		$users = TemplateUsers::select('ReleatedUsers')->where('project_id', $request->project)
+		$users = TemplateUsers::select('RelatedUsers')->where('project_id', $request->project)
 			->where('relatedToLevel', $request->level)
-			->where(' relatedTemplate', $request->template)
+			->where('relatedTemplate', $request->template)
 			->first();
+		
+		
+		return $users;
 		
 	}
 	
