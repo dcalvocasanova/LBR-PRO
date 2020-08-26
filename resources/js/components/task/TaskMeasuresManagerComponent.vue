@@ -117,7 +117,6 @@ export default {
       axios.get('/tareas-por-usuario',{
         params:{
           id: me.currentUser
-
         }
       })
       .then(response => {
@@ -133,6 +132,7 @@ export default {
       })
       .then(response => {
         me.workday = response.data
+		me.getExtendWorkday()
       });
 	},
 	getUserTime(){
@@ -171,11 +171,23 @@ export default {
         me.Tasks = response.data
       });
     },
+	getExtendWorkday() {
+      let me =this;
+      axios.get('measure/jornada-extendida',{
+        params:{
+          relatedToLevel: me.level,
+		  project_id: me.currentProject,
+		 
+        }
+      })
+      .then(response => {
+        me.workday = parseInt(me.workday) + parseInt(response.data.extend)
+      });
+    },
     setProject(){
       let me = this
       me.selectingProjectToAddTasks=false
       me.getTasks()
-     // me.LoadLevelsOfStructure()
     },
 
   },

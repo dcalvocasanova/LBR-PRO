@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Measure;
+use App\Measure; 
+use App\RelatedGoals;
 use App\ExtendWorkday;
 use App\SettingsMeasure;
 use App\Http\Controllers\UserController;
@@ -178,6 +179,27 @@ class MeasureController extends Controller
 		 
 		 $SettingsMeasure = SettingsMeasure::Where('project_id', $request->id)->first();
 		 return $SettingsMeasure;
+	}
+	
+	public function getRelatedGoals(Request $request)
+    {
+		 
+		 	 $RelatedGoals = RelatedGoals::select('currentGoals')
+				 ->where('project_id', $request->project_id)
+				 ->where('relatedLevel', $request->relatedLevel)
+				 ->where('parentGoal', $request->parentGoal)->first();
+		
+		 return $RelatedGoals;
+	}
+	
+	public function getExtendWorkday(Request $request)
+    {
+		 	 $RelatedGoals = ExtendWorkday::select('extend')
+				 ->where('project_id', $request->project_id)
+				 //->where('relatedToLevel', $request->relatedToLevel)
+				 ->where('user', Auth::user()->id)->first();
+		
+		 return $RelatedGoals;
 	}
     /**
      * Change status as Read.

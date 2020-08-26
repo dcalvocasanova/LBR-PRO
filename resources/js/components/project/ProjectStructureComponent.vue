@@ -344,7 +344,8 @@
                         <tbody>
                           <tr>
                             <td>
-                              <select v-model="parentGoalName" class="form-control" @chanche="getUsersInTemplate(form.relatedTemplate)">
+                              <select v-model="parentGoalName" class="form-control" @change="getRelatedGoals()">
+					<option disabled value="">Seleccione un elemento</option>
                     <option v-for="goal in parentNode.goals" :value="goal.name" :key="goal.pos">{{ goal.name }}</option>
                   </select>
                               </td>
@@ -391,7 +392,7 @@
       </div>
     </div>
   </div>
-  </div>
+
 </template>
 
 <script>
@@ -444,6 +445,7 @@ export default {
     },
     relateGoals(nodo){
 	  let me = this;
+	  me.relatedGoals = []	
 	  me.currentNode = nodo.item
 	  me.parentNode = nodo.parent
 	  me.parentGoals = me.parentNode.goals
@@ -451,6 +453,19 @@ export default {
 	  me.updateNodeControl = 0
 	  this.getGoals()
     },
+	getRelatedGoals(){
+		let me = this;
+		axios.get('measures/getRelatedGoals',{
+        params:{
+		  project_id: me.project_id,
+		  relatedLevel:me.currentNode.name,
+		  parentGoal:me.parentGoalName		
+        }
+      })
+      .then(response => {
+		   me.relatedGoals = JSON.parse(response.data.currentGoals)
+      });
+	},
     loadGoalsUpdate(goal){
       let me = this;
       me.currentSelectedItem = goal
@@ -581,7 +596,6 @@ export default {
     },
 	saveRelation(){
 		let me = this
-		
 	    axios.put('/estructura/objetivos-relacionados',{
 			
 				project_id: me.project_id,
