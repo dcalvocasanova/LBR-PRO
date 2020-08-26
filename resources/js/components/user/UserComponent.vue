@@ -264,21 +264,10 @@
                       </div>
                     </div>
                   </div>
-	  	<download-excel
-    class   = "btn btn-default"
-    :data   = "UserDataForExcel"
-    :fields = "UserFieldsForExcel"
-    worksheet = "Usuarios"
-	type    = "xls"
-    name    = "usuarios.xls">
-	 Descargar plantilla
+	 
 			
      <button type="button" v-on:click="onexport">Descargar plantilla</button>
- 
-</download-excel>	
-	  
-	  
-	  
+   
   </div>
 </template>
 
