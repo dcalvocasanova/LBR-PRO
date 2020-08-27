@@ -81,7 +81,7 @@
 
        <div class="panel panel-danger panel-pricing">
          <div class="panel-heading">
-             <h3>Calculo cargas de trabajo modelo eficiencia</h3>
+             <h3>Cálculo cargas de trabajo modelo eficiencia</h3>
          </div>
          <ul class="list-group text-center">
              <li class="list-group-item"> %  {{ ineficiencia }}</li>
