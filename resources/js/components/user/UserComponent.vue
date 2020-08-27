@@ -95,14 +95,18 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Puesto de trabajo</label>
-                  <input type="text" v-model="form.job"  class="form-control":class="{ 'is-invalid': form.errors.has('job') }">
+                  <select v-model="form.job" class=" form-control" :class=" { 'is-invalid': form.errors.has('job') }">
+                    <option v-for="p in Positions">{{ p.name }}</option>
+                  </select>
                   <has-error :form="form" field="job"></has-error>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Cargo</label>
-                  <input type="text" v-model="form.position"  class="form-control":class="{ 'is-invalid': form.errors.has('position') }">
+                  <select v-model="form.position" class=" form-control" :class=" { 'is-invalid': form.errors.has('position') }">
+                    <option v-for="l in Labors">{{ l.name }}</option>
+                  </select>
                   <has-error :form="form" field="position"></has-error>
                 </div>
               </div>
@@ -111,14 +115,16 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Educación formal</label>
-                  <input type="text" v-model="form.education"  class="form-control":class="{ 'is-invalid': form.errors.has('education') }">
+                  <select v-model="form.education" class=" form-control" :class=" { 'is-invalid': form.errors.has('education') }">
+                    <option v-for="e in Educations">{{ e.name }}</option>
+                  </select>
                   <has-error :form="form" field="position"></has-error>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label class="bmd-label-floating">Jornada</label>
-                  <input type="text" v-model="form.workday"  class="form-control":class="{ 'is-invalid': form.errors.has('workday') }">
+                  <label class="bmd-label-floating">Jornada en minutos</label>
+                  <input type="number" v-model="form.workday"  class="form-control":class="{ 'is-invalid': form.errors.has('workday') }">
                   <has-error :form="form" field="workday"></has-error>
                 </div>
               </div>
@@ -289,6 +295,9 @@
         Ethnics:{},
         Levels:{},
         Roles:{},
+        Labors:{},
+        Positions:{},
+        Educations:{},
         UserFieldsForExcel:{ 'IDENTIFICACION':'identificacion', 'NOMBRE':'nombre', 'FECHA_NACIMIENTO':'fecha_nacimiento', 'EMAIL':'email', 'SALARIO': 'salario' , 'PUESTO': 'puesto','CARGO': 'cargo', 'EDUCACION_FORMAL':'educacion_formal', 'JORNADA':'jornada', 'FECHA_INGRESO':'fecha_ingreso', 'GENERO':'genero', 'SEXO':'sexo', 'ETNIA':'etnia', 'NIVEL_ESTRUCTURA': 'nivel_estructura','ROL':'rol'
       },
       UserDataForExcel: [{ 'identificacion': '', 'nombre': '', 'fecha_nacimiento': '', 'email':'', 'salario': '' , 'puesto': '','cargo':'', 'educacion_formal':'', 'jornada':'', 'fecha_ingreso':'', 'genero':'', 'sexo':'', 'etnia':'', 'nivel_estructura': '','rol':''}]
@@ -474,6 +483,24 @@
         this.Ethnics = response.data; //get all catalogs from category selected
       });
     },
+    LoadCatalogLabor() {
+      axios.get('catalogo?id=LABOR')
+      .then(response => {
+        this.Labors = response.data; //get all catalogs from category selected
+      });
+    },
+    LoadCatalogPosition() {
+      axios.get('catalogo?id=POSITION')
+      .then(response => {
+        this.Positions = response.data; //get all catalogs from category selected
+      });
+    },
+    LoadCatalogEducation() {
+      axios.get('catalogo?id=EDUCATION')
+      .then(response => {
+        this.Educations = response.data; //get all catalogs from category selected
+      });
+    },
     LoadLevelsOfStructure() {
       let me = this
       axios.get('/estructura/lista-niveles/'+this.currentProject)
@@ -505,6 +532,9 @@
       this.LoadCatalogSex()
       this.LoadCatalogGender()
       this.LoadCatalogEthnic()
+      this.LoadCatalogLabor()
+      this.LoadCatalogPosition()
+      this.LoadCatalogEducation()
     }
   }
 </script>

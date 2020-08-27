@@ -39,6 +39,30 @@
                 Catálogo: Actividades económicas
               </i>
             </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('EDUCATION')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Educación formal
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('LABOR')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Cargo
+              </i>
+            </button>
+            <button class="btn btn-primary"
+              @click="LoadCatalog('POSITION')"
+              data-toggle="modal"
+              data-target="#addCatalogs">
+              <i class="fas fa-swatchbook">
+                Catálogo: Puestos de trabajo
+              </i>
+            </button>
           </div>
           <div class="card-footer">
           </div>
@@ -142,6 +166,9 @@
             if (code === "SEX"){this.catalog="Sexos"}
             if (code === "ETHNIC"){this.catalog="Étnias"}
             if (code === "ECONOMICS"){this.catalog="Actividades económicas"}
+            if (code === "LABOR"){this.catalog="Cargos"}
+            if (code === "POSITION"){this.catalog="Puestos de trabajo"}
+            if (code === "EDUCATION"){this.catalog="Educación formal"}
             axios.get('catalogo?id=' + code)
             .then(response => {
                   this.Catalog = response.data; //get all catalogs from category selected
