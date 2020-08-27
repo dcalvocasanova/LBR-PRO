@@ -713,6 +713,7 @@ export default {
     salir(){
       $('#LevelManager').modal('toggle');
       this.newName = ""
+      this.saveLevel()
     },
     salirObjetivos(){
       $('#GoalManager').modal('toggle');
@@ -847,6 +848,7 @@ export default {
       salir(){
         $('#LevelManager').modal('toggle');
         this.newName = ""
+        this.saveLevel()
       },
       exitGoalManager(){
       $('#GoalManager').modal('toggle');
