@@ -21,7 +21,7 @@
         @endcomponent
 
         @component('components.colorcard')
-        @slot('title') Gestionar parametrización de tiempos para cálculo de ineficiencia @endslot
+        @slot('title') Gestionar parametrización de tiempos para cálculo del modelo de eficiencia @endslot
         @slot('type') success @endslot
         @slot('subtitle') ir @endslot
         @slot('url') parametrizar-ineficiencia @endslot

@@ -4,9 +4,9 @@
       <div class="col-md-12">
         <div class="card card-plain">
           <div class="card-header card-header-primary">
-            <h4 class="card-title mt-0">Gestor Tiempos para cálculo de ineficiencia</h4>
+            <h4 class="card-title mt-0">Gestor Tiempos para cálculo de productividad</h4>
             <p> En esta sección seleccionamos cuales tiempos deben ser tomados en
-              consideración para calcular el índice de ineficiencia</p>
+              consideración para calcular el índice del modelo de eficiencia</p>
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -77,7 +77,7 @@
         let me = this
         axios.get('/parametros/ineficiencia')
         .then(response => {
-            me.timesToAssign = response.data; 
+            me.timesToAssign = response.data;
         });
       },
 
