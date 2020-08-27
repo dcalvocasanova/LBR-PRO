@@ -1844,6 +1844,9 @@ public function getTimesByUser(Request $request){
     $parametersId = explode(",",$parameters->field_related);
     $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
     $inefficiency = $inefficiencyData->keys();
+
+    $percentage = ($basicTime/$dailyWorkMinutes)*100;
+    $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     foreach ($avgCategoryTimes as $category => $total) {
       $percentage = ($total/$dailyWorkMinutes)*100;
       $categoryStr =strval($category);
@@ -1868,8 +1871,6 @@ public function getTimesByUser(Request $request){
     $graph->push(array('name'=>'Fatiga','type'=>'bar','stack'=>'TIMES','data'=> array(round($fatigue*100, PHP_ROUND_HALF_DOWN))));
     $percentage = ($extraTime/$dailyWorkMinutes)*100;
     $graph->push(array('name'=>'Extra','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
-    $percentage = ($basicTime/$dailyWorkMinutes)*100;
-    $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     // Tiempo objeto
     $report['data'] =$graph;
     $report['inefficiency'] =$inefficiencyValue;
@@ -1969,6 +1970,9 @@ public function getTimesByLevel(Request $request){
     $parametersId = explode(",",$parameters->field_related);
     $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
     $inefficiency = $inefficiencyData->keys();
+
+    $percentage = ($basicTime/$dailyWorkMinutes)*100;
+    $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     foreach ($avgCategoryTimes as $category => $total) {
       $percentage = ($total/$dailyWorkMinutes)*100;
       $categoryStr =strval($category);
@@ -1993,8 +1997,6 @@ public function getTimesByLevel(Request $request){
     $graph->push(array('name'=>'Fatiga','type'=>'bar','stack'=>'TIMES','data'=> array(round($fatigue*100, PHP_ROUND_HALF_DOWN))));
     $percentage = ($extraTime/$dailyWorkMinutes)*100;
     $graph->push(array('name'=>'Extra','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
-    $percentage = ($basicTime/$dailyWorkMinutes)*100;
-    $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
     // Tiempo objeto
     $report['data'] =$graph;
     $report['inefficiency'] =$inefficiencyValue;
