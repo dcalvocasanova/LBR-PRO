@@ -256,19 +256,19 @@
             <div class="row">
 
               <div class="col-4">
-				  
+
 				 <div class="form-group">
 					  <label class="bmd-label-floating">Nombre</label>
 					  <input v-model="currentSelectedItem.name" >
 				      <label class="bmd-label-floating">Código</label>
 					  <input v-model="currentSelectedItem.code" >
 				</div>
-				  
+
 				<label class="bmd-label-floating">Editar Objetivos Relacionados</label>
 			  		<div v-for="goal in currentNode.goals" :key="goal.code">
 			  			<td><input v-model="currentSelectedItem.goals"  v-bind:value="goal" type="checkbox"> {{goal.name}}</td>
 					</div>
-			  </div>  
+			  </div>
               <div class="col-8">
                 <!--<input v-model="currentSelectedItem.name" >-->
               </div>
@@ -407,10 +407,9 @@ export default {
       project_id:"",
       goalsInherited:[],
       relatedGoals:[],
-	  ////////////////////
       parentGoals:[],
 	  currentGoals:[],
-	  parentGoalName:"",	
+	  parentGoalName:"",
       temp:[],
       currentSelectedItem:"",
       Macroprocessgoals:[],
@@ -432,7 +431,7 @@ export default {
     }
   },
   methods:{
-    nodoSeleccionado(item){ 
+    nodoSeleccionado(item){
     },
     asignarObjetivoANodo(item){
       let me = this;
@@ -445,7 +444,7 @@ export default {
     },
     relateGoals(nodo){
 	  let me = this;
-	  me.relatedGoals = []	
+	  me.relatedGoals = []
 	  me.currentNode = nodo.item
 	  me.parentNode = nodo.parent
 	  me.parentGoals = me.parentNode.goals
@@ -459,7 +458,7 @@ export default {
         params:{
 		  project_id: me.project_id,
 		  relatedLevel:me.currentNode.name,
-		  parentGoal:me.parentGoalName		
+		  parentGoal:me.parentGoalName
         }
       })
       .then(response => {
@@ -544,11 +543,11 @@ export default {
     updateMacroprocess(){
       $('#MacroprocessEditManager').modal('toggle');
 	  this.saveLevel();
-		
+
     },
 	 exitUpdateMacroprocess(){
       $('#MacroprocessEditManager').modal('toggle');
-		
+
     },
     exitMacroprocess(){
       $('#GoalEditManager').modal('toggle');
@@ -597,12 +596,12 @@ export default {
 	saveRelation(){
 		let me = this
 	    axios.put('/estructura/objetivos-relacionados',{
-			
+
 				project_id: me.project_id,
 			    level:me.currentNode.name,
 				parentGoal:me.parentGoalName,
 				currentGoals: JSON.stringify(me.relatedGoals)
-		    
+
 		})
 	    .then(function (response) {
 		  toast.fire({

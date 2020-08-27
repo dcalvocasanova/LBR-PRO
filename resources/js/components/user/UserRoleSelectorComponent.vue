@@ -14,7 +14,7 @@
                     <th> Seleccionar </th>
                     <th> Nombre </th>
                     <th> Puesto </th>
-                    <th> Role </th>
+                    <th> Rol </th>
                   </tr>
                 </thead>
                 <tbody>

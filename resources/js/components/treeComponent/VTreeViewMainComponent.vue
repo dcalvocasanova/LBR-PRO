@@ -4,13 +4,13 @@
       <div class="main":class="{bold:isParent}">
         <h4>
           <span @click="toggle" v-if="isParent">[{{ isOpen ? '-' : '+' }}]</span>
-          <span @click="$emit('clicked-node', item)">{{ item.name }}</span>
+          <span class="pull-left" @click="$emit('clicked-node', item)">{{ item.name }}</span>
           <span class="controls-tree-edit" v-show="showTreeEditor">
-            <span v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
-            <span @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
-            <span @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
+            <span class="pull-right" v-if="!isParent" @click="makeParent"><i class="fas fa-project-diagram"></i> </span>
+            <span class="pull-right" @click="$emit('edit-node', item)"><i class="fas fa-edit"></i> </span>
+            <span class="pull-right" @click="$emit('delete-node', {'item':item, 'parent':parent})"><i class="fas fa-trash-alt"></i> </span>
           </span>
-          <span class="controls-gol-edit" v-show="showGoalEditor">
+          <span class="controls-gol-edit pull-right" v-show="showGoalEditor">
             <button class="btn btn-primary" @click="$emit('assign-goal',item)" data-toggle="tooltip" >
               <i class="fas fa-columns">Asignar objetivo</i>
             </button>
@@ -21,7 +21,7 @@
               <i class="fas fa-edit">Editar objetivos</i>
             </button>
           </span>
-          <span class="controls-gol-edit" v-show="showUserFunctionsEditor">
+          <span class="controls-gol-edit pull-right" v-show="showUserFunctionsEditor">
             <button class="btn btn-primary"
               @click="$emit('create-user-function',item)"
               data-toggle="tooltip"
@@ -37,7 +37,7 @@
               <i class="fas fa-edit"></i>
             </button>
           </span>
-          <span class="controls-gol-edit" v-show="showMacroprocessesEditor">
+          <span class="controls-gol-edit pull-right" v-show="showMacroprocessesEditor">
             <button class="btn btn-primary" @click="$emit('create-macroprocess',item)" data-toggle="tooltip">
               <i class="fas fa-connectdevelop">Crear Macroproceso</i>
             </button>
