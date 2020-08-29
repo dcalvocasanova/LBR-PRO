@@ -28,6 +28,7 @@
     "jquery": "^3.5.1",
     "laravel-echo": "^1.8.0",
     "laravel-vue-pagination": "^2.3.1",
+    "material-design-icons-iconfont": "^5.0.1",
     "pusher-js": "^5.1.1",
     "sweetalert2": "^8.19.0",
     "vform": "^1.0.1",

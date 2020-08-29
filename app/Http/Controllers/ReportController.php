@@ -1880,128 +1880,211 @@ public function getTimesByUser(Request $request){
 }
 
 public function getTimesByLevel(Request $request){
-    $datos = SettingsMeasure::where('project_id', $request->project_id)->first();
-    $dailyWorkHours=$datos->workdays;
-    $workingDaysPerWeek=$datos->weekdays;
-    $workingDaysPerYear=$datos->yeardays;
-    $incapacityRate=$datos->disability;
-    $holyday=$datos->vacation;
-    $daysOff=$datos->license;
-    $trainingInHours=$datos->training;
+  $datos = SettingsMeasure::where('project_id', $request->project_id)->first();
+  $dailyWorkHours=$datos->workdays;
+  $workingDaysPerWeek=$datos->weekdays;
+  $workingDaysPerYear=$datos->yeardays;
+  $incapacityRate=$datos->disability;
+  $holyday=$datos->vacation;
+  $daysOff=$datos->license;
+  $trainingInHours=$datos->training;
 
-    $dailyWorkMinutes=$dailyWorkHours*60;
-    $fatigue=0.04;
-    $employees=User::where('relatedProjects', $request->project_id)->count();
-    $users=User::where('relatedLevel', $request->level)->get('id');
-    $userToConsult=collect();
-    foreach ($users as $tag => $id) { $userToConsult->push($id->id);}
+  $dailyWorkMinutes=$dailyWorkHours*60;
+  $fatigue=0.04;
+  $employees=User::where('relatedProjects', $request->project_id)->count();
+  $users=User::where('relatedLevel', $request->level)->get('id');
+  $userToConsult=collect();
+  foreach ($users as $tag => $id) { $userToConsult->push($id->id);}
 
-    if($dailyWorkHours <= 0){$dailyWorkHours=8;}
-    if($workingDaysPerYear <= 0){$workingDaysPerYear=365;}
-    if($employees <= 0){$employees=1;}
+  if($dailyWorkHours <= 0){$dailyWorkHours=8;}
+  if($workingDaysPerYear <= 0){$workingDaysPerYear=365;}
+  if($employees <= 0){$employees=1;}
 
-    $trainingPercentage = (($trainingInHours/$dailyWorkHours)*(1/($workingDaysPerYear*$employees)));
-    $holydayPercentage =($holyday/($workingDaysPerYear*$employees));
-    $incapacityPercentage=($incapacityRate/($workingDaysPerYear*$employees));
-    $daysOffPercentage=($daysOff/($workingDaysPerYear*$employees));
+  $trainingPercentage = (($trainingInHours/$dailyWorkHours)*(1/($workingDaysPerYear*$employees)));
+  $holydayPercentage =($holyday/($workingDaysPerYear*$employees));
+  $incapacityPercentage=($incapacityRate/($workingDaysPerYear*$employees));
+  $daysOffPercentage=($daysOff/($workingDaysPerYear*$employees));
 
-    //Obtener los parametros del usuario
-    $times = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
-              ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
-              ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
-              ->whereIn('user_id', $userToConsult)
-              ->select('parameters_measures.fecha',
-                      'parameters_measures.measure',
-                      'variables.identificator',
-                      'parameters.name AS parameter')->get();
+  //Obtener los parametros del usuario
+  $times = ParametersMeasure::leftJoin('variables','parameters_measures.category_id','=','variables.id')
+  ->LeftJoin('subparameters','variables.subparameter_id','=', 'subparameters.id')
+  ->LeftJoin('parameters','subparameters.parameter_id','=','parameters.id')
+  ->whereIn('user_id', $userToConsult)
+  ->select('parameters_measures.fecha',
+  'parameters_measures.measure',
+  'variables.identificator',
+  'parameters.name AS parameter')->get();
 
-    //Agrupar todo por categoría de tiempo a evaluar y obtener promedio entre las distintas fechas en que se midió
-    $avgTimes = $times->groupBy('identificator')
-                       ->map(function ($row){
-                           $addition['total'] = $row->avg('measure');
-                           $addition['category'] = $row->first()['parameter'];
-                           return $addition;
-                        });
-    //Agrupar por categoría de medición y promediar tiempos
-    $avgCategoryTimes = $avgTimes->groupBy('category')
-                        ->map(function ($row){
-                            return $row->sum('total');
-                         });
-    $categoryObjectTimes = $avgCategoryTimes->sum();
-    //Cálculos propios para estimar de tiempo básico
-    $timingVariables = $categoryObjectTimes;
-    $timingVariables += $dailyWorkMinutes * $trainingPercentage;
-    $timingVariables += $dailyWorkMinutes * $incapacityPercentage;
-    $timingVariables += $dailyWorkMinutes * $holydayPercentage;
-    $timingVariables += $dailyWorkMinutes * $daysOffPercentage;
-    $timingVariables += $dailyWorkMinutes * $fatigue;
+  //Agrupar todo por categoría de tiempo a evaluar y obtener promedio entre las distintas fechas en que se midió
+  $avgTimes = $times->groupBy('identificator')
+  ->map(function ($row){
+    $addition['total'] = $row->avg('measure');
+    $addition['category'] = $row->first()['parameter'];
+    return $addition;
+  });
+  //Agrupar por categoría de medición y promediar tiempos
+  $avgCategoryTimes = $avgTimes->groupBy('category')
+  ->map(function ($row){
+    return $row->sum('total');
+  });
+  $categoryObjectTimes = $avgCategoryTimes->sum();
+  //Cálculos propios para estimar de tiempo básico
+  $timingVariables = $categoryObjectTimes;
+  $timingVariables += $dailyWorkMinutes * $trainingPercentage;
+  $timingVariables += $dailyWorkMinutes * $incapacityPercentage;
+  $timingVariables += $dailyWorkMinutes * $holydayPercentage;
+  $timingVariables += $dailyWorkMinutes * $daysOffPercentage;
+  $timingVariables += $dailyWorkMinutes * $fatigue;
 
-    $basicTime = $dailyWorkMinutes - $timingVariables;
+  $basicTime = $dailyWorkMinutes - $timingVariables;
 
-    //Cálculos propios para calculo de tiempo extra: 1.Obtener Tiempo total
-    $tasks= Measure::whereIn('user_id', $userToConsult)
-                    ->whereNotNull('measures.measure')
-                    ->select('fecha', 'measure')->get();
-    //Agrupar todo por fecha para obtener suma de tiempos
-    $sumTasks= $tasks->groupBy('fecha')
-                      ->map(function($row){
-                          return $row->sum('measure');
-                      });
-    //Promedio de tiempos para obtener tiempos de medición de tareas
-    $categoryTasksTime = $sumTasks->avg();
-    //Totalizar jornada que fue medida
-    $totalTimeResearch= $categoryObjectTimes+$categoryTasksTime;
+  //Cálculos propios para calculo de tiempo extra: 1.Obtener Tiempo total
+  $tasks= Measure::whereIn('user_id', $userToConsult)
+  ->whereNotNull('measures.measure')
+  ->select('fecha', 'measure')->get();
+  //Agrupar todo por fecha para obtener suma de tiempos
+  $sumTasks= $tasks->groupBy('fecha')
+  ->map(function($row){
+    return $row->sum('measure');
+  });
+  //Promedio de tiempos para obtener tiempos de medición de tareas
+  $categoryTasksTime = $sumTasks->avg();
+  //Totalizar jornada que fue medida
+  $totalTimeResearch= $categoryObjectTimes+$categoryTasksTime;
 
-    //Calcular tiempos extra
-    $extraTimeMinutes = $totalTimeResearch - $dailyWorkMinutes;
-    if($extraTimeMinutes > 0){
-      $extraTime = $extraTimeMinutes;
-      $extraTime += ($extraTimeMinutes * $trainingPercentage);
-      $extraTime += ($extraTimeMinutes * $incapacityPercentage);
-      $extraTime += ($extraTimeMinutes * $holydayPercentage);
-      $extraTime += ($extraTimeMinutes * $daysOffPercentage);
-    }else{ $extraTime=0;}
+  //Calcular tiempos extra
+  $extraTimeMinutes = $totalTimeResearch - $dailyWorkMinutes;
+  if($extraTimeMinutes > 0){
+    $extraTime = $extraTimeMinutes;
+    $extraTime += ($extraTimeMinutes * $trainingPercentage);
+    $extraTime += ($extraTimeMinutes * $incapacityPercentage);
+    $extraTime += ($extraTimeMinutes * $holydayPercentage);
+    $extraTime += ($extraTimeMinutes * $daysOffPercentage);
+  }else{ $extraTime=0;}
 
 
-    $graph= collect();
-    $inefficiencyValue=0;
-    //Obtenemos los datos para saber qué tiempos miden la ineficiencia
-    $parameters = Inefficiency::first();
-    $parametersId = explode(",",$parameters->field_related);
-    $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
-    $inefficiency = $inefficiencyData->keys();
+  $graph= collect();
+  $inefficiencyValue=0;
+  //Obtenemos los datos para saber qué tiempos miden la ineficiencia
+  $parameters = Inefficiency::first();
+  $parametersId = explode(",",$parameters->field_related);
+  $inefficiencyData=Parameter::find($parametersId,['name'])->keyBy('name');
+  $inefficiency = $inefficiencyData->keys();
 
-    $percentage = ($basicTime/$dailyWorkMinutes)*100;
-    $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
-    foreach ($avgCategoryTimes as $category => $total) {
-      $percentage = ($total/$dailyWorkMinutes)*100;
-      $categoryStr =strval($category);
-      $data=$inefficiency->map(function ($item) use($category,$percentage) {
-          if($item == $category){ return ($percentage/100);}else{return 0;}
-        });
-      $inefficiencyValue+= $data->sum();
-      $graph->push(
-        array(
-          'name'=>$category,
-          'type'=>'bar',
-          'stack'=>'TIMES',
-          'data'=>array(round($percentage, PHP_ROUND_HALF_DOWN))
-        )
-      );
-    }
-    //Elementos adicionales
-    $graph->push(array('name'=>'Incapacidades','type'=>'bar','stack'=>'TIMES','data'=> array(round($incapacityPercentage*100, PHP_ROUND_HALF_DOWN))));
-    $graph->push(array('name'=>'Vacaciones','type'=>'bar','stack'=>'TIMES','data'=> array(round($holydayPercentage*100, PHP_ROUND_HALF_DOWN))));
-    $graph->push(array('name'=>'Permisos','type'=>'bar','stack'=>'TIMES','data'=> array(round($daysOffPercentage*100, PHP_ROUND_HALF_DOWN))));
-    $graph->push(array('name'=>'Capacitación','type'=>'bar','stack'=>'TIMES','data'=> array(round($trainingPercentage*100, PHP_ROUND_HALF_DOWN))));
-    $graph->push(array('name'=>'Fatiga','type'=>'bar','stack'=>'TIMES','data'=> array(round($fatigue*100, PHP_ROUND_HALF_DOWN))));
-    $percentage = ($extraTime/$dailyWorkMinutes)*100;
-    $graph->push(array('name'=>'Extra','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
-    // Tiempo objeto
-    $report['data'] =$graph;
-    $report['inefficiency'] =$inefficiencyValue;
-    $report['users'] =sizeof($users);
-
-    return $report;
+  $percentage = ($basicTime/$dailyWorkMinutes)*100;
+  $graph->push(array('name'=>'Tiempo Básico','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
+  foreach ($avgCategoryTimes as $category => $total) {
+    $percentage = ($total/$dailyWorkMinutes)*100;
+    $categoryStr =strval($category);
+    $data=$inefficiency->map(function ($item) use($category,$percentage) {
+      if($item == $category){ return ($percentage/100);}else{return 0;}
+    });
+    $inefficiencyValue+= $data->sum();
+    $graph->push(
+      array(
+        'name'=>$category,
+        'type'=>'bar',
+        'stack'=>'TIMES',
+        'data'=>array(round($percentage, PHP_ROUND_HALF_DOWN))
+      )
+    );
   }
+  //Elementos adicionales
+  $graph->push(array('name'=>'Incapacidades','type'=>'bar','stack'=>'TIMES','data'=> array(round($incapacityPercentage*100, PHP_ROUND_HALF_DOWN))));
+  $graph->push(array('name'=>'Vacaciones','type'=>'bar','stack'=>'TIMES','data'=> array(round($holydayPercentage*100, PHP_ROUND_HALF_DOWN))));
+  $graph->push(array('name'=>'Permisos','type'=>'bar','stack'=>'TIMES','data'=> array(round($daysOffPercentage*100, PHP_ROUND_HALF_DOWN))));
+  $graph->push(array('name'=>'Capacitación','type'=>'bar','stack'=>'TIMES','data'=> array(round($trainingPercentage*100, PHP_ROUND_HALF_DOWN))));
+  $graph->push(array('name'=>'Fatiga','type'=>'bar','stack'=>'TIMES','data'=> array(round($fatigue*100, PHP_ROUND_HALF_DOWN))));
+  $percentage = ($extraTime/$dailyWorkMinutes)*100;
+  $graph->push(array('name'=>'Extra','type'=>'bar','stack'=> 'TIMES','data'=> array(round($percentage, PHP_ROUND_HALF_DOWN))));
+  // Tiempo objeto
+  $report['data'] =$graph;
+  $report['inefficiency'] =$inefficiencyValue;
+  $report['users'] =sizeof($users);
+
+  return $report;
+}
+
+  public function getExcelData(Request $request){
+    $rows =User::leftJoin('user_tasks', 'users.id', '=', 'user_tasks.user_id')
+                ->leftJoin('measures','users.id','=','measures.user_id')
+                ->leftJoin('tasks','tasks.id','=','measures.task_id')
+                ->where('users.relatedProjects',$request->project_id)
+                ->whereNotNull('measures.measure')
+                ->select('users.*','tasks.*','measures.fecha','measures.measure')->get();
+
+    $result = collect();
+    foreach ($rows as $row) {
+      $aux=Catalog::find($row->PHVA,['name']);
+      $phva= $row->PHVA;
+      if(isset($aux['name'])){$phva=$aux['name'];}
+      $aux=Catalog::find($row->laborType,['name']);
+      $type="-";
+      if(isset($aux['name'])){$type=$aux['name'];}
+      $aux=Catalog::find($row->competence,['name']);
+      $competence="-";
+      if(isset($aux['name'])){$competence=$aux['name'];}
+      $aux=Catalog::find($row->risk,['name']);
+      $risk="-";
+      if(isset($aux['name'])){$risk=$aux['name'];}
+
+      $result->push(array(
+          'user'=>$row->name,
+          'identification'=>$row->identification,
+          'Nacimiento'=>$row->birthday,
+          'Genero'=>$row->gender,
+          'Sexo'=>$row->sex,
+          'Educacion'=>$row->education,
+          'Etnia'=>$row->ethnics,
+          'Cargo'=>$row->position,
+          'Puesto'=>$row->job,
+          'Salario'=>$row->salary,
+          'task'=>$row->task,
+          'level'=>$row->relatedToLevel,
+          'product'=>$row->allocator,
+          'frecuency'=>$row->frecuency,
+          't_min'=>$row->t_min,
+          't_avg'=>$row->t_avg,
+          't_max'=>$row->t_max,
+          'measure'=>$row->measure,
+          'fecha'=>$row->fecha,
+          'cantidad'=>$row->quatity,
+          'esfuerzo'=>$row->effort,
+          'VA'=>$row->addedValue,
+          'phva'=>$phva,
+          'type'=>$type,
+          'competence'=>$competence,
+          'risk'=>$risk
+        ));
+    }
+    $title =[
+      ['label'=>"Identificación",'field'=> "identification",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nombre",'field'=> "user",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nacimiento",'field'=> "Nacimiento",'numeric'=> false, 'html'=> false],
+      ['label'=> "Genero",'field'=> "Genero",'numeric'=> false, 'html'=> false],
+      ['label'=> "Sexo",'field'=> "Sexo",'numeric'=> false, 'html'=> false],
+      ['label'=> "Educacion",'field'=> "Educacion",'numeric'=> false, 'html'=> false],
+      ['label'=> "Puesto",'field'=> "Puesto",'numeric'=> false, 'html'=> false],
+      ['label'=> "Cargo",'field'=> "Cargo",'numeric'=> false, 'html'=> false],
+      ['label'=> "Salario",'field'=> "Salario",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tarea",'field'=> "task",'numeric'=> false, 'html'=> false],
+      ['label'=> "Nivel de estructura",'field'=> "level",'numeric'=> false, 'html'=> false],
+      ['label'=> "Producto",'field'=> "product",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo mínimo",'field'=> "t_min",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo promedio",'field'=> "t_avg",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo máximo",'field'=> "t_max",'numeric'=> false, 'html'=> false],
+      ['label'=> "Fecha de medida",'field'=> "fecha",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tiempo registrado",'field'=> "measure",'numeric'=> false, 'html'=> false],
+      ['label'=> "Cantidad",'field'=> "cantidad",'numeric'=> false, 'html'=> false],
+      ['label'=> "Esfuerzo",'field'=> "esfuerzo",'numeric'=> false, 'html'=> false],
+      ['label'=> "PHVA",'field'=> "phva",'numeric'=> false, 'html'=> false],
+      ['label'=> "Tipo trabajo",'field'=> "type",'numeric'=> false, 'html'=> false],
+      ['label'=> "Competencia",'field'=> "competence",'numeric'=> false, 'html'=> false],
+      ['label'=> "Riesgo",'field'=> "risk",'numeric'=> false, 'html'=> false],
+      ['label'=> "Valor Agregado",'field'=> "VA",'numeric'=> false, 'html'=> false],
+    ];
+
+    return ['content'=> $result, 'title'=> $title];
+  }
+
 }

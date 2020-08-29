@@ -117,7 +117,7 @@
   </li>
   @endif
   {{-- Nav Item - Users Collapse Menu--}}
-  @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
+  @if(@Auth::user()->hasAnyPermission('permission:R_reports'))
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
@@ -126,7 +126,7 @@
     <div id="collapseReports" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Cargas de Trabajo </h6>
-        <a class="collapse-item" href="/mostrar-graficos">IR</a>      
+        <a class="collapse-item" href="/mostrar-graficos">IR</a>
       </div>
     </div>
   </li>

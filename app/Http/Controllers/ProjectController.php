@@ -33,7 +33,8 @@ class ProjectController extends Controller
     public function getAllProjects()
     {
       if(Auth::user()->relatedProjects > 0 ){
-        $projects = Project::where('id',Auth::user()->relatedProjects);
+        $projects = Project::where('id',Auth::user()->relatedProjects)->select('id','name')->get();
+        return $projects;
       }else{
         $projects = Project::all('id','name');
         return $projects;

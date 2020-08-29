@@ -21,6 +21,7 @@ class PermissionsTableSeeder extends Seeder
       Permission::create(['name' => 'CRUD_tasks']);
       Permission::create(['name' => 'CRUD_catalogs']);
       Permission::create(['name' => 'R_reports']);
+      Permission::create(['name' => 'CRUD_psychosocial']);
       Permission::create(['name' => 'simple_user']);
     }
 }

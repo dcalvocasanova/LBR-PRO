@@ -142,6 +142,7 @@ Vue.component('reportInstrument', require('./components/reports/ReportsInstrumen
 Vue.component('reportAbc', require('./components/reports/ReportsABC.vue').default);
 Vue.component('reportWorkFlow', require('./components/reports/ReportsWorkFlow.vue').default);
 Vue.component('reportTimesAndEfficiency', require('./components/reports/ReportsTimesAndEfficiency.vue').default);
+Vue.component('reportExcel', require('./components/reports/ReportsExcel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

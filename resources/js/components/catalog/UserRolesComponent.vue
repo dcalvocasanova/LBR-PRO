@@ -144,7 +144,8 @@
           {id:'7', name: 'Gestionar tareas', code: 'CRUD_tasks' },
           {id:'8', name: 'Gestionar catálogos', code: 'CRUD_catalogs' },
           {id:'9', name: 'Gestionar reporte', code: 'R_reports' },
-          {id:'10', name: 'Usuario del sistema', code: 'simple_user' }
+          {id:'10', name: 'Gestionar psicoanálisis', code: 'CRUD_psychosocial' },
+          {id:'11', name: 'Usuario del sistema', code: 'simple_user' }
         ]
       }
     },
