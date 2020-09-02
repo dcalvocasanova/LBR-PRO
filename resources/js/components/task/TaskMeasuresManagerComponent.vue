@@ -17,12 +17,12 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Identificación: {{currentUserData.identification}}</button>
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Nombre: {{currentUserData.name}}</button>
-        <button type="button" class="btn btn-outline-info btn-lg " disabled>Jordada: {{workday}} min</button>
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Puesto: {{currentUserData.position}}</button>
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Nivel: {{currentUserData.relatedLevel}}</button>
-		<button type="button" class="btn btn-outline-info btn-lg " disabled>Tiempo utilizado:{{tiempoUtilizado}} min</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Identificación: {{currentUserData.identification}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Nombre: {{currentUserData.name}}</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Jordada: {{workday}} min</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Puesto: {{currentUserData.position}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Nivel: {{currentUserData.relatedLevel}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Tiempo utilizado:{{tiempoUtilizado}} min</button>
       </div>
     </div>	
     <div class="row" v-if="this.selectingProjectToAddTasks === false">
@@ -181,7 +181,8 @@ export default {
         }
       })
       .then(response => {
-        me.workday = parseInt(me.workday) + parseInt(response.data.extend)
+		  if(response.data.extend)
+        	me.workday = parseInt(me.workday) + parseInt(response.data.extend)
       });
     },
     setProject(){
