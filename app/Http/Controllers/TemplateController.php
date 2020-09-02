@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Template;
+use App\Criteria;
 use App\ParametersMeasure;
 use Illuminate\Support\Facades\Auth;
 use App\TemplateUsers;
@@ -39,7 +40,7 @@ class TemplateController extends Controller
     {
      // $template = TemplateUsers::create($request->all());
 		
-	  $TemplateUsers = TemplateUsers::firstOrNew(['relatedToLevel' =>$request->relatedToLevel,'project_id' => $request->project_id]);
+	  $TemplateUsers = TemplateUsers::firstOrNew(['relatedToLevel' =>$request->relatedToLevel,'project_id' => $request->project_id,'relatedTemplate' => $request->relatedTemplate]);
 
 	  $TemplateUsers->project_id = $request->project_id;
 	  $TemplateUsers->RelatedUsers = $request->usersToRelate;//$this->User->getCurrentUser();
@@ -100,44 +101,73 @@ class TemplateController extends Controller
 			->where('relatedToLevel', $request->level)
 			->where('relatedTemplate', $request->template)
 			->first();
-		
-		
-		return $users;
+			return $users;
 		
 	}
 	
 	public function getTemplatesByUser(Request $request)
     {
 		
-	  $user = TemplateUsers::where('relatedUsers','like', '%'.Auth::user()->id.'%')->first();
-	  $template = Template::where('id',$user->relatedTemplate)->first();
-  	  $obj = json_decode($template->stencil,true);
-  	  $catalogos = array();
+		$usersTemplates =[];
+	  $user = TemplateUsers::select('relatedTemplate')->where('relatedUsers','like', '%'.Auth::user()->id.'%')->get();
+	  
+	  foreach($user as $template)
+		array_push($usersTemplates,$template['relatedTemplate']);
+			
+	  $template = Template::where('type',$request->type)->wherein('id',$usersTemplates)->first();
+	
+	  //return $template;
+	  $obj = json_decode($template->stencil,true);
+	  $idCriterio = $template->description;
+	  $catalogos = array();
 	  $categorias = array();
 	  $collection = collect();
-		
+	  //return $obj;
+	    
 	  for ( $i = 1; $i< count($obj)+1; $i++){
 		  $now = Carbon::now()->format('Y-m-d');
 		  
-		  $measure = ParametersMeasure::select('measure')->where('user_id',Auth::user()->id)
-			         ->where('variable',$obj[$i]['name'])
-			         ->where('fecha',$now)->first();
+		  //return $obj[$i]['question'];
 		  
-		  if($measure){
-			  $measure = (Int)$measure->measure;
-		  }else{$measure = 10;}
-		
-		$category = $obj[$i]['category']; 
-		array_push($categorias, $category); 
-	  	$collection->push( ["category" =>$category, "id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['name'] , "measure" =>$measure]);
+		  
+		  if($request->type == 'workload'){
+			     $measure = ParametersMeasure::select('measure')->where('user_id',Auth::user()->id)
+						 ->where('variable',$obj[$i]['name'])
+						 ->where('fecha',$now)->first();
+
+			  if($measure){
+				  $measure = (Int)$measure->measure;
+			  }else{$measure = 10;}
+		  
+		  
+			$category = $obj[$i]['category']; 
+			array_push($categorias, $category); 
+			$collection->push( ["category" =>$category, "id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['name'] , "measure" =>$measure]);
+			  
+		 }elseif($request->type == 'psychosocial'){
+			  
+			  $criterio = Criteria::select('categories')->where('id',$idCriterio)->first();
+			 $criterio= json_decode($criterio->categories,true);
+			  if($measure = ParametersMeasure::select('measure')->where('user_id',Auth::user()->id)->where('variable',$obj[$i]['question'])->first()){
+				  
+				  //  return $measure;
+				  $measure = $measure->measure;
+			  }else{$measure = 0;}
+			  
+			  
+			 $question = $obj[$i]['question']; 
+			//array_push($categorias, $category); 
+		 $collection->push( ["category" =>'preguntas',"id" =>$obj[$i]['id'] ,"variable"=>$obj[$i]['question'] , "measure" =>$measure,"criterio" =>$criterio]);
+		 }
 	  }
 		
-		$collection = $collection->groupBy('category');
-	    // $collection = $collection->values();
-		//$collection = $collection->groupBy('category');
+	 $collection = $collection->groupBy('category');
+	// $collection = $collection->values();
+	//$collection = $collection->groupBy('category');
 	  
 	return ($collection);
 		
     }
+	
 
 }
