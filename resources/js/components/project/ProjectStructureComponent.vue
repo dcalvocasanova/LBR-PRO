@@ -767,20 +767,6 @@ export default {
       let text = " "
       let chars = "abcdefghijklmnopqrstuvwxyz123456789"
       },
-      addNode() {
-        let me = this
-        me.currentNode.children.push({
-          name: me.newName,
-          level:me.currentNode.level + 1,
-    		  numGoals:0,
-			    featherNode:true,
-    		  goals:[],
-    		  inheritedGoals:[],
-			    macroprocess:[],
-          userFunctions:[]
-        })
-        me.salir()
-      },
       addGoal() {
         let me = this;
 		if(me.newCode.trim()!="" && me.newName.trim()!=""){
@@ -854,11 +840,14 @@ export default {
       $('#GoalManager').modal('toggle');
         this.newName = ""
 		this.newCode = ""
+	    this.salir()
       },
 	  exitRelatedManager(){
       $('#RelatedManager').modal('toggle');
         this.newName = ""
 		this.newCode = ""
+		this.salir()
+
       },
       salirRelacionarObjetivos(){
         $('#InheritedManager').modal('toggle');
@@ -874,12 +863,15 @@ export default {
         this.newName = ""
         this.newCode = ""
 	    this.Macroprocessgoals = []
+		this.salir()
+
       },
       getMacroprocessData(){
         $('#MacroprocessManager').modal('show')
         this.newName = ""
         this.newCode = ""
 		this.Macroprocessgoals = []
+		this.salir()
       },
 	    getNodeName(){
         $('#LevelManager').modal('show')

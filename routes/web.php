@@ -213,6 +213,7 @@ Route::get('/medicion-analisis', function () {
     return view('containers.medicion-analisis');
 })->middleware('permission:CRUD_tasks');
 
+
 //GESTIONAR ELEMENTOS ASOCIADOS A TAREAS
 Route::get('/gestionar-tareas-variables-adicionales', function () {
     return view('taskManager.tareas-variables-asociadas');
@@ -223,8 +224,17 @@ Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
 })->middleware('auth');
 
+//GESTIONAR VARIABLES DE MEDICIÓN
+Route::get('/gestionar-tareas-con-variables-sicoanalisis', function () {
+    return view('taskManager.sicoanalisis-medicion');
+})->middleware('permission:CRUD_tasks');
+
 Route::get('/gestionar-plantillas-usuarios', function () {
     return view('taskManager.tareas-plantillas-usuarios');
+})->middleware('permission:CRUD_tasks');
+
+Route::get('/gestionar-plantillas-phyco', function () {
+    return view('taskManager.phyco-plantillas-usuarios');
 })->middleware('permission:CRUD_tasks');
 
 //GESTIONAR VARIABLES DE AJUSTE

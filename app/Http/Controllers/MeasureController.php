@@ -194,12 +194,14 @@ class MeasureController extends Controller
 	
 	public function getExtendWorkday(Request $request)
     {
-		 	 $RelatedGoals = ExtendWorkday::select('extend')
+		$now = Carbon::now()->format('Y-m-d');
+		$RelatedGoals = ExtendWorkday::select('extend')
 				 ->where('project_id', $request->project_id)
-				 //->where('relatedToLevel', $request->relatedToLevel)
-				 ->where('user', Auth::user()->id)->first();
+				 ->where('user', Auth::user()->id)
+				 ->where('fecha', $now)->first();
 		
-		 return $RelatedGoals;
+		 		return $RelatedGoals;
+			 
 	}
     /**
      * Change status as Read.

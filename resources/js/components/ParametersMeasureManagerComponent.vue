@@ -77,7 +77,8 @@ export default {
       let me =this;
       axios.get('/plantillas/porusuario',{
         params:{
-          id: me.currentUser
+          id: me.currentUser,
+		  type:'workload'
         }
       })
       .then(response => {

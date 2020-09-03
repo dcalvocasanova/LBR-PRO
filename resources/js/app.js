@@ -124,7 +124,12 @@ Vue.component('parametersMeasures',require('./components/ParametersMeasureManage
 Vue.component('parameterMeasure', require('./components/ParameterAccordionMeasureComponent.vue').default);
 Vue.component('parameterMeasureUnit', require('./components/ParameterUnitMeasureComponent.vue').default);
 Vue.component('templatesUsers', require('./components/TemplateUsersComponent.vue').default);
+Vue.component('templatesPhyco', require('./components/TemplatePhycoComponent.vue').default);
 
+
+Vue.component('phycoMeasures',require('./components/PhycoMeasureManagerComponent.vue').default);
+Vue.component('phycoMeasure', require('./components/PhycoAccordionMeasureComponent.vue').default);
+Vue.component('phycoMeasureUnit', require('./components/PhycoUnitMeasureComponent.vue').default);
 /*Reports*/
 
 Vue.component('goalStatus', require('./components/reports/ReportsGoalsStatus.vue').default);
