@@ -43,6 +43,22 @@
             @slot('url') gestionar-plantillas-analisis-psicosicial @endslot
             @slot('icon') fas fa-tags @endslot
             @endcomponent
+			  
+			@component('components.colorcard')
+            @slot('title') Plantillas de usuario @endslot
+            @slot('type') info @endslot
+            @slot('subtitle') ir @endslot
+            @slot('url') gestionar-plantillas-phyco @endslot
+            @slot('icon') fas fa-tags @endslot
+            @endcomponent 
+			  
+			@component('components.colorcard')
+            @slot('title') Cuestionario Sicoanálisis @endslot
+            @slot('type') info @endslot
+            @slot('subtitle') ir @endslot
+            @slot('url') gestionar-tareas-con-variables-sicoanalisis @endslot
+            @slot('icon') fas fa-tags @endslot
+            @endcomponent  
           </div>
       </div>
     </div>
