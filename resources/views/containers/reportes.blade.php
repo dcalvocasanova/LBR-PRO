@@ -13,6 +13,15 @@
           </div>
           <div class="row">
             @component('components.colorcard')
+            @slot('title') Decargar datos en hoja de cálculo @endslot
+            @slot('type') success @endslot
+            @slot('subtitle') ir @endslot
+            @slot('url') reporte/exportar-hoja-calculo @endslot
+            @slot('icon') fas fa-tags @endslot
+            @endcomponent
+          </div>
+          <div class="row">
+            @component('components.colorcard')
             @slot('title') Reporte de frecuencias @endslot
             @slot('type') success @endslot
             @slot('subtitle') ir @endslot

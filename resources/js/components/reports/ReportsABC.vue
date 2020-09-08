@@ -289,7 +289,7 @@ export default {
 </script>
 
  <style scoped>
-@import url(http://fonts.googleapis.com/icon?family=Material+Icons);
+ @import url(http://fonts.googleapis.com/icon?family=Material+Icons);
  .chart{
    width: 100%
  }

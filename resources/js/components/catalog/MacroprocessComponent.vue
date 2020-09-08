@@ -14,7 +14,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Entradas
+                    Entradas
                   </i>
                 </button>
               </div>
@@ -24,7 +24,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Proveedores
+                    Proveedores
                   </i>
                 </button>
               </div>
@@ -34,19 +34,19 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Indicadores
+                    Indicadores
                   </i>
                 </button>
               </div>
               <div class="col-md-3">
                 <button class="btn btn-primary"
-                  @click="loadSubCategoryCatalog('P')"
+                  @click="LoadCatalog('RISK')"
                   data-toggle="modal"
-                  data-target="#PHVACatalogs">
+                  data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: PHVA
+                    Riesgos
                   </i>
-                </button>
+                </button>                
               </div>
             </div>
             <br>
@@ -57,7 +57,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Frecuencia del riesgo
+                    Frecuencia del riesgo
                   </i>
                 </button>
               </div>
@@ -67,7 +67,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Consecuencia del riesgo
+                    Consecuencia del riesgo
                   </i>
                 </button>
               </div>
@@ -77,32 +77,13 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Nivel de madurez en relación con el riesgo
-                  </i>
-                </button>
-              </div>
-              <div class="col-md-3">
-                <button class="btn btn-primary"
-                  @click="LoadCatalog('RISK-LEVEL')"
-                  data-toggle="modal"
-                  data-target="#addCatalogs">
-                  <i class="fas fa-swatchbook">
-                    Catálogo: Niveles de riesgo
+                    Nivel de madurez en relación con el riesgo
                   </i>
                 </button>
               </div>
             </div>
             <div class="row mb-2">
-              <div class="col-md-6">
-                <button class="btn btn-primary"
-                  @click="LoadCatalog('RISK')"
-                  data-toggle="modal"
-                  data-target="#addCatalogs">
-                  <i class="fas fa-swatchbook">
-                    Catálogo: Riesgos
-                  </i>
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
