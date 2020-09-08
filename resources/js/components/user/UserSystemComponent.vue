@@ -21,7 +21,7 @@
                       <tr  v-for="user in Users.data" :key="user.id">
                         <td v-text="user.name"></td>
                         <td> <img class="img-profile-pic rounded-circle" :src="getAvatar(user)" alt="User avatar"/> </td>
-                        <td> {{user.roles[0].name}}</td>
+                        <td v-if="user.roles.length > 0"> {{user.roles[0].name}}</td>
                         <td>
                           <button class="btn btn-info" @click="loadFieldsUpdate(user)"><i class="fas fa-edit"></i></button>
                           <button class="btn btn-danger" @click="deleteUser(user)"><i class="fas fa-trash-alt"></i></button>
@@ -107,7 +107,7 @@
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
         type:"sys",
         test:"",
-        Users:{}, //BD content
+        Users:{},
         Roles:{}
       }
     },
