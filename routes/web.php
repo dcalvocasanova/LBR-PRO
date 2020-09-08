@@ -553,6 +553,7 @@ Route::get('/measures/tiempo', 'MeasureController@getUserMeasuresTime');
 Route::put('/measures/extender-jornada', 'MeasureController@ExtendWorkday');
 Route::get('/measures/getRelatedGoals', 'MeasureController@getRelatedGoals');
 Route::get('/measure/jornada-extendida', 'MeasureController@getExtendWorkday');
+Route::any('/measures/loadmeasures', 'MeasureController@importTaskMeasures');
 
 Route::put('/parameters_measures/actualizar', 'ParameterMeasureController@update');
 Route::get('/parameter_measures/usuario', 'ParameterMeasureController@getUserParameterMeasures');

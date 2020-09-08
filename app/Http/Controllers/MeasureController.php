@@ -1,16 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Measure; 
 use App\RelatedGoals;
 use App\ExtendWorkday;
 use App\SettingsMeasure;
+use App\Imports\TaskMeasureImport;
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\MeasureRequest;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MeasureController extends Controller
 {
@@ -230,4 +232,26 @@ class MeasureController extends Controller
     {
         $Measure = Measure::destroy($request->id);
     }
-}
+	public function importTaskMeasures(Request $request)
+    {
+		 
+   		 $data = Excel::toArray(new TaskMeasureImport, request()->file('archivo')); 
+		
+   		 return collect(head($data)) 
+    		    ->each(function ($row, $key) use($request) {
+			$now = Carbon::now()->format('Y-m-d');
+            $Measure = Measure::firstOrNew(['user_id' =>$request->user_id,'task_id' =>  $row[0],'fecha' =>$now ]);
+
+                //->update(array_except($row, ['id']));
+					
+				$Measure->project_id =  session('currentProject_id');
+	            $Measure->user_id = Auth::user()->id;//$this->User->getCurrentUser();
+	            $Measure->task_id = $row[0];
+	            $Measure->measure = $row[2];
+	            $Measure->fecha   = $now;
+                $Measure->save();
+        });
+     }
+}  
+
+	  

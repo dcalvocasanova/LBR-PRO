@@ -51,7 +51,51 @@
       </div>
     </div>
   </div>
-	  <button type="button" v-on:click="onexport">Descargar plantilla</button>
+	   <button
+            class="btn btn-success"
+            data-toggle="modal"
+            data-target="#loadTask">
+              Utilizar un archivo para cargar medidas de tareas
+          </button>
+	  
+      <div class="modal fade" id="loadTask" tabindex="-1" role="dialog" aria-labelledby="loadUsersModalLabel-lg" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="ParameterModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Cargar timpos de tareas usando un archivo excel</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12 m-2" >
+                      <button class="btn btn-info btn-lg btn-block" v-on:click="onexport">Descargar plantilla</button>
+                    </div>
+                    <div class="col-12 mt-5">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Cargar archivo</label>
+                        <input  type="file" id ="procesar_archivo" @change="EventSubir">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button data-dismiss="modal" class="btn btn-success">Regresar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	 
 </div>
  
 </template>
@@ -88,7 +132,7 @@ export default {
 	  workday:"",
 	  tiempoUtilizado:0,
 	  currentUserData:{},
-	  UserFieldsForExcel:{},
+	  UserFieldsForExcel:{"Tarea":'tarea',"Medida":'medida'},
 	  UserDataForExcel: []
     }
   },
@@ -129,6 +173,29 @@ export default {
 
       });
     },
+	EventSubir(f){
+        let me =this;
+        me.taskFile = f.target.files[0];
+        console.log(me.taskFile);
+        var data = new FormData();
+        data.append('archivo', me.taskFile);
+        axios.post('/measures/loadmeasures', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
+      .then(response => {
+        toast.fire({
+          type: 'success',
+          title: 'Se cargó el archivo'
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert("Datos incompletos");
+      });
+    },
 	getCurrentUser(){
       let me =this;
       axios.get('/usuario')
@@ -152,10 +219,12 @@ export default {
 		let tasks =[]
         me.Tasks = response.data.data
 		for (var i = 0; i < me.Tasks.length; i++) {
-			//let t = me.Tasks[i].task
-			Vue.set(me.UserFieldsForExcel,me.Tasks[i].task,' ')
+			let t = {}
+			Vue.set(t ,'id',me.Tasks[i].id)
+			Vue.set(t ,'tarea',me.Tasks[i].task)
+			Vue.set(t ,'medida','')
+			me.UserDataForExcel.push(t)
 		}
-		me.UserDataForExcel.push(me.UserFieldsForExcel)
       });
     },
 	getWorday(){
