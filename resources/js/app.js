@@ -92,6 +92,8 @@ Vue.component('parameters', require('./components/parameterization_work_loads/Pa
 Vue.component('subparameters', require('./components/parameterization_work_loads/SubParametersComponent.vue').default);
 Vue.component('variables', require('./components/parameterization_work_loads/VariableComponent.vue').default);
 Vue.component('parameterstemplates', require('./components/templates/TemplatesParametersComponent.vue').default);
+Vue.component('inefficiencyParameters', require('./components/catalog/ParametrizationEfficiencyComponent.vue').default);
+
 
 /*PSYCHO-SOCIAL*/
 Vue.component('psychoAnalisisNavHeader', require('./components/navheaders/PsychoAnalisisNavHeaderComponent.vue').default);
@@ -145,6 +147,7 @@ Vue.component('reportInstrument', require('./components/reports/ReportsInstrumen
 Vue.component('reportAbc', require('./components/reports/ReportsABC.vue').default);
 Vue.component('reportWorkFlow', require('./components/reports/ReportsWorkFlow.vue').default);
 Vue.component('reportTimesAndEfficiency', require('./components/reports/ReportsTimesAndEfficiency.vue').default);
+Vue.component('reportExcel', require('./components/reports/ReportsExcel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

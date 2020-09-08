@@ -52,7 +52,7 @@
     <div class="row" v-if="showImproveOption">
       <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating"> </label>
+          <label class="bmd-label-floating">PHVA</label>
           <treeselect
             :clearable="true"
             :searchable="true"
@@ -68,7 +68,7 @@
       </div>
       <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating"> </label>
+          <label class="bmd-label-floating">Competencias de trabajo</label>
           <treeselect
             :clearable="true"
             :searchable="true"
@@ -85,7 +85,7 @@
       </div>
       <div class="col-md-4" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating"> </label>
+          <label class="bmd-label-floating"> Tipo de trabajo </label>
           <treeselect
             :clearable="true"
             :searchable="true"
@@ -104,7 +104,7 @@
     <div class="row" v-if="showImproveOption">
       <div class="col-md-6">
         <div class="form-group">
-          <label class="bmd-label-floating">Tipo de Esfuerzo</label>
+          <label class="bmd-label-floating">Tipo de esfuerzo</label>
           <select @change="showSave" v-model="form.effort" class=" form-control">
             <option v-for="s in Effort">{{ s.name }}</option>
           </select>
@@ -112,7 +112,7 @@
       </div>
       <div class="col-md-6" @click="showSave">
         <div class="form-group">
-          <label class="bmd-label-floating"> </label>
+          <label class="bmd-label-floating"> Riesgos de trabajo </label>
           <treeselect
             :clearable="true"
             :searchable="true"

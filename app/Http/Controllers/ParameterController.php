@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Parameter;
+use App\Inefficiency;
 use Illuminate\Http\Request;
 
 class ParameterController extends Controller
@@ -112,5 +113,17 @@ class ParameterController extends Controller
     {
       $parameters = Parameter::where('type','psychosocial')->paginate(5);
       return $parameters;
+    }
+
+    public function saveParaemeterInefficiency(Request  $request){
+      $parameters = Inefficiency::firstOrNew(['id' => 1]);
+      $parameters->field_related = implode(",",$request->field_related);
+      $parameters->save();
+    }
+
+    public function getParaemeterInefficiency(){
+      $parameters = Inefficiency::first();
+      $datos = explode(",",$parameters->field_related);
+      return $datos;
     }
 }

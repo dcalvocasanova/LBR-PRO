@@ -102,6 +102,10 @@ Route::get('/gestionar-parametros', function () {
     return view('admin.parametros');
 })->middleware('permission:CRUD_parameters');
 
+Route::get('/parametrizar-ineficiencia', function () {
+    return view('admin.ineficiencia');
+})->middleware('permission:CRUD_parameters');
+
 //PLANTILLAS
 Route::get('/gestionar-plantillas-parametros', function () {
     return view('admin.parametrosplantilla');
@@ -218,7 +222,7 @@ Route::get('/gestionar-tareas-variables-adicionales', function () {
 //GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-medicion', function () {
     return view('taskManager.tareas-variables-medicion');
-})->middleware('permission:CRUD_tasks');
+})->middleware('auth');
 
 //GESTIONAR VARIABLES DE MEDICIÓN
 Route::get('/gestionar-tareas-con-variables-sicoanalisis', function () {
@@ -246,71 +250,72 @@ Route::get('/ajustes-medicion', function () {
 
 Route::get('/mostrar-graficos', function () {
     return view('containers.reportes');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 //POR EL MOMENTO
 
+Route::get('reporte/exportar-hoja-calculo', function () {
+    return view('reports.reporteEnExcel');
+})->middleware('permission:R_reports');
+
 Route::get('/ejemplos', function () {
     return view('reports.reporteEjemplo');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/frecuencias', function () {
     return view('reports.reporteFrecuencias');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/phva', function () {
     return view('reports.reportePHVA');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/competencias', function () {
     return view('reports.reporteCompetencias');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/esfuerzo', function () {
     return view('reports.reporteEsfuerzos');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/tipo-trabajo', function () {
     return view('reports.reporteTipoTrabajo');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/riesgo', function () {
     return view('reports.reporteRiesgos');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/valor-agregado', function () {
     return view('reports.reporteValorAgregado');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/correlacion', function () {
     return view('reports.reporteCorrelacion');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/instrumentos', function () {
     return view('reports.reporteRelacionInstrumentos');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/abc', function () {
     return view('reports.reporteABC');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/carga-trabajo', function () {
     return view('reports.reporteCargasDeTrabajo');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 Route::get('reporte/ajuste-tiempos', function () {
     return view('reports.reporteEficienciaYTiempos');
-})->middleware('auth');
+})->middleware('permission:R_reports');
 
 
 //PENDIENTE DE REVISIÓN
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
 })->middleware('permission:CRUD_parameters');
-//
-Route::get('/gestionar-tareas-con-variables-medicion', function () {
-    return view('taskManager.tareas-variables-medicion');
-})->middleware('permission:CRUD_tasks');
+
 //
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
@@ -321,10 +326,6 @@ Route::get('/ayuda', function () {
 Route::get('/parametrizar-tiempos-ajuste', function () {
     return view('admin.tiempo-ajuste');
 })->middleware('permission:CRUD_parameters');
-//
-Route::get('/gestionar-tareas-con-variables-medicion', function () {
-    return view('taskManager.tareas-variables-medicion');
-})->middleware('permission:CRUD_tasks');
 //
 Route::get('/ayuda', function () {
     return view('admin.ayuda');
@@ -429,6 +430,8 @@ Route::get('/parametros/buscar', 'ParameterController@show');
 Route::post('/parametros/setsession', 'ParameterController@session');
 Route::get('/parametros/cargatrabajo', 'ParameterController@getWorkLoadCategory');
 Route::get('/parametros/psicosocial', 'ParameterController@getPsychosocialCategory');
+Route::post('/parametros/guardar-ineficiencia', 'ParameterController@saveParaemeterInefficiency');
+Route::get('/parametros/ineficiencia', 'ParameterController@getParaemeterInefficiency');
 
 /*Manage SubParameters*/
 Route::get('/subparametros', 'SubparameterController@index');
@@ -651,3 +654,6 @@ Route::get('/grafica/workFlow', 'ReportController@getWorkFlow');
 //Cálculo de Tiempos
 Route::get('/grafica/tiempos/usuario', 'ReportController@getTimesByUser');
 Route::get('/grafica/tiempos/nivel', 'ReportController@getTimesByLevel');
+
+//Todas las tareas
+Route::get('/reporte/tareas-proyecto', 'ReportController@getExcelData');

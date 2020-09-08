@@ -100,7 +100,8 @@
           email:"",
           type:"sys",
           role:"",
-          relatedProjects:""
+          relatedProjects:"-",
+          relatedLevel:"-"
         }),
         title:"Agregar nuevo usuario", //title to show
         update:0, // checks if it is an undate action or adding a new one=> 0:add !=0 :update
@@ -160,7 +161,7 @@
         me.form.fill(user);
         if(user.roles.length > 0){
             me.form.role=user.roles[0].name;
-        }      
+        }
         me.title="Actualizar información del usuario";
       },
       deleteUser(user){

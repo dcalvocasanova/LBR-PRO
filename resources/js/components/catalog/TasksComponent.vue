@@ -14,7 +14,7 @@
                   data-toggle="modal"
                   data-target="#PHVACatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: PHVA
+                    PHVA
                   </i>
                 </button>
               </div>
@@ -24,7 +24,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Frecuencias
+                    Frecuencias
                   </i>
                 </button>
               </div>
@@ -34,7 +34,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Esfuerzo
+                    Esfuerzo
                   </i>
                 </button>
               </div>
@@ -44,7 +44,7 @@
                   data-toggle="modal"
                   data-target="#addCatalogs">
                   <i class="fas fa-swatchbook">
-                    Catálogo: Tipo de trabajo
+                    Tipo de trabajo
                   </i>
                 </button>
               </div>
@@ -430,13 +430,15 @@ export default {
       if (code === "ADDED-VALUED-T"){this.catalog="Valor agregado"}
       if (code === "CORRELATION-T"){this.catalog="Correlación"}
       if (code === "EFFORT-T"){this.catalog="Esfuerzo de trabajo"}
-      if (code === "WORKTYPE"){this.catalog="Tipo de trabajo"}
       if (code === "SKILL-T"){
         this.hasSubCategories = true
       }
       if (code === "RISK-T"){
         this.hasSubCategories = true
         this.hasExtraSubCategories = true
+      }
+      if (code === "WORKTYPE"){
+        this.hasSubCategories = true
       }
       axios.get('catalogo?id=' + code)
       .then(response => {
@@ -450,7 +452,13 @@ export default {
       if (code === "RISK-T"){
         this.catalog="Riesgo de trabajo"
         this.catalog_id="RISK-T"
+        this.hasSubCategories = true
         this.hasExtraSubCategories = true
+      }
+      if (code === "WORKTYPE"){
+        this.catalog="Tipo de trabajo"
+        this.catalog_id="WORKTYPE"
+        this.hasSubCategories = true
       }
       if (code === "SKILL-T"){
         this.catalog="Competencias de trabajo"
