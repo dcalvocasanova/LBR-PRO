@@ -127,18 +127,27 @@
       saveUser(){
         let me =this;
         me.form.relatedProjects= -1
-        me.form.post('/usuarios/guardar')
-        .then(function (response) {
-            me.clearFields();
-            me.getUsuarios();// show all users
-            toast.fire({
-              type: 'success',
-              title: 'Usuario registrado con éxito'
-            });
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        if(me.form.role !== ''){
+          me.form.post('/usuarios/guardar')
+          .then(function (response) {
+              me.clearFields();
+              me.getUsuarios();// show all users
+              toast.fire({
+                type: 'success',
+                title: 'Usuario registrado con éxito'
+              });
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+        }else{
+          swal.fire(
+            'Datos incompletos',
+            'Es necesario seleccionar el rol que se desea asignar',
+            'warning'
+          )
+        }
+
       },
       updateUser(){
         let me = this;
