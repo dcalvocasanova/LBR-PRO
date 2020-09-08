@@ -17,7 +17,7 @@
     </div>
 	<div class="row">
       <div class="col-md-4 text-center">
-		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Identificación: {{currentUserData.identification}}</button>
+		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Identificaciรณn: {{currentUserData.identification}}</button>
 		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Nombre: {{currentUserData.name}}</button>
         <button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Jordada: {{workday}} min</button>
 		<button type="button" class="btn btn-outline-info btn-lg btn-block" disabled>Puesto: {{currentUserData.position}}</button>
@@ -35,7 +35,7 @@
                   <tr><th> Tarea </th></tr>
                 </thead>
                 <tbody>
-                  <tr v-for="t in Tasks.data" :key="t.id">
+                  <tr v-for="t in Tasks" :key="t.id">
                     <tasks-measure
                     :task="t"
                     >
@@ -51,11 +51,19 @@
       </div>
     </div>
   </div>
+	  <button type="button" v-on:click="onexport">Descargar plantilla</button>
 </div>
+ 
 </template>
 
 <script>
+import JsonExcel from "vue-json-excel";
+import XLSX from 'xlsx';
 export default {
+   components: {
+    'downloadExcel':JsonExcel,
+	  
+  },
   data(){
     return{
       selectingProjectToAddTasks: false,
@@ -79,10 +87,31 @@ export default {
       type:"",
 	  workday:"",
 	  tiempoUtilizado:0,
-	  currentUserData:{}
+	  currentUserData:{},
+	  UserFieldsForExcel:{},
+	  UserDataForExcel: []
     }
   },
   methods:{
+	  
+	onexport () { // On Click Excel download button
+    
+      // export json to Worksheet of Excel
+      // only array possible
+      var usersWS = XLSX.utils.json_to_sheet(this.UserDataForExcel) 
+     // var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+      // A workbook is the name given to an Excel file
+      var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+      // add Worksheet to Workbook
+      // Workbook contains one or more worksheets
+      XLSX.utils.book_append_sheet(wb, usersWS, 'usuarios') // sheetAName is name of Worksheet
+      //XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+      // export Excel file
+      XLSX.writeFile(wb, 'tareas.xlsx') // name of the file is 'book.xlsx'
+	},	 
     getProjects(){
       let me =this;
       axios.get('/todos-los-proyectos')
@@ -120,7 +149,13 @@ export default {
         }
       })
       .then(response => {
-        me.Tasks = response.data 	  
+		let tasks =[]
+        me.Tasks = response.data.data
+		for (var i = 0; i < me.Tasks.length; i++) {
+			//let t = me.Tasks[i].task
+			Vue.set(me.UserFieldsForExcel,me.Tasks[i].task,' ')
+		}
+		me.UserDataForExcel.push(me.UserFieldsForExcel)
       });
     },
 	getWorday(){
