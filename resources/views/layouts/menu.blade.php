@@ -117,7 +117,7 @@
   </li>
   @endif
   {{-- Nav Item - Users Collapse Menu--}}
-  @if(@Auth::user()->hasAnyPermission('permission:R_reports'))
+  @if(@Auth::user()->hasAnyPermission('R_reports'))
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
