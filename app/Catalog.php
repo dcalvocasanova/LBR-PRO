@@ -12,6 +12,6 @@ class Catalog extends Model
    * @var array
    */
   protected $fillable = [
-      'name', 'type'
+      'name', 'type', 'project_id'
   ];
 }

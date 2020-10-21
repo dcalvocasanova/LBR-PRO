@@ -26,22 +26,13 @@
                   <div class="row">
                     @if(auth()->user()->can('CRUD_macroprocess') )
                       @component('components.colorcard')
-                        @slot('title') Catálogo de acciones para registro de condiciones de trabajo @endslot
+                        @slot('title') Catálogo de macroprocesos @endslot
                         @slot('type') success @endslot
                         @slot('subtitle') ir @endslot
                         @slot('url') gestionar-catalogos-macroprocesos @endslot
                         @slot('icon') fas fa-tags @endslot
                       @endcomponent
-                    @endif
-                    @if(auth()->user()->can('CRUD_tasks') )
-                      @component('components.colorcard')
-                        @slot('title') Catálogo de acciones para registro de tareas @endslot
-                        @slot('type') success @endslot
-                        @slot('subtitle') ir @endslot
-                        @slot('url') gestionar-catalogos-tareas @endslot
-                        @slot('icon') fas fa-tags @endslot
-                      @endcomponent
-                    @endif
+                    @endif                  
                   </div>
                 </div>
               </div>

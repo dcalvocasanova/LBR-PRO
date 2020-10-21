@@ -9,24 +9,24 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h2 mb-0 text-gray-900"> Análisis de los instrumentos</h1>
+            <h1 class="h2 mb-0 text-gray-900"> Medición de los instrumentos</h1>
           </div>
           <div class="row">
-            @component('components.colorcard')
-              @slot('title') Gestionar elementos asociados a tareas @endslot
+			      @component('components.colorcard')
+              @slot('title') Agregar o disminuir jornada de trabajo @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') gestionar-tareas-variables-adicionales @endslot
+              @slot('url') /gestionar-jornadas @endslot
               @slot('icon') fas fa-tags @endslot
             @endcomponent
 
 			      @component('components.colorcard')
-              @slot('title') Gestionar plantillas @endslot
+              @slot('title') Gestionar variables de medición @endslot
               @slot('type') success @endslot
               @slot('subtitle') ir @endslot
-              @slot('url') /gestionar-plantillas-usuarios @endslot
+              @slot('url') gestionar-tareas-con-variables-medicion @endslot
               @slot('icon') fas fa-tags @endslot
-            @endcomponent		     
+            @endcomponent
 
           </div>
 		   <div class="row">

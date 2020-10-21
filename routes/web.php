@@ -213,6 +213,10 @@ Route::get('/medicion-analisis', function () {
     return view('containers.medicion-analisis');
 })->middleware('permission:CRUD_tasks');
 
+Route::get('/medicion', function () {
+    return view('containers.medicion');
+})->middleware('permission:CRUD_tasks');
+
 
 //GESTIONAR ELEMENTOS ASOCIADOS A TAREAS
 Route::get('/gestionar-tareas-variables-adicionales', function () {
@@ -240,6 +244,11 @@ Route::get('/gestionar-plantillas-phyco', function () {
 //GESTIONAR VARIABLES DE AJUSTE
 Route::get('/ajustes-medicion', function () {
     return view('taskManager.ajustes-medicion');
+})->middleware('permission:CRUD_tasks');
+
+//GESTIONAR JORNADAS
+Route::get('/gestionar-jornadas', function () {
+    return view('taskManager.ajustes-jornadas');
 })->middleware('permission:CRUD_tasks');
 
 

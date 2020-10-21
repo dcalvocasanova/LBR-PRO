@@ -17,6 +17,7 @@ class CreateCatalogsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('type');
+            $table->string('project_id');
             $table->timestamps();
         });
     }

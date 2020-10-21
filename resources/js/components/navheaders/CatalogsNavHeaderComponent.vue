@@ -6,7 +6,7 @@
             <a href="/gestionar-catalogos-macroprocesos">
               <div class="card border-info shadow text-info p-3 my-card" ><span class="fas fa-project-diagram" aria-hidden="true"></span></div>
               <div class="text-info text-center mt-3"><h4> </h4></div>
-              <div class="text-info text-center mt-2 d-none d-md-block"><h5>Condiciones de trabajo</h5></div>
+              <div class="text-info text-center mt-2 d-none d-md-block"><h5>Macroprocesos</h5></div>
             </a>
           </div>
         </div>
@@ -22,15 +22,3 @@
     </div>
  </div>
 </template>
-<style media="screen" scoped>
-#header-project-option-navigator{
-  margin-bottom: 50px;
-}
-.my-card
-{
-    position:absolute;
-    left:40%;
-    top:-20px;
-    border-radius:65%;
-}
-</style>

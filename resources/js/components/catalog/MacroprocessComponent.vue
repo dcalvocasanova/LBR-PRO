@@ -46,7 +46,7 @@
                   <i class="fas fa-swatchbook">
                     Riesgos
                   </i>
-                </button>                
+                </button>
               </div>
             </div>
             <br>

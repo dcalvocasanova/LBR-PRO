@@ -95,18 +95,14 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Puesto de trabajo</label>
-                  <select v-model="form.job" class=" form-control" :class=" { 'is-invalid': form.errors.has('job') }">
-                    <option v-for="p in Positions">{{ p.name }}</option>
-                  </select>
+                  <input v-model="form.job" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('job') }">
                   <has-error :form="form" field="job"></has-error>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="bmd-label-floating">Cargo</label>
-                  <select v-model="form.position" class=" form-control" :class=" { 'is-invalid': form.errors.has('position') }">
-                    <option v-for="l in Labors">{{ l.name }}</option>
-                  </select>
+                  <input v-model="form.position" type="text" class="form-control":class="{ 'is-invalid': form.errors.has('position') }">
                   <has-error :form="form" field="position"></has-error>
                 </div>
               </div>
@@ -118,7 +114,7 @@
                   <select v-model="form.education" class=" form-control" :class=" { 'is-invalid': form.errors.has('education') }">
                     <option v-for="e in Educations">{{ e.name }}</option>
                   </select>
-                  <has-error :form="form" field="position"></has-error>
+                  <has-error :form="form" field="education"></has-error>
                 </div>
               </div>
               <div class="col-md-4">

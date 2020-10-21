@@ -19,8 +19,20 @@ class CatalogController extends Controller
    */
   public function getListCatalog(Request $request)
   {
-    $catalogs = Catalog::where('type',$request->id)->get();
-    return $catalogs;
+    $project = session('currentProject_id');
+
+    $type = $request->id;
+    if( $type == 'INPUT' || $type == 'PROVIDER' || $type == 'INDICATOR' || $type == 'RISK'||
+        $type == 'RISK-FRECUENCY' || $type == 'RISK-CONSECUENCE' || $type == 'RISK-MATURITY'){
+
+          $catalogs = Catalog::where('type',$request->id)->where('project_id',$project)->get();
+          return $catalogs;
+
+    }else{
+        $catalogs = Catalog::where('type',$request->id)->get();
+        return $catalogs;
+    }
+
   }
 
   /**
@@ -67,7 +79,12 @@ class CatalogController extends Controller
  */
   public function storeItem(CatalogRequest $request)
   {
-    $catalog = Catalog::create($request->all());
+    $session_project = session('currentProject_id');
+    $catalog = Catalog::create([
+      'name'=>$request->name,
+      'type'=>$request->type,
+      'project_id'=> $session_project
+      ]);
   }
 
   /**

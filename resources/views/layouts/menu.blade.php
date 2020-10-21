@@ -27,7 +27,7 @@
   </div>
   --}}
   {{-- Nav Item - Projects Collapse Menu--}}
-  @if(@Auth::user()->hasAnyPermission('CRUD_catalogs','CRUD_users'))
+  @if(@Auth::user()->hasAnyPermission('CRUD_catalogs'))
 
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneralConfig" aria-expanded="true" aria-controls="collapseTwo">
@@ -98,6 +98,23 @@
   </li>
   @endif
 
+  {{-- Nav Item - Users Collapse Menu--}}
+  @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWorkload" aria-expanded="true" aria-controls="collapseUtilities">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span> Análisis carga de trabajo</span>
+    </a>
+    <div id="collapseWorkload" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        @if(@Auth::user()->can('CRUD_tasks'))
+          <h6 class="collapse-header">Medición: Análisis </h6>
+          <a class="collapse-item" href="/medicion-analisis">Gestionar</a>
+        @endif
+      </div>
+    </div>
+  </li>
+  @endif
 
   {{-- Nav Item - Users Collapse Menu--}}
   @if(@Auth::user()->hasAnyPermission('CRUD_parameters','CRUD_tasks'))
@@ -110,7 +127,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         @if(@Auth::user()->can('CRUD_tasks'))
           <h6 class="collapse-header">Medición: Análisis </h6>
-          <a class="collapse-item" href="/medicion-analisis">Gestionar</a>
+          <a class="collapse-item" href="/medicion">Gestionar</a>
         @endif
       </div>
     </div>

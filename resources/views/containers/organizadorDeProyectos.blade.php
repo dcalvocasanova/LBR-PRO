@@ -50,6 +50,14 @@
               @endcomponent
             @endif
 
+            @component('components.colorcard')
+              @slot('title') Gestionar ajustes de medición del proyecto @endslot
+              @slot('type') success @endslot
+              @slot('subtitle') ir @endslot
+              @slot('url') ajustes-medicion @endslot
+              @slot('icon') fas fa-tags @endslot
+            @endcomponent
+
           </div>
       </div>
     </div>

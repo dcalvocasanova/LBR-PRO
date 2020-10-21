@@ -30,6 +30,15 @@
                 @slot('icon') fas fa-boxes @endslot
               @endcomponent
             @endif
+            @if(auth()->user()->can('CRUD_tasks') )
+               @component('components.colorcard')
+                 @slot('title') Catálogo de acciones para registro de tareas @endslot
+                 @slot('type') success @endslot
+                 @slot('subtitle') ir @endslot
+                 @slot('url') gestionar-catalogos-tareas @endslot
+                 @slot('icon') fas fa-tags @endslot
+               @endcomponent
+             @endif
           </div>
       </div>
     </div>

@@ -9,7 +9,6 @@
       {{-- Adding page content --}}
       <div class="container-fluid">
         <settings-measure></settings-measure>
-		<extend-workday></extend-workday>
       </div>
     </div>
     {{-- Adding footer --}}
