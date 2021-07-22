@@ -41,6 +41,6 @@
     "vue-progressbar": "^0.7.5",
     "vue2-timeago": "^1.2.7",
     "vuejs-datepicker": "^1.6.2",
-    "xlsx": "^0.16.6"
+    "xlsx": "^0.17.0"
   }
 }
